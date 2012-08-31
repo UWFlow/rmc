@@ -4,3 +4,42 @@
  * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 
 @import "compass/reset";
+
+@import "compass_twitter_bootstrap";
+
+body {
+  // TODO(mack): setup image dir to auto-use
+  @include background(url(/static/img/background.png));
+}
+
+.container-fluid {
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#landing-header {
+  background: #dd8888;
+  text-align: center;
+  &.hero-unit {
+    @include border-radius(0px);
+  }
+  #facebook-facepile {
+    display: inline-block;
+    padding: 10px;
+    background-color: #009999;
+    color: #ffffff;
+    font-weight: bold;
+  }
+}
+
+footer {
+  @include background(url(/static/img/footer_background_2000.jpg) center center no-repeat);
+  // TODO(david): Figure out background-size: cover instead of height
+  height: 545px;
+  margin-top: 50px;
+  #landing-footer-text {
+    padding-top: 30px;
+    text-align: center;
+  }
+}

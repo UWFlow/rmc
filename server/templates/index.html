@@ -1,5 +1,62 @@
 {% extends "layout.html" %}
 
+{% block header %}
+  <div id="landing-header" class="hero-unit">
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span12">
+          <h1>
+            Deciding what courses to take?
+            Ask your friends!
+          </h1>
+          <div id="facebook-facepile">Connect</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
 {% block body %}
-  Hello world
+{# TODO(mack): use ol rather than div #}
+<section id="steps">
+  <div class="row-fluid">
+    <div class="span4">
+      <img src="http://placekitten.com/400/250">
+    </div>
+    <div class="span8">
+      <h1 class="step-header">Steps 1:</h1>
+      <p>Browse courses with ratings and descriptions</p>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span8">
+      <h1 class="step-header">Steps 2:</h1>
+      <p>Ask friends who took the course</p>
+    </div>
+    <div class="span4">
+      <img src="http://placekitten.com/400/250">
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span4">
+      <img src="http://placekitten.com/400/250">
+    </div>
+    <div class="span8">
+      <h1 class="step-header">Steps 3:</h1>
+      <p>Let your friends know about courses you took</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block footer %}
+<div class="container-fluid">
+  <div id="landing-footer" class="row-fluid">
+    <div class="span12">
+      <p class="lead" id="landing-footer-text">
+        We're Waterloo students trying to help out other students! [our pictures or links or something, twitter/FB/social media follow crap]
+      </p>
+    </div>
+  </div>
+</div>
 {% endblock %}

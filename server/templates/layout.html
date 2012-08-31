@@ -13,8 +13,24 @@
   </head>
 
   <body>
-    {% block body %}
-    {% endblock %}
+    <!-- TODO(david): Real responsive layout:
+         http://twitter.github.com/bootstrap/scaffolding.html#responsive
+    -->
+
+    <header>
+      {% block header %}
+      {% endblock %}
+    </header>
+
+    <div class="container-fluid">
+      {% block body %}
+      {% endblock %}
+    </div>
+
+    <footer>
+      {% block footer %}
+      {% endblock %}
+    </footer>
 
     <!-- Javascript -->
   </body>
