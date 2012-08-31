@@ -7,6 +7,8 @@
 
 @import "compass_twitter_bootstrap";
 
+// TODO(david): Box-sizing border or something on *
+
 body {
   // TODO(mack): setup image dir to auto-use
   @include background(url(/static/img/background.png));
