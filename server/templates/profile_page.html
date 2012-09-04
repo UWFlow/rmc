@@ -1,6 +1,7 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
 {% block stylesheets %}
+  <link rel="stylesheet" href="/static/css/profile_page.css">
 {% endblock %}
 
 {% block header %}
@@ -8,12 +9,17 @@
 {% endblock %}
 
 {% block body %}
-  <ol id="terms"></ol>
+  <div id="term-collection-container"></div>
   <textarea id="transcript-text" wrap="off"></textarea>
   <div id="transcript-error"></div>
 {% endblock %}
 
 {% block footer %}
+{% endblock %}
+
+{% block templates %}
+  {% include 'course.html' %}
+  {% include 'term.html' %}
 {% endblock %}
 
 {% block scripts %}

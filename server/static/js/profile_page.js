@@ -1,7 +1,7 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'course'],
-function($, _, _s, transcript, course) {
+'term'],
+function($, _, _s, transcript, term) {
   $(function() {
     var $transcript = $('#transcript-text');
     $transcript.bind('input paste', function(evt) {
@@ -17,38 +17,24 @@ function($, _, _s, transcript, course) {
         return;
       }
 
+      var termCollection = undefined;
       // Try/catch around parsing logic so that we show error message
       // should anything go wrong
       try {
-
-        var terms = transcript.parseTranscript(data);
-
-        // Add the parsed term and course info to the page for live preview
-        _.each(terms, function(courses, termName) {
-          // TODO(mack): move into backbone template
-          var $term = $('<li class="term"/>');
-          var $termName = $(_s.sprintf('<h2 class="term">%s</h2>', termName));
-          $term.append($termName);
-          var $courses = $('<ul class="courses"/>');
-          _.each(courses, function(courseCode) {
-            var courseModel = new course.CourseModel({
-              code: courseCode
-            });
-            var courseView = new course.CourseCardView({
-              courseModel: courseModel
-            });
-            $courses.append(courseView.render().el);
-          });
-          $term.append($courses);
-          $('#terms').append($term);
-        });
-
+        termCollection = transcript.parseTranscript(data);
       } catch (ex) {
         console.log('ex', ex.toString());
         $('#transcript-error').text(
             'Could not extract course information. '
             + 'Please check that you\'ve pasted the transcript correctly.');
+        return;
       }
+
+      // Add the parsed term and course info to the page for live preview
+      var termCollectionView = new term.TermCollectionView({
+        termCollection: termCollection
+      });
+      $('#term-collection-container').html(termCollectionView.render().el);
     });
 
     // Handle the case that the user inputs into the transcript text area

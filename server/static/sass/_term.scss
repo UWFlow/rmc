@@ -1,0 +1,21 @@
+@import 'base';
+@import 'course';
+
+.term-collection {
+  .term {
+    .term-name {
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 2.0em;
+    }
+
+    list-style: none;
+    .course-collection {
+      list-style: none;
+    }
+  }
+}
+
+#transcript-error {
+  color: #ff0000;
+}

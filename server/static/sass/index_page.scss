@@ -1,0 +1,21 @@
+@import 'base';
+
+#landing-header {
+  background: #dd8888;
+  text-align: center;
+  &.hero-unit {
+    @include border-radius(0px);
+  }
+  #facebook-facepile {
+    display: inline-block;
+    padding: 10px;
+    background-color: #009999;
+    color: #ffffff;
+    font-weight: bold;
+  }
+}
+
+footer #landing-footer-text {
+  padding-top: 30px;
+  text-align: center;
+}

@@ -3,9 +3,20 @@
  * Import this file using the following HTML or equivalent:
  * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
 
-@import "compass/reset";
+@import 'compass/reset';
+@import 'compass_twitter_bootstrap';
 
-@import "compass_twitter_bootstrap";
+
+/*****************************
+ * Generic classes
+ **************************/
+.hide {
+  display: none;
+}
+
+/****************************
+ * Base page styles
+ *************************/
 
 // TODO(david): Box-sizing border or something on *
 
@@ -14,25 +25,12 @@ body {
   @include background(url(/static/img/background.png));
 }
 
+// TODO(mack): move landing page stuff into separate file
+
 .container-fluid {
   max-width: 1200px;
   margin-left: auto;
   margin-right: auto;
-}
-
-#landing-header {
-  background: #dd8888;
-  text-align: center;
-  &.hero-unit {
-    @include border-radius(0px);
-  }
-  #facebook-facepile {
-    display: inline-block;
-    padding: 10px;
-    background-color: #009999;
-    color: #ffffff;
-    font-weight: bold;
-  }
 }
 
 footer {

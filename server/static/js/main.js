@@ -1,13 +1,16 @@
 require.config({
   shim: {
     'ext/backbone': {
-      deps: ['ext/underscore', 'ext/jquery'],
+      deps: ['ext/jquery', 'ext/underscore'],
       exports: 'Backbone'
     },
     // Not really needed since jQuery is already AMD-compliant, but just for
     // the sake of completeness
     'ext/jquery': {
       exports: '$'
+    },
+    'ext/jqueryui': {
+      deps: ['ext/jquery']
     },
     'ext/underscore': {
       exports: '_'
@@ -24,6 +27,7 @@ require.config({
   paths: {
     'ext/backbone': 'http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.2/backbone-min',
     'ext/jquery': 'http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min',
+    'ext/jqueryui': 'http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min',
     'ext/underscore': 'http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min',
     'ext/underscore.string': 'http://cdnjs.cloudflare.com/ajax/libs/underscore.string/2.0.0/underscore.string.min',
   }
