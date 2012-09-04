@@ -1,7 +1,7 @@
 require(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'transcript'],
-function(Backbone, $, _, _s, transcript) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
+'course'],
+function($, _, _s, transcript, course) {
   $(function() {
     var $transcript = $('#transcript-text');
     $transcript.bind('input paste', function(evt) {
@@ -27,12 +27,17 @@ function(Backbone, $, _, _s, transcript) {
         _.each(terms, function(courses, termName) {
           // TODO(mack): move into backbone template
           var $term = $('<li class="term"/>');
-          var $termName = $(_.sprintf('<h2 class="term">%s</h2>', termName));
+          var $termName = $(_s.sprintf('<h2 class="term">%s</h2>', termName));
           $term.append($termName);
           var $courses = $('<ul class="courses"/>');
           _.each(courses, function(courseCode) {
-            var $course = $(_.sprintf('<li class="course">%s</li>', courseCode));
-            $courses.append($course);
+            var courseModel = new course.CourseModel({
+              code: courseCode
+            });
+            var courseView = new course.CourseCardView({
+              courseModel: courseModel
+            });
+            $courses.append(courseView.render().el);
           });
           $term.append($courses);
           $('#terms').append($term);

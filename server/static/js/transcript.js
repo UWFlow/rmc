@@ -28,7 +28,7 @@ function($, _, _s) {
     //var matches = data.match(/Student ID: (\d+)/)
     //var studentId = parseInt(matches[1], 10);
     //matches = data.match(/Program: (.*?)[\n]/);
-    //var program = _.trim(matches[1]);
+    //var program = _s.trim(matches[1]);
 
     var termsRaw = [];
 

@@ -15,7 +15,6 @@ require.config({
     'ext/underscore.string': {
       deps: ['ext/underscore'],
       exports: function(_) {
-        _.mixin(_.string.exports());
         return _.string;
       }
     }
