@@ -1,0 +1,1 @@
+{"prof_id": "1571971", "prof_name": "Haas, Carl", "info": {"Department": " Civil Engineering", "School": " University of Waterloo", "Name": " Carl\u00a0Haas", "Location": " Waterloo, ON"}, "ratings": [{"comment": null, "date": "5/1/11", "r_clarity": "5", "rating_id": "18503897", "r_easy": "3", "class": "CIVE710", "r_interest": "4", "r_helpful": "4"}]}

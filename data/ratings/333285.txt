@@ -1,0 +1,1 @@
+{"prof_id": "333285", "prof_name": "Sarty, Roger", "info": {"Department": " History", "School": " University of Waterloo", "Name": " Roger\u00a0Sarty", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Amazing prof and man!", "date": "5/23/06", "r_clarity": "5", "rating_id": "11932834", "r_easy": "5", "class": "HST 350", "r_interest": "5", "r_helpful": "5"}]}

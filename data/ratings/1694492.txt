@@ -1,0 +1,1 @@
+{"prof_id": "1694492", "prof_name": "Monaghan, Richelle", "info": {"Department": " Biology", "School": " University of Waterloo", "Name": " Richelle\u00a0Monaghan", "Location": " Waterloo, ON"}, "ratings": [{"comment": "very helpful teacherrr!", "date": "2/15/12", "r_clarity": "5", "rating_id": "19830555", "r_easy": "3", "class": "biol373", "r_interest": "5", "r_helpful": "5"}]}

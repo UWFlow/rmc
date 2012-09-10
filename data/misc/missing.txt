@@ -1,0 +1,14 @@
+Professor:
+ - hoff, david (tid=911644)
+
+Courses:
+  - syde101
+  - enve100
+  - msci100
+  - che100
+  - che101
+  - mte100
+  - cive125
+  - ne100
+  - se101
+  - cs341

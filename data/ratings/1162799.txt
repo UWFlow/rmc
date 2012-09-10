@@ -1,0 +1,1 @@
+{"prof_id": "1162799", "prof_name": "Kerr, Reid", "info": {"Department": " Computer Science", "School": " University of Waterloo", "Name": " Reid\u00a0Kerr", "Location": " Waterloo, ON"}, "ratings": [{"comment": "No Comments", "date": "8/7/08", "r_clarity": "2", "rating_id": "14725137", "r_easy": "3", "class": "cs456", "r_interest": "4", "r_helpful": "2"}]}

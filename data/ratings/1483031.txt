@@ -1,0 +1,1 @@
+{"prof_id": "1483031", "prof_name": "Ozubko, Jason", "info": {"Department": " Psychology", "School": " University of Waterloo", "Name": " Jason\u00a0Ozubko", "Location": " Waterloo, ON"}, "ratings": [{"comment": null, "date": "10/13/10", "r_clarity": "3", "rating_id": "17653983", "r_easy": "3", "class": "Psych223", "r_interest": "3", "r_helpful": "3"}]}

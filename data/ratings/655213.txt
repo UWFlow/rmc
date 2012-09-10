@@ -1,0 +1,1 @@
+{"prof_id": "655213", "prof_name": "Worswick, Michael J", "info": {"Department": " Engineering", "School": " University of Waterloo", "Name": " Michael J\u00a0Worswick", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Hot!", "date": "9/29/06", "r_clarity": "4", "rating_id": "12257774", "r_easy": "5", "class": "ENG312", "r_interest": "3", "r_helpful": "4"}]}

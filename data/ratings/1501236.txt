@@ -1,0 +1,1 @@
+{"prof_id": "1501236", "prof_name": "Dreyer, Olaf", "info": {"Department": " Mathematics", "School": " University of Waterloo", "Name": " Olaf\u00a0Dreyer", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Pretty nice prof! Helpful!", "date": "6/15/11", "r_clarity": "4", "rating_id": "18732721", "r_easy": "3", "class": "MATH116", "r_interest": "4", "r_helpful": "4"}]}

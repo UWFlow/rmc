@@ -1,0 +1,1 @@
+{"prof_id": "1684733", "prof_name": "Golab, Lukasz", "info": {"Department": " Management", "School": " University of Waterloo", "Name": " Lukasz\u00a0Golab", "Location": " Waterloo, ON"}, "ratings": [{"comment": "He needs to improve.", "date": "1/14/12", "r_clarity": "2", "rating_id": "19727157", "r_easy": "2", "class": "msci446", "r_interest": "2", "r_helpful": "2"}]}

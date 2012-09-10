@@ -1,0 +1,1 @@
+{"prof_id": "1220960", "prof_name": "Gholgholi, Gholi", "info": {"Department": " Social Science", "School": " University of Waterloo", "Name": " Gholi\u00a0Gholgholi", "Location": " Waterloo, ON"}, "ratings": [{"comment": "kjhj;jhlkjhlkjhlkjhkj", "date": "12/4/08", "r_clarity": "2", "rating_id": "15109024", "r_easy": "2", "class": "hist101", "r_interest": "2", "r_helpful": "2"}]}

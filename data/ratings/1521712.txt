@@ -1,0 +1,1 @@
+{"prof_id": "1521712", "prof_name": "Chan, Ken", "info": {"Department": " Engineering", "School": " University of Waterloo", "Name": " Ken\u00a0Chan", "Location": " Waterloo, ON"}, "ratings": [{"comment": "The course gets tougher after midterm!", "date": "6/15/11", "r_clarity": "1", "rating_id": "18732711", "r_easy": "3", "class": "MATH115", "r_interest": "3", "r_helpful": "1"}]}

@@ -1,0 +1,1 @@
+{"prof_id": "901577", "prof_name": "Jewer, Jennifer", "info": {"Department": " Managerial Science", "School": " University of Waterloo", "Name": " Jennifer\u00a0Jewer", "Location": " Waterloo, ON"}, "ratings": [{"comment": "No Comments", "date": "1/6/07", "r_clarity": "3", "rating_id": "12730746", "r_easy": "3", "class": "MSCI442", "r_interest": "3", "r_helpful": "3"}]}

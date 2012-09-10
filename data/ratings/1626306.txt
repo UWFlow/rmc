@@ -1,0 +1,1 @@
+{"prof_id": "1626306", "prof_name": "Jones, Lyndon", "info": {"Department": " Optometry", "School": " University of Waterloo", "Name": " Lyndon\u00a0Jones", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Awesome", "date": "10/13/11", "r_clarity": "4", "rating_id": "19068780", "r_easy": "1", "class": "OPT111", "r_interest": "3", "r_helpful": "5"}]}
