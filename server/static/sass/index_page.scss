@@ -6,6 +6,16 @@
   &.hero-unit {
     @include border-radius(0px);
   }
+  h1 {
+    font-size: 110px;
+  }
+}
+
+#steps {
+  p {
+    font-size: 50px;
+    line-height: 50px;
+  }
 }
 
 footer #landing-footer-text {
