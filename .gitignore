@@ -1,3 +1,4 @@
 .sass-cache/
+mongodb/
 server/static/css/
 server/Gemfile.lock

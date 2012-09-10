@@ -11,4 +11,3 @@ echo "Setup bundle"
 
 echo "Install pip requirements"
 ( /bin/pip install -r requirements.txt )
-
