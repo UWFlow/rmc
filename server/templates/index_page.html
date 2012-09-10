@@ -10,10 +10,14 @@
       <div class="row-fluid">
         <div class="span12">
           <h1>
-            Deciding what courses to take?
+            Deciding what courses to take?<br>
             Ask your friends!
           </h1>
-          <div id="facebook-facepile">Connect</div>
+{# TODO(sandy): add permissions in scope attribute https://developers.facebook.com/docs/authentication/permissions/ #}
+{# TODO(sandy): fix width alignment issue and test max-rows #}
+          <div class="fb-login-button" data-show-faces="true"
+               data-width="475" data-max-rows="2"
+               size="xlarge"></div>
         </div>
       </div>
     </div>
@@ -21,6 +25,16 @@
 {% endblock %}
 
 {% block body %}
+{# TODO(sandy): find an appropriate place to put this#}
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=219309734863464";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+
 {# TODO(mack): use ol rather than div #}
 <section id="steps">
   <div class="row-fluid">

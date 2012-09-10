@@ -6,13 +6,6 @@
   &.hero-unit {
     @include border-radius(0px);
   }
-  #facebook-facepile {
-    display: inline-block;
-    padding: 10px;
-    background-color: #009999;
-    color: #ffffff;
-    font-weight: bold;
-  }
 }
 
 footer #landing-footer-text {
