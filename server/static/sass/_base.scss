@@ -19,7 +19,10 @@
  * Base page styles
  *************************/
 
-// TODO(david): Box-sizing border or something on *
+// apply a natural box layout model to all elements
+* {
+  @include box-sizing(border-box);
+}
 
 body {
   // TODO(mack): setup image dir to auto-use
