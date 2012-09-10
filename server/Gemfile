@@ -1,2 +1,6 @@
 source 'https://rubygems.org'
+gem 'rdoc'
+gem 'bundle'
+gem 'compass'
 gem 'compass_twitter_bootstrap'
+
