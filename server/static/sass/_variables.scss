@@ -1,0 +1,14 @@
+////////////////////////////////////////////////////////////////////////////////
+// Bootstrap overrides
+
+$sansFontFamily:        "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$serifFontFamily:       Georgia, "Times New Roman", Times, serif !default;
+
+$baseFontSize:          16px;
+$baseFontFamily:        $sansFontFamily !default;
+$baseLineHeight:        18px !default;
+$altFontFamily:         $serifFontFamily !default;
+
+$headingsFontFamily:    inherit !default; // empty to use BS default, $baseFontFamily
+$headingsFontWeight:    bold !default;    // instead of browser default, bold
+$headingsColor:         inherit !default; // empty to use BS default, $textColor
