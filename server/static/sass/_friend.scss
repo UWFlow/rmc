@@ -1,0 +1,51 @@
+@import 'base';
+
+#friend-sidebar-container {
+
+  @extend .clearfix;
+  @extend .well;
+  float: left;
+
+  .friend-sidebar {
+    .num-friends {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .friend-collection {
+      list-style: none;
+      margin: 15px 0px;
+
+      .friend {
+        @extend .clearfix;
+
+        $friend-pic-width: 50px;
+        margin-bottom: 10px;
+
+        .friend-pic {
+          float: left;
+          width: $friend-pic-width;
+          height: $friend-pic-width;
+        }
+
+        .friend-info {
+          float: left;
+          padding-left: 10px;
+
+          .friend-name {
+          }
+          .mutual-courses {
+          }
+        }
+      }
+    }
+
+    .invite-friends-btn {
+      display: inline-block;
+      @include border-radius(3px);
+      @extend .btn;
+      //@extend .btn-large;
+      @extend .btn-primary;
+    }
+  }
+}

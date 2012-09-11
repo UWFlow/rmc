@@ -1,8 +1,28 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'util'],
-function($, _, _s, transcript, term, course, util) {
+'term', 'course', 'friend', 'util'],
+function($, _, _s, transcript, term, course, friend, util) {
   $(function() {
+
+    // Render friend sidebar
+
+    var friendCollection = new friend.FriendCollection();
+    // TODO(mack): remove stub data
+    var friendsData = [
+      { id: 541400376, name: 'David Hu', courses_took: ['CS137', 'SCI238', 'CS241', 'MATH117'] },
+      { id: 164710326, name: 'Mack Duan', courses_took: ['CS241', 'MATH137'] },
+      { id: 518430508, name: 'Sandy Wu', courses_took: ['CS370'] },
+    ]
+    for (var i = 0; i < 3; ++i) {
+      var friendModel = new friend.FriendModel(friendsData[i]);
+      friendCollection.add(friendModel);
+    }
+    var friendSidebarView = new friend.FriendSidebarView({
+      friendCollection: friendCollection
+    });
+    $('#friend-sidebar-container').html(friendSidebarView.render().el);
+
+
     var $transcript = $('#transcript-text');
 
     $transcript.bind('input paste', function(evt) {

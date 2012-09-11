@@ -6,6 +6,7 @@
 @import '_variables';
 @import 'compass/reset';
 @import 'compass_twitter_bootstrap_awesome';
+@import 'compass/utilities/general/clearfix';
 
 
 /*****************************
@@ -13,6 +14,10 @@
  **************************/
 .hide {
   display: none;
+}
+
+.clearfix {
+  @include clearfix;
 }
 
 // This overrides Bootstrap's well class (it now looks raised instead of sunken)

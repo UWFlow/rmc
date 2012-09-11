@@ -9,15 +9,22 @@
 {% endblock %}
 
 {% block body %}
-  <div id="term-collection-container"></div>
-  <textarea id="transcript-text" wrap="off"></textarea>
-  <div id="transcript-error"></div>
+  <div class="row-fluid">
+    <div class="span3" id="friend-sidebar-container">
+    </div>
+    <div class="span9" id="profile-container">
+      <div id="term-collection-container"></div>
+      <textarea id="transcript-text" wrap="off"></textarea>
+      <div id="transcript-error"></div>
+    </div>
+  </div>
 {% endblock %}
 
 {% block footer %}
 {% endblock %}
 
 {% block templates %}
+  {% include 'friend.html' %}
   {% include 'course.html' %}
   {% include 'term.html' %}
 {% endblock %}

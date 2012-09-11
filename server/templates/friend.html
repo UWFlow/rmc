@@ -1,0 +1,20 @@
+<script type="text/html" id="friend-sidebar-tpl">
+  <div class="num-friends"><%- num_friends %> Friends</div>
+  <div class="friend-collection-placeholder"></div>
+  <button class="invite-friends-btn">
+    <i class="icon-plus"> </i>Invite More Friends
+  </button>
+</script>
+
+<script type="text/html" id="friend-tpl">
+  <% var profileUrl = '/profile/' + id; %>
+  <a class="friend-pic" href=<%- profileUrl %>>
+    <img src="<%- fbProfilePicUrl(id) %>">
+  </a>
+  <div class="friend-info">
+    <a class="friend-name" href=<%- profileUrl %>>
+      <%- name %>
+    </a>
+    <div class="mutual-courses"><%- courses_took.length %> mutual courses</div>
+  </div>
+</script>

@@ -40,6 +40,8 @@ require(['ext/underscore', 'ext/underscore.string'], function(_, _s) {
 
     // TODO(mack): move templateHelpers into own file
     var templateHelpers = {
+      _: _,
+      _s: _s,
       fbProfilePicUrl: function(fbid) {
         // TODO(mack): add support for custom width and height
         return _s.sprintf('https://graph.facebook.com/%d/picture', fbid);
