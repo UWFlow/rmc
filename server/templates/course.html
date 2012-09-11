@@ -1,14 +1,16 @@
 <script type="text/html" id="course-tpl">
-  <div class="course-id"><%- id %></div>
-  <div class="course-name"><%- name %></div>
-  <!-- TODO(mack): include functions to handle singular/plural -->
-  <div class="rating-box">
-    <div class="rating"><%- rating %></div>
-    <div class="num-ratings"><%- num_ratings %> ratings</div>
+  <div class="visible-section">
+    <div class="course-id"><%- id %></div>
+    <div class="course-name"><%- name %></div>
+    <!-- TODO(mack): include functions to handle singular/plural -->
+    <div class="rating-box">
+      <div class="rating"><%- rating %></div>
+      <div class="num-ratings"><%- num_ratings %> ratings</div>
+    </div>
+    <div class="num-friends"><%- num_friends_took %> friends have taken this course</div>
+    <!-- TODO(david): This is really dumb. Fix in a better way. -->
+    <div style="clear: both; margin-bottom: -25px;"></div>
   </div>
-  <div class="num-friends"><%- num_friends_took %> friends have taken this course</div>
-  <!-- TODO(david): This is really dumb. Fix in a better way. -->
-  <div style="clear: both; margin-bottom: -25px;"></div>
   <div class="expand-section hide">
     <div class="description"><%- description %></div>
   </div>

@@ -31,16 +31,35 @@ function(Backbone, $, _, _s) {
     },
 
     events: {
-      'mouseenter': 'expandCourse',
-      'mouseleave': 'collapseCourse'
+      // TODO(david): Figure out a nicer interaction without requiring click
+      'click .visible-section': 'toggleCourse'
+    },
+
+    toggleCourse: function(evt) {
+      if (this.$('.expand-section').is(':visible')) {
+        this.collapseCourse(evt);
+      } else {
+        this.expandCourse(evt);
+      }
     },
 
     expandCourse: function(evt) {
-      this.$('.expand-section').removeClass('hide');
+      var duration = 300;
+      this.$('.expand-section')
+        .css('opacity', 0)
+        .animate({
+          opacity: 1.0
+        }, {
+          duration: duration,
+          queue: false
+        })
+        .slideDown(duration);
     },
 
     collapseCourse: function(evt) {
-      this.$('.expand-section').addClass('hide');
+      this.$('.expand-section')
+        .stop(/* clearQueue */ true)
+        .slideUp(300);
     }
   });
 
