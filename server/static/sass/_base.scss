@@ -15,6 +15,17 @@
   display: none;
 }
 
+// This overrides Bootstrap's well class (it now looks raised instead of sunken)
+.well {
+  // TODO(david): These grays should not be hardcoded, or could be off-gray
+  @include background(linear-gradient(top, #FCFCFC, #F9F9F9));
+  // TODO(david): these colors should be darkened as much as the main text color
+  //     was darkened (from http://opalang.org/)
+  border-color: #DDDDDD #EAEAEA #DDDDDD #EAEAEA;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  color: #666;
+}
+
 /****************************
  * Base page styles
  *************************/
@@ -24,6 +35,11 @@
 * {
   @include box-sizing(border-box);
 }
+
+// Uncomment to debug boxes
+//* {
+  //outline: 1px red solid;
+//}
 
 body {
   // TODO(mack): setup image dir to auto-use

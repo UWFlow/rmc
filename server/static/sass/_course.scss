@@ -1,27 +1,59 @@
 .course {
-  .course-title {
+  @extend .well;
+  margin-bottom: 10px;
+
+  $top: -12px;
+  .course-id {
     font-weight: bold;
-    font-size: 1.5em;
-    display: inline-block;
-
-    .course-id {
-    }
-    .course-name {
-    }
+    font-size: 50px;
+    float: left;
+    margin-right: 10px;
   }
 
-  .rating {
-    display: inline-block;
+  .course-name {
+    float: left;
+    font-weight: lighter;
+    width: 250px;
+    position: relative;
+    top: $top;
+    font-size: 20px;
+    line-height: 20px;
   }
 
-  .num-ratings {
-    display: inline-block;
+  .rating-box {
+    $rating-size: 35px;
+    $num-size: 11px;
+    @extend .badge;
+    position: relative;
+    float: right;
+    top: $top;
+    line-height: $rating-size + $num-size;
+    .rating {
+      font-size: $rating-size;
+      line-height: $rating-size;
+    }
+    .num-ratings {
+      font-size: $num-size;
+      line-height: $num-size - 3px;
+      top: -3px;
+      text-align: center;
+      font-weight: normal;
+      position: relative;
+    }
   }
 
   .num-friends {
     display: inline-block;
+    float: right;
+    margin-right: 10px;
+    text-align: right;
+    top: $top;
+    position: relative;
+    width: 200px;
   }
 
   .expand-section {
+    margin-top: 15px;
+    margin-bottom: -10px;
   }
 }

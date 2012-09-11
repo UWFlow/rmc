@@ -5,7 +5,7 @@ function(Backbone, $, _, _s) {
   var CourseModel = Backbone.Model.extend({
     defaults: {
       'id': 'SCI 238',
-      'name': 'Introduction to Astronomy',
+      'name': 'Introduction to Astronomy omg omg omg',
       'rating': 2.5,
       'num_ratings': 49,
       'num_friends_took': 2,
