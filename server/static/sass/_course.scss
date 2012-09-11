@@ -2,6 +2,15 @@
   @extend .well;
   margin-bottom: 10px;
 
+  // TODO(david): Figure out why transitions are so damn slow on this site
+  &:hover {
+    // TODO(david): More crap on hover
+    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.1));
+    // TODO(david): Should not hardcode #F7F7F7
+    @include background(linear-gradient(top, #FCFCFC, #F6F6F6));
+    border-color: #CCC;
+  }
+
   .visible-section:hover {
     cursor: pointer;
   }
@@ -16,7 +25,7 @@
   .course-name {
     float: left;
     font-weight: lighter;
-    width: 250px;
+    width: 300px;
     position: relative;
     top: $top;
     font-size: 20px;

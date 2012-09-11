@@ -49,7 +49,7 @@ function($, _, _s, transcript, term, course, util) {
           var courseById = {};
           _.each(courses, function(courseObj) {
             // TODO(mack): address consistency issue between using name/id
-            courseById[courseObj.name] = courseObj;
+            courseById[courseObj.id] = courseObj;
           });
 
           var termCollection = new term.TermCollection();
@@ -75,7 +75,7 @@ function($, _, _s, transcript, term, course, util) {
           $('#term-collection-container').html(termCollectionView.render().el);
         }
       );
-    }
+    };
 
     // Handle the case that the user inputs into the transcript text area
     // before the page has finished loading.
