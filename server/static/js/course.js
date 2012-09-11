@@ -9,13 +9,12 @@ function(Backbone, $, _, _s) {
       'rating': 2.5,
       'num_ratings': 49,
       'num_friends_took': 2,
-      'description': 'This couse will introduce you to the wonderful world'
-        + ' of astronomy. Learn about the Milky Way, the Big Bang, and'
-        + ' everything in between. Become enthralled in the wonderful'
-        + ' world of astronomy.'
+      'description': 'This couse will introduce you to the wonderful world' +
+        ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
+        ' everything in between. Become enthralled in the wonderful' +
+        ' world of astronomy.'
     }
   });
-
 
   var CourseView = Backbone.View.extend({
     className: 'course',
