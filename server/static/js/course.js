@@ -46,7 +46,7 @@ function(Backbone, $, _, _s) {
 
 
   var CourseCollection = Backbone.Collection.extend({
-    model: CourseModel
+    model: CourseModel,
   });
 
 

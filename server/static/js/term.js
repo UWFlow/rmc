@@ -5,8 +5,10 @@ function(Backbone, _, course) {
   var TermModel = Backbone.Model.extend({
     defaults: {
       'name': 'Fall 2012',
-      'courses': new course.CourseModel()
-    }
+      'courses': new course.CourseCollection()
+    },
+
+    idAttribute: 'name'
   });
 
 

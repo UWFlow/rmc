@@ -1,11 +1,11 @@
 define(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'term', 'course'],
-function($, _, _s, term, course) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string'],
+function($, _, _s) {
 
   /**
    * Parses transcript text. Will throw exception on failure to parse.
    * @param {string} data Transcript text
-   * @return {TermCollection} Collection of TermModels
+   * @return {array} list of { termName: <X>, courseIds: [<A>, <B>, ...] } objects
    */
   function parseTranscript(data) {
     var beginMarker = 'UNIVERSITY  OF  WATERLOO  UNDERGRADUATE  UNOFFICIAL  TRANSCRIPT';
@@ -45,29 +45,28 @@ function($, _, _s, term, course) {
       termsRaw.push(data.substring(lastIndex));
     }
 
-    var termCollection = new term.TermCollection();
+    var coursesByTerm = [];
     // Parse out the term and courses taken in that term
     _.each(termsRaw, function(termRaw) {
       matches = termRaw.match(/^((?:Spring|Fall|Winter) \d{4})/);
       var termName = matches[0];
       termRaw = termRaw.substring(termName.length);
       matches = termRaw.match(/[A-Z]+ \d{3}[A-Z]?/g);
+      var courseIds = [];
       // TODO(mack): filter non-courses from matches
       if (matches) {
-        var courseCollection = new course.CourseCollection();
         _.each(matches, function(courseId) {
-          courseCollection.add({
-            id: courseId
-          });
+          courseId = courseId.replace(/\s+/g, '');
+          courseIds.push(courseId);
         });
-        termCollection.add({
+        coursesByTerm.push({
           name: termName,
-          courseCollection: courseCollection
+          courseIds: courseIds
         });
       }
     });
 
-    return termCollection;
+    return coursesByTerm;
   }
 
   return {
