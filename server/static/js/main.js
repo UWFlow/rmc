@@ -32,3 +32,31 @@ require.config({
     'ext/underscore.string': 'http://cdnjs.cloudflare.com/ajax/libs/underscore.string/2.0.0/underscore.string.min',
   }
 });
+
+require(['ext/underscore', 'ext/underscore.string'], function(_, _s) {
+  // Add helpers functions to all templates
+  (function() {
+    var template = _.template;
+
+    // TODO(mack): move templateHelpers into own file
+    var templateHelpers = {
+      fbProfilePicUrl: function(fbid) {
+        // TODO(mack): add support for custom width and height
+        return _s.sprintf('https://graph.facebook.com/%d/picture', fbid);
+      }
+    };
+
+    _.template = function(templateString, data, settings) {
+      if (data) {
+        var data = _.extend({}, templateHelpers, data);
+        return template(templateString, data, settings);
+      } else {
+        var compiled = template(templateString);
+        return function(data, settings) {
+          var data = _.extend({}, templateHelpers, data);
+          compiled(data, settings);
+        }
+      }
+    };
+  })();
+});
