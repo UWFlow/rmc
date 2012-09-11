@@ -36,7 +36,7 @@ def get_courses(course_names):
     def clean_courses(course):
         return {
             'id': course['name'],
-            'name': course['name'],
+            'name': course['title'],
             'rating': round(course['ratings']['aggregate']['average']*10)/10,
             'num_ratings': course['ratings']['aggregate']['count'],
             'description': course['description'],
