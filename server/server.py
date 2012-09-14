@@ -10,9 +10,14 @@ db = pymongo.Connection(c.MONGO_HOST, c.MONGO_PORT).rmc
 def index():
     return flask.render_template('index_page.html')
 
-@app.route('/profile')
-def profile():
-    return flask.render_template('profile_page.html')
+@app.route('/profile', defaults={'fbid': None})
+@app.route('/profile/<int:fbid>')
+def profile(fbid):
+    if not fbid:
+        return flask.render_template('profile_page.html')
+    else:
+        # TODO(mack): handle viewing another user's profile
+        pass
 
 
 # TODO(mack): move API's to separate file
