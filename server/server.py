@@ -33,7 +33,7 @@ import random
 def get_courses(course_names):
     course_names = course_names.upper()
     course_names = course_names.split(',')
-    courses = list(db.courses.find(
+    courses_list = list(db.courses.find(
       {'name': { '$in': course_names }},
       {'_id': 0}
     ))
@@ -52,7 +52,10 @@ def get_courses(course_names):
             'num_friends_took': random.randrange(0, 20)
         }
     # TODO(mack): do this more cleanly
-    courses = map(clean_courses, courses)
+    courses_list = map(clean_courses, courses_list)
+    courses = {}
+    for course in courses_list:
+        courses[course['id']] = course
 
     return flask.jsonify(courses=courses)
 

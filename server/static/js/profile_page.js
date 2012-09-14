@@ -65,12 +65,7 @@ function($, _, _s, transcript, term, course, friend, util) {
       $.getJSON(
         '/api/courses/' + courseIds.join(','),
         function(data) {
-          var courses = data.courses;
-          var courseById = {};
-          _.each(courses, function(courseObj) {
-            // TODO(mack): address consistency issue between using name/id
-            courseById[courseObj.id] = courseObj;
-          });
+          var courseById = data.courses;
 
           var termCollection = new term.TermCollection();
 
