@@ -38,8 +38,11 @@ def get_courses(course_names):
             'id': course['name'],
             'name': course['title'],
             'rating': round(course['ratings']['aggregate']['average']*10)/10,
-            'num_ratings': course['ratings']['aggregate']['count'],
+            'numRatings': course['ratings']['aggregate']['count'],
             'description': course['description'],
+            'availFall': bool(int(course['availFall'])),
+            'availSpring': bool(int(course['availSpring'])),
+            'availWinter': bool(int(course['availWinter'])),
             # TODO(mack): get actual number for this
             'num_friends_took': random.randrange(0, 20)
         }

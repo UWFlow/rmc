@@ -12,11 +12,16 @@
     border-color: #CCC;
   }
 
-  // TODO(david): Fix up CSS so visible section is enclosing more (reduce
-  //     padding of well as well).
-  .visible-section:hover {
-    cursor: pointer;
+  .visible-section {
+    color: #555;
+
+    // TODO(david): Fix up CSS so visible section is enclosing more (reduce
+    //     padding of well as well).
+    &:hover {
+      cursor: pointer;
+    }
   }
+
 
   $top: -12px;
   .course-id {
@@ -75,11 +80,14 @@
   }
 
   .description {
-    //float: left;
+  }
+
+  .terms-offered {
+
   }
 
   .reviewer {
-    margin-left: 200px;
+    margin-left: 40%;
   }
 
   .new-review {
@@ -90,13 +98,15 @@
     resize: none;
     width: 100%;
     height: 28px;
-    @include transition(all 0.2s ease-out);
-    &:focus {
+  }
+
+  .new-review-expanded {
+    .new-review-input {
       @include transition(all 0.2s ease-out);
       resize: vertical;
       height: 100px;
     }
-    &:focus+.new-review-buttons {
+    .new-review-buttons {
       display: block;
     }
   }

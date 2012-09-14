@@ -6,15 +6,24 @@
     <!-- TODO(mack): include functions to handle singular/plural -->
     <div class="rating-box">
       <div class="rating"><%- rating %></div>
-      <div class="num-ratings"><%- num_ratings %> ratings</div>
+      <div class="num-ratings"><%- numRatings %> ratings</div>
     </div>
     <div class="num-friends"><%- num_friends_took %> friends have taken this course</div>
     <!-- TODO(david): This is really dumb. Fix in a better way. -->
     <div style="clear: both; margin-bottom: -25px;"></div>
   </div>
+
   <div class="expand-section hide">
     <div class="row-fluid">
-      <div class="span7"><%- description %></div>
+      <div class="span7">
+        <div class="description"><%- description %></div>
+        <!-- TODO(david): Put this in when we get data for this. -->
+        <!--<div class="terms-offered">-->
+          <!--<span class="label fall">F</span>-->
+          <!--<span class="label winter">W</span>-->
+          <!--<span class="label spring">S</span>-->
+        <!--</div>-->
+      </div>
       <div class="span5">
         <div class="review">
           omg omas omg omga sdflkajdsflk hthis course is so cool! omg omg omgogm

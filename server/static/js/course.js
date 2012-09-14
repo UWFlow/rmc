@@ -25,7 +25,7 @@ function(Backbone, $, _, _s) {
 
     render: function() {
       this.$el.html(
-        _.template($('#course-tpl').html(), this.courseModel.toJSON()))
+        _.template($('#course-tpl').html(), this.courseModel.toJSON()));
 
       return this;
     },
@@ -33,7 +33,7 @@ function(Backbone, $, _, _s) {
     events: {
       // TODO(david): Figure out a nicer interaction without requiring click
       'click .visible-section': 'toggleCourse',
-      'focus .new-review-input': 'onNewReviewInputFocus'
+      'focus .new-review-input': 'expandNewReview'
     },
 
     toggleCourse: function(evt) {
@@ -63,15 +63,15 @@ function(Backbone, $, _, _s) {
         .slideUp(300);
     },
 
-    onNewReviewInputFocus: function(evt) {
-
+    expandNewReview: function(evt) {
+      this.$('.new-review').addClass('new-review-expanded');
     }
 
   });
 
 
   var CourseCollection = Backbone.Collection.extend({
-    model: CourseModel,
+    model: CourseModel
   });
 
 
@@ -105,5 +105,5 @@ function(Backbone, $, _, _s) {
     CourseView: CourseView,
     CourseCollection: CourseCollection,
     CourseCollectionView: CourseCollectionView
-  }
+  };
 });
