@@ -32,7 +32,8 @@ function(Backbone, $, _, _s) {
 
     events: {
       // TODO(david): Figure out a nicer interaction without requiring click
-      'click .visible-section': 'toggleCourse'
+      'click .visible-section': 'toggleCourse',
+      'focus .new-review-input': 'onNewReviewInputFocus'
     },
 
     toggleCourse: function(evt) {
@@ -60,7 +61,12 @@ function(Backbone, $, _, _s) {
       this.$('.expand-section')
         .stop(/* clearQueue */ true)
         .slideUp(300);
+    },
+
+    onNewReviewInputFocus: function(evt) {
+
     }
+
   });
 
 

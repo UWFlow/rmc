@@ -1,16 +1,19 @@
 .course {
   @extend .well;
   margin-bottom: 10px;
+  @include box-shadow(0 0 0 rgba(0, 0, 0, 0.0));
 
-  // TODO(david): Figure out why transitions are so damn slow on this site
   &:hover {
     // TODO(david): More crap on hover
     @include box-shadow(0 0 10px rgba(0, 0, 0, 0.1));
     // TODO(david): Should not hardcode #F7F7F7
     @include background(linear-gradient(top, #FCFCFC, #F6F6F6));
+    @include transition(all 0.3s ease-out);
     border-color: #CCC;
   }
 
+  // TODO(david): Fix up CSS so visible section is enclosing more (reduce
+  //     padding of well as well).
   .visible-section:hover {
     cursor: pointer;
   }
@@ -65,8 +68,36 @@
   }
 
   .expand-section {
+    @extend .clearfix;
     margin-top: 20px;
     margin-bottom: 0;
     clear: both;
+  }
+
+  .description {
+    //float: left;
+  }
+
+  .reviewer {
+    margin-left: 200px;
+  }
+
+  .new-review {
+    margin-top: 20px;
+  }
+
+  .new-review-input {
+    resize: none;
+    width: 100%;
+    height: 28px;
+    @include transition(all 0.2s ease-out);
+    &:focus {
+      @include transition(all 0.2s ease-out);
+      resize: vertical;
+      height: 100px;
+    }
+    &:focus+.new-review-buttons {
+      display: block;
+    }
   }
 }
