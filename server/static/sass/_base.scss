@@ -43,6 +43,14 @@
   line-height: 28px;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Overrides
+
+// TODO(david): Do this in a better way
+.select2-search .select2-input  {
+  font-family: $baseFontFamily;
+}
+
 /****************************
  * Base page styles
  *************************/

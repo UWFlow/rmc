@@ -30,8 +30,10 @@ function(Backbone, $, _, _s, ratings, select2) {
     render: function() {
       this.$el.html(
         _.template($('#review-tpl').html(), this.model.toJSON()));
+
+      // TODO(david): Make this prettier and conform to our styles
+      // TODO(david): Allow adding a prof
       this.$('.professor-select').select2({
-        //'width': 'javascript'
       });
 
       return this;
