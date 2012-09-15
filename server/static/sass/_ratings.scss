@@ -13,12 +13,11 @@ $cell-height: 28px;
   text-align: right;
   @include force-height($cell-height);
   padding-right: 8px;
-  border-right: 1px solid rgba(0, 0, 0, 0.05);
+  border-right: 1px solid #FFF;
 }
 
 .row-fluid .rating-bar-span {
-  border-left: 1px solid #999;
-  @include box-shadow (-4px 0 5px -3px rgba(0, 0, 0, 0.1));
+  border-left: 1px solid #CCC;
   @include force-height($cell-height);
   margin-left: 0px;
 
@@ -34,7 +33,6 @@ $cell-height: 28px;
     }
   }
 }
-
 
 // TODO(david): Make it so only hovering over bar shows input
 &:hover .input-rating {
