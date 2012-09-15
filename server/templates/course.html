@@ -1,52 +1,52 @@
 <script type="text/html" id="course-tpl">
-  <!-- TODO(david) FIXME: Hotspot needs to be bigger -->
-  <div class="visible-section">
-    <div class="course-id"><%- id %></div>
-    <div class="course-name"><%- name %></div>
-    <!-- TODO(mack): include functions to handle singular/plural -->
-    <div class="rating-box badge">
-      <div class="rating"><%- rating %></div>
-      <div class="num-ratings"><%- numRatings %> ratings</div>
-    </div>
-    <div class="num-friends"><%- numFriendsTook %> friends have taken this course</div>
-    <!-- TODO(david): This is really dumb. Fix in a better way. -->
-    <div style="clear: both; margin-bottom: -25px;"></div>
+<!-- TODO(david) FIXME: Hotspot needs to be bigger -->
+<div class="visible-section">
+  <div class="course-id"><%- id %></div>
+  <div class="course-name"><%- name %></div>
+  <!-- TODO(mack): include functions to handle singular/plural -->
+  <div class="rating-box badge">
+    <div class="rating"><%- rating %></div>
+    <div class="num-ratings"><%- numRatings %> ratings</div>
   </div>
+  <div class="num-friends"><%- numFriendsTook %> friends have taken this course</div>
+  <!-- TODO(david): This is really dumb. Fix in a better way. -->
+  <div style="clear: both; margin-bottom: -25px;"></div>
+</div>
 
-  <div class="expand-section hide">
-    <div class="row-fluid">
-      <div class="span7">
-        <div class="description"><%- description %></div>
-        <!-- TODO(david): Put this in when we get data for this. -->
-        <!--<div class="terms-offered">-->
-          <!--<span class="label fall">F</span>-->
-          <!--<span class="label winter">W</span>-->
-          <!--<span class="label spring">S</span>-->
-        <!--</div>-->
+<div class="expand-section hide">
+  <div class="row-fluid">
+    <div class="span7">
+      <div class="description"><%- description %></div>
+      <!-- TODO(david): Put this in when we get data for this. -->
+      <!--<div class="terms-offered">-->
+        <!--<span class="label fall">F</span>-->
+        <!--<span class="label winter">W</span>-->
+        <!--<span class="label spring">S</span>-->
+      <!--</div>-->
+    </div>
+    <div class="span5">
+      <div class="ratings-placeholder"></div>
+      <div class="review">
+        omg omas omg omga sdflkajdsflk hthis course is so cool! omg omg omgogm
+        asdfkjaksdf ajksdflkafsdjklajfkadfjaksfjak f safd af  fa sdfaf af fs asd
+        fas dfas dfa sfas fasf asf ag weigio fiasjgigio jasdiog ioiofj
+        iawefiodsfoi afjsdof iowjf ojsdhohagioh giooiag aiof qnklacn ciwe io
+        asfgoiag ioasdgioj agoihgasoihgoineon odsf soahgiogioah gioa
       </div>
-      <div class="span5">
-        <div class="ratings-placeholder"></div>
-        <div class="review">
-          omg omas omg omga sdflkajdsflk hthis course is so cool! omg omg omgogm
-          asdfkjaksdf ajksdflkafsdjklajfkadfjaksfjak f safd af  fa sdfaf af fs asd
-          fas dfas dfa sfas fasf asf ag weigio fiasjgigio jasdiog ioiofj
-          iawefiodsfoi afjsdof iowjf ojsdhohagioh giooiag aiof qnklacn ciwe io
-          asfgoiag ioasdgioj agoihgasoihgoineon odsf soahgiogioah gioa
-        </div>
-        <div class="reviewer">
-          &mdash;Mack Duan
-        </div>
-        <div class="new-review">
-          <textarea rows="1" class="new-review-input"
-            placeholder="Write a review..."
-          ></textarea>
-          <div class="new-review-buttons hide">
-            <button type="button" class="btn btn-primary">
-              <i class="icon-ok"></i> Submit!
-            </button>
-          </div>
+      <div class="reviewer">
+        &mdash;Mack Duan
+      </div>
+      <div class="new-review">
+        <textarea rows="1" class="new-review-input"
+          placeholder="Write a review..."
+        ></textarea>
+        <div class="new-review-buttons hide">
+          <button type="button" class="btn btn-primary">
+            <i class="icon-ok"></i> Submit!
+          </button>
         </div>
       </div>
     </div>
   </div>
+</div>
 </script>
