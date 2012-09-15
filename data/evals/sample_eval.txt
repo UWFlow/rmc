@@ -1,0 +1,25 @@
+
+    % responses  
+Characteristics of Instructor    #  Range    A   B   C   D   E  Range    @
+1 Rate your professor's presentation of lectures in terms of organization and clarity.  15  Well organized  80  20  0   0   0   Disorganized    95
+2 How would you rate the professor's response to questions? 15  Clear   33  60  7   0   0   Vague   82
+3 Rate your professor's oral presentation in terms of audibility, articulation, and your ability to understand his/her English. 15  Excellent   53  40  7   0   0   Unacceptable    87
+4 Rate your professor's visual presentation. Consider organization, legibility and effective use of materials (blackboard, electronic media, etc.). 15  Excellent   80  13  7   0   0   Unacceptable    93
+5 Describe the availability and approachability of your professor outside of class compared to other courses you've taken at university. (Do not answer if you did not seek help).  14  Volunteering assistance with pleasure   57  29  14  0   0   Discouraging out-of-class contact   86
+6* At what level were the professor's explanations usually directed, in relation to your general level of understanding?    15  Far too high    20  33  47  0   0   Far too low 68
+7 Were students encouraged by the professor to think and reason logically and objectively on their own, about the subject matter?   15  A great deal    47  47  7   0   0   Not at all  85
+8 What was your impression of your professor's attitude towards teaching the course?    15  Obviously enthusiastic & responsible    73  27  0   0   0   Views teaching as an imposition 93
+9 Describe your professor-class relationship.   15  Friendly & open 87  7   7   0   0   Mutual Dislike  95
+10 What is your overall appraisal of the quality of teaching in this course?    15  Very high   60  40  0   0   0   Very low    90
+Characteristics of Course    #  Range    A   B   C   D   E  Range    @
+11* Rate the dificulty of the concepts covered by this course.  15  Very easy   7   7   27  53  7   Very difficult  60
+12* Rate the workload required to complete this course. 15  Very little 7   13  27  47  6   Very heavy  60
+13 How useful was the textbook (or reading materials) for understanding the concepts?   11  Very useful 0   36  45  18  0   Totally useless 55
+14 To what extent did the assignments contribute to your better understanding of the concepts?  15  Helped very much    47  27  13  13  0   Totally useless 77
+15 How well did the tests reflect the course material?  5   Very closely    20  40  20  20  0   Not at all  65
+16 How valuable do you feel tutorials are (or would be) in the instruction of this course?  10  Very valuable   10  40  40  10  0   Not valuable at all 63
+17 What is your overall appraisal of this course?   15  Excellent   47  40  7   7   0   Poor    82
+18 How many classes did you attend? 15  All classes attended    87  13  0   0   0   No classes attended 97
+*denotes answer where "C" is the best rating
+# Number of replies to this question
+@ Weighted Average for all responses    Total replies: 15   Class Size: 18
