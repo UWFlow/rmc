@@ -4,9 +4,10 @@ function(Backbone, $, _, _s) {
 
   var FriendModel = Backbone.Model.extend({
     defaults: {
-      'id': 1647810326,
-      'name': 'Mack Duan',
-      'courses_took': ['CS137', 'SE145', 'ECE222']
+      id: 1647810326,
+      name: 'Mack Duan',
+      lastTermName: 'Fall 2012',
+      coursesTook: []
     }
   });
 
@@ -23,6 +24,50 @@ function(Backbone, $, _, _s) {
 
       return this;
     },
+
+    events: {
+      'mouseenter .friend-pic': 'showHovercard',
+      'mouseleave .friend-pic': 'hideHovercard',
+      'mouseenter .friend-name': 'showHovercard',
+      'mouseleave .friend-name': 'hideHovercard'
+    },
+
+    showHovercard: function(evt) {
+      var $target = $(evt.currentTarget);
+      this.hovercardView = new FriendHovercardView({
+        friendModel: this.friendModel
+      });
+      var $hovercard = this.hovercardView.render().$el;
+      $target.append($hovercard);
+      $hovercard.css({
+        left: $target.outerWidth() + 10 - window.parseInt($hovercard.css('padding-left'), 10),
+        // TODO(mack): remove hardcode of -30 which must be kept in sync with
+        // arrow offset in css; might require adding div for arrow to html to
+        // remove hardcode since cannot access css of pseudoclass from jQuery
+        top: $target.outerHeight()/2 - 30 - window.parseInt($hovercard.css('padding-top'), 10)
+      });
+    },
+
+    hideHovercard: function(evt) {
+      this.hovercardView.remove();
+      this.hovercardView.unbind();
+    }
+  });
+
+
+  var FriendHovercardView = Backbone.View.extend({
+    className: 'friend-hovercard',
+
+    initialize: function(options) {
+      this.friendModel = options.friendModel;
+    },
+
+    render: function() {
+      this.$el.html(
+        _.template($('#friend-hovercard-tpl').html(), this.friendModel.toJSON()));
+
+      return this;
+    }
   });
 
 
@@ -65,7 +110,7 @@ function(Backbone, $, _, _s) {
 
     render: function() {
       this.$el.html(_.template($('#friend-sidebar-tpl').html(), {
-        num_friends: this.friendCollection.length
+        numFriends: this.friendCollection.length
       }));
       var collectionView = new FriendCollectionView({
         friendCollection: this.friendCollection
@@ -77,9 +122,11 @@ function(Backbone, $, _, _s) {
     }
   });
 
+
   return {
     FriendModel: FriendModel,
     FriendView: FriendView,
+    FriendHovercardView: FriendHovercardView,
     FriendCollection: FriendCollection,
     FriendCollectionView: FriendCollectionView,
     FriendSidebarView: FriendSidebarView

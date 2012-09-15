@@ -6,22 +6,59 @@ function($, _, _s, transcript, term, course, friend, util) {
 
     // Render friend sidebar
 
-    var friendCollection = new friend.FriendCollection();
     // TODO(mack): remove stub data
-    var friendsData = [
-      { id: 541400376, name: 'David Hu', courses_took: ['CS137', 'SCI238', 'CS241', 'MATH117'] },
-      { id: 164710326, name: 'Mack Duan', courses_took: ['CS241', 'MATH137'] },
-      { id: 518430508, name: 'Sandy Wu', courses_took: ['CS370'] },
-    ]
-    for (var i = 0; i < 3; ++i) {
-      var friendModel = new friend.FriendModel(friendsData[i]);
-      friendCollection.add(friendModel);
-    }
-    var friendSidebarView = new friend.FriendSidebarView({
-      friendCollection: friendCollection
-    });
-    $('#friend-sidebar-container').html(friendSidebarView.render().el);
+    courseIds = ['CS137', 'SCI238', 'CS241', 'MATH117', 'CS241', 'MATH137', 'CS370'];
+    $.getJSON(
+      '/api/courses/' + courseIds.join(','),
+      function(data) {
+        var courseModelById = {};
+        _.each(data.courses, function(courseObj) {
+          courseModelById[courseObj.id] = new course.CourseModel(courseObj);
+        });
+        var friendCollection = new friend.FriendCollection();
+        // TODO(mack): remove stub data
+        var friendsData = [
+          {
+            id: 541400376,
+            name: 'David Hu',
+            lastTermName: 'Spring 2012',
+            coursesTook: [
+              courseModelById['CS137'],
+              courseModelById['SCI238'],
+              courseModelById['CS241'],
+              courseModelById['MATH117']
+            ]
+          },
+          {
+            id: 164710326,
+            name: 'Mack Duan',
+            lastTermName: 'Fall 2012',
+            coursesTook: [
+              courseModelById['CS241'],
+              courseModelById['MATH137']
+            ]
+          },
+          {
+            id: 518430508,
+            lastTermName: 'Fall 2012',
+            name: 'Sandy Wu',
+            coursesTook: [
+              courseModelById['CS370']
+            ]
+          },
+        ]
+        for (var i = 0; i < 3; ++i) {
+          var friendModel = new friend.FriendModel(friendsData[i]);
+          friendCollection.add(friendModel);
+        }
+        var friendSidebarView = new friend.FriendSidebarView({
+          friendCollection: friendCollection
+        });
+        $('#friend-sidebar-container').html(friendSidebarView.render().el);
 
+
+      }
+    );
 
     var $transcript = $('#transcript-text');
 
