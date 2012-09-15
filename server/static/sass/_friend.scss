@@ -50,6 +50,10 @@
   $inner-width: 300px;
   $outer-padding: 15px;
 
+  // Some overrides because this element can appear inside of an anchor
+  cursor: default;
+  color: $textColor;
+
   width: $inner-width + 2*$outer-padding;
   padding: $outer-padding;
   background: transparent;

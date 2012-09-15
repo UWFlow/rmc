@@ -12,6 +12,7 @@ $altFontFamily:         $serifFontFamily !default;
 $headingsFontFamily:    inherit !default; // empty to use BS default, $baseFontFamily
 $headingsFontWeight:    bold !default;    // instead of browser default, bold
 $headingsColor:         inherit !default; // empty to use BS default, $textColor
+$textColor:             #555;
 
 $font_path: "/static/font/fontawesome-webfont";
 
