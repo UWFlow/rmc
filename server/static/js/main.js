@@ -23,13 +23,16 @@ require.config({
     }
   },
 
+  baseUrl: '/static/js/',
+
   // TODO((mack): use local copy rather than CDN
   paths: {
-    'ext/backbone': 'http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.2/backbone-min',
-    'ext/jquery': 'http://cdnjs.cloudflare.com/ajax/libs/jquery/1.8.0/jquery.min',
+    'ext/backbone': 'ext/backbone-0.9.2',
+    'ext/jquery': 'ext/jquery-1.8.1',
+    // TODO(mack): host locally
     'ext/jqueryui': 'http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min',
-    'ext/underscore': 'http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min',
-    'ext/underscore.string': 'http://cdnjs.cloudflare.com/ajax/libs/underscore.string/2.0.0/underscore.string.min',
+    'ext/underscore': 'ext/underscore-1.3.3',
+    'ext/underscore.string': 'ext/underscore.string-2.0.0'
   }
 });
 
