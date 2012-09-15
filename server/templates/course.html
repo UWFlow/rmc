@@ -1,4 +1,6 @@
-<script type="text/html" id="course-tpl">
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('course-tpl') %}
 <!-- TODO(david) FIXME: Hotspot needs to be bigger -->
 <div class="visible-section">
   <div class="course-id"><%- id %></div>
@@ -50,3 +52,4 @@
   </div>
 </div>
 </script>
+{% endcall %}

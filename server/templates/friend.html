@@ -1,37 +1,39 @@
-<script type="text/html" id="friend-sidebar-tpl">
-  <div class="num-friends"><%- numFriends %> Friends</div>
-  <div class="friend-collection-placeholder"></div>
-  <button class="invite-friends-btn btn btn-primary">
-    <i class="icon-plus"></i> Invite More Friends
-  </button>
-</script>
+{% import 'macros.html' as macros %}
 
-<script type="text/html" id="friend-tpl">
-  <% var profileUrl = '/profile/' + id; %>
-  <a class="friend-pic" href=<%- profileUrl %>>
-    <img src="<%- fbProfilePicUrl(id) %>">
+{% call macros.us_template('friend-sidebar-tpl') %}
+<div class="num-friends"><%- numFriends %> Friends</div>
+<div class="friend-collection-placeholder"></div>
+<button class="invite-friends-btn btn btn-primary">
+  <i class="icon-plus"></i> Invite More Friends
+</button>
+{% endcall %}
+
+{% call macros.us_template('friend-tpl') %}
+<% var profileUrl = '/profile/' + id; %>
+<a class="friend-pic" href=<%- profileUrl %>>
+  <img src="<%- fbProfilePicUrl(id) %>">
+</a>
+<div class="friend-info">
+  <a class="friend-name" href=<%- profileUrl %>>
+    <%- name %>
   </a>
-  <div class="friend-info">
-    <a class="friend-name" href=<%- profileUrl %>>
-      <%- name %>
-    </a>
-    <div class="mutual-courses"><%- coursesTook.length %> mutual courses</div>
-  </div>
-</script>
+  <div class="mutual-courses"><%- coursesTook.length %> mutual courses</div>
+</div>
+{% endcall %}
 
-<script type="text/html" id="friend-hovercard-tpl">
-  <div class="friend-hovercard-inner">
-    <div class="term-name"><%- lastTermName %></div>
-    <!-- TODO(mack): move course-mini into own backbone view -->
-    <ul class="mini-courses">
-    <% _.each(coursesTook, function(course) { %>
-      <% course = course.toJSON(); %>
-      <li class="mini-course">
-        <span class="course-id"><%- course.id %></span>
-        -
-        <span class="course-title"><%- course.name %></span>
-      </li>
-    <% }); %>
-    <a href=<%- '/profile/' + id %>>Show Profile</a>
-  </div>
-</script>
+{% call macros.us_template('friend-hovercard-tpl') %}
+<div class="friend-hovercard-inner">
+  <div class="term-name"><%- lastTermName %></div>
+  <!-- TODO(mack): move course-mini into own backbone view -->
+  <ul class="mini-courses">
+  <% _.each(coursesTook, function(course) { %>
+    <% course = course.toJSON(); %>
+    <li class="mini-course">
+      <span class="course-id"><%- course.id %></span>
+      -
+      <span class="course-title"><%- course.name %></span>
+    </li>
+  <% }); %>
+  <a href=<%- '/profile/' + id %>>Show Profile</a>
+</div>
+{% endcall %}

@@ -1,0 +1,5 @@
+{% macro us_template(id) -%}
+<script type="text/html" id="{{ id }}">
+  {{ caller() }}
+</script>
+{%- endmacro %}

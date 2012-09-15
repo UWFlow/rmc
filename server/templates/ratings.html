@@ -1,4 +1,6 @@
-<script type="text/html" id="ratings-tpl">
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('ratings-tpl') %}
 <div class="review-ratings">
   <% ratings.each(function(rating) { %>
     <div class="row-fluid">
@@ -37,4 +39,4 @@
     </div>
     <% }); %>
 </div>
-</script>
+{% endcall %}

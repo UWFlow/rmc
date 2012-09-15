@@ -1,4 +1,6 @@
-<script type="text/html" id="term-tpl">
-  <div class="term-name"><%- name %></div>
-  <div class="course-collection-placeholder"></div>
-</script>
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('term-tpl') %}
+<div class="term-name"><%- name %></div>
+<div class="course-collection-placeholder"></div>
+{% endcall %}
