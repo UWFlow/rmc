@@ -17,7 +17,7 @@ function(Backbone, $, _, _s) {
   });
 
   var CourseView = Backbone.View.extend({
-    className: 'course',
+    className: 'course well',
 
     initialize: function(options) {
       this.courseModel = options.courseModel;

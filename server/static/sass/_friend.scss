@@ -1,9 +1,6 @@
-@import 'base';
-
 #friend-sidebar-container {
 
   @extend .clearfix;
-  @extend .well;
   float: left;
 
   .friend-sidebar {
@@ -45,8 +42,6 @@
     .invite-friends-btn {
       display: inline-block;
       @include border-radius(3px);
-      @extend .btn;
-      @extend .btn-primary;
     }
   }
 }
