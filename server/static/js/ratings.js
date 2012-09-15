@@ -68,7 +68,7 @@ function(Backbone, $, _, _s) {
 
       // Clear all other stars
       var self = this;
-      $target.parents('.review-ratings')
+      $target.parents('.ratings')
         .find('.row-fluid').not($rowElem).each(function(i, elem) {
           self.resetRating(elem);
         });

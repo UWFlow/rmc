@@ -1,7 +1,7 @@
 $bar-height: 16px;
 $cell-height: 28px;
 
-.review-ratings {
+.ratings {
 
 @mixin force-height($height) {
   height: $height;
