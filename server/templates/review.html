@@ -1,0 +1,20 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('review-tpl') %}
+<div class="row-fluid user-review">
+  <div class="span12">
+    <div class="select2-inline">
+      You took this course in
+      <span class="term"><%- term %></span>
+      with professor
+      <select data-placeholder="eg. Larry Smith" class="professor-select">
+        <option></option>
+        <option>Larry Smith</option>
+        <option>Charlie Clarke</option>
+        <option>Mark Smucker</option>
+        <option>Eddie Dupont</option>
+      </select>
+    </div>
+  </div>
+</div>
+{% endcall %}

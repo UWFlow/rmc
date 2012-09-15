@@ -1,7 +1,7 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings'],
-function(Backbone, $, _, _s, ratings) {
+'ratings', 'review'],
+function(Backbone, $, _, _s, ratings, review) {
 
   var CourseModel = Backbone.Model.extend({
     defaults: {
@@ -38,6 +38,11 @@ function(Backbone, $, _, _s, ratings) {
       this.ratingsView = new ratings.RatingsView({
         collection: this.courseModel.get('ratings')
       });
+      // TODO(david): Get user review data, and don't show or show altered if no
+      //     user or user didn't take course.
+      this.userReviewView = new review.UserReviewView({
+        model: new review.UserReviewModel()
+      });
     },
 
     render: function() {
@@ -45,6 +50,8 @@ function(Backbone, $, _, _s, ratings) {
         _.template($('#course-tpl').html(), this.courseModel.toJSON()));
 
       this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
+      this.$('.review-placeholder').replaceWith(
+        this.userReviewView.render().el);
 
       return this;
     },

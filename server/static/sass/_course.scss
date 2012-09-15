@@ -1,4 +1,5 @@
 @import 'ratings';
+@import 'review';
 
 .course.well {
   margin-bottom: 10px;
@@ -90,5 +91,9 @@
   // TODO(david): Use speech bubble for these pull quotes.
   .course-tip {
     margin-right: 2%;
+  }
+
+  .user-review-box {
+    margin-bottom: 0;
   }
 }

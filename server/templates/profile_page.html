@@ -23,11 +23,13 @@
 {% block footer %}
 {% endblock %}
 
+{# TODO(david): Have underscore templates specify their deps. #}
 {% block templates %}
   {% include 'friend.html' %}
   {% include 'course.html' %}
   {% include 'term.html' %}
   {% include 'ratings.html' %}
+  {% include 'review.html' %}
 {% endblock %}
 
 {% block scripts %}
