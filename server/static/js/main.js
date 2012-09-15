@@ -12,6 +12,9 @@ require.config({
     'ext/jqueryui': {
       deps: ['ext/jquery']
     },
+    'ext/bootstrap': {
+      deps: ['ext/jquery']
+    },
     'ext/underscore': {
       exports: '_'
     },
@@ -29,6 +32,7 @@ require.config({
   paths: {
     'ext/backbone': 'ext/backbone-0.9.2',
     'ext/jquery': 'ext/jquery-1.8.1',
+    'ext/bootstrap': 'ext/bootstrap-2.1.1',
     // TODO(mack): host locally
     'ext/jqueryui': 'http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min',
     'ext/underscore': 'ext/underscore-1.3.3',
