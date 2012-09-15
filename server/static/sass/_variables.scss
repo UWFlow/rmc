@@ -2,18 +2,18 @@
 // Bootstrap overrides
 
 $sansFontFamily:        "Source Sans Pro", "Helvetica Neue", Helvetica, Arial, sans-serif;
-$serifFontFamily:       Georgia, "Times New Roman", Times, serif !default;
+$serifFontFamily:       Georgia, "Times New Roman", Times, serif;
 
 $baseFontSize:          16px;
-$baseFontFamily:        $sansFontFamily !default;
-$baseLineHeight:        18px !default;
-$altFontFamily:         $serifFontFamily !default;
+$baseFontFamily:        $sansFontFamily;
+$baseLineHeight:        18px;
+$altFontFamily:         $serifFontFamily;
 
-$headingsFontFamily:    inherit !default; // empty to use BS default, $baseFontFamily
-$headingsFontWeight:    bold !default;    // instead of browser default, bold
-$headingsColor:         inherit !default; // empty to use BS default, $textColor
+$headingsFontFamily:    inherit; // empty to use BS default, $baseFontFamily
+$headingsFontWeight:    bold;    // instead of browser default, bold
+$headingsColor:         inherit; // empty to use BS default, $textColor
 $textColor:             #555;
 
-$font_path: "/static/font/fontawesome-webfont";
+$fontAwesomePath: "/static/font/fontawesome-webfont";
 
 // TODO(david) FIXME: Need color scheme!!!!!!!!!!
