@@ -1,3 +1,5 @@
+@import 'ratings';
+
 .course.well {
   margin-bottom: 10px;
   @include box-shadow(0 0 0 rgba(0, 0, 0, 0.0));
@@ -43,6 +45,7 @@
     position: relative;
     float: right;
     top: $top;
+    text-align: center;
     line-height: $rating-size + $num-size;
     .rating {
       font-size: $rating-size;
@@ -52,7 +55,6 @@
       font-size: $num-size;
       line-height: $num-size - 3px;
       top: -3px;
-      text-align: center;
       font-weight: normal;
       position: relative;
     }

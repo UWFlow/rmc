@@ -49,7 +49,7 @@ def get_courses(course_names):
             'availSpring': bool(int(course['availSpring'])),
             'availWinter': bool(int(course['availWinter'])),
             # TODO(mack): get actual number for this
-            'num_friends_took': random.randrange(0, 20)
+            'numFriendsTook': random.randrange(0, 20),
         }
     # TODO(mack): do this more cleanly
     courses_list = map(clean_courses, courses_list)

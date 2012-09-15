@@ -1,18 +1,32 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string'],
-function(Backbone, $, _, _s) {
+['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+'ratings'],
+function(Backbone, $, _, _s, ratings) {
 
   var CourseModel = Backbone.Model.extend({
     defaults: {
-      'id': 'SCI 238',
-      'name': 'Introduction to Astronomy omg omg omg',
-      'rating': 2.5,
-      'num_ratings': 49,
-      'num_friends_took': 2,
-      'description': 'This couse will introduce you to the wonderful world' +
+      id: 'SCI 238',
+      name: 'Introduction to Astronomy omg omg omg',
+      rating: 2.5,
+      numRatings: 49,
+      numFriendsTook: 2,
+      description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
         ' everything in between. Become enthralled in the wonderful' +
-        ' world of astronomy.'
+        ' world of astronomy.',
+      ratings: [{
+        name: 'interest',
+        count: 10,
+        total: 7
+      }, {
+        name: 'easiness',
+        count: 7,
+        total: 2
+      }]
+    },
+
+    initialize: function(attributes) {
+      this.set('ratings', new ratings.RatingCollection(attributes.ratings));
     }
   });
 
@@ -21,11 +35,16 @@ function(Backbone, $, _, _s) {
 
     initialize: function(options) {
       this.courseModel = options.courseModel;
+      this.ratingsView = new ratings.RatingsView({
+        collection: this.courseModel.get('ratings')
+      });
     },
 
     render: function() {
       this.$el.html(
         _.template($('#course-tpl').html(), this.courseModel.toJSON()));
+
+      this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
 
       return this;
     },
@@ -55,6 +74,11 @@ function(Backbone, $, _, _s) {
           queue: false
         })
         .slideDown(duration);
+
+      this.ratingsView.removeBars();
+      window.setTimeout(_.bind(function() {
+        this.ratingsView.render();
+      }, this), duration / 4);
     },
 
     collapseCourse: function(evt) {

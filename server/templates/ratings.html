@@ -1,0 +1,40 @@
+<script type="text/html" id="ratings-tpl">
+<div class="review-ratings">
+  <% ratings.each(function(rating) { %>
+    <div class="row-fluid">
+      <div class="rating-name span3">
+        <%- rating.get('name') %>
+      </div>
+      <div class="rating-bar-span span8">
+        <div class="shown-rating">
+          <div class="rating-progress progress <%- rating.getClass() %>">
+            <div class="rating-bar bar active" style="width: 0%;"></div>
+          </div>
+        </div>
+
+        <div class="input-rating hide">
+          <div class="rating-progress progress <%- rating.getClass() %>">
+            <div class="rating-bar active"></div>
+          </div>
+          <div class="rating-progress progress <%- rating.getClass() %>">
+            <div class="rating-bar active"></div>
+          </div>
+          <div class="rating-progress progress <%- rating.getClass() %>">
+            <div class="rating-bar active"></div>
+          </div>
+          <div class="rating-progress progress <%- rating.getClass() %>">
+            <div class="rating-bar active"></div>
+          </div>
+          <div class="rating-progress progress <%- rating.getClass() %>">
+            <div class="rating-bar active"></div>
+          </div>
+        </div>
+
+      </div>
+      <div class="rating-num-span span1">
+        <%- rating.getDisplayRating() %>
+      </div>
+    </div>
+    <% }); %>
+</div>
+</script>

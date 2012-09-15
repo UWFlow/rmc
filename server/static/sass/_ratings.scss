@@ -1,0 +1,78 @@
+$bar-height: 16px;
+$cell-height: 28px;
+
+.review-ratings {
+
+@mixin force-height($height) {
+  height: $height;
+  line-height: $height;
+  min-height: $height;
+}
+
+.row-fluid .rating-name {
+  text-align: right;
+  @include force-height($cell-height);
+  padding-right: 8px;
+  border-right: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.row-fluid .rating-bar-span {
+  border-left: 1px solid #999;
+  @include box-shadow (-4px 0 5px -3px rgba(0, 0, 0, 0.1));
+  @include force-height($cell-height);
+  margin-left: 0px;
+
+  .rating-progress.progress {
+    @include border-radius(0 4px 4px 0);
+    @include background-image(linear-gradient(top, #e2e2e2, #f3f3f3));
+    @include force-height($bar-height);
+    margin-top: $cell-height / 2 - $bar-height / 2;
+
+    .rating-bar.bar {
+      @include border-radius(0 4px 4px 0);
+      @include force-height($bar-height);
+    }
+  }
+}
+
+
+// TODO(david): Make it so only hovering over bar shows input
+&:hover .input-rating {
+  display: block;
+}
+
+&:hover .shown-rating {
+  display: none;
+}
+
+// TODO(david): Needs refactoring to be closer to other declarations
+// TODO(david): needs to be made the same length as normal bar
+.row-fluid .input-rating {
+  .rating-progress.progress {
+    display: inline-block;
+    width: 18%;
+    -webkit-border-radius: none !important;
+    @include border-radius(0);
+    // TODO(david): Transitions on mouse-over
+    .rating-bar.bar {
+      width: 100%;
+      @include transition(none);
+      @include transition(opacity 0.3s ease-out);
+      @include border-radius(0);
+    }
+  }
+  .rating-progress:last-child {
+    @include border-radius(0 4px 4px 0);
+    .rating-bar.bar {
+      @include border-radius(0 4px 4px 0);
+    }
+  }
+}
+
+.row-fluid .rating-num-span {
+  @include force-height($cell-height);
+  color: #555;
+  font-weight: lighter;
+}
+
+}
