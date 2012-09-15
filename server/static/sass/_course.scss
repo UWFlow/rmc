@@ -21,7 +21,6 @@
     }
   }
 
-
   $top: -12px;
   .course-id {
     font-size: 50px;
@@ -81,36 +80,15 @@
   }
 
   .terms-offered {
-
-  }
-
-  .reviewer {
-    margin-left: 40%;
-  }
-
-  .new-review {
-    margin-top: 20px;
-  }
-
-  .new-review-input {
-    resize: none;
-    width: 100%;
-    height: 28px;
-  }
-
-  .new-review-expanded {
-    .new-review-input {
-      @include transition(all 0.2s ease-out);
-      resize: vertical;
-      height: 100px;
-    }
-    .new-review-buttons {
-      display: block;
-    }
   }
 
   .ratings {
     margin-top: 10px;
     margin-bottom: 20px;
+  }
+
+  // TODO(david): Use speech bubble for these pull quotes.
+  .course-tip {
+    margin-right: 2%;
   }
 }

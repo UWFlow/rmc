@@ -73,6 +73,7 @@ $cell-height: 28px;
   @include force-height($cell-height);
   color: #555;
   font-weight: lighter;
+  text-align: right;
 }
 
 }
