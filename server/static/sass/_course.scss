@@ -11,7 +11,7 @@
     // TODO(david): Should not hardcode #F7F7F7
     @include background(linear-gradient(top, #FCFCFC, #F6F6F6));
     @include transition(all 0.3s ease-out);
-    border-color: #CCC;
+    border-color: darken($wellBorderColor, 10%);
   }
 
   .visible-section {

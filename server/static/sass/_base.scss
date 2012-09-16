@@ -73,13 +73,17 @@
 
 body {
   // TODO(mack): setup image dir to auto-use
-  //@include background(url(/static/img/background.png));
+  @include background(url(/static/img/pinstripe.png));
+
+  // Background we tried... last one is the one we're using
   //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/grey.png));
   //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/lightpaperfibers.png));
   //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/lil_fiber.png));
   //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/light_wool.png));
   //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/square_bg.png), url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/gridme.png));
-  @include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/square_bg.png));
+  //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/square_bg.png));
+  //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/struckaxiom.png));
+  //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/pinstripe.png));
 }
 
 // TODO(mack): move landing page stuff into separate file
