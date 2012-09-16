@@ -1,6 +1,12 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('term-tpl') %}
-<div class="term-name"><%- name %></div>
+<div class="term-name well"><%- name %>
+  <% if(expand) { %>
+    <i class="arrow icon-chevron-up"></i>
+  <% } else { %>
+    <i class="arrow icon-chevron-down"></i>
+  <% } %>
+</div>
 <div class="course-collection-placeholder"></div>
 {% endcall %}

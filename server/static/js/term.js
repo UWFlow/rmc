@@ -17,17 +17,23 @@ function(Backbone, _, course) {
 
     initialize: function(options) {
       this.termModel = options.termModel;
+      this.expand = options.expand;
     },
 
     render: function(options) {
+      var attributes = this.termModel.toJSON();
+      attributes.expand = this.expand;
       this.$el.html(
-        _.template($('#term-tpl').html(), this.termModel.toJSON()));
+        _.template($('#term-tpl').html(), attributes));
       this.courseCollectionView = new course.CourseCollectionView({
         courseCollection: this.termModel.get('courseCollection')
       });
       this.$el.find('.course-collection-placeholder').replaceWith(
         this.courseCollectionView.render().el);
-      this.$('.course-collection').addClass('hide-initial');
+
+      if (!this.expand) {
+        this.$('.course-collection').addClass('hide-initial');
+      }
 
       return this;
     },
@@ -54,13 +60,21 @@ function(Backbone, _, course) {
           duration: duration,
           queue: false
         })
-        .slideDown(duration);
+        .slideDown(duration, _.bind(function() {
+          this.$('.term-name .arrow')
+            .removeClass('icon-chevron-down')
+            .addClass('icon-chevron-up');
+        }, this));
     },
 
     collapseTerm: function(evt) {
       this.$('.course-collection')
         .stop(/* clearQueue */ true)
-        .slideUp(300);
+        .slideUp(300, _.bind(function() {
+          this.$('.term-name .arrow')
+            .removeClass('icon-chevron-up')
+            .addClass('icon-chevron-down');
+        }, this));
     }
 
   });
@@ -83,17 +97,15 @@ function(Backbone, _, course) {
     render: function() {
       this.$el.empty();
       this.termCollection.each(function(termModel, idx) {
+        var expand = idx < 3;
         var termView = new TermView({
           tagName: 'li',
-          termModel: termModel
+          termModel: termModel,
+          expand: expand
         });
         this.$el.append(termView.render().el);
         this.termViews.push(termView);
       }, this);
-
-      if (this.termViews) {
-        this.termViews[0].toggleTermVisibility();
-      }
 
       return this;
     }
