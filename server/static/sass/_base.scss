@@ -95,9 +95,11 @@ body {
 }
 
 footer {
-  @include background(url(/static/img/footer_background_2000.jpg) center center no-repeat);
+  //@include background(url(/static/img/footer_background_2000.jpg) center center no-repeat);
+  @include background(url(/static/img/footer_background_large.png) center center no-repeat);
+  background-size: 1800px;
   // TODO(david): Figure out background-size: cover instead of height
-  height: 545px;
+  height: 495px;
   margin-top: 50px;
   #landing-footer-text {
     padding-top: 30px;
