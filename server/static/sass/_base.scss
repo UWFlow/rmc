@@ -39,7 +39,7 @@
   @include background(linear-gradient(top, #FCFCFC, #F9F9F9));
   // TODO(david): these colors should be darkened as much as the main text color
   //     was darkened (from http://opalang.org/)
-  border-color: #DDDDDD #EAEAEA #DDDDDD #EAEAEA;
+  border-color: $wellBorderColor;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -53,6 +53,10 @@
 // TODO(david): Do this in a better way
 .select2-search .select2-input  {
   font-family: $baseFontFamily;
+}
+
+.navbar-search .search-query {
+  line-height: 17px;
 }
 
 /****************************
@@ -69,7 +73,13 @@
 
 body {
   // TODO(mack): setup image dir to auto-use
-  @include background(url(/static/img/background.png));
+  //@include background(url(/static/img/background.png));
+  //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/grey.png));
+  //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/lightpaperfibers.png));
+  //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/lil_fiber.png));
+  //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/light_wool.png));
+  //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/square_bg.png), url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/gridme.png));
+  @include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/square_bg.png));
 }
 
 // TODO(mack): move landing page stuff into separate file
