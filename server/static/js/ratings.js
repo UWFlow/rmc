@@ -52,9 +52,9 @@ function(Backbone, $, _, _s, util) {
 
   var RatingsView = Backbone.View.extend({
 
-    // TODO(david): Need watch more events to reset
     events: {
       'mouseenter .rating-progress': 'onRatingHover',
+      'mouseleave .input-rating': 'setUserRatings',
       'click .rating-progress': 'onRatingClick'
     },
 
