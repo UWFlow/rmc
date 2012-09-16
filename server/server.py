@@ -1,6 +1,7 @@
 import flask
 import pymongo
 import re
+import functools
 
 import rmc.shared.constants as c
 
@@ -57,8 +58,18 @@ def get_courses(course_names):
       {'_id': 0}
     ))
 
+# XXX(Sandy): Use the filters instead of find() all
+    '''
+    critiques = list(db.course_evals.find(
+      {'course': { '$in': course_names }},
+      {'_id': 0}
+    ))
+    '''
+    critiques = [dict(x) for x in db.course_evals.find()]
+
+    clean_course_func = get_clean_course_func(critiques)
     # TODO(mack): do this more cleanly
-    courses_list = map(clean_course, courses_list)
+    courses_list = map(clean_course_func, courses_list)
     courses = {}
     for course in courses_list:
         courses[course['id']] = course
@@ -104,8 +115,10 @@ def search_courses():
         filters.append({'$or': keywords_filters})
     if len(filters) > 0:
         unsorted_courses = db.courses.find({'$and': filters})
+        critiques = db.course_evals.find({'$and': filters})
     else:
         unsorted_courses = db.courses.find()
+        critiques = db.course_evals.find()
 
     sort_options = COURSES_SORT_MODES_BY_VALUE[sort_mode]
     sorted_courses = unsorted_courses.sort(
@@ -113,19 +126,35 @@ def search_courses():
         direction=direction,
     )
     limited_courses = sorted_courses.skip(offset).limit(count)
-    courses = map(clean_course, limited_courses)
+
+    clean_course_func = get_clean_course_func(critiques)
+    courses = map(clean_course_func, limited_courses)
     print 'clean_course', courses
     return flask.jsonify(courses=courses)
 
 
 # Helper functions
 
-def clean_course(course):
+def clean_course(course, critiques):
     NORMALIZE_FACTOR = 5
     interest_count = course['ratings']['interest']['count']
     interest_total = float(course['ratings']['interest']['total']) / NORMALIZE_FACTOR
     easiness_count = course['ratings']['easy']['count']
     easiness_total = float(course['ratings']['easy']['total']) / NORMALIZE_FACTOR
+
+    if course['name'] in critiques:
+        print course['name'] + ' found in critiques'
+# TODO(Sandy): eventually pass in prof specific info here (from crit)
+        for crit in critiques[course['name']]:
+            interest_total += crit['interest'] * 10
+            easiness_total += crit['ease'] * 10
+# XXX(Sandy): actually fill in a count and weight scores accordingly
+            interest_count += 10
+            easiness_count += 10
+    else:
+# TODO(Sandy): log somewhere so we can track this
+        print course['name'] + ' not found in critiques'
+
     return {
         'id': course['name'],
         'name': course['title'],
@@ -136,6 +165,7 @@ def clean_course(course):
         'availWinter': bool(int(course['availWinter'])),
         # TODO(mack): get actual number for this
         'numFriendsTook': random.randrange(0, 20),
+# XXX(Sandy): factor in critique data into overall
         'rating': round(course['ratings']['aggregate']['average']*10)/10,
         'ratings': [{
             'name': 'interest',
@@ -148,6 +178,14 @@ def clean_course(course):
         }]
     }
 
+def get_clean_course_func(critiques_data):
+    course_crit_map = {}
+    for critique in critiques_data:
+        if not critique['course'] in course_crit_map:
+            course_crit_map[critique['course']] = []
+        course_crit_map[critique['course']].append(critique)
+
+    return functools.partial(clean_course, critiques=course_crit_map)
 
 if __name__ == '__main__':
   app.debug = True
