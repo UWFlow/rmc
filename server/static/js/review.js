@@ -51,7 +51,9 @@ function(Backbone, $, _, _s, ratings, select2) {
   var UserReviewView = Backbone.View.extend({
     events: {
       'change .prof-select': 'showReview',
-      'click .add-review': 'showReview'
+      'click .add-review': 'showReview',
+      'click .save-review': 'saveReview',
+      'change .comments,.prof-select': 'allowSave'
     },
 
     initialize: function(options) {
@@ -67,6 +69,8 @@ function(Backbone, $, _, _s, ratings, select2) {
         ratings: new ratings.RatingCollection(
             [{ name: 'clarity' }, { name: 'passion' }])
       });
+
+      this.model.on('change', this.allowSave, this);
     },
 
     render: function() {
@@ -93,6 +97,26 @@ function(Backbone, $, _, _s, ratings, select2) {
     showReview: function() {
       this.$('.review-details').slideDown();
       this.$('.add-review').fadeOut('fast');
+    },
+
+    saveReview: function() {
+      // TODO(david): This should just be an underscore template
+      // TODO(david): Should initially be in this state if user had review
+      // TODO(david): This should actually save to backend and show a saving...
+      //     spinner in the meanwhile
+      this.$('.save-review')
+        .removeClass('btn-primary')
+        .addClass('btn-success')
+        .prop('disabled', true)
+        .html('<i class="icon-ok"></i> Saved.');
+    },
+
+    allowSave: function() {
+      this.$('.save-review')
+        .removeClass('btn-success')
+        .addClass('btn-primary')
+        .prop('disabled', false)
+        .html('<i class="icon-save"></i> Save!');
     }
   });
 

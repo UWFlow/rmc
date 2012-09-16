@@ -13,6 +13,8 @@ $headingsFontFamily:    inherit; // empty to use BS default, $baseFontFamily
 $headingsFontWeight:    bold;    // instead of browser default, bold
 $headingsColor:         inherit; // empty to use BS default, $textColor
 $textColor:             #555;
+$grayDark:              #555;
+$grayDarker:              #444;
 
 $fontAwesomePath: "/static/font/fontawesome-webfont";
 
