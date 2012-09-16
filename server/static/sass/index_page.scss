@@ -1,13 +1,15 @@
 @import 'base';
 
 #landing-header {
-  background: #dd8888;
+  //background: #dd8888;
+  @include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/retina_wood.png));
   text-align: center;
   &.hero-unit {
     @include border-radius(0px);
   }
   h1 {
-    font-size: 110px;
+    font-size: 100px;
+    color: rgba(0, 0, 0, 0.6);
   }
   .fb-login-button {
     padding-top: 50px;
@@ -19,6 +21,9 @@
   p {
     font-size: 50px;
     line-height: 50px;
+  }
+  .row-fluid {
+    margin-bottom: 40px;
   }
 }
 
