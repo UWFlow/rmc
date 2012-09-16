@@ -98,13 +98,9 @@ def search_courses():
     request = flask.request
     keywords = request.values.get('keywords')
     sort_mode = request.values.get('sort_mode', 'num_ratings')
-    direction = request.values.get('direction')
-    if direction:
-        direction = int(direction)
-    else:
-        direction = pymongo.DESCENDING
-    count = request.values.get('count', 10)
-    offset = request.values.get('offset', 0)
+    direction = int(request.values.get('direction', pymongo.DESCENDING))
+    count = int(request.values.get('count', 10))
+    offset = int(request.values.get('offset', 0))
 
     filters = []
     if keywords:
@@ -129,8 +125,8 @@ def search_courses():
 
     clean_course_func = get_clean_course_func(critiques)
     courses = map(clean_course_func, limited_courses)
-    print 'clean_course', courses
-    return flask.jsonify(courses=courses)
+    has_more = len(courses) == count
+    return flask.jsonify(courses=courses, has_more=has_more)
 
 
 # Helper functions

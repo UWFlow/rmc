@@ -3,18 +3,31 @@ require(
 function($, _, _s, course, _b, Backbone) {
   $(function() {
 
-    var SearchFormView = Backbone.View.extend({
-      tagName: 'form',
-      className: 'nav nav-pills',
+    var CourseSearchView = Backbone.View.extend({
+      className: 'course-search',
       timer: undefined,
-      courseCollectionView: undefined,
       keywords: undefined,
       sortMode: undefined,
       direction: undefined,
+      count: 10,
+      offset: 0,
+      courseCollection: undefined,
+      hasMore: true,
 
       initialize: function(options) {
         this.sortMode = window.pageData.sortModes[0];
         this.setDirection(this.sortMode.direction);
+        this.courseCollection = new course.CourseCollection();
+        $(window).scroll(_.bind(this.scrollWindow, this));
+      },
+
+      scrollWindow: function(evt) {
+        var loaderOffset = this.$('.loader-container').offset().top;
+        var $window = $(window);
+        var bottomOffset = $window.scrollTop() + $window.height();
+        if (bottomOffset > loaderOffset) {
+          this.updateCourses();
+        }
       },
 
       render: function() {
@@ -25,6 +38,10 @@ function($, _, _s, course, _b, Backbone) {
           selectedDirection: this.direction
         }));
         $('.dropdown-toggle').dropdown();
+        var courseCollectionView = new course.CourseCollectionView({
+          courseCollection: this.courseCollection
+        });
+        this.$('.course-collection-placeholder').replaceWith(courseCollectionView.render().$el);
         this.updateCourses();
 
         return this;
@@ -46,6 +63,8 @@ function($, _, _s, course, _b, Backbone) {
         }, this);
         this.setDirection(this.sortMode.direction);
         this.$('.selected-direction').text(this.direction.name);
+
+        this.resetCourses();
         this.updateCourses();
       },
 
@@ -54,6 +73,8 @@ function($, _, _s, course, _b, Backbone) {
         this.$('.selected-direction').text($target.text());
         var directionValue = window.parseInt($target.attr('data-value'), 10);
         this.setDirection(directionValue);
+
+        this.resetCourses();
         this.updateCourses();
       },
 
@@ -66,6 +87,7 @@ function($, _, _s, course, _b, Backbone) {
           window.clearTimeout(this.timer);
         }
 
+        this.resetCourses();
         this.timer = window.setTimeout(_.bind(this.updateCourses, this), 500);
       },
 
@@ -82,9 +104,24 @@ function($, _, _s, course, _b, Backbone) {
         }
       },
 
+      resetCourses: function() {
+        this.courseCollection.reset();
+        this.hasMore = true;
+        this.offset = 0;
+      },
+
       updateCourses: function() {
+        if (!this.hasMore || this.updatingCourses) {
+          // TODO(mack): handle case of very short interval between changing
+          // search options
+          return;
+        }
+        this.$('.loader').removeClass('hide');
+        this.updatingCourses = true;
         // TODO(mack): use $.ajax to handle error
         var args = [];
+        args.push('offset=' + this.offset);
+        args.push('count=' + this.count);
         if (this.sortMode) {
           args.push('sort_mode=' + this.sortMode.value);
         }
@@ -98,16 +135,11 @@ function($, _, _s, course, _b, Backbone) {
           '/api/course-search?' + args.join('&'),
           _.bind(function(data) {
             var courses = data.courses;
-            if (this.courseCollectionView) {
-              this.courseCollectionView.remove();
-              this.courseCollectionView.unbind();
-            }
-            var courseCollection = new course.CourseCollection(courses);
-            this.courseCollectionView = new course.CourseCollectionView({
-              courseCollection: courseCollection
-            });
-            // TODO(mack): make this clear than modifying global id
-            $('#courses-container').append(this.courseCollectionView.render().$el);
+            this.hasMore = data.has_more;
+            this.offset += courses.length;
+            this.courseCollection.add(courses);
+            this.updatingCourses = false;
+            this.$('.loader').addClass('hide');
           }, this)
         );
       }
@@ -115,8 +147,8 @@ function($, _, _s, course, _b, Backbone) {
 
     var init = function() {
       (function() {
-        var searchFormView = new SearchFormView({});
-        $('#search-form-container').append(searchFormView.render().$el);
+        var courseSearchView = new CourseSearchView({});
+        $('#course-page-container').append(courseSearchView.render().$el);
       })();
 
       (function() {

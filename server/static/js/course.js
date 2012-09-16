@@ -118,18 +118,24 @@ function(Backbone, $, _, _s, ratings, review) {
 
     initialize: function(options) {
       this.courseCollection = options.courseCollection;
+      this.courseCollection.bind('add', _.bind(this.addCourse, this));
+      this.courseCollection.bind('reset', _.bind(this.render, this));
       this.courseViews = [];
+    },
+
+    addCourse: function(courseModel) {
+      var courseView = new CourseView({
+        courseModel: courseModel,
+        tagName: 'li'
+      });
+      this.$el.append(courseView.render().el);
+      this.courseViews.push(courseView);
     },
 
     render: function() {
       this.$el.empty();
       this.courseCollection.each(function(courseModel) {
-        var courseView = new CourseView({
-          courseModel: courseModel,
-          tagName: 'li'
-        });
-        this.$el.append(courseView.render().el);
-        this.courseViews.push(courseView);
+        this.addCourse(courseModel);
       }, this);
 
       return this;

@@ -1,41 +1,37 @@
 @import 'base';
 @import 'course';
 
-#search-form-container {
-  @extend .clearfix;
-  .dropdown {
-    display: inline-block;
-    float: none;
-    .dropdown-toggle {
-      $side-padding: 3px;
-      padding-left: $side-padding;
-      padding-right: $side-padding;
+#course-page-container {
+  .course-search-form {
+    @extend .clearfix;
+    .dropdown {
+      display: inline-block;
+      float: none;
+      .dropdown-toggle {
+        $side-padding: 3px;
+        padding-left: $side-padding;
+        padding-right: $side-padding;
+      }
+    }
+
+    .keywords {
+      float: right;
     }
   }
 
-  //.dropdown {
-  //  &.open.active {
-  //    .dropdown-toggle:hover {
-  //      color: #FFF;
-  //      background-color: #999;
-  //      border-color: #999;
-  //    }
-  //  }
-
-  //  .dropdown-toggle:hover {
-  //    text-decoration: none;
-  //    background-color: #EEE;
-  //  }
-  //}
-
-  .keywords {
-    float: right;
-  }
-}
-
-#courses-container {
   .course-collection {
     list-style: none;
     margin-left: 0px;
+  }
+
+  .loader-container {
+    text-align: center;
+    .loader {
+      // TODO(mack): use sass so we can set image directory
+      display: inline-block;
+      background: url('/static/img/bar-loader.gif') no-repeat;
+      width: 16px;
+      height: 11px;
+    }
   }
 }
