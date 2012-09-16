@@ -71,6 +71,12 @@
   //outline: 1px red solid;
 //}
 
+// TODO(david): Make this work. Footer should be at bottom.
+html, body {
+  height: 100%;
+  min-height: 100%;
+}
+
 body {
   // TODO(mack): setup image dir to auto-use
   @include background(url(/static/img/pinstripe.png));
@@ -100,7 +106,7 @@ footer {
   background-size: 1800px;
   // TODO(david): Figure out background-size: cover instead of height
   height: 495px;
-  margin-top: 50px;
+  margin-top: 200px;
   #landing-footer-text {
     padding-top: 30px;
     text-align: center;

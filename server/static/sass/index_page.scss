@@ -24,6 +24,13 @@
   }
   .row-fluid {
     margin-bottom: 40px;
+    //background: url(http://getpocket.com/i/v3/veiw_any_bg.gif) top center no-repeat;
+    //background-size: 1500px;
+    //padding-top: 60px;
+    &:first-child {
+      background: none;
+      padding-top: 0px;
+    }
   }
 }
 
