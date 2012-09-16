@@ -1,20 +1,69 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('review-tpl') %}
-<div class="row-fluid user-review">
-  <div class="span12">
-    <div class="select2-inline">
-      You took this course in
-      <span class="term"><%- term %></span>
-      with professor
-      <select data-placeholder="..." class="professor-select">
-        <option></option>
-        <option>Larry Smith</option>
-        <option>Charlie Clarke</option>
-        <option>Mark Smucker</option>
-        <option>Eddie Dupont</option>
-      </select>
+<div class="user-review">
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="select2-inline">
+        You took this course in
+        <span class="term"><%- term %></span>
+        with
+        <select data-placeholder="which professor?" class="prof-select">
+          <option></option>
+          <option>Larry Smith</option>
+          <option>Charlie Clarke</option>
+          <option>Mark Smucker</option>
+          <option>Eddie Dupont</option>
+        </select>
+      </div>
     </div>
   </div>
+
+  <div class="review-details hide">
+    <div class="row-fluid">
+      <div class="span12">
+        <h4>
+          What did you think about the course?
+        </h4>
+      </div>
+    </div>
+
+    <div class="row-fluid">
+      <div class="span6">
+        [rating here]
+      </div>
+      <div class="span6">
+        <textarea rows="3" placeholder="Any tips?"
+          class="comments course-comments"></textarea>
+      </div>
+    </div>
+
+    <div class="row-fluid">
+      <div class="span12">
+        <h4>
+          ...and about the professor?
+        </h4>
+      </div>
+    </div>
+
+    <div class="row-fluid">
+      <div class="span6">
+        [rating here]
+      </div>
+      <div class="span6">
+        <textarea placeholder="Any comments?"
+          class="comments prof-comments"></textarea>
+      </div>
+    </div>
+
+    <div class="row-fluid">
+      <div class="span12">
+        <button type="submit" class="btn btn-primary">
+          <i class="icon-ok"></i> Save!
+        </button>
+      </div>
+    </div>
+  </div>
+
 </div>
 {% endcall %}

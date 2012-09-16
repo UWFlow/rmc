@@ -4,8 +4,20 @@
     font-weight: bold;
   }
 
-  .professor-select {
+  .prof-select {
     width: 180px;
+  }
+
+  .comments {
+    width: 100%;
+    min-height: 80px;
+  }
+
+  .review-details {
+    margin-top: 10px;
+    &.show-review {
+      display: block;
+    }
   }
 
 }
