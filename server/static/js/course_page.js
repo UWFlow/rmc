@@ -18,8 +18,6 @@ function($, _, _s, course, _b, Backbone) {
       },
 
       render: function() {
-        console.log('dir', this.direction);
-        console.log('sort', this.sortMode);
         var sortModes = window.pageData.sortModes;
         this.$el.html(_.template($('#search-form-tpl').html(), {
           sortModes: sortModes,
@@ -85,8 +83,6 @@ function($, _, _s, course, _b, Backbone) {
       },
 
       updateCourses: function() {
-        console.log('1dir', this.direction);
-        console.log('1sort', this.sortMode);
         // TODO(mack): use $.ajax to handle error
         var args = [];
         if (this.sortMode) {
