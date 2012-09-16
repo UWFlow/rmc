@@ -37,12 +37,18 @@ function($, _, _s, course, _b, Backbone) {
           selectedSortMode: this.sortMode,
           selectedDirection: this.direction
         }));
+
         $('.dropdown-toggle').dropdown();
         var courseCollectionView = new course.CourseCollectionView({
           courseCollection: this.courseCollection
         });
         this.$('.course-collection-placeholder').replaceWith(courseCollectionView.render().$el);
         this.updateCourses();
+
+        window.setTimeout(_.bind(function() {
+          // TODO(mack): investgate why this has to be done in window.setTimeout
+          this.$('.keywords').focus();
+        }, this), 0);
 
         return this;
       },
