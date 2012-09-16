@@ -9,11 +9,11 @@
         <span class="term"><%- term %></span>
         with
         <select data-placeholder="which professor?" class="prof-select">
-          <option></option>
-          <option>Larry Smith</option>
-          <option>Charlie Clarke</option>
-          <option>Mark Smucker</option>
-          <option>Eddie Dupont</option>
+        <option></option>
+        <% courseModel = courseModel.toJSON(); %>
+        <% _.each(courseModel.professorNames, function(professorName) { %>
+          <option><%- professorName %></option>
+        <% }); %>
         </select>
         <button class="add-review btn btn-info">
           <i class="icon-plus"></i> Add review!

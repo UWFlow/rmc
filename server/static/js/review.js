@@ -6,6 +6,7 @@ function(Backbone, $, _, _s, ratings, select2) {
   // TODO(david): May want to refactor to just a UserCourse model
   var UserReviewModel = Backbone.Model.extend({
     defaults: {
+      courseModel: null,
       term: 'Spring 2012',
       professor: {
         name: 'Larry Smith',

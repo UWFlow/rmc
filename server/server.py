@@ -162,9 +162,21 @@ def clean_course(course, critiques):
     overall_course = overall_course_total / overall_course_count * NORMALIZE_FACTOR
     overall_course = round(overall_course*10)/10
 
+
+    professor_names = []
+    for professor in course['professors']:
+        splits = professor['name'].split(',', 1)
+        professor_name = splits[0]
+        if len(splits) == 2:
+            professor_name = '%s %s' % (splits[1].strip(), splits[0].strip())
+        else:
+            professor_name = splits[0].strip()
+        professor_names.append(professor_name)
+
     return {
         'id': course['name'],
         'name': course['title'],
+        'professorNames': professor_names,
         'numRatings': overall_course_count,
         'description': course['description'],
         'availFall': bool(int(course['availFall'])),

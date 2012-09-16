@@ -11,6 +11,7 @@ function(Backbone, $, _, _s, ratings, review) {
       numRatings: 49,
       numFriendsTook: 2,
       userReviewModel: null,
+      professorNames: ['Eddie Dupont', 'Charlie Clarke', 'Mark Smucker', 'Larry Smith'],
       description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
         ' everything in between. Become enthralled in the wonderful' +
@@ -31,7 +32,9 @@ function(Backbone, $, _, _s, ratings, review) {
         this.set('ratings', new ratings.RatingCollection(attributes.ratings));
       }
       if (!attributes.userReviewModel) {
-        this.set('userReviewModel', new review.UserReviewModel());
+        this.set('userReviewModel', new review.UserReviewModel({
+          courseModel: this
+        }));
       }
     }
   });
