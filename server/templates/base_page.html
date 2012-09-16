@@ -13,9 +13,13 @@
     {% endblock %}
 
     <!-- TODO(david): Favicon -->
+    <script data-main="/static/js/main.js" src="/static/js/ext/require-2.0.6.js"></script>
   </head>
 
   <body>
+    {% block bodytop %}
+    {% endblock %}
+
     <!-- TODO(david): Real responsive layout:
          http://twitter.github.com/bootstrap/scaffolding.html#responsive
     -->
@@ -64,8 +68,6 @@
     {% endblock %}
 
     <!-- Javascript -->
-    <!-- TODO((mack): use local copy rather than CDN -->
-    <script data-main="/static/js/main.js" src="/static/js/ext/require-2.0.6.js"></script>
     {% block scripts %}
     {% endblock %}
 
