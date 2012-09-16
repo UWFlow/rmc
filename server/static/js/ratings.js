@@ -72,9 +72,7 @@ function(Backbone, $, _, _s) {
         var name = self.ratings.getNameAt(i);
         var userRating = self.userReviewModel.getRating(name);
         var value = userRating ? userRating * NUM_SEGMENTS : 0;
-        $(inputRating).find('.rating-bar').each(function(j, bar) {
-          $(bar).toggleClass('bar', j <= value);
-        });
+        self.selectRating(inputRating, value);
       });
     },
 
@@ -89,13 +87,13 @@ function(Backbone, $, _, _s) {
       $target = $(evt.currentTarget);
       var $rowElem = $target.closest('.row-fluid');
       var value = $target.index();
-      this.selectRating($rowElem, value);
+      this.selectRating($rowElem.find('.input-rating'), value);
 
       $rowElem.find('.rating-num-span').text(value + 1);
     },
 
-    selectRating: function(rowElem, value) {
-      $(rowElem).find('.input-rating .rating-bar').each(function(i, elem) {
+    selectRating: function(inputRatingElem, value) {
+      $(inputRatingElem).find('.rating-bar').each(function(i, elem) {
         $(elem).toggleClass('bar', i <= value);
       });
     }
