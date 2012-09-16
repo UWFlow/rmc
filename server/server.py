@@ -22,8 +22,23 @@ def profile(fbid):
 
 @app.route('/courses')
 def courses():
-    return flask.render_template('course_page.html')
-
+    # TODO(mack): move into COURSES_SORT_MODES
+    sort_modes = [
+        { 'value': 'num_ratings', 'name': 'by popularity' },
+        { 'value': 'alphabetical', 'name': 'alphabetically' },
+        { 'value': 'overall', 'name': 'by overall rating' },
+        { 'value': 'interest', 'name': 'by interest' },
+        { 'value': 'easiness', 'name': 'by easiness' },
+    ]
+    directions = [
+        { 'value': pymongo.ASCENDING, 'name': 'increasing' },
+        { 'value': pymongo.DESCENDING, 'name': 'decreasing' },
+    ]
+    return flask.render_template(
+        'course_page.html',
+        sort_modes=sort_modes,
+        directions=directions,
+    )
 # TODO(mack): move API's to separate file
 # TODO(mack): add security measures (e.g. require auth, xsrf cookie)
 ###############################
@@ -52,6 +67,7 @@ def get_courses(course_names):
 
 COURSES_SORT_MODES = {
     # TODO(mack): 'num_friends'
+    'alphabetical': {'dir': pymongo.ASCENDING, 'field': 'name'},
     'num_ratings': {'dir': pymongo.DESCENDING, 'field': 'ratings.count'},
     'overall': {'dir': pymongo.DESCENDING, 'field': 'ratings.aggregate.average'},
     'interest': {'dir': pymongo.DESCENDING, 'field': 'ratings.interest.average'},
@@ -65,28 +81,32 @@ def search_courses():
     # num_friends, num_ratings, overall, interest, easiness
 
     request = flask.request
-    search = request.values.get('search')
-    sort_by = request.values.get('sort_by', 'num_ratings')
+    keywords = request.values.get('keywords')
+    sort_mode = request.values.get('sort_mode', 'num_ratings')
+    direction = request.values.get('direction')
+    if direction:
+        direction = int(direction)
+    else:
+        direction = pymongo.DESCENDING
     count = request.values.get('count', 10)
     offset = request.values.get('offset', 0)
 
     filters = []
-    if search:
-        search_re = re.compile(search, re.IGNORECASE)
-        search_filters = []
+    if keywords:
+        keywords_re = re.compile(keywords, re.IGNORECASE)
+        keywords_filters = []
         for field in ['name', 'title']:
-            search_filters.append({field: {'$regex': search_re}})
-        filters.append({'$or': search_filters})
+            keywords_filters.append({field: {'$regex': keywords_re}})
+        filters.append({'$or': keywords_filters})
     if len(filters) > 0:
         unsorted_courses = db.courses.find({'$and': filters})
     else:
         unsorted_courses = db.courses.find()
 
-    sort_options = COURSES_SORT_MODES[sort_by]
+    sort_options = COURSES_SORT_MODES[sort_mode]
     sorted_courses = unsorted_courses.sort(
         sort_options['field'],
-        # TODO(mack): add sort direction
-        direction=sort_options['dir']
+        direction=direction,
     )
     limited_courses = sorted_courses.skip(offset).limit(count)
     courses = map(clean_course, limited_courses)
@@ -99,7 +119,6 @@ def clean_course(course):
     return {
         'id': course['name'],
         'name': course['title'],
-        'rating': round(course['ratings']['aggregate']['average']*10)/10,
         'numRatings': course['ratings']['aggregate']['count'],
         'description': course['description'],
         'availFall': bool(int(course['availFall'])),
@@ -107,6 +126,16 @@ def clean_course(course):
         'availWinter': bool(int(course['availWinter'])),
         # TODO(mack): get actual number for this
         'numFriendsTook': random.randrange(0, 20),
+        'rating': round(course['ratings']['aggregate']['average']*10)/10,
+        'ratings': [{
+            'name': 'interest',
+            'count': course['ratings']['interest']['count'],
+            'total': course['ratings']['interest']['total'],
+        }, {
+            'name': 'easiness',
+            'count': course['ratings']['easy']['count'],
+            'total': course['ratings']['easy']['total'],
+        }]
     }
 
 

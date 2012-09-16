@@ -1,0 +1,41 @@
+@import 'base';
+@import 'course';
+
+#search-form-container {
+  @extend .clearfix;
+  .dropdown {
+    display: inline-block;
+    float: none;
+    .dropdown-toggle {
+      $side-padding: 3px;
+      padding-left: $side-padding;
+      padding-right: $side-padding;
+    }
+  }
+
+  //.dropdown {
+  //  &.open.active {
+  //    .dropdown-toggle:hover {
+  //      color: #FFF;
+  //      background-color: #999;
+  //      border-color: #999;
+  //    }
+  //  }
+
+  //  .dropdown-toggle:hover {
+  //    text-decoration: none;
+  //    background-color: #EEE;
+  //  }
+  //}
+
+  .keywords {
+    float: right;
+  }
+}
+
+#courses-container {
+  .course-collection {
+    list-style: none;
+    margin-left: 0px;
+  }
+}

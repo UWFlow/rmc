@@ -26,7 +26,9 @@ function(Backbone, $, _, _s, ratings, review) {
     },
 
     initialize: function(attributes) {
-      this.set('ratings', new ratings.RatingCollection(attributes.ratings));
+      if (attributes.ratings) {
+        this.set('ratings', new ratings.RatingCollection(attributes.ratings));
+      }
     }
   });
 
