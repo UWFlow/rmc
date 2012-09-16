@@ -20,12 +20,30 @@
          http://twitter.github.com/bootstrap/scaffolding.html#responsive
     -->
 
+    <div class="navbar navbar-static-top">
+      <div class="navbar-inner">
+        <div class="container-fluid">
+          <a class="brand" href="/">Course Flow</a>
+          <ul class="nav pull-right">
+            <li class="{{ 'active' if nav_item == 'courses' else '' }}">
+              <a href="/courses"><i class="icon-reorder"></i> Courses</a>
+            </li>
+            <li class="{{ 'active' if nav_item == 'profile' else '' }}">
+              <a href="/profile"><i class="icon-user"></i> Profile</a>
+          </ul>
+        </div>
+      </div>
+    </div>
+
     <header>
       {% block header %}
       {% endblock %}
     </header>
 
     <div class="container-fluid">
+
+
+
       <div class="row-fluid">
         <div class="span12">
           <h1>{{ self.page_title() }}</h1>
