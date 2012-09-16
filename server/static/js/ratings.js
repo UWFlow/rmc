@@ -3,6 +3,7 @@ define(
 function(Backbone, $, _, _s) {
 
   var NUM_SEGMENTS = 5;
+  // TODO(david): Refactor all the row-fluid to use an actual class name
 
   // A rating of a single metric
   var RatingModel = Backbone.Model.extend({
@@ -43,8 +44,10 @@ function(Backbone, $, _, _s) {
 
   var RatingsView = Backbone.View.extend({
 
+    // TODO(david): Need watch more events to reset
     events: {
-      'mouseenter .rating-progress': 'onRatingHover'
+      'mouseenter .rating-progress': 'onRatingHover',
+      'click .rating-progress': 'onRatingClick'
     },
 
     initialize: function(options) {
@@ -84,18 +87,27 @@ function(Backbone, $, _, _s) {
     onRatingHover: function(evt) {
       this.setUserRatings();
 
-      $target = $(evt.currentTarget);
+      var $target = $(evt.currentTarget);
       var $rowElem = $target.closest('.row-fluid');
-      var value = $target.index();
+      var value = $target.index() + 1;
       this.selectRating($rowElem.find('.input-rating'), value);
 
-      $rowElem.find('.rating-num-span').text(value + 1);
+      $rowElem.find('.rating-num-span').text(value);
     },
 
     selectRating: function(inputRatingElem, value) {
       $(inputRatingElem).find('.rating-bar').each(function(i, elem) {
-        $(elem).toggleClass('bar', i <= value);
+        $(elem).toggleClass('bar', i < value).css('opacity', '');
       });
+    },
+
+    onRatingClick: function(evt) {
+      var $target = $(evt.currentTarget);
+      var index = $target.closest('.row-fluid').index();
+      var name = this.ratings.getNameAt(index);
+      var value = ($target.index() + 1) / NUM_SEGMENTS;
+      this.userReviewModel.setRating(name, value);
+      $target.parent().find('.bar').css('opacity', 1.0);
     }
 
   });
