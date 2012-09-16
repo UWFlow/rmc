@@ -9,17 +9,42 @@ function(Backbone, $, _, _s, ratings, select2) {
       term: 'Spring 2012',
       professor: {
         name: 'Larry Smith',
-        passion: 4,
-        clarity: 4,
-        overall: 4,
+        passion: null,
+        clarity: 0.3,
+        overall: 0.4,
         comments: 'Professor was Larry Smith. Enough said.'
       },
       course: {
-        easiness: 3,
-        interest: 5,
+        easiness: 0.1,
+        interest: 0.7,
         overall: 5,
         comments: 'blha blahb lbha lbahbla blhabl blah balhb balh balh'
       }
+    },
+
+    // TODO(david): If I designed this better, all this code below might not be
+    //     necessary
+    getRatingObj: function(name) {
+      var prof = this.get('professor');
+      if (_.has(prof, name)) {
+        return prof;
+      }
+
+      var course = this.get('course');
+      if (_.has(course, name)) {
+        return course;
+      }
+    },
+
+    getRating: function(name) {
+      return this.getRatingObj(name)[name];
+    },
+
+    setRating: function(name, value) {
+      // TODO(david): Alternatively, don't nest objects in backbone models
+      var obj = this.getRatingObj(name);
+      obj[name] = value;
+      return this.set(name, obj);
     }
   });
 

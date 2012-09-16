@@ -10,6 +10,7 @@ function(Backbone, $, _, _s, ratings, review) {
       rating: 2.5,
       numRatings: 49,
       numFriendsTook: 2,
+      userReviewModel: new review.UserReviewModel(),
       description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
         ' everything in between. Become enthralled in the wonderful' +
@@ -38,7 +39,8 @@ function(Backbone, $, _, _s, ratings, review) {
     initialize: function(options) {
       this.courseModel = options.courseModel;
       this.ratingsView = new ratings.RatingsView({
-        collection: this.courseModel.get('ratings')
+        ratings: this.courseModel.get('ratings'),
+        userReviewModel: this.courseModel.get('userReviewModel')
       });
       // TODO(david): Get user review data, and don't show or show altered if no
       //     user or user didn't take course.

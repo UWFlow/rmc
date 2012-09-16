@@ -2,6 +2,8 @@ define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string'],
 function(Backbone, $, _, _s) {
 
+  var NUM_SEGMENTS = 5;
+
   // A rating of a single metric
   var RatingModel = Backbone.Model.extend({
     defaults: {
@@ -19,7 +21,7 @@ function(Backbone, $, _, _s) {
     },
 
     getDisplayRating: function() {
-      return _s.sprintf("%.1f", this.getAverage() * 5);
+      return _s.sprintf("%.1f", this.getAverage() * NUM_SEGMENTS);
     },
 
     // TODO(david): This shouldn't be here. Refactor this away.
@@ -32,7 +34,11 @@ function(Backbone, $, _, _s) {
   });
 
   var RatingCollection = Backbone.Collection.extend({
-    model: RatingModel
+    model: RatingModel,
+
+    getNameAt: function(index) {
+      return this.at(index).get('name');
+    }
   });
 
   var RatingsView = Backbone.View.extend({
@@ -41,8 +47,13 @@ function(Backbone, $, _, _s) {
       'mouseenter .rating-progress': 'onRatingHover'
     },
 
+    initialize: function(options) {
+      this.ratings = options.ratings;
+      this.userReviewModel = options.userReviewModel;
+    },
+
     render: function() {
-      var ratings = this.collection;
+      var ratings = this.ratings;
       this.$el.html(_.template($('#ratings-tpl').html(), { ratings: ratings }));
 
       // Set the width here instead of in the template for animations
@@ -50,7 +61,21 @@ function(Backbone, $, _, _s) {
         $(elem).css('width', ratings.at(i).getPercent() + '%');
       });
 
+      this.setUserRatings();
+
       return this;
+    },
+
+    setUserRatings: function() {
+      var self = this;
+      this.$('.input-rating').each(function(i, inputRating) {
+        var name = self.ratings.getNameAt(i);
+        var userRating = self.userReviewModel.getRating(name);
+        var value = userRating ? userRating * NUM_SEGMENTS : 0;
+        $(inputRating).find('.rating-bar').each(function(j, bar) {
+          $(bar).toggleClass('bar', j <= value);
+        });
+      });
     },
 
     removeBars: function() {
@@ -59,35 +84,20 @@ function(Backbone, $, _, _s) {
 
     // TODO(david): Refactor to use single model+view for each rating
     onRatingHover: function(evt) {
+      this.setUserRatings();
+
       $target = $(evt.currentTarget);
-      var $rowElem = $target.parents('.row-fluid');
+      var $rowElem = $target.closest('.row-fluid');
       var value = $target.index();
       this.selectRating($rowElem, value);
 
       $rowElem.find('.rating-num-span').text(value + 1);
-
-      // Clear all other stars
-      var self = this;
-      $target.parents('.ratings')
-        .find('.row-fluid').not($rowElem).each(function(i, elem) {
-          self.resetRating(elem);
-        });
     },
 
     selectRating: function(rowElem, value) {
-      $(rowElem).find('.input-rating .rating-progress').each(function(i, elem) {
-        $('.rating-bar', elem).toggleClass('bar', i <= value);
+      $(rowElem).find('.input-rating .rating-bar').each(function(i, elem) {
+        $(elem).toggleClass('bar', i <= value);
       });
-    },
-
-    resetRating: function(parentElem) {
-      // TODO(david): Get data from server and save locally
-      // TODO(david): Refactor HTML/CSS so numbers are reset
-      $(parentElem)
-        .find('.input-rating .rating-progress').each(function(i, elem) {
-          $('.rating-bar', elem).removeClass('bar');
-        }).end()
-        .find('.rating-num-span').text(0);
     }
 
   });

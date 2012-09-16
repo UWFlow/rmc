@@ -15,21 +15,12 @@
         </div>
 
         <div class="input-rating hide">
-          <div class="rating-progress progress <%- rating.getClass() %>">
-            <div class="rating-bar active"></div>
-          </div>
-          <div class="rating-progress progress <%- rating.getClass() %>">
-            <div class="rating-bar active"></div>
-          </div>
-          <div class="rating-progress progress <%- rating.getClass() %>">
-            <div class="rating-bar active"></div>
-          </div>
-          <div class="rating-progress progress <%- rating.getClass() %>">
-            <div class="rating-bar active"></div>
-          </div>
-          <div class="rating-progress progress <%- rating.getClass() %>">
-            <div class="rating-bar active"></div>
-          </div>
+          {# TODO(david): 5 should not be hardcoded #}
+          <% for (var i = 0; i < 5; ++i) { %>
+            <div class="rating-progress progress <%- rating.getClass() %>">
+              <div class="rating-bar active"></div>
+            </div>
+          <% } %>
         </div>
 
       </div>
