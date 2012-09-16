@@ -23,13 +23,13 @@ def profile(fbid):
 @app.route('/courses')
 def courses():
     # TODO(mack): move into COURSES_SORT_MODES
-    sort_modes = [
-        { 'value': 'num_ratings', 'name': 'by popularity' },
-        { 'value': 'alphabetical', 'name': 'alphabetically' },
-        { 'value': 'overall', 'name': 'by overall rating' },
-        { 'value': 'interest', 'name': 'by interest' },
-        { 'value': 'easiness', 'name': 'by easiness' },
-    ]
+    def clean_sort_modes(sort_mode):
+        return {
+            'value': sort_mode['value'],
+            'name': sort_mode['name'],
+            'direction': sort_mode['direction'],
+        }
+    sort_modes = map(clean_sort_modes, COURSES_SORT_MODES)
     directions = [
         { 'value': pymongo.ASCENDING, 'name': 'increasing' },
         { 'value': pymongo.DESCENDING, 'name': 'decreasing' },
@@ -65,14 +65,18 @@ def get_courses(course_names):
 
     return flask.jsonify(courses=courses)
 
-COURSES_SORT_MODES = {
+COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
-    'alphabetical': {'dir': pymongo.ASCENDING, 'field': 'name'},
-    'num_ratings': {'dir': pymongo.DESCENDING, 'field': 'ratings.count'},
-    'overall': {'dir': pymongo.DESCENDING, 'field': 'ratings.aggregate.average'},
-    'interest': {'dir': pymongo.DESCENDING, 'field': 'ratings.interest.average'},
-    'easiness': {'dir': pymongo.DESCENDING, 'field': 'ratings.easy.average'},
-}
+    { 'value': 'num_ratings', 'name': 'by popularity', 'direction': pymongo.DESCENDING, 'field': 'ratings.count'},
+    { 'value': 'alphabetical', 'name': 'alphabetically', 'direction': pymongo.ASCENDING, 'field': 'name'},
+    { 'value': 'overall', 'name': 'by overall rating', 'direction': pymongo.DESCENDING, 'field': 'ratings.aggregate.average'},
+    { 'value': 'interest', 'name': 'by interest', 'direction': pymongo.DESCENDING, 'field': 'ratings.interest.average'},
+    { 'value': 'easiness', 'name': 'by easiness' , 'direction': pymongo.DESCENDING, 'field': 'ratings.easy.average'},
+]
+COURSES_SORT_MODES_BY_VALUE = {}
+for sort_mode in COURSES_SORT_MODES:
+    COURSES_SORT_MODES_BY_VALUE[sort_mode['value']] = sort_mode
+
 
 @app.route('/api/course-search', methods=['GET'])
 # TODO(mack): find a better name for function
@@ -103,7 +107,7 @@ def search_courses():
     else:
         unsorted_courses = db.courses.find()
 
-    sort_options = COURSES_SORT_MODES[sort_mode]
+    sort_options = COURSES_SORT_MODES_BY_VALUE[sort_mode]
     sorted_courses = unsorted_courses.sort(
         sort_options['field'],
         direction=direction,

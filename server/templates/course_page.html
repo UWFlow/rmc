@@ -30,7 +30,6 @@
   <script>
     var pageData = {
       sortModes: {{ sort_modes|tojson|safe }},
-      directions: {{ directions|tojson|safe }}
     };
   </script>
 
@@ -58,11 +57,8 @@
         <b class="caret"></b>
       </a>
       <ul class="dropdown-menu" role="menu">
-      <% _.each(directions, function(direction) { %>
-        <li data-value="<%- direction['value'] %>">
-          <a href="#"><%- direction.name %></a>
-        </li>
-      <% }); %>
+        <li data-value="1"><a href="#">ascending</a></li>
+        <li data-value="-1"><a href="#">descending</a></li>
       </ul>
     </li>
     order

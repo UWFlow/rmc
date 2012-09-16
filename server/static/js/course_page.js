@@ -13,16 +13,18 @@ function($, _, _s, course, _b, Backbone) {
       direction: undefined,
 
       initialize: function(options) {
+        this.sortMode = window.pageData.sortModes[0];
+        this.setDirection(this.sortMode.direction);
       },
 
       render: function() {
+        console.log('dir', this.direction);
+        console.log('sort', this.sortMode);
         var sortModes = window.pageData.sortModes;
-        var directions = window.pageData.directions;
         this.$el.html(_.template($('#search-form-tpl').html(), {
           sortModes: sortModes,
-          directions: directions,
-          selectedSortMode: sortModes[0],
-          selectedDirection: directions[1]
+          selectedSortMode: this.sortMode,
+          selectedDirection: this.direction
         }));
         $('.dropdown-toggle').dropdown();
         this.updateCourses();
@@ -40,14 +42,20 @@ function($, _, _s, course, _b, Backbone) {
       changeSortMode: function(evt) {
         var $target = $(evt.currentTarget);
         this.$('.selected-sort-mode').text($target.text());
-        this.sortMode = $target.attr('data-value');
+        var sortValue = $target.attr('data-value');
+        this.sortMode = _.find(window.pageData.sortModes, function(sortMode) {
+          return sortValue === sortMode.value;
+        }, this);
+        this.setDirection(this.sortMode.direction);
+        this.$('.selected-direction').text(this.direction.name);
         this.updateCourses();
       },
 
       changeDirection: function(evt) {
         var $target = $(evt.currentTarget);
         this.$('.selected-direction').text($target.text());
-        this.direction = $target.attr('data-value');
+        var directionValue = window.parseInt($target.attr('data-value'), 10);
+        this.setDirection(directionValue);
         this.updateCourses();
       },
 
@@ -63,14 +71,29 @@ function($, _, _s, course, _b, Backbone) {
         this.timer = window.setTimeout(_.bind(this.updateCourses, this), 500);
       },
 
+      setDirection: function(direction) {
+        var directionName = undefined;
+        if (direction > 0) {
+          directionName = 'ascending';
+        } else {
+          directionName = 'descending';
+        }
+        this.direction = {
+          'value': direction,
+          'name': directionName
+        }
+      },
+
       updateCourses: function() {
+        console.log('1dir', this.direction);
+        console.log('1sort', this.sortMode);
         // TODO(mack): use $.ajax to handle error
         var args = [];
         if (this.sortMode) {
-          args.push('sort_mode=' + this.sortMode);
+          args.push('sort_mode=' + this.sortMode.value);
         }
         if (this.direction) {
-          args.push('direction=' + this.direction);
+          args.push('direction=' + this.direction.value);
         }
         if (this.keywords) {
           args.push('keywords=' + this.keywords);
