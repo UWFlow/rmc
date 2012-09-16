@@ -2,8 +2,17 @@
 @import 'course';
 
 #course-page-container {
+  .keywords {
+    width: 98%;
+    padding-top: 10px;
+    line-height: 40px;
+    font-size: 40px;
+    height: 40px;
+  }
+
   .course-search-form {
     @extend .clearfix;
+    float: right;
     .dropdown {
       display: inline-block;
       float: none;
@@ -12,10 +21,6 @@
         padding-left: $side-padding;
         padding-right: $side-padding;
       }
-    }
-
-    .keywords {
-      float: right;
     }
   }
 
