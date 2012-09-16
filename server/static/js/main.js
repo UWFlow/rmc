@@ -18,6 +18,9 @@ require.config({
     'ext/select2': {
       deps: ['ext/jquery']
     },
+    'ext/autosize': {
+      deps: ['ext/jquery']
+    },
     'ext/underscore': {
       exports: '_'
     },
@@ -36,6 +39,7 @@ require.config({
     'ext/jquery': 'ext/jquery-1.8.1',
     'ext/bootstrap': 'ext/bootstrap-2.1.1',
     'ext/select2': 'ext/select2.min',
+    'ext/autosize': 'ext/jquery.autosize-min',
     // TODO(mack): host locally
     'ext/jqueryui': 'http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min',
     'ext/underscore': 'ext/underscore-1.3.3',
