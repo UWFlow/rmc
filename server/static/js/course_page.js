@@ -25,6 +25,7 @@ function($, _, _s, course, _b, Backbone) {
           selectedDirection: directions[1]
         }));
         $('.dropdown-toggle').dropdown();
+        this.updateCourses();
 
         return this;
       },
