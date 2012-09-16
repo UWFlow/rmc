@@ -172,6 +172,7 @@ def clean_course(course, critiques):
         else:
             professor_name = splits[0].strip()
         professor_names.append(professor_name)
+    professor_names = sorted(professor_names)
 
     return {
         'id': course['name'],
