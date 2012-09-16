@@ -146,11 +146,13 @@ def clean_course(course, critiques):
         print course['name'] + ' found in critiques'
 # TODO(Sandy): eventually pass in prof specific info here (from crit)
         for crit in critiques[course['name']]:
-            interest_total += crit['interest'] * 10
-            easiness_total += crit['ease'] * 10
-# XXX(Sandy): actually fill in a count and weight scores accordingly
-            interest_count += 10
-            easiness_count += 10
+            int_count = crit['interest_count']
+            eas_count = crit['easiness_count']
+
+            interest_total += crit['interest'] * int_count
+            easiness_total += crit['easiness'] * eas_count
+            interest_count += int_count
+            easiness_count += eas_count
     else:
 # TODO(Sandy): log somewhere so we can track this
         print course['name'] + ' not found in critiques'

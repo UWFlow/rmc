@@ -48,42 +48,64 @@ while line:
 # COMMUNICATION
 # presentation in lectures (organization and clarity)
         c1 = normalize_score(scores[1])
+        c1r = scores[1]['num_replies']
 # response to questions
         c2 = normalize_score(scores[2])
+        c2r = scores[2]['num_replies']
 # oral presentation (audibility, articulation, english)
         c3 = normalize_score(scores[3])
+        c3r = scores[3]['num_replies']
 # visual presentation (organization, legibility, effective use of materials)
         c4 = normalize_score(scores[4])
+        c4r = scores[4]['num_replies']
+        c_total = c1 * 0.2 + c2 * 0.2 + c3 * 0.4 + c4 * 0.2
+        c_count = int(round(c1r * 0.2 + c2r * 0.2 + c3r * 0.4 + c4r * 0.2))
 # PASSION
 # attitude towards teachings the course
         p1 = normalize_score(scores[8])
+        p1r = scores[8]['num_replies']
 # OVERALL
 # overall appraisal of quality of teaching
         op1 = normalize_score(scores[10])
+        op1r = scores[10]['num_replies']
 
 # Course directed ratings
 # INTEREST
 # TODO(Sandy): Revise the use of this question-metric
 # how many classes attended
         i1 = normalize_score(scores[17])
+        i1r = scores[17]['num_replies']
 # EASINESS
+# difficulty of concepts
         e1 = normalize_score(scores[11])
+        e1r = scores[11]['num_replies']
+# workload
         e2 = normalize_score(scores[12])
+        e2r = scores[12]['num_replies']
+        e_total = e1 * 0.5 + e2 * 0.5
+        e_count = int(round(e1r * 0.5 + e2r * 0.5))
 # OVERALL
         oc1 = i1 * 0.5 + e1 * 0.25 + e2 * 0.25
+        oc_count = int(round(i1r * 0.5 + e1r * 0.25 + e2r * 0.25))
 
 # TODO(Sandy): Try different weightings to see if we can get better data
         rating = {
             "course": course_name,
-            "comm": c1 * 0.2 + c2 * 0.2 + c3 * 0.4 + c4 * 0.2,
-            "passion": p1,
-            "overall_course": oc1,
             "term": term,
             "year": year,
+            "comm": c_total,
+            "comm_count": c_count,
+            "passion": p1,
+            "passion_count": p1r,
+            "overall_course": oc1,
+            "overall_course_count": oc_count,
             "prof": critique["prof"],
             "interest": i1,
-            "ease": e1 * 0.5 + e2 * 0.5,
-            "overall_prof": op1
+            "interest_count": i1r,
+            "easiness": e_total,
+            "easiness_count": e_count,
+            "overall_prof": op1,
+            "overall_prof_count": op1r
         }
         course_evals.insert(rating)
 
