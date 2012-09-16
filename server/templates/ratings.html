@@ -8,13 +8,15 @@
         <%- rating.getDisplayName() %>
       </div>
       <div class="rating-bar-span span8">
-        <div class="shown-rating">
-          <div class="rating-progress progress <%- rating.getClass() %>">
-            <div class="rating-bar bar active" style="width: 0%;"></div>
+        <% if (!userOnly) { %>
+          <div class="shown-rating">
+            <div class="rating-progress progress <%- rating.getClass() %>">
+              <div class="rating-bar bar active" style="width: 0%;"></div>
+            </div>
           </div>
-        </div>
+        <% } %>
 
-        <div class="input-rating hide">
+        <div class="input-rating <%- userOnly ? '' : 'hide' %>">
           {# TODO(david): 5 should not be hardcoded #}
           <% for (var i = 0; i < 5; ++i) { %>
             <div class="rating-progress progress <%- rating.getClass() %>">

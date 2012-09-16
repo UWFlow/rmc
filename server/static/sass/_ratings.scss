@@ -13,7 +13,6 @@ $cell-height: 28px;
   text-align: right;
   @include force-height($cell-height);
   padding-right: 8px;
-  border-right: 1px solid #FFF;
 }
 
 .row-fluid .rating-bar-span {
@@ -69,12 +68,12 @@ $cell-height: 28px;
 
 // TODO(david): REFACTORRRRRR
 .row-fluid .input-rating:hover .rating-progress .rating-bar.bar {
-  opacity: 0.2;
+  opacity: 0.4;
+  cursor: pointer;
 }
 
 .row-fluid .rating-num-span {
   @include force-height($cell-height);
-  color: #555;
   font-weight: lighter;
   text-align: right;
 }

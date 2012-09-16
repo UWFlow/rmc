@@ -10,14 +10,14 @@ function(Backbone, $, _, _s, ratings, select2) {
       professor: {
         name: 'Larry Smith',
         passion: null,
-        clarity: 0.3,
-        overall: 0.4,
+        clarity: null,
+        overall: null,
         comments: 'Professor was Larry Smith. Enough said.'
       },
       course: {
-        easiness: 0.1,
-        interest: 0.7,
-        overall: 5,
+        easiness: null,
+        interest: null,
+        overall: null,
         comments: 'blha blahb lbha lbahbla blhabl blah balhb balh balh'
       }
     },
@@ -41,9 +41,9 @@ function(Backbone, $, _, _s, ratings, select2) {
     },
 
     setRating: function(name, value) {
-      // TODO(david): Alternatively, don't nest objects in backbone models
       var obj = this.getRatingObj(name);
       obj[name] = value;
+      this.trigger('change');
       return this.set(name, obj);
     }
   });
@@ -55,6 +55,18 @@ function(Backbone, $, _, _s, ratings, select2) {
     },
 
     initialize: function(options) {
+      this.courseRatingsView = new ratings.RatingsView({
+        userReviewModel: this.model,
+        userOnly: true,
+        ratings: new ratings.RatingCollection(
+            [{ name: 'interest' }, { name: 'easiness' }])
+      });
+      this.profRatingsView = new ratings.RatingsView({
+        userReviewModel: this.model,
+        userOnly: true,
+        ratings: new ratings.RatingCollection(
+            [{ name: 'clarity' }, { name: 'passion' }])
+      });
     },
 
     render: function() {
@@ -69,6 +81,11 @@ function(Backbone, $, _, _s, ratings, select2) {
       this.$('.comments')
         .autosize()
         .css('resize', 'none');
+
+      this.$('.course-ratings-placeholder').replaceWith(
+          this.courseRatingsView.render().el);
+      this.$('.prof-ratings-placeholder').replaceWith(
+          this.profRatingsView.render().el);
 
       return this;
     },

@@ -34,7 +34,9 @@ function(Backbone, $, _, _s, util) {
     getClass: function() {
       return {
         'interest': 'progress-info',
-        'easiness': 'progress-warning'
+        'easiness': 'progress-warning',
+        'passion': 'progress-danger',
+        'clarity': 'progress-success'
       }[this.get('name')];
     }
   });
@@ -59,11 +61,17 @@ function(Backbone, $, _, _s, util) {
     initialize: function(options) {
       this.ratings = options.ratings;
       this.userReviewModel = options.userReviewModel;
+      this.userOnly = options.userOnly;
+
+      this.userReviewModel.on('change', this.setUserRatings, this);
     },
 
     render: function() {
       var ratings = this.ratings;
-      this.$el.html(_.template($('#ratings-tpl').html(), { ratings: ratings }));
+      this.$el.html(_.template($('#ratings-tpl').html(), {
+          ratings: ratings,
+          userOnly: this.userOnly
+      }));
 
       // Set the width here instead of in the template for animations
       this.$('.shown-rating .bar').each(function(i, elem) {

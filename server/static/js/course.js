@@ -38,14 +38,15 @@ function(Backbone, $, _, _s, ratings, review) {
 
     initialize: function(options) {
       this.courseModel = options.courseModel;
+      var userReviewModel = this.courseModel.get('userReviewModel');
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
-        userReviewModel: this.courseModel.get('userReviewModel')
+        userReviewModel: userReviewModel
       });
       // TODO(david): Get user review data, and don't show or show altered if no
       //     user or user didn't take course.
       this.userReviewView = new review.UserReviewView({
-        model: new review.UserReviewModel()
+        model: userReviewModel
       });
     },
 
