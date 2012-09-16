@@ -25,7 +25,8 @@ function(Backbone, $, _, _s, ratings, select2) {
 
   var UserReviewView = Backbone.View.extend({
     events: {
-      'change .prof-select': 'showReview'
+      'change .prof-select': 'showReview',
+      'click .add-review': 'showReview'
     },
 
     initialize: function(options) {
@@ -49,6 +50,7 @@ function(Backbone, $, _, _s, ratings, select2) {
 
     showReview: function() {
       this.$('.review-details').slideDown();
+      this.$('.add-review').fadeOut('fast');
     }
   });
 

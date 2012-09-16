@@ -6,4 +6,6 @@ local:
 setup:
 	./setup.sh
 
-# TODO(david): make clean
+clean:
+	find . -name '*.pyc' -delete
+	rm -rf server/static/css
