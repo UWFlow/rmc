@@ -16,7 +16,7 @@
           </div>
         <% } %>
 
-        <div class="input-rating <%- userOnly ? '' : 'hide' %>">
+        <div class="input-rating <%- userOnly ? '' : 'hide-initial' %>">
           {# TODO(david): 5 should not be hardcoded #}
           <% for (var i = 0; i < 5; ++i) { %>
             <div class="rating-progress progress <%- rating.getClass() %>">
