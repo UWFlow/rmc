@@ -19,7 +19,8 @@ function(Backbone, $, _, _s, util) {
     },
 
     getAverage: function() {
-      return this.get('total') / Math.max(1, this.get('count'));
+      // TODO(david) FIXME: Normalize all the numbers correctly
+      return (this.get('total') / Math.max(1, this.get('count'))) * 0.8 + 0.2;
     },
 
     getPercent: function() {
