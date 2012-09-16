@@ -22,6 +22,15 @@ function(Backbone, $, _, _s, ratings, select2) {
       }
     },
 
+    initialize: function(attributes) {
+      if (!attributes || !attributes.professor) {
+        this.set('professor', _.clone(this.defaults.professor));
+      }
+      if (!attributes || !attributes.course) {
+        this.set('course', _.clone(this.defaults.course));
+      }
+    },
+
     // TODO(david): If I designed this better, all this code below might not be
     //     necessary
     getRatingObj: function(name) {

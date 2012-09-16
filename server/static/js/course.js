@@ -10,7 +10,7 @@ function(Backbone, $, _, _s, ratings, review) {
       rating: 2.5,
       numRatings: 49,
       numFriendsTook: 2,
-      userReviewModel: new review.UserReviewModel(),
+      userReviewModel: null,
       description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
         ' everything in between. Become enthralled in the wonderful' +
@@ -29,6 +29,9 @@ function(Backbone, $, _, _s, ratings, review) {
     initialize: function(attributes) {
       if (attributes.ratings) {
         this.set('ratings', new ratings.RatingCollection(attributes.ratings));
+      }
+      if (!attributes.userReviewModel) {
+        this.set('userReviewModel', new review.UserReviewModel());
       }
     }
   });
