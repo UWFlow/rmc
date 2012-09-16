@@ -1,6 +1,7 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string'],
-function(Backbone, $, _, _s) {
+['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+'util'],
+function(Backbone, $, _, _s, util) {
 
   var NUM_SEGMENTS = 5;
   // TODO(david): Refactor all the row-fluid to use an actual class name
@@ -11,6 +12,10 @@ function(Backbone, $, _, _s) {
       name: 'interest',
       count: 10,
       total: 7
+    },
+
+    getDisplayName: function() {
+      return util.capitalize(this.get('name'));
     },
 
     getAverage: function() {
@@ -40,6 +45,7 @@ function(Backbone, $, _, _s) {
     getNameAt: function(index) {
       return this.at(index).get('name');
     }
+
   });
 
   var RatingsView = Backbone.View.extend({

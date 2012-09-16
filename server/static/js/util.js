@@ -13,7 +13,15 @@ function() {
     }
   };
 
+  /**
+   * Capitalize the first letter of a string.
+   */
+  var capitalize = function(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   return {
-    getQueryParam: getQueryParam
+    getQueryParam: getQueryParam,
+    capitalize: capitalize
   };
 });
