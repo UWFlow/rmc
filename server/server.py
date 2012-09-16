@@ -110,12 +110,18 @@ def search_courses():
     )
     limited_courses = sorted_courses.skip(offset).limit(count)
     courses = map(clean_course, limited_courses)
+    print 'clean_course', courses
     return flask.jsonify(courses=courses)
 
 
 # Helper functions
 
 def clean_course(course):
+    NORMALIZE_FACTOR = 5
+    interest_count = course['ratings']['interest']['count']
+    interest_total = float(course['ratings']['interest']['total']) / NORMALIZE_FACTOR
+    easiness_count = course['ratings']['easy']['count']
+    easiness_total = float(course['ratings']['easy']['total']) / NORMALIZE_FACTOR
     return {
         'id': course['name'],
         'name': course['title'],
@@ -129,12 +135,12 @@ def clean_course(course):
         'rating': round(course['ratings']['aggregate']['average']*10)/10,
         'ratings': [{
             'name': 'interest',
-            'count': course['ratings']['interest']['count'],
-            'total': course['ratings']['interest']['total'],
+            'count': interest_count,
+            'total': interest_total,
         }, {
             'name': 'easiness',
-            'count': course['ratings']['easy']['count'],
-            'total': course['ratings']['easy']['total'],
+            'count': easiness_count,
+            'total': easiness_total,
         }]
     }
 
