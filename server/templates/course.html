@@ -7,7 +7,7 @@
   <div class="course-name"><%- name %></div>
   <!-- TODO(mack): include functions to handle singular/plural -->
   <div class="rating-box badge badge-inverse">
-    <div class="rating"><%- rating %></div>
+    <div class="rating"><%- _s.sprintf('%.1f', rating) %></div>
     <div class="num-ratings"><%- numRatings %> ratings</div>
   </div>
   <div class="num-friends"><%- numFriendsTook %> friends have taken this course</div>
