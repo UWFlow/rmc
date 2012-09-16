@@ -29,7 +29,8 @@ function(Backbone, $, _, _s) {
       'mouseenter .friend-pic': 'showHovercard',
       'mouseleave .friend-pic': 'hideHovercard',
       'mouseenter .friend-name': 'showHovercard',
-      'mouseleave .friend-name': 'hideHovercard'
+      'mouseleave .friend-name': 'hideHovercard',
+      'click .friend-hovercard': 'clickHovercard'
     },
 
     showHovercard: function(evt) {
@@ -51,6 +52,11 @@ function(Backbone, $, _, _s) {
     hideHovercard: function(evt) {
       this.hovercardView.remove();
       this.hovercardView.unbind();
+    },
+
+    clickHovercard: function(evt) {
+      console.log('here');
+      evt.preventDefault();
     }
   });
 

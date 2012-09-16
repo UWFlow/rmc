@@ -54,7 +54,6 @@
   cursor: default;
   color: $textColor;
 
-  width: $inner-width + 2*$outer-padding;
   padding: $outer-padding;
   background: transparent;
   position: absolute;
@@ -66,19 +65,7 @@
     $background-color: rgba(255, 255, 255, 0.98);
     $border-color: #C5C5C5;
 
-    position: relative;
-    width: $inner-width;
-
-    @include box-shadow(0px 3px 8px rgba(0, 0, 0, 0.25));
-    @include border-radius(3px);
-    background: $background-color;
-    border: $border-size solid;
-    border-color: $border-color;
-    border-color: rgba($border-color, 0.4);
-
-    padding: 10px;
-    z-index: 1;
-
+    // TODO(mack): fix positon of arrow
     &:after, &:before {
       right: 100%;
       border: solid transparent;
@@ -105,14 +92,45 @@
       top: $arrow-top;
     }
 
-    .mini-course {
-      .course-id {
-        font-size: 20px;
-        font-weight: bold;
+    @extend .clearfix;
+    position: relative;
+    width: $inner-width;
+
+    @include box-shadow(0px 3px 8px rgba(0, 0, 0, 0.25));
+    @include border-radius(3px);
+    background: $background-color;
+    border: $border-size solid;
+    border-color: $border-color;
+    border-color: rgba($border-color, 0.4);
+
+    z-index: 1;
+
+    .term-name {
+      font-size: 24px;
+      font-weight: bold;
+      background-color: #BBB;
+      padding: 8px;
+    }
+
+    .mini-courses {
+      list-style: none;
+      margin-left: 0;
+      padding: 10px;
+
+      .mini-course {
+        margin-top: 3px;
+        .course-id {
+          font-size: 20px;
+        }
+        .course-name {
+          font-size: 20px;
+        }
       }
-      .course-name {
-        font-size: 20px;
-      }
+    }
+
+    .view-profile {
+      float: right;
+      padding: 0 10px 10px 0;
     }
   }
 }
