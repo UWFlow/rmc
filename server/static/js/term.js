@@ -27,6 +27,7 @@ function(Backbone, _, course) {
       });
       this.$el.find('.course-collection-placeholder').replaceWith(
         this.courseCollectionView.render().el);
+      this.$('.course-collection').addClass('hide-initial');
 
       return this;
     },
@@ -36,7 +37,30 @@ function(Backbone, _, course) {
     },
 
     toggleTermVisibility: function(evt) {
-      this.$('.course-collection').toggle();
+      if (this.$('.course-collection').is(':visible')) {
+        this.collapseTerm(evt);
+      } else {
+        this.expandTerm(evt);
+      }
+    },
+
+    expandTerm: function(evt) {
+      var duration = 300;
+      this.$('.course-collection')
+        .css('opacity', 0)
+        .animate({
+          opacity: 1.0
+        }, {
+          duration: duration,
+          queue: false
+        })
+        .slideDown(duration);
+    },
+
+    collapseTerm: function(evt) {
+      this.$('.course-collection')
+        .stop(/* clearQueue */ true)
+        .slideUp(300);
     }
 
   });
@@ -58,7 +82,7 @@ function(Backbone, _, course) {
 
     render: function() {
       this.$el.empty();
-      this.termCollection.each(function(termModel) {
+      this.termCollection.each(function(termModel, idx) {
         var termView = new TermView({
           tagName: 'li',
           termModel: termModel
@@ -66,6 +90,10 @@ function(Backbone, _, course) {
         this.$el.append(termView.render().el);
         this.termViews.push(termView);
       }, this);
+
+      if (this.termViews) {
+        this.termViews[0].toggleTermVisibility();
+      }
 
       return this;
     }
