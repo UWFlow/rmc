@@ -36,7 +36,7 @@ line = input_file.readline()
 while line:
 	data = ast.literal_eval(line);
 
-	course_name = data["code"] + " " + data["num"]
+	course_name = data["code"] + data["num"]
 
 	for critique in data["critiques"]:
 		prof_name = critique["prof"]
@@ -63,14 +63,14 @@ while line:
 
 # Course directed ratings
 # INTEREST
-# XXX(Sandy): Revise the use of this question-metric before launch
+# TODO(Sandy): Revise the use of this question-metric
 # how many classes attended
-		i1 = normalize_score(scores[18])
+		i1 = normalize_score(scores[17])
 # EASINESS
 		e1 = normalize_score(scores[11])
 		e2 = normalize_score(scores[12])
 # OVERALL
-		oc1 = normalize_score(scores[17])
+		oc1 = i1 * 0.5 + e1 * 0.25 + e2 * 0.25
 
 # TODO(Sandy): Try different weightings to see if we can get better data
 		rating = {
