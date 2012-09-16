@@ -137,6 +137,8 @@ def clean_course(course, critiques):
     interest_total = float(course['ratings']['interest']['total']) / NORMALIZE_FACTOR
     easiness_count = course['ratings']['easy']['count']
     easiness_total = float(course['ratings']['easy']['total']) / NORMALIZE_FACTOR
+    overall_course_count = course['ratings']['aggregate']['count']
+    overall_course_total = float(course['ratings']['aggregate']['average']) / NORMALIZE_FACTOR * overall_course_count
 
     if course['name'] in critiques:
         print course['name'] + ' found in critiques'
@@ -144,19 +146,26 @@ def clean_course(course, critiques):
         for crit in critiques[course['name']]:
             int_count = crit['interest_count']
             eas_count = crit['easiness_count']
+            co_count = crit['overall_course_count']
 
             interest_total += crit['interest'] * int_count
             easiness_total += crit['easiness'] * eas_count
+            overall_course_total += crit['overall_course'] * co_count
             interest_count += int_count
             easiness_count += eas_count
+            overall_course_count += co_count
     else:
 # TODO(Sandy): log somewhere so we can track this
         print course['name'] + ' not found in critiques'
 
+# TODO(Sandy): Might we want to normalize the overall on the client-side too?
+    overall_course = overall_course_total / overall_course_count * NORMALIZE_FACTOR
+    overall_course = round(overall_course*10)/10
+
     return {
         'id': course['name'],
         'name': course['title'],
-        'numRatings': course['ratings']['aggregate']['count'],
+        'numRatings': overall_course_count,
         'description': course['description'],
         'availFall': bool(int(course['availFall'])),
         'availSpring': bool(int(course['availSpring'])),
@@ -164,7 +173,7 @@ def clean_course(course, critiques):
         # TODO(mack): get actual number for this
         'numFriendsTook': random.randrange(0, 20),
 # XXX(Sandy): factor in critique data into overall
-        'rating': round(course['ratings']['aggregate']['average']*10)/10,
+        'rating': overall_course,
         'ratings': [{
             'name': 'interest',
             'count': interest_count,
