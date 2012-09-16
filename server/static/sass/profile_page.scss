@@ -4,15 +4,14 @@
 @import 'friend';
 
 #transcript-container {
-  #transcript-header {
-    font-weight: bold;
-    font-size: 32px;
-    line-height: 32px;
-    margin-bottom: 15px;
+  #transcript-instructions {
+    float: left;
+    text-align: right;
+    width: 300px;
+    margin-right: 40px;
   }
   #transcript-text {
-    width: 100%;
-    height: 150px;
+    width: 500px;
     overflow: hidden;
   }
 
