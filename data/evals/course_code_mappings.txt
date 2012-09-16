@@ -1,0 +1,1 @@
+{'CH E': 'CHE', 'CHEMISTRY': 'CHEM', 'CIV E': 'CIVE', 'E&CE': 'ECE', 'ENV.ENG.': 'ENVE', 'GEN E': 'GENE', 'M SCI': 'MSCI', 'SY DE': 'SYDE'}

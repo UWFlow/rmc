@@ -6,6 +6,7 @@ import pickle
 import urllib
 import urllib2
 import sys
+import ast
 
 # Supply your own credentials here
 username = ""
@@ -36,6 +37,9 @@ file.close()
 file = open("course_list.txt","r")
 courses = file.read().split("|")
 file.close()
+file = open("course_code_mappings.txt");
+course_code_mappings = ast.literal_eval(file.read());
+file.close();
 file = open(output_file_name,"w")
 err_file = open(error_file_name,"w")
 
@@ -46,6 +50,9 @@ for course in courses:
 	last_space = course.rfind(" ")
 	course_code = course[:last_space]
 	course_num = course[last_space + 1:]
+	if course_code in course_code_mappings:
+		print "matched for " + course_code + " to be " + course_code_mappings[course_code]
+		course_code = course_code_mappings[course_code];
 
 # Fetch the results page
 	data = urllib.urlencode(post_headers)
@@ -122,4 +129,4 @@ for course in courses:
 
 	
 file.close()
-
+err_file.close()
