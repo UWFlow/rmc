@@ -105,14 +105,15 @@ function(Backbone, $, _, _s, util) {
       var $rowElem = $target.closest('.row-fluid');
       var value = $target.index() + 1;
       this.selectRating($rowElem.find('.input-rating'), value);
-
-      $rowElem.find('.rating-num-span').text(value);
     },
 
     selectRating: function(inputRatingElem, value) {
-      $(inputRatingElem).find('.rating-bar').each(function(i, elem) {
-        $(elem).toggleClass('bar', i < value).css('opacity', '');
-      });
+      var numberValue = value === 0 ? '' : value;
+      $(inputRatingElem)
+        .find('.rating-bar').each(function(i, elem) {
+          $(elem).toggleClass('bar', i < value).css('opacity', '');
+        })
+        .closest('.row-fluid').find('.input-rating-num').text(numberValue);
     },
 
     onRatingClick: function(evt) {

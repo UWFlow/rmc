@@ -42,6 +42,17 @@ $cell-height: 28px;
   display: none;
 }
 
+&:hover .shown-rating-num {
+  display: none;
+}
+
+.input-rating-num{
+  display: none;
+}
+&:hover .input-rating-num {
+  display: block;
+}
+
 // TODO(david): Needs refactoring to be closer to other declarations
 // TODO(david): needs to be made the same length as normal bar
 .row-fluid .input-rating {

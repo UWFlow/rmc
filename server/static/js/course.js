@@ -75,6 +75,7 @@ function(Backbone, $, _, _s, ratings, review) {
       }
     },
 
+    // XXX TODO(david) FIXME: need to not render expanded HTML until needed
     expandCourse: function(evt) {
       var duration = 300;
       this.$('.expand-section')
