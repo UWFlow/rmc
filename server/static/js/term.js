@@ -42,6 +42,7 @@ function(Backbone, _, course) {
       'click .term-name': 'toggleTermVisibility'
     },
 
+    // TODO(mack): remove duplicate with similar logic in CourseView
     toggleTermVisibility: function(evt) {
       if (this.$('.course-collection').is(':visible')) {
         this.collapseTerm(evt);

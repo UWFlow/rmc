@@ -162,15 +162,18 @@ def clean_course(course, critiques):
     overall_course = overall_course_total / overall_course_count * NORMALIZE_FACTOR
     overall_course = round(overall_course*10)/10
 
-
-    professor_names = []
-    for professor in course['professors']:
-        splits = professor['name'].split(',', 1)
+    def format_professor_name(professor_name):
+        splits = professor_name.split(',', 1)
         professor_name = splits[0]
         if len(splits) == 2:
             professor_name = '%s %s' % (splits[1].strip(), splits[0].strip())
         else:
             professor_name = splits[0].strip()
+        return professor_name
+
+    professor_names = []
+    for professor in course['professors']:
+        professor_name = format_professor_name(professor['name'])
         professor_names.append(professor_name)
     professor_names = sorted(professor_names)
 
