@@ -102,16 +102,23 @@ def search_courses():
     count = int(request.values.get('count', 10))
     offset = int(request.values.get('offset', 0))
 
-    filters = []
+    filters = None
     if keywords:
-        keywords_re = re.compile(keywords, re.IGNORECASE)
-        keywords_filters = []
-        for field in ['name', 'title']:
-            keywords_filters.append({field: {'$regex': keywords_re}})
-        filters.append({'$or': keywords_filters})
-    if len(filters) > 0:
-        unsorted_courses = db.courses.find({'$and': filters})
-        critiques = db.course_evals.find({'$and': filters})
+        keywords = re.sub('\s+', ' ', keywords)
+        keywords = keywords.split(' ')
+
+        def regexify_keywords(keyword):
+            keyword = keyword.lower()
+            return re.compile('^%s' % keyword)
+            #return '^%s' % keyword
+
+        keywords = map(regexify_keywords, keywords)
+        filters = { '_keywords': { '$all': keywords } }
+    if filters:
+        unsorted_courses = db.courses.find(filters)
+        # TODO(mack): add support for course_evals
+        #critiques = db.course_evals.find({'$and': filters})
+        critiques =[]
     else:
         unsorted_courses = db.courses.find()
         critiques = db.course_evals.find()

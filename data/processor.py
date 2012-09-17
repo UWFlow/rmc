@@ -49,9 +49,19 @@ def import_courses():
   courses = db.courses
   departments = db.departments
 
+  def build_keywords(department, number, course_title):
+    department = department.lower()
+    number = str(number)
+    course_title = course_title.lower()
+    course_title = re.sub(r'\s+', ' ', course_title)
+    keywords = [department, number, department + number]
+    keywords.extend(course_title.split(' '))
+    return keywords
+
   courses.remove()
   courses.ensure_index('name', unique=True)
   courses.ensure_index('title', unique=True)
+  courses.ensure_index('_keywords')
   ensure_rating_indices(courses)
   for file_name in glob.glob(os.path.join(sys.path[0], COURSES_DATA_DIR, '*.txt')):
     f = open(file_name, 'r')
@@ -65,6 +75,8 @@ def import_courses():
         continue
       course['name'] = course_name
       course['title'] = course['Title']
+      course['_keywords'] = build_keywords(
+          course['DeptAcronym'], course['Number'], course['title'])
       del course['Title']
       course['description'] = course['Description']
       del course['Description']
