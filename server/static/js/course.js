@@ -32,9 +32,7 @@ function(Backbone, $, _, _s, ratings, review) {
         this.set('ratings', new ratings.RatingCollection(attributes.ratings));
       }
       if (!attributes.userReviewModel) {
-        this.set('userReviewModel', new review.UserReviewModel({
-          courseModel: this
-        }));
+        this.set('userReviewModel', new review.UserReviewModel());
       }
     }
   });
@@ -52,7 +50,8 @@ function(Backbone, $, _, _s, ratings, review) {
       // TODO(david): Get user review data, and don't show or show altered if no
       //     user or user didn't take course.
       this.userReviewView = new review.UserReviewView({
-        model: userReviewModel
+        userReviewModel: userReviewModel,
+        courseModel: this.courseModel
       });
     },
 

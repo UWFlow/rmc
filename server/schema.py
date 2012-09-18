@@ -28,13 +28,13 @@ user_courses
 - course_review
     - interest: {count, rating}
     - easiness: {count, rating}
-    - review
-    - review_date
+    - comment
+    - comment_date
 - prof_review
     - passion: {count, rating}
     - clarity: {count, rating}
-    - review
-    - review_date
+    - comment
+    - comment_date
 
 sections
 - prof_id

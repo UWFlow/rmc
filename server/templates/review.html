@@ -10,7 +10,6 @@
         with
         <select data-placeholder="which professor?" class="prof-select">
         <option></option>
-        <% courseModel = courseModel.toJSON(); %>
         <% _.each(courseModel.professorNames, function(professorName) { %>
           <option><%- professorName %></option>
         <% }); %>

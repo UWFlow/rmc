@@ -6,41 +6,40 @@ function(Backbone, $, _, _s, ratings, select2) {
   // TODO(david): May want to refactor to just a UserCourse model
   var UserReviewModel = Backbone.Model.extend({
     defaults: {
-      courseModel: null,
       term: 'Spring 2012',
-      professor: {
+      prof_review: {
         name: 'Larry Smith',
         passion: null,
         clarity: null,
         overall: null,
-        comments: 'Professor was Larry Smith. Enough said.'
+        comment: 'Professor was Larry Smith. Enough said.'
       },
-      course: {
+      course_review: {
         easiness: null,
         interest: null,
         overall: null,
-        comments: 'blha blahb lbha lbahbla blhabl blah balhb balh balh'
+        comment: 'blha blahb lbha lbahbla blhabl blah balhb balh balh'
       }
     },
 
     initialize: function(attributes) {
-      if (!attributes || !attributes.professor) {
-        this.set('professor', _.clone(this.defaults.professor));
+      if (!attributes || !attributes.prof_review) {
+        this.set('prof_review', _.clone(this.defaults.prof_review));
       }
-      if (!attributes || !attributes.course) {
-        this.set('course', _.clone(this.defaults.course));
+      if (!attributes || !attributes.course_review) {
+        this.set('course_review', _.clone(this.defaults.course_review));
       }
     },
 
     // TODO(david): If I designed this better, all this code below might not be
     //     necessary
     getRatingObj: function(name) {
-      var prof = this.get('professor');
+      var prof = this.get('prof_review');
       if (_.has(prof, name)) {
         return prof;
       }
 
-      var course = this.get('course');
+      var course = this.get('course_review');
       if (_.has(course, name)) {
         return course;
       }
@@ -67,25 +66,30 @@ function(Backbone, $, _, _s, ratings, select2) {
     },
 
     initialize: function(options) {
+      this.userReviewModel = options.userReviewModel;
+      this.courseModel = options.courseModel;
+
       this.courseRatingsView = new ratings.RatingsView({
-        userReviewModel: this.model,
+        userReviewModel: this.userReviewModel,
         userOnly: true,
         ratings: new ratings.RatingCollection(
             [{ name: 'interest' }, { name: 'easiness' }])
       });
       this.profRatingsView = new ratings.RatingsView({
-        userReviewModel: this.model,
+        userReviewModel: this.userReviewModel,
         userOnly: true,
         ratings: new ratings.RatingCollection(
             [{ name: 'clarity' }, { name: 'passion' }])
       });
 
-      this.model.on('change', this.allowSave, this);
+      this.userReviewModel.on('change', this.allowSave, this);
     },
 
     render: function() {
-      this.$el.html(
-        _.template($('#review-tpl').html(), this.model.toJSON()));
+      var context = _.extend(this.userReviewModel.toJSON(), {
+        courseModel: this.courseModel.toJSON()
+      });
+      this.$el.html(_.template($('#review-tpl').html(), context));
 
       // TODO(david): Make this prettier and conform to our styles
       // TODO(david): Allow adding a prof
