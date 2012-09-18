@@ -69,6 +69,7 @@ echo "Creating logs directory"
 mkdir -p data/logs
 ln -sf data/logs
 
+# TODO(david): Use prod_mongodb.conf
 echo "Setting up mongodb and installing as a daemon"
 sudo apt-get install -y mongodb
 sudo update-rc.d -f mongo_daemon remove
@@ -85,6 +86,7 @@ sudo ln -sfnv /etc/nginx/sites-available/rmc /etc/nginx/sites-enabled/rmc
 sudo service nginx restart
 
 echo "Setting up rmc and dependencies"
+# TODO(david): Call setup_ubuntu.sh
 # Install libraries needed for lxml
 sudo apt-get install -y libxml2-dev libxslt-dev
 # Setup compass
@@ -97,7 +99,7 @@ sudo gem install rdoc-data; sudo rdoc-data --install
 # Install pip requirements: sudo because we don't set up virtualenv
 ( cd rmc && sudo pip install -r requirements.txt )
 # Import data from various text files
-make import-data
+( cd rmc && make import-data )
 
 echo "Installing gae-continuous-deploy as a daemon"
 sudo update-rc.d -f mr-deploy-daemon remove
