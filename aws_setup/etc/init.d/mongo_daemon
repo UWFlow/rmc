@@ -1,0 +1,64 @@
+#!/bin/sh
+#
+# chkconfig: 2345 90 10
+#
+# Custom script for managing mongodb.
+# This abstracts away starting/stopping the multiple mongod instances
+# we require.
+#
+# To have the mongo processes start automatically (as root), copy this
+# file into /etc/init.d, and run:
+# $ sudo chkconfig --add mongo_cntrl
+#
+# From then on, it will start on reboot, and can be managed using
+# sudo service mongo_cntrl (restart|start|stop)
+#
+
+start() {
+    echo "Setting up log directories"
+    mkdir -p $HOME/logs/mongo
+    echo "Starting mongodb on default port with dbpath $HOME/logs/mongo"
+    # Note - default mongo port 27017
+    /usr/bin/mongod --fork \
+        --dbpath "$HOME/data/mongo" \
+        --logpath "$HOME/logs/mongo/mongo.log"
+}
+stop() {
+    echo "Killing all mongod processes owned by $USER"
+
+    # Will error if none are found, but that's OK.
+    killall mongod 2> /dev/null
+}
+restart() {
+  stop
+  start
+}
+# See how we were called.
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+    echo "Does not apply"
+    ;;
+  restart)
+    restart
+    ;;
+  condrestart|try-restart)
+    restart
+    ;;
+  reload)
+    restart
+    ;;
+  force-reload)
+    restart
+    ;;
+  *)
+    echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload}"
+    exit 2
+esac
+
+exit $?

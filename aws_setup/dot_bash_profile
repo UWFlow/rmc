@@ -1,0 +1,10 @@
+# .bash_profile
+
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+  . ~/.bashrc
+fi
+
+export HISTFILESIZE=20000
+# show timestamps with history command
+export HISTTIMEFORMAT="%F %T "
