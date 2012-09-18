@@ -25,7 +25,7 @@
   <div class="term-name"><%- lastTermName %></div>
   <!-- TODO(mack): move course-mini into own backbone view -->
   <ul class="mini-courses">
-  <% _.each(coursesTook, function(course) { %>
+  <% coursesTook.each(function(course) { %>
     <% course = course.toJSON(); %>
     <li class="mini-course">
       <a href="<%- '/course/' + course.id %>" class="course-id"><%- course.id %></a>

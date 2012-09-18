@@ -34,6 +34,41 @@ function(Backbone, _, _s) {
     model: UserModel
   });
 
+  UserCollection.getSampleCollection = function() {
+    var userCollection = new UserCollection();
+    // TODO(mack): remove stub data
+    var usersData = [
+      {
+        id: '001',
+        fbid: 541400376,
+        name: 'David Hu',
+        lastTermName: 'Spring 2012',
+        // TODO(mack): should be CourseCollection rather than array
+        coursesTook: [],
+      },
+      {
+        id: '002',
+        fbid: 164710326,
+        name: 'Mack Duan',
+        lastTermName: 'Fall 2012',
+        coursesTook: []
+      },
+      {
+        id: '003',
+        fbid: 518430508,
+        name: 'Sandy Wu',
+        lastTermName: 'Fall 2012',
+        coursesTook: []
+      },
+    ]
+    _.each(usersData, function(userData) {
+      var userModel = new UserModel(userData);
+      userCollection.add(userModel);
+    });
+
+    return userCollection;
+  }
+
   return {
     UserModel: UserModel,
     UserCollection: UserCollection
