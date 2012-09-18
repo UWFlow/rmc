@@ -14,4 +14,4 @@ compass compile rmc/server/static/
 # TODO(david): Benchmark with ab and use worker processes if necessary
 # TODO(david): Run as a daemon so will start on boot and can easily restart
 uwsgi -s /tmp/uwsgi.sock -w rmc.server.server:app --chmod-socket 666 \
-  --logto /home/rmc/logs/uwsgi --daemonize
+  --daemonize /home/rmc/logs/uwsgi.log
