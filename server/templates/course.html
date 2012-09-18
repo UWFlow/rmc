@@ -10,7 +10,9 @@
     <div class="rating"><%- _s.sprintf('%.1f', rating) %></div>
     <div class="num-ratings"><%- numRatings %> ratings</div>
   </div>
-  <div class="num-friends"><%- numFriendsTook %> friends have taken this course</div>
+  <div class="num-friends">
+    <%- _s.sprintf('%d %s', numFriendsTook, pluralize(numFriendsTook, 'friend has', 'friends have')) %> taken this course
+  </div>
   {# TODO(david): This is really dumb. Fix in a better way. #}
   <div style="clear: both; margin-bottom: -25px;"></div>
 </div>

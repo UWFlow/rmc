@@ -59,6 +59,15 @@ require(['ext/underscore', 'ext/underscore.string'], function(_, _s) {
       fbProfilePicUrl: function(fbid) {
         // TODO(mack): add support for custom width and height
         return _s.sprintf('https://graph.facebook.com/%d/picture', fbid);
+      },
+      pluralize: function(num, singular, plural) {
+        if (num === 1) {
+          return singular;
+        } else if (!plural) {
+          return singular + 's';
+        } else {
+          return plural;
+        }
       }
     };
 
