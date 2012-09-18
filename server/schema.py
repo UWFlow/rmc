@@ -26,15 +26,15 @@ user_courses
 - prof_id
 - section_id
 - course_review
-- interest: {count, rating}
-- easiness: {count, rating}
-- review
-- review_date
+    - interest: {count, rating}
+    - easiness: {count, rating}
+    - review
+    - review_date
 - prof_review
-- passion: {count, rating}
-- clarity: {count, rating}
-- review
-- review_date
+    - passion: {count, rating}
+    - clarity: {count, rating}
+    - review
+    - review_date
 
 sections
 - prof_id
