@@ -7,6 +7,14 @@
 # This can be run like
 #
 # $ cat setup.sh | ssh <hostname of EC2 machine> sh
+#
+# But first, make sure you've attached an EBS volume to the instance for
+# persistent, duplicated storage that survives reboots. Then, run
+#
+# ./create_role_account.sh rmc | ssh -i KEYFILE ubuntu@IP_ADDRESS sh
+#
+# to create the "rmc" user account.
+
 
 # Bail on any errors
 set -e
@@ -68,13 +76,6 @@ sudo ln -sfnv $CONFIG_DIR/etc/init.d/mongo_daemon /etc/init.d
 sudo update-rc.d mongo_daemon defaults
 sudo service mongo_daemon restart
 
-echo "Setting up rmc and dependencies"
-# Install libraries needed for lxml
-sudo apt-get install -y libxml2-dev libxslt-dev
-# Setup compass
-sudo gem install compass
-( cd rmc/server && compass init --config config.rb )
-
 echo "Installing nginx"
 sudo apt-get install -y nginx
 sudo rm -f /etc/nginx/sites-enabled/default
@@ -83,9 +84,18 @@ sudo ln -sfnv $CONFIG_DIR/etc/nginx/sites-available/rmc \
 sudo ln -sfnv /etc/nginx/sites-available/rmc /etc/nginx/sites-enabled/rmc
 sudo service nginx restart
 
-# We don't actually create a virtualenv for the user, so this installs
-# it into the system Python's dist-package directory (which requires sudo)
-sudo pip install -r gae-continuous-deploy/requirements.txt
+echo "Setting up rmc and dependencies"
+# Install libraries needed for lxml
+sudo apt-get install -y libxml2-dev libxslt-dev
+# Setup compass
+sudo gem install compass
+( cd rmc/server && compass init --config config.rb )
+# Setup bundle
+sudo gem install bundle
+sudo gem install rdoc-data; sudo rdoc-data --install
+( cd rmc/server && bundle install )
+# Install pip requirements: sudo because we don't set up virtualenv
+( cd rmc && sudo pip install -r requirements.txt )
 
 echo "Installing gae-continuous-deploy as a daemon"
 sudo update-rc.d -f mr-deploy-daemon remove

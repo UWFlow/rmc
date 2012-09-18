@@ -1,0 +1,9 @@
+server {
+  listen       80;
+  server_name  _;
+  location / { try_files $uri @rmc_app; }
+  location @rmc_app {
+    include uwsgi_params;
+    uwsgi_pass unix:/tmp/uwsgi.sock;
+  }
+}
