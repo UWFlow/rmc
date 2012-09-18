@@ -6,7 +6,7 @@ local:
 setup:
 	./setup.sh
 
-import-menlo:
+import-data:
 	PYTHONPATH=.. python data/processor.py
 
 clean:

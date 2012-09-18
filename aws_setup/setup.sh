@@ -96,6 +96,8 @@ sudo gem install rdoc-data; sudo rdoc-data --install
 ( cd rmc/server && bundle install )
 # Install pip requirements: sudo because we don't set up virtualenv
 ( cd rmc && sudo pip install -r requirements.txt )
+# Import data from various text files
+make import-data
 
 echo "Installing gae-continuous-deploy as a daemon"
 sudo update-rc.d -f mr-deploy-daemon remove
