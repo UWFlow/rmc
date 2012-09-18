@@ -1,3 +1,5 @@
+import rmc.shared.constants as c
+
 import argparse
 import glob
 from lxml import html
@@ -8,10 +10,6 @@ import sys
 import re
 import traceback
 import urllib2
-
-COURSES_DATA_DIR = 'courses'
-RATINGS_DATA_DIR = 'ratings'
-DEPARTMENTS_DATA_DIR = 'departments'
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -51,19 +49,67 @@ def get_departments():
             print 'text: ' + e_department.text_content() + ', link: ' + e_department.attrib['href']
     print 'found: {0} departments'.format(count)
 
-def get_courses():
+def get_data_from_url(url, num_tries=5):
+    tries = 0
+    while True:
+        try:
+            u = urllib2.urlopen(url)
+            result = u.read()
+            u.close()
+            if result:
+                data = json.loads(result)
+                return data
+            return None
+        except:
+            tries += 1
+            if tries == num_tries:
+                break
 
-    errors = []
+            wait = 2 ** (tries + 1)
+            error = 'Exception for {url}. Sleeping for {wait} secs'.format(
+                    url=url, wait=wait)
+            errors.append(error)
+            print error
+            traceback.print_exc(file=sys.stdout)
+            time.sleep(wait)
 
+    return None
+
+def get_department_codes():
     all_deps = set()
-    f = open(os.path.join(sys.path[0], '%s/departments.txt' % DEPARTMENTS_DATA_DIR))
+    f = open(os.path.join(sys.path[0], '%s/departments.txt' % c.DEPARTMENTS_DATA_DIR))
     data = json.load(f)
     f.close()
     for result in data:
-     all_deps.add(result['Acronym'].strip().lower())
+        all_deps.add(result['Acronym'].strip().lower())
+    return all_deps
+
+def get_uwdata_courses():
+    deps = get_department_codes()
+    api_key = 'f3de93555ceb01c4a3549c9246e26e80'
+
+    for dep in deps:
+        try:
+            url = 'http://api.uwdata.ca/v1/faculty/%s/courses.json?key=%s' % (dep, api_key)
+            data = get_data_from_url(url, num_tries=1)
+            courses = data['courses']
+
+            f = open(os.path.join(sys.path[0], '%s/%s.txt' % (c.UWDATA_COURSES_DATA_DIR, dep)), 'w')
+            f.write(json.dumps(courses))
+            f.close()
+            print 'good dep: %s' % dep
+
+        except Exception as ex:
+            print 'exp: %s' % ex
+            print 'bad dep: %s' % dep
+
+        time.sleep(10)
+
+def get_opendata_courses():
+    deps = get_department_codes()
 
     courses = {}
-    file_names = glob.glob(os.path.join(sys.path[0], '%s/*.txt' % RATINGS_DATA_DIR))
+    file_names = glob.glob(os.path.join(sys.path[0], '%s/*.txt' % c.RATINGS_DATA_DIR))
     for file_name in file_names:
         f = open(file_name, 'r')
         data = json.load(f)
@@ -77,80 +123,52 @@ def get_courses():
             if len(matches) != 1 or len(matches[0]) != 2:
                 continue
             dep = matches[0][0]
-            if dep not in all_deps:
+            if dep not in deps:
                 continue
             if not dep in courses:
                 courses[dep] = set()
             print 'Matched regex {dep}{num}'.format(dep=dep, num=matches[0][1])
             courses[dep].add(matches[0][1])
 
+    errors = []
     api_key = 'ead3606c6f096657ebd283b58bf316b6'
     bad_courses = 0
     bad_course_names = set()
     good_courses = 0
     for dep in courses:
         dep_courses = {}
-        try:
-            f = open(os.path.join(sys.path[0], '%s/%s.txt' % (COURSES_DATA_DIR, dep)))
-            dep_courses = json.load(f)
-            f.close()
-        except:
-            error = 'Course file for dep {dep} does not exist'.format(dep=dep)
-            errors.append(error)
-            print error
         print 'Processing department {dep}'.format(dep=dep)
         for num in courses[dep]:
             if num in dep_courses:
                 continue
             print '  Processing number {num}'.format(num=num)
-            tries = 0
-            while True:
-                is_bad_course = False
-                query = dep + num
-                url = 'http://api.uwaterloo.ca/public/v1/' + \
-                        '?key={api_key}&service=CourseInfo&q={query}&output=json'.format(api_key=api_key, query=query)
-                try:
-                    u = urllib2.urlopen(url)
-                    result = u.read()
-                    u.close()
-                    if not result:
-                        is_bad_course = True
-                    else:
-                        data = json.loads(result)
-                        if not 'response' in data or not 'data' in data['response']:
-                            is_bad_course = True
-                        else:
-                            data = data['response']['data']
-                            if not data:
-                                              is_bad_course = True
-                            elif isinstance(data['result'], list):
-                                              print 'More than one result for query {query}'.format(query=query)
-                                              is_bad_course = True
+            query = dep + num
+            url = 'http://api.uwaterloo.ca/public/v1/' + \
+                    '?key={api_key}&service=CourseInfo&q={query}&output=json'.format(api_key=api_key, query=query)
+            data = get_data_from_url(url)
+            try:
+                data = data['response']['data']
+            except:
+                is_bad_course = True
 
-                    if is_bad_course:
-                        bad_courses += 1
-                        if query not in bad_course_names:
-                            bad_course_names.add(query)
-                            error = 'Found new bad course {course}'.format(course=query)
-                            print error
-                            errors.append(error)
-                    else:
-                        good_courses += 1
-                        dep_courses[num] = data['result']
-                        print 'Found new course {query}'.format(query=query)
-                    break
-                except:
-                    wait = 2 ** (tries + 1)
-                    error = 'Exception for {url}. Sleeping for {wait} secs'.format(url=url, wait=wait)
-                    errors.append(error)
-                    print error
-                    traceback.print_exc(file=sys.stdout)
-                    time.sleep(wait)
-                    tries += 1
-                    if tries == 5:
-                        break
+            if not data:
+                is_bad_course = True
+            elif isinstance(data['result'], list):
+                is_bad_course = True
+                print 'More than one result for query {query}'.format(query=query)
+
+            if is_bad_course:
+                bad_courses += 1
+                bad_course_names.add(query)
+                error = 'Found new bad course {course}'.format(course=query)
+                print error
+                errors.append(error)
+            else:
+                good_courses += 1
+                dep_courses[num] = data['result']
+                print 'Found new course {query}'.format(query=query)
         try:
-            f = open(os.path.join(sys.path[0], '%s/%s.txt' % (COURSES_DATA_DIR, dep)), 'w')
+            f = open(os.path.join(sys.path[0], '%s/%s.txt' % (c.OPENDATA_COURSES_DATA_DIR, dep)), 'w')
             f.write(json.dumps(dep_courses))
             f.close()
         except Exception:
@@ -168,6 +186,7 @@ def get_courses():
     print 'Found {num} bad courses'.format(num=bad_courses)
     print 'Found {num} good courses'.format(num=good_courses)
     print 'Bad course names: {names}'.format(names=bad_course_names)
+
 
 def get_bad_courses():
     # PLAN OF ATTACK:
@@ -210,8 +229,10 @@ if __name__ == '__main__':
 
     if args.mode == 'departments':
         get_departments()
-    elif args.mode == 'courses':
-        get_courses()
+    elif args.mode == 'opendata_courses':
+        get_opendata_courses()
+    elif args.mode == 'uwdata_courses':
+        get_uwdata_courses()
     elif args.mode == 'bad_courses':
         get_bad_courses()
     else:

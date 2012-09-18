@@ -9,10 +9,6 @@ from pymongo import Connection
 import re
 import sys
 
-COURSES_DATA_DIR = 'courses'
-RATINGS_DATA_DIR = 'ratings'
-DEPARTMENTS_DATA_DIR = 'departments'
-
 def get_db():
     connection = Connection(c.MONGO_HOST, c.MONGO_PORT)
     return connection.rmc
@@ -23,7 +19,7 @@ def import_departments():
 
     departments.remove()
     departments.ensure_index('name', unique=True)
-    for file_name in glob.glob(os.path.join(sys.path[0], DEPARTMENTS_DATA_DIR, '*.txt')):
+    for file_name in glob.glob(os.path.join(sys.path[0], c.DEPARTMENTS_DATA_DIR, '*.txt')):
           f = open(file_name, 'r')
           data = json.load(f)
           f.close()
@@ -63,7 +59,7 @@ def import_courses():
     courses.ensure_index('title', unique=True)
     courses.ensure_index('_keywords')
     ensure_rating_indices(courses)
-    for file_name in glob.glob(os.path.join(sys.path[0], COURSES_DATA_DIR, '*.txt')):
+    for file_name in glob.glob(os.path.join(sys.path[0], c.OPENDATA_COURSES_DATA_DIR, '*.txt')):
           f = open(file_name, 'r')
           data = json.load(f)
           f.close()
@@ -94,7 +90,7 @@ def import_professors():
     professors.ensure_index('last_name')
     professors.ensure_index('prof_id', unique=True)
     ensure_rating_indices(professors)
-    file_names = glob.glob(os.path.join(sys.path[0], RATINGS_DATA_DIR, '*.txt'))
+    file_names = glob.glob(os.path.join(sys.path[0], c.RATINGS_DATA_DIR, '*.txt'))
     for file_name in file_names:
           f = open(file_name, 'r')
           data = json.load(f)
@@ -130,7 +126,7 @@ def import_ratings():
     ratings.ensure_index('professor_name')
     ratings.ensure_index('rating_id', unique=True)
     ratings.ensure_index('time')
-    file_names = glob.glob(os.path.join(sys.path[0], RATINGS_DATA_DIR, '*.txt'))
+    file_names = glob.glob(os.path.join(sys.path[0], c.RATINGS_DATA_DIR, '*.txt'))
     for file_name in file_names:
           f = open(file_name, 'r')
           data = json.load(f)
@@ -262,4 +258,3 @@ if __name__ == '__main__':
     import_ratings() # must be after departments, courses
     update_aggr_courses()
     update_aggr_professors()
-
