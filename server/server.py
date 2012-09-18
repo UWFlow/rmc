@@ -166,7 +166,7 @@ def clean_course(course, critiques):
         print course['name'] + ' not found in critiques'
 
 # TODO(Sandy): Might we want to normalize the overall on the client-side too?
-    overall_course = overall_course_total / overall_course_count * NORMALIZE_FACTOR
+    overall_course = overall_course_total / max(1, overall_course_count) * NORMALIZE_FACTOR
     overall_course = round(overall_course*10)/10
 
     def format_professor_name(professor_name):
@@ -190,9 +190,9 @@ def clean_course(course, critiques):
         'professorNames': professor_names,
         'numRatings': overall_course_count,
         'description': course['description'],
-        'availFall': bool(int(course['availFall'])),
-        'availSpring': bool(int(course['availSpring'])),
-        'availWinter': bool(int(course['availWinter'])),
+        #'availFall': bool(int(course['availFall'])),
+        #'availSpring': bool(int(course['availSpring'])),
+        #'availWinter': bool(int(course['availWinter'])),
         # TODO(mack): get actual number for this
         'numFriendsTook': random.randrange(0, 20),
 # XXX(Sandy): factor in critique data into overall
