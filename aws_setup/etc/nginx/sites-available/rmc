@@ -1,6 +1,6 @@
 server {
   listen       80;
-  server_name  _;
+  server_name  planyourflow.com;
   location / { try_files $uri @rmc_app; }
   location @rmc_app {
     include uwsgi_params;
