@@ -97,6 +97,16 @@ def get_uwdata_courses():
         '66e3d70ec73751bc2c97e5ed0928d540',
         '29d72333db3101ba4116f8f53a43ec1a',
         'f3de93555ceb01c4a3549c9246e26e80',
+        '0cbe961fa7e90673b4f0fd044e34f482',
+        'cb161a9fb97bbf587537aaa2f3ae509c',
+        '755c57f708bdd8fb328be94e42208896',
+        '2995c0f9bf938b0bef995963259ed0c1',
+        '905a4e2847c7e2c9d6d7e288616d36c4',
+        'ae7a1f4106ac503f9c5b093c052cc650',
+        '51273f24f060f3da9a41a37b0ee5189d',
+        '90f367867c56e60c030f4328b080d38c',
+        'd69ac2f73f24f4677b80bcdc352c67c3',
+        '344e78663dc05056da366dc30bb7a272',
     ]
 
     for idx, dep in enumerate(deps):
@@ -120,7 +130,7 @@ def get_uwdata_courses():
             print 'exp: %s' % ex
             print 'bad dep: %s' % dep
 
-        time.sleep(121)
+        time.sleep(3)
 
 def get_opendata_courses():
     deps = get_department_codes()
