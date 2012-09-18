@@ -45,6 +45,16 @@ def import_courses():
     courses = db.courses
     departments = db.departments
 
+    courses.remove()
+    courses.ensure_index('name', unique=True)
+    courses.ensure_index('title', unique=True)
+    courses.ensure_index('_keywords')
+    ensure_rating_indices(courses)
+
+
+    def get_department_name_from_file_path(file_path):
+        return re.findall(r'([^/]*).txt$', file_path)[0].upper()
+
     def build_keywords(department, number, course_title):
         department = department.lower()
         number = str(number)
@@ -54,29 +64,60 @@ def import_courses():
         keywords.extend(course_title.split(' '))
         return keywords
 
-    courses.remove()
-    courses.ensure_index('name', unique=True)
-    courses.ensure_index('title', unique=True)
-    courses.ensure_index('_keywords')
-    ensure_rating_indices(courses)
-    for file_name in glob.glob(os.path.join(sys.path[0], c.OPENDATA_COURSES_DATA_DIR, '*.txt')):
-        f = open(file_name, 'r')
-        data = json.load(f)
-        f.close()
-        for course_code in data:
-            course = data[course_code]
-            course_name = course['DeptAcronym'] + course['Number']
-            if departments.find({'name': course['DeptAcronym']}).count() == 0:
-                print 'skipping ' + course_name
-                continue
-            course['name'] = course_name
-            course['title'] = course['Title']
-            course['_keywords'] = build_keywords(
-                                  course['DeptAcronym'], course['Number'], course['title'])
-            del course['Title']
-            course['description'] = course['Description']
-            del course['Description']
+    def clean_opendata_course(course):
+        return {
+            'name': '%s%s' % (course['DeptAcronym'].upper(), course['Number']),
+            'title': course['Title'],
+            'description': course['Description'],
+            '_keywords': build_keywords(
+                course['DeptAcronym'], course['Number'], course['Title']),
+        }
+
+
+    for file_name in glob.glob(os.path.join(
+            sys.path[0], c.OPENDATA_COURSES_DATA_DIR, '*.txt')):
+
+        with open(file_name, 'r') as f:
+            data = json.load(f)
+
+        dep_name = get_department_name_from_file_path(file_name)
+        if not departments.find_one({'name': dep_name}):
+            print 'could not find department %s' % dep_name
+            continue
+
+        for course in data.values():
+            course = clean_opendata_course(course)
             courses.insert(course)
+
+    def clean_uwdata_course(dep, course):
+        course = course['course']
+        return {
+            'name': '%s%s' % (dep.upper(), course['course_number']),
+            'title': course['title'],
+            'description': course['description'],
+            '_keywords': build_keywords(
+                    dep, course['course_number'], course['title']),
+        }
+
+    uwdata_count = 0
+    for file_name in glob.glob(os.path.join(
+            sys.path[0], c.UWDATA_COURSES_DATA_DIR, '*.txt')):
+
+        with open(file_name, 'r') as f:
+            data = json.load(f)
+
+        dep_name = get_department_name_from_file_path(file_name)
+        if not departments.find_one({'name': dep_name}):
+            print 'could not find department %s' % dep_name
+            continue
+
+        for course in data:
+            course = clean_uwdata_course(dep_name, course)
+            if not courses.find_one({'name': course['name']}):
+                uwdata_count += 1
+                courses.insert(course)
+
+    print 'backfilled %d courses from uwdata' % uwdata_count
     print 'imported courses:', courses.count()
 
 def import_professors():
@@ -253,7 +294,7 @@ def update_aggr_professors():
 
 if __name__ == '__main__':
     import_departments()
-    import_courses() # must be after departments
+    import_courses()
     import_professors()
     import_ratings() # must be after departments, courses
     update_aggr_courses()
