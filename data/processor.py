@@ -17,7 +17,7 @@ def import_departments():
     db = get_db()
     departments = db.departments
 
-    departments.remove()
+    departments.drop()
     departments.ensure_index('name', unique=True)
     for file_name in glob.glob(os.path.join(sys.path[0], c.DEPARTMENTS_DATA_DIR, '*.txt')):
         f = open(file_name, 'r')
@@ -45,12 +45,11 @@ def import_courses():
     courses = db.courses
     departments = db.departments
 
-    courses.remove()
+    courses.drop()
     courses.ensure_index('name', unique=True)
-    courses.ensure_index('title', unique=True)
+    courses.ensure_index('title')
     courses.ensure_index('_keywords')
     ensure_rating_indices(courses)
-
 
     def get_department_name_from_file_path(file_path):
         return re.findall(r'([^/]*).txt$', file_path)[0].upper()
@@ -114,6 +113,7 @@ def import_courses():
 
         for course in data:
             course = clean_uwdata_course(dep_name, course)
+
             if not courses.find_one({'name': course['name']}):
                 uwdata_count += 1
                 courses.insert(course)
@@ -128,7 +128,7 @@ def import_professors():
     db = get_db()
     professors = db.professors
 
-    professors.remove()
+    professors.drop()
     professors.ensure_index('department')
     professors.ensure_index('name', unique=True)
     professors.ensure_index('first_name')
@@ -166,7 +166,7 @@ def import_ratings():
         'r_interest': 'interest',
     }
 
-    ratings.remove()
+    ratings.drop()
     ratings.ensure_index('course_name')
     ratings.ensure_index('professor_name')
     ratings.ensure_index('rating_id', unique=True)
