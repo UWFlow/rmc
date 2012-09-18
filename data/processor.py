@@ -139,10 +139,10 @@ def import_professors():
         prof_name = data['prof_name']
         matches = re.findall(r'^(.+?), (.+)$', prof_name)[0]
         professor = {
-                'name': prof_name,
-                'last_name': matches[0],
-                'first_name': matches[1],
-                'prof_id': data['prof_id'],
+            'name': prof_name,
+            'last_name': matches[0],
+            'first_name': matches[1],
+            'prof_id': data['prof_id'],
         }
         professor['department'] = None
         if 'info' in data and 'Department' in data['info']:
@@ -156,10 +156,10 @@ def import_ratings():
     courses = db.courses
     departments = db.departments
     rating_mappings = {
-          'r_clarity': 'clarity',
-          'r_easy': 'easy',
-          'r_helpful': 'helpful',
-          'r_interest': 'interest',
+        'r_clarity': 'clarity',
+        'r_easy': 'easy',
+        'r_helpful': 'helpful',
+        'r_interest': 'interest',
     }
 
     ratings.remove()
@@ -211,27 +211,27 @@ def import_ratings():
 def update_ratings(category):
     db = get_db()
     category_mapping = {
-          'course': {
-                  'collection': db.courses,
-                  'key': 'course_name',
-                  'list': 'professors',
-                  'other': 'professor_name',
-          }, 'professor': {
-                  'collection': db.professors,
-                  'key': 'professor_name',
-                  'list': 'courses',
-                  'other': 'course_name',
-          },
+        'course': {
+            'collection': db.courses,
+            'key': 'course_name',
+            'list': 'professors',
+            'other': 'professor_name',
+        }, 'professor': {
+            'collection': db.professors,
+            'key': 'professor_name',
+            'list': 'courses',
+            'other': 'course_name',
+        },
     }
     category_data = category_mapping[category]
     collection = category_data['collection']
     rating_defaults = {
-          'count': 0,
-          'aggregate': {'count': 0, 'total': 0, 'average': 0.0},
-          'clarity': {'count': 0, 'total': 0, 'average': 0.0},
-          'easy': {'count': 0, 'total': 0, 'average': 0.0},
-          'helpful': {'count': 0, 'total': 0, 'average': 0.0},
-          'interest': {'count': 0, 'total': 0, 'average': 0.0},
+        'count': 0,
+        'aggregate': {'count': 0, 'total': 0, 'average': 0.0},
+        'clarity': {'count': 0, 'total': 0, 'average': 0.0},
+        'easy': {'count': 0, 'total': 0, 'average': 0.0},
+        'helpful': {'count': 0, 'total': 0, 'average': 0.0},
+        'interest': {'count': 0, 'total': 0, 'average': 0.0},
     }
     rating_types = ['clarity', 'easy', 'helpful', 'interest']
     category_names = collection.distinct('name')
@@ -242,8 +242,8 @@ def update_ratings(category):
         other_names = db.ratings.find({category_data['key']: category_name}).distinct(category_data['other'])
         for other_name in other_names:
             other = {
-                      'name': other_name,
-                      'ratings': copy.deepcopy(rating_defaults),
+                'name': other_name,
+                'ratings': copy.deepcopy(rating_defaults),
             }
             ratings_data = db.ratings.find({category_data['key']: category_name, category_data['other']: other_name})
             for rating_data in ratings_data:
