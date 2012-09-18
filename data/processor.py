@@ -20,12 +20,12 @@ def import_departments():
     departments.remove()
     departments.ensure_index('name', unique=True)
     for file_name in glob.glob(os.path.join(sys.path[0], c.DEPARTMENTS_DATA_DIR, '*.txt')):
-          f = open(file_name, 'r')
-          data = json.load(f)
-          f.close()
-          for department in data:
-                  department['name'] = department['Acronym']
-                  departments.insert(department)
+        f = open(file_name, 'r')
+        data = json.load(f)
+        f.close()
+        for department in data:
+            department['name'] = department['Acronym']
+            departments.insert(department)
     print 'imported departments:', departments.count()
 
 def ensure_rating_indices(collection):
@@ -46,13 +46,13 @@ def import_courses():
     departments = db.departments
 
     def build_keywords(department, number, course_title):
-          department = department.lower()
-          number = str(number)
-          course_title = course_title.lower()
-          course_title = re.sub(r'\s+', ' ', course_title)
-          keywords = [department, number, department + number]
-          keywords.extend(course_title.split(' '))
-          return keywords
+        department = department.lower()
+        number = str(number)
+        course_title = course_title.lower()
+        course_title = re.sub(r'\s+', ' ', course_title)
+        keywords = [department, number, department + number]
+        keywords.extend(course_title.split(' '))
+        return keywords
 
     courses.remove()
     courses.ensure_index('name', unique=True)
@@ -60,23 +60,23 @@ def import_courses():
     courses.ensure_index('_keywords')
     ensure_rating_indices(courses)
     for file_name in glob.glob(os.path.join(sys.path[0], c.OPENDATA_COURSES_DATA_DIR, '*.txt')):
-          f = open(file_name, 'r')
-          data = json.load(f)
-          f.close()
-          for course_code in data:
-                  course = data[course_code]
-                  course_name = course['DeptAcronym'] + course['Number']
-                  if departments.find({'name': course['DeptAcronym']}).count() == 0:
-                            print 'skipping ' + course_name
-                            continue
-                  course['name'] = course_name
-                  course['title'] = course['Title']
-                  course['_keywords'] = build_keywords(
-                                        course['DeptAcronym'], course['Number'], course['title'])
-                  del course['Title']
-                  course['description'] = course['Description']
-                  del course['Description']
-                  courses.insert(course)
+        f = open(file_name, 'r')
+        data = json.load(f)
+        f.close()
+        for course_code in data:
+            course = data[course_code]
+            course_name = course['DeptAcronym'] + course['Number']
+            if departments.find({'name': course['DeptAcronym']}).count() == 0:
+                print 'skipping ' + course_name
+                continue
+            course['name'] = course_name
+            course['title'] = course['Title']
+            course['_keywords'] = build_keywords(
+                                  course['DeptAcronym'], course['Number'], course['title'])
+            del course['Title']
+            course['description'] = course['Description']
+            del course['Description']
+            courses.insert(course)
     print 'imported courses:', courses.count()
 
 def import_professors():
@@ -92,21 +92,21 @@ def import_professors():
     ensure_rating_indices(professors)
     file_names = glob.glob(os.path.join(sys.path[0], c.RATINGS_DATA_DIR, '*.txt'))
     for file_name in file_names:
-          f = open(file_name, 'r')
-          data = json.load(f)
-          f.close()
-          prof_name = data['prof_name']
-          matches = re.findall(r'^(.+?), (.+)$', prof_name)[0]
-          professor = {
-                  'name': prof_name,
-                  'last_name': matches[0],
-                  'first_name': matches[1],
-                  'prof_id': data['prof_id'],
-          }
-          professor['department'] = None
-          if 'info' in data and 'Department' in data['info']:
-                  professor['department'] = data['info']['Department'].strip()
-          professors.insert(professor)
+        f = open(file_name, 'r')
+        data = json.load(f)
+        f.close()
+        prof_name = data['prof_name']
+        matches = re.findall(r'^(.+?), (.+)$', prof_name)[0]
+        professor = {
+                'name': prof_name,
+                'last_name': matches[0],
+                'first_name': matches[1],
+                'prof_id': data['prof_id'],
+        }
+        professor['department'] = None
+        if 'info' in data and 'Department' in data['info']:
+            professor['department'] = data['info']['Department'].strip()
+        professors.insert(professor)
     print 'imported professors:', professors.count()
 
 def import_ratings():
@@ -128,42 +128,42 @@ def import_ratings():
     ratings.ensure_index('time')
     file_names = glob.glob(os.path.join(sys.path[0], c.RATINGS_DATA_DIR, '*.txt'))
     for file_name in file_names:
-          f = open(file_name, 'r')
-          data = json.load(f)
-          f.close()
-          for rating in data['ratings']:
-                  course = rating['class']
-                  if course is None:
-                            #print 'skipping rating because course is None'
-                            continue
-                  course = course.upper()
-                  matches = re.findall(r'([A-Z]+).*?([0-9]{3}[A-Z]?)(?:[^0-9]|$)', course)
-                  if len(matches) != 1 or len(matches[0]) != 2:
-                            #print 'skipping rating because bad course'
-                            continue
-                  department = matches[0][0]
-                  course = matches[0][1]
-                  if departments.find({'name': department}).count() == 0:
-                            #print 'skipping rating because invalid department ' + matches[0][0]
-                            continue
-                  course_name = department + course
-                  if courses.find({'name': course_name}).count() == 0:
-                            #print 'skipping rating because invalid course ' + course_name
-                            continue
-                  rating['course_name'] = course_name
-                  rating['professor_name'] = data['prof_name']
-                  rating['rating'] = {}
-                  for rating_key in rating_mappings:
-                            if rating_key in rating:
-                                        try:
-                                                      r = rating[rating_key]
-                                                      del rating[rating_key]
-                                                      rating['rating'][rating_mappings[rating_key]] = int(r)
-                                        except:
-                                                      pass
-                  #print 'adding rating for course ' + course_name
-                  rating['time'] = int(datetime.strptime(rating['date'], '%m/%d/%y').strftime('%s'))
-                  ratings.insert(rating)
+        f = open(file_name, 'r')
+        data = json.load(f)
+        f.close()
+        for rating in data['ratings']:
+            course = rating['class']
+            if course is None:
+                #print 'skipping rating because course is None'
+                continue
+            course = course.upper()
+            matches = re.findall(r'([A-Z]+).*?([0-9]{3}[A-Z]?)(?:[^0-9]|$)', course)
+            if len(matches) != 1 or len(matches[0]) != 2:
+                #print 'skipping rating because bad course'
+                continue
+            department = matches[0][0]
+            course = matches[0][1]
+            if departments.find({'name': department}).count() == 0:
+                #print 'skipping rating because invalid department ' + matches[0][0]
+                continue
+            course_name = department + course
+            if courses.find({'name': course_name}).count() == 0:
+                #print 'skipping rating because invalid course ' + course_name
+                continue
+            rating['course_name'] = course_name
+            rating['professor_name'] = data['prof_name']
+            rating['rating'] = {}
+            for rating_key in rating_mappings:
+                if rating_key in rating:
+                    try:
+                        r = rating[rating_key]
+                        del rating[rating_key]
+                        rating['rating'][rating_mappings[rating_key]] = int(r)
+                    except:
+                        pass
+            #print 'adding rating for course ' + course_name
+            rating['time'] = int(datetime.strptime(rating['date'], '%m/%d/%y').strftime('%s'))
+            ratings.insert(rating)
 
     print 'imported ratings:', ratings.count()
 
@@ -196,52 +196,52 @@ def update_ratings(category):
     category_names = collection.distinct('name')
     counter = 0
     for category_name in category_names:
-          category_ratings = copy.deepcopy(rating_defaults)
-          others = []
-          other_names = db.ratings.find({category_data['key']: category_name}).distinct(category_data['other'])
-          for other_name in other_names:
-                  other = {
-                            'name': other_name,
-                            'ratings': copy.deepcopy(rating_defaults),
-                  }
-                  ratings_data = db.ratings.find({category_data['key']: category_name, category_data['other']: other_name})
-                  for rating_data in ratings_data:
-                            other['ratings']['count'] += 1
-                            for rating_type in rating_data['rating']:
-                                        other['ratings'][rating_type]['count'] += 1
-                                        other['ratings'][rating_type]['total'] += rating_data['rating'][rating_type]
-                  count = 0
-                  total = 0
-                  category_ratings['count'] += other['ratings']['count']
-                  for rating_type in rating_types:
-                            tmp_count = other['ratings'][rating_type]['count']
-                            tmp_total = other['ratings'][rating_type]['total']
-                            count += tmp_count
-                            total += tmp_total
-                            category_ratings[rating_type]['count'] += tmp_count
-                            category_ratings[rating_type]['total'] += tmp_total
-                            if tmp_count > 0:
-                                        other['ratings'][rating_type]['average'] = float(tmp_total) / tmp_count
-                  if count > 0:
-                            other['ratings']['aggregate']['count'] = count
-                            other['ratings']['aggregate']['total'] = total
-                            other['ratings']['aggregate']['average'] = float(total) / count
-                  others.append(other)
-          count = 0
-          total = 0
-          for rating_type in rating_types:
-                  tmp_count = category_ratings[rating_type]['count']
-                  tmp_total = category_ratings[rating_type]['total']
-                  count += tmp_count
-                  total += tmp_total
-                  if tmp_count > 0:
-                            category_ratings[rating_type]['average'] = float(tmp_total) / tmp_count
-          if count > 0:
-                  category_ratings['aggregate']['count'] = count
-                  category_ratings['aggregate']['total'] = total
-                  category_ratings['aggregate']['average'] = float(total) / count
-          collection.update({'name': category_name}, {'$set': {category_data['list']: others, 'ratings': category_ratings}} )
-          counter += 1
+        category_ratings = copy.deepcopy(rating_defaults)
+        others = []
+        other_names = db.ratings.find({category_data['key']: category_name}).distinct(category_data['other'])
+        for other_name in other_names:
+            other = {
+                      'name': other_name,
+                      'ratings': copy.deepcopy(rating_defaults),
+            }
+            ratings_data = db.ratings.find({category_data['key']: category_name, category_data['other']: other_name})
+            for rating_data in ratings_data:
+                other['ratings']['count'] += 1
+                for rating_type in rating_data['rating']:
+                    other['ratings'][rating_type]['count'] += 1
+                    other['ratings'][rating_type]['total'] += rating_data['rating'][rating_type]
+            count = 0
+            total = 0
+            category_ratings['count'] += other['ratings']['count']
+            for rating_type in rating_types:
+                tmp_count = other['ratings'][rating_type]['count']
+                tmp_total = other['ratings'][rating_type]['total']
+                count += tmp_count
+                total += tmp_total
+                category_ratings[rating_type]['count'] += tmp_count
+                category_ratings[rating_type]['total'] += tmp_total
+                if tmp_count > 0:
+                    other['ratings'][rating_type]['average'] = float(tmp_total) / tmp_count
+            if count > 0:
+                other['ratings']['aggregate']['count'] = count
+                other['ratings']['aggregate']['total'] = total
+                other['ratings']['aggregate']['average'] = float(total) / count
+            others.append(other)
+        count = 0
+        total = 0
+        for rating_type in rating_types:
+            tmp_count = category_ratings[rating_type]['count']
+            tmp_total = category_ratings[rating_type]['total']
+            count += tmp_count
+            total += tmp_total
+            if tmp_count > 0:
+                category_ratings[rating_type]['average'] = float(tmp_total) / tmp_count
+        if count > 0:
+            category_ratings['aggregate']['count'] = count
+            category_ratings['aggregate']['total'] = total
+            category_ratings['aggregate']['average'] = float(total) / count
+        collection.update({'name': category_name}, {'$set': {category_data['list']: others, 'ratings': category_ratings}} )
+        counter += 1
 
     print 'updated', category, ':', counter
 
