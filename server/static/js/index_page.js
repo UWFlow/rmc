@@ -10,6 +10,14 @@ function($) {
           window.location.href = '/profile'
         }
       });
+
+      FB.getLoginStatus(function(response) {
+        // TODO(Sandy): Make redirect happen server-side so we don't even need to
+        // load the landing page
+        if (response.status === 'connected') {
+          window.location.href = '/profile'
+        }
+      });
     };
     (function() {
       var e = document.createElement('script');
