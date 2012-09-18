@@ -84,26 +84,43 @@ def get_department_codes():
         all_deps.add(result['Acronym'].strip().lower())
     return all_deps
 
+def file_exists(path):
+    try:
+        with open(path) as f: pass
+        return True
+    except:
+        return False
+
 def get_uwdata_courses():
     deps = get_department_codes()
-    api_key = 'f3de93555ceb01c4a3549c9246e26e80'
+    api_keys = [
+        '66e3d70ec73751bc2c97e5ed0928d540',
+        '29d72333db3101ba4116f8f53a43ec1a',
+        'f3de93555ceb01c4a3549c9246e26e80',
+    ]
 
-    for dep in deps:
+    for idx, dep in enumerate(deps):
         try:
+            file_path = os.path.join(
+                sys.path[0], '%s/%s.txt' % (c.UWDATA_COURSES_DATA_DIR, dep))
+
+            if file_exists(file_path):
+                continue
+
+            api_key = api_keys[idx % len(api_keys)]
             url = 'http://api.uwdata.ca/v1/faculty/%s/courses.json?key=%s' % (dep, api_key)
             data = get_data_from_url(url, num_tries=1)
             courses = data['courses']
 
-            f = open(os.path.join(sys.path[0], '%s/%s.txt' % (c.UWDATA_COURSES_DATA_DIR, dep)), 'w')
-            f.write(json.dumps(courses))
-            f.close()
+            with open(file_path, 'w') as f:
+                f.write(json.dumps(courses))
             print 'good dep: %s' % dep
 
         except Exception as ex:
             print 'exp: %s' % ex
             print 'bad dep: %s' % dep
 
-        time.sleep(10)
+        time.sleep(121)
 
 def get_opendata_courses():
     deps = get_department_codes()
