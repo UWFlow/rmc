@@ -9,9 +9,8 @@
 {% endcall %}
 
 {% call macros.us_template('friend-tpl') %}
-<% var profileUrl = '/profile/' + id; %>
 <a class="friend-pic" href=<%- profileUrl %>>
-  <img src="<%- fbProfilePicUrl(id) %>">
+  <img src="<%- fbPicUrl %>">
 </a>
 <div class="friend-info">
   <a class="friend-name" href=<%- profileUrl %>>

@@ -47,7 +47,7 @@ require.config({
   }
 });
 
-require(['ext/underscore', 'ext/underscore.string'], function(_, _s) {
+require(['ext/underscore', 'ext/underscore.string', 'ext/backbone'], function(_, _s, Backbone) {
   // Add helpers functions to all templates
   (function() {
     var template = _.template;
@@ -56,10 +56,6 @@ require(['ext/underscore', 'ext/underscore.string'], function(_, _s) {
     var templateHelpers = {
       _: _,
       _s: _s,
-      fbProfilePicUrl: function(fbid) {
-        // TODO(mack): add support for custom width and height
-        return _s.sprintf('https://graph.facebook.com/%d/picture', fbid);
-      },
       pluralize: function(num, singular, plural) {
         if (num === 1) {
           return singular;
@@ -84,4 +80,9 @@ require(['ext/underscore', 'ext/underscore.string'], function(_, _s) {
       }
     };
   })();
+
+  // Extend backbone model
+  Backbone.Model.prototype._super = function(funcName) {
+    return this.constructor.__super__[funcName].apply(this, _.rest(arguments));
+  }
 });

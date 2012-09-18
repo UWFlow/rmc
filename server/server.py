@@ -193,8 +193,8 @@ def clean_course(course, critiques):
         #'availFall': bool(int(course['availFall'])),
         #'availSpring': bool(int(course['availSpring'])),
         #'availWinter': bool(int(course['availWinter'])),
-        # TODO(mack): get actual number for this
-        'numFriendsTook': random.randrange(0, 20),
+        # TODO(mack): create user models for friends
+        #'friends': [1647810326, 518430508, 541400376],
 # XXX(Sandy): factor in critique data into overall
         'rating': overall_course,
         'ratings': [{

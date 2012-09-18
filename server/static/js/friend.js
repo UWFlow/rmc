@@ -2,15 +2,6 @@ define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string'],
 function(Backbone, $, _, _s) {
 
-  var FriendModel = Backbone.Model.extend({
-    defaults: {
-      id: 1647810326,
-      name: 'Mack Duan',
-      lastTermName: 'Fall 2012',
-      coursesTook: []
-    }
-  });
-
   var FriendView = Backbone.View.extend({
     className: 'friend',
 
@@ -77,11 +68,6 @@ function(Backbone, $, _, _s) {
   });
 
 
-  var FriendCollection = Backbone.Collection.extend({
-    model: FriendModel,
-  });
-
-
   // TODO(mack): make generic CollectionView
   var FriendCollectionView = Backbone.View.extend({
     tagName: 'ol',
@@ -110,8 +96,8 @@ function(Backbone, $, _, _s) {
   FriendSidebarView = Backbone.View.extend({
     className: 'friend-sidebar',
 
-    initialize: function(options) {
-      this.friendCollection = options.friendCollection;
+    initialize: function(attributes) {
+      this.friendCollection = attributes.friendCollection;
     },
 
     render: function() {
@@ -122,7 +108,7 @@ function(Backbone, $, _, _s) {
         friendCollection: this.friendCollection
       });
       this.$('.friend-collection-placeholder').replaceWith(
-        collectionView.render().el);
+        collectionView.render().$el);
 
       return this;
     }
@@ -130,10 +116,8 @@ function(Backbone, $, _, _s) {
 
 
   return {
-    FriendModel: FriendModel,
     FriendView: FriendView,
     FriendHovercardView: FriendHovercardView,
-    FriendCollection: FriendCollection,
     FriendCollectionView: FriendCollectionView,
     FriendSidebarView: FriendSidebarView
   }

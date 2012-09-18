@@ -1,7 +1,7 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'friend', 'util'],
-function($, _, _s, transcript, term, course, friend, util) {
+'term', 'course', 'friend', 'util', 'user'],
+function($, _, _s, transcript, term, course, friend, util, user) {
   $(function() {
 
     // Render friend sidebar
@@ -15,11 +15,12 @@ function($, _, _s, transcript, term, course, friend, util) {
         _.each(data.courses, function(courseObj) {
           courseModelById[courseObj.id] = new course.CourseModel(courseObj);
         });
-        var friendCollection = new friend.FriendCollection();
+        var userCollection = new user.UserCollection();
         // TODO(mack): remove stub data
         var friendsData = [
           {
-            id: 541400376,
+            id: '001',
+            fbid: 541400376,
             name: 'David Hu',
             lastTermName: 'Spring 2012',
             coursesTook: [
@@ -30,7 +31,8 @@ function($, _, _s, transcript, term, course, friend, util) {
             ]
           },
           {
-            id: 164710326,
+            id: '002',
+            fbid: 164710326,
             name: 'Mack Duan',
             lastTermName: 'Fall 2012',
             coursesTook: [
@@ -39,20 +41,21 @@ function($, _, _s, transcript, term, course, friend, util) {
             ]
           },
           {
-            id: 518430508,
-            lastTermName: 'Fall 2012',
+            id: '003',
+            fbid: 518430508,
             name: 'Sandy Wu',
+            lastTermName: 'Fall 2012',
             coursesTook: [
               courseModelById['CS370']
             ]
           },
         ]
-        for (var i = 0; i < 3; ++i) {
-          var friendModel = new friend.FriendModel(friendsData[i]);
-          friendCollection.add(friendModel);
-        }
+        _.each(friendsData, function(friendData) {
+          var userModel = new user.UserModel(friendData);
+          userCollection.add(userModel);
+        });
         var friendSidebarView = new friend.FriendSidebarView({
-          friendCollection: friendCollection
+          friendCollection: userCollection
         });
         $('#friend-sidebar-container').html(friendSidebarView.render().el);
 
