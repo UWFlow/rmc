@@ -100,6 +100,7 @@ def import_courses():
         }
 
     uwdata_count = 0
+    uwdata_ignored = 0
     for file_name in glob.glob(os.path.join(
             sys.path[0], c.UWDATA_COURSES_DATA_DIR, '*.txt')):
 
@@ -116,8 +117,11 @@ def import_courses():
             if not courses.find_one({'name': course['name']}):
                 uwdata_count += 1
                 courses.insert(course)
+            else:
+                uwdata_ignored += 1
 
     print 'backfilled %d courses from uwdata' % uwdata_count
+    print 'ignored %d courses from uwdata' % uwdata_ignored
     print 'imported courses:', courses.count()
 
 def import_professors():
