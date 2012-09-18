@@ -1,7 +1,7 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'review'],
-function(Backbone, $, _, _s, ratings, review) {
+'ratings', 'review', 'ext/bootstrap'],
+function(Backbone, $, _, _s, ratings, review, __) {
 
   var CourseModel = Backbone.Model.extend({
     defaults: {
@@ -67,9 +67,17 @@ function(Backbone, $, _, _s, ratings, review) {
     },
 
     events: {
+      'mouseenter .friend-name': 'showCourseFriendsHovercard',
       // TODO(david): Figure out a nicer interaction without requiring click
       'click .visible-section': 'toggleCourse',
       'focus .new-review-input': 'expandNewReview'
+    },
+
+    showCourseFriendsHovercard: function(evt) {
+      var hovercardView = new CourseFriendsHovercardView({
+        courseModel: this.courseModel,
+        $target: $(evt.currentTarget)
+      });
     },
 
     toggleCourse: function(evt) {
@@ -109,6 +117,41 @@ function(Backbone, $, _, _s, ratings, review) {
       this.$('.new-review').addClass('new-review-expanded');
     }
 
+  });
+
+  var CourseFriendsHovercardView = Backbone.View.extend({
+    initialize: function(attributes) {
+      this.$target = attributes.$target;
+      this.courseModel = attributes.courseModel;
+    },
+
+    render: function() {
+      this.$target.popover({
+        html: true,
+        title: 'Friends',
+        content: _.bind(this.getPopoverContent, this),
+        trigger: 'manual',
+        placement: 'top'
+      }).hover(function(evt) {
+        $(this).popover('show');
+        evt.preventDefault();
+      });
+
+      return this;
+    },
+
+    getPopoverContent: function() {
+      this.$el.html(
+        _.template($('#course-friends-hovercard-tpl').html(), this.courseModel.toJSON())
+      );
+      return this.$el;
+    },
+
+    // Override remove to also destroy the popover
+    remove: function() {
+      this.__super__.remove.apply(this, arguments);
+      this.$target.popover('destroy');
+    }
   });
 
 
