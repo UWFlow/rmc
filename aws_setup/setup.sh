@@ -1,7 +1,6 @@
 #!/bin/sh
 
-# This sets up our continuous integration tools on EC2 Ubuntu12 AMI.
-# Currently, only the continous deploy script and its web server is set up.
+# This sets up RMC web app on EC2 Ubuntu11 AMI.
 #
 # Idempotent.
 #
@@ -21,6 +20,7 @@ sudo apt-get update
 echo "Installing developer tools"
 sudo apt-get install -y curl
 sudo apt-get install -y python-pip
+sudo apt-get install -y build-essential python-dev
 sudo apt-get install -y git
 sudo apt-get install -y unzip
 sudo apt-get install -y ruby rubygems
@@ -68,25 +68,19 @@ sudo ln -sfnv $CONFIG_DIR/etc/init.d/mongo_daemon /etc/init.d
 sudo update-rc.d mongo_daemon defaults
 sudo service mongo_daemon restart
 
-echo "Setting up mongodb"
-
-# XXX
-#echo "Syncing aws-config codebase"
-#git clone git://github.com/Khan/aws-config || ( cd aws-config && git pull )
-
-
-# Don't need node yet
-#echo "Installing node and npm"
-#sudo apt-get install -y nodejs
-#curl https://npmjs.org/install.sh | sudo sh
+echo "Setting up rmc and dependencies"
+# Install libraries needed for lxml
+sudo apt-get install -y libxml2-dev libxslt-dev
+# Setup compass
+sudo gem install compass
+( cd rmc/server && compass init --config config.rb )
 
 echo "Installing nginx"
 sudo apt-get install -y nginx
 sudo rm -f /etc/nginx/sites-enabled/default
-sudo ln -sfnv $CONFIG_DIR/etc/nginx/sites-available/mr_deploy \
-  /etc/nginx/sites-available/mr_deploy
-sudo ln -sfnv /etc/nginx/sites-available/mr_deploy \
-  /etc/nginx/sites-enabled/mr_deploy
+sudo ln -sfnv $CONFIG_DIR/etc/nginx/sites-available/rmc \
+  /etc/nginx/sites-available/rmc
+sudo ln -sfnv /etc/nginx/sites-available/rmc /etc/nginx/sites-enabled/rmc
 sudo service nginx restart
 
 # We don't actually create a virtualenv for the user, so this installs
@@ -99,3 +93,10 @@ sudo ln -sfnv $CONFIG_DIR/etc/init.d/mr-deploy-daemon /etc/init.d
 sudo update-rc.d mr-deploy-daemon defaults
 
 echo "TODO: Then run sudo service exercise-screens-daemon start"
+
+
+# Don't need node yet
+#echo "Installing node and npm"
+#sudo apt-get install -y nodejs
+#curl https://npmjs.org/install.sh | sudo sh
+
