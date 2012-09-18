@@ -101,16 +101,9 @@ sudo gem install rdoc-data; sudo rdoc-data --install
 # Import data from various text files
 ( cd rmc && make import-data )
 
-echo "Installing gae-continuous-deploy as a daemon"
-sudo update-rc.d -f mr-deploy-daemon remove
-sudo ln -sfnv $CONFIG_DIR/etc/init.d/mr-deploy-daemon /etc/init.d
-sudo update-rc.d mr-deploy-daemon defaults
-
-echo "TODO: Then run sudo service exercise-screens-daemon start"
-
+echo "TODO: start rmc server by running rmc/prod_server.sh"
 
 # Don't need node yet
 #echo "Installing node and npm"
 #sudo apt-get install -y nodejs
 #curl https://npmjs.org/install.sh | sudo sh
-
