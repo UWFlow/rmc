@@ -15,9 +15,10 @@
 #
 
 start() {
-    echo "Setting up log directories"
+    echo "Setting up log and data directories"
     mkdir -p /home/rmc/logs/mongo
-    echo "Starting mongodb on default port with dbpath /home/rmc/logs/mongo"
+    mkdir -p /home/rmc/data/mongo
+    echo "Starting mongodb on default port with dbpath /home/rmc/data/mongo"
     # Note - default mongo port 27017
     /usr/bin/mongod --fork \
         --dbpath "/home/rmc/data/mongo" \
