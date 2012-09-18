@@ -5,8 +5,10 @@
 # Bail on errors
 set -e
 
+cd /home/rmc
+
 # Compile compass
-compass compile server/static/
+compass compile rmc/server/static/
 
 # Start the uwsgi server
 uwsgi -s /tmp/uwsgi.sock -w rmc.server.server:app --chmod-socket 666 \
