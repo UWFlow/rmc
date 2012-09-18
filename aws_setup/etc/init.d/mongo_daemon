@@ -1,18 +1,15 @@
 #!/bin/sh
 #
-# chkconfig: 2345 90 10
-#
-# Custom script for managing mongodb.
+# Daemon for managing mongodb.
 # This abstracts away starting/stopping the multiple mongod instances
 # we require.
-#
-# To have the mongo processes start automatically (as root), copy this
-# file into /etc/init.d, and run:
-# $ sudo chkconfig --add mongo_cntrl
-#
-# From then on, it will start on reboot, and can be managed using
-# sudo service mongo_cntrl (restart|start|stop)
-#
+
+NAME=mongo_daemon
+DESC="Daemon for mongodb"
+
+[ -r /etc/default/mongo_daemon ] && . /etc/default/mongo_daemon
+
+. /lib/lsb/init-functions
 
 start() {
     echo "Setting up log directories"
