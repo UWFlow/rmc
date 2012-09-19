@@ -67,13 +67,14 @@ def login():
         now = int(time.time())
         user = {
             'fbid': fbid,
-            'friends': friend_fbids,
+            'fb_friends': friend_fbids,
             'fb_access_token': fb_access_token,
             'fb_access_token_expiry_time': fb_access_token_expiry_time,
 #TODO(Sandy): Count visits properly
             'visits': 1,
             'last_visited': now,
             'join_date': now,
+            'user_source': 'F',
 #TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
         }
 
