@@ -4,6 +4,7 @@ import json
 import pymongo
 import re
 import functools
+import time
 
 import rmc.shared.constants as c
 
@@ -42,6 +43,56 @@ def courses():
         sort_modes=sort_modes,
         directions=directions,
     )
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+# TODO(Sandy): Differentiate between new account and update account
+    req = flask.request
+# TODO(Sandy): Use Flask Sessions instead of raw cookie
+# TODO(Sandy): Security: Authenticate with fbsr (FB signed request) to ensure these are legit values
+    fbid = req.cookies.get('fbid')
+    fb_access_token = req.cookies.get('fb_access_token')
+    # Compensate for network latency by subtracting 10 seconds
+    fb_access_token_expiry_time = int(time.time()) + int(req.cookies.get('fb_access_token_expires_in')) - 10;
+
+    if (fbid == None or \
+        fb_access_token == None or \
+        fb_access_token_expiry_time == None):
+# TODO(Sandy): redirect to landing page, or nothing
+            #print 'No fbid/access_token specified'
+            return 'Error'
+
+    if req.method == 'POST':
+        try:
+            friend_fbids = flask.json.loads(req.form['friends'])
+            now = int(time.time())
+            user = {
+                'fbid': fbid,
+                'friends': friend_fbids,
+                'fb_access_token': fb_access_token,
+                'fb_access_token_expiry_time': fb_access_token_expiry_time,
+#TODO(Sandy): Count visits properly
+                'visits': 1,
+                'last_visited': now,
+                'join_date': now,
+#TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
+            }
+
+            db.users.ensure_index('fbid', unique=True)
+            db.users.save(user)
+        except KeyError:
+# Invalid key (shouldn't be happening)
+# TODO(Sandy): redirect to landing page, or nothing
+            print 'Invalid key at /login. Redirecting to landing page'
+            return 'Error'
+    else:
+# Should not happen normally (we won't send get requests here)
+# TODO(Sandy): redirect to landing page, or nothing
+        print 'Received GET request for /login. Redirecting to landing page'
+        return 'Error'
+    return ''
+
+
 # TODO(mack): move API's to separate file
 # TODO(mack): add security measures (e.g. require auth, xsrf cookie)
 ###############################
