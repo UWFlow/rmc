@@ -10,6 +10,9 @@ cd /home/rmc
 # Compile compass
 compass compile rmc/server/static/
 
+# Install requirements
+sudo pip install -r rmc/requirements.txt
+
 # Start the uwsgi server
 # TODO(david): Benchmark with ab and use worker processes if necessary
 # TODO(david): Run as a daemon so will start on boot and can easily restart
