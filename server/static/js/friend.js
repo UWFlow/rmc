@@ -1,6 +1,6 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string'],
-function(Backbone, $, _, _s) {
+['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap'],
+function(Backbone, $, _, _s, __) {
 
   var FriendView = Backbone.View.extend({
     className: 'friend',
@@ -13,42 +13,32 @@ function(Backbone, $, _, _s) {
       this.$el.html(
         _.template($('#friend-tpl').html(), this.friendModel.toJSON()))
 
+      this.$('.friend-pic, .friend-name')
+        .popover({
+          html: true,
+          title: this.friendModel.get('lastTermName'),
+          content: _.bind(this.getFriendPopoverContent, this),
+          trigger: 'hover',
+          placement: 'in right'
+        })
+        .on('click', '.popover', function(evt) {
+          // Prevent clicking in the hovercard from going to triggering the
+          // link the hovercard is attached to
+          return false;
+        });
+
       return this;
     },
 
-    events: {
-      'mouseenter .friend-pic': 'showHovercard',
-      'mouseleave .friend-pic': 'hideHovercard',
-      'mouseenter .friend-name': 'showHovercard',
-      'mouseleave .friend-name': 'hideHovercard',
-      'click .friend-hovercard': 'clickHovercard'
-    },
-
-    showHovercard: function(evt) {
-      var $target = $(evt.currentTarget);
-      this.hovercardView = new FriendHovercardView({
-        friendModel: this.friendModel
-      });
-      var $hovercard = this.hovercardView.render().$el;
-      $target.append($hovercard);
-      $hovercard.css({
-        left: $target.outerWidth() + 10 - window.parseInt($hovercard.css('padding-left'), 10),
-        // TODO(mack): remove hardcode of -30 which must be kept in sync with
-        // arrow offset in css; might require adding div for arrow to html to
-        // remove hardcode since cannot access css of pseudoclass from jQuery
-        top: $target.outerHeight()/2 - 30 - window.parseInt($hovercard.css('padding-top'), 10)
-      });
-    },
-
-    hideHovercard: function(evt) {
-      this.hovercardView.remove();
-      this.hovercardView.unbind();
-    },
-
-    clickHovercard: function(evt) {
-      console.log('here');
-      evt.preventDefault();
+    getFriendPopoverContent: function() {
+      if (!this.friendPopoverView) {
+        this.friendHovercardView = new FriendHovercardView({
+          friendModel: this.friendModel
+        });
+      }
+      return this.friendHovercardView.render().$el;
     }
+
   });
 
 

@@ -20,7 +20,6 @@
         margin-bottom: 10px;
 
         .friend-pic {
-          position: relative;
           float: left;
           width: $friend-pic-width;
           height: $friend-pic-width;
@@ -31,9 +30,44 @@
           padding-left: 10px;
 
           .friend-name {
-            position: relative;
           }
           .mutual-courses {
+          }
+        }
+
+        .friend-pic, .friend-name {
+          position: relative;
+
+          .popover {
+
+            // Some overrides because this element appears inside of an
+            // anchor
+            cursor: default;
+            color: $textColor;
+
+            @extend .clearfix;
+            width: 350px;
+
+            .mini-courses {
+              list-style: none;
+              margin-left: 0;
+              padding: 10px;
+
+              .mini-course {
+                margin-top: 3px;
+                .course-id {
+                  font-size: 20px;
+                }
+                .course-name {
+                  font-size: 20px;
+                }
+              }
+            }
+
+            .view-profile {
+              float: right;
+              padding: 0 10px 10px 0;
+            }
           }
         }
       }
@@ -46,91 +80,3 @@
   }
 }
 
-.friend-hovercard {
-  $inner-width: 300px;
-  $outer-padding: 15px;
-
-  // Some overrides because this element can appear inside of an anchor
-  cursor: default;
-  color: $textColor;
-
-  padding: $outer-padding;
-  background: transparent;
-  position: absolute;
-
-  .friend-hovercard-inner {
-    $border-size: 1px;
-    $arrow-top: 30px;
-    $arrow-size: 10px;
-    $background-color: rgba(255, 255, 255, 0.98);
-    $border-color: #C5C5C5;
-
-    // TODO(mack): fix positon of arrow
-    &:after, &:before {
-      right: 100%;
-      border: solid transparent;
-      content: " ";
-      height: 0;
-      width: 0;
-      position: absolute;
-      pointer-events: none;
-    }
-
-    &:after {
-      border-color: rgba($background-color, 0);
-      border-right-color: $background-color;
-      border-width: $arrow-size;
-      margin-top: -$arrow-size;
-      top: $arrow-top;
-    }
-
-    &:before {
-      border-color: rgba($border-color, 0);
-      border-right-color: rgba($border-color, 0.4);
-      border-width: $arrow-size + $border-size;
-      margin-top: -$arrow-size - $border-size;
-      top: $arrow-top;
-    }
-
-    @extend .clearfix;
-    position: relative;
-    width: $inner-width;
-
-    @include box-shadow(0px 3px 8px rgba(0, 0, 0, 0.25));
-    @include border-radius(3px);
-    background: $background-color;
-    border: $border-size solid;
-    border-color: $border-color;
-    border-color: rgba($border-color, 0.4);
-
-    z-index: 1;
-
-    .term-name {
-      font-size: 24px;
-      font-weight: bold;
-      background-color: #BBB;
-      padding: 8px;
-    }
-
-    .mini-courses {
-      list-style: none;
-      margin-left: 0;
-      padding: 10px;
-
-      .mini-course {
-        margin-top: 3px;
-        .course-id {
-          font-size: 20px;
-        }
-        .course-name {
-          font-size: 20px;
-        }
-      }
-    }
-
-    .view-profile {
-      float: right;
-      padding: 0 10px 10px 0;
-    }
-  }
-}

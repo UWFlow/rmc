@@ -21,21 +21,16 @@
 {% endcall %}
 
 {% call macros.us_template('friend-hovercard-tpl') %}
-<div class="friend-hovercard-inner">
-  <div class="term-name"><%- lastTermName %></div>
-  <!-- TODO(mack): move course-mini into own backbone view -->
-  <ul class="mini-courses">
-  <% coursesTook.each(function(course) { %>
-    <% course = course.toJSON(); %>
-    <li class="mini-course">
-      <a href="<%- '/course/' + course.id %>" class="course-id"><%- course.id %></a>
-      -
-      <span class="course-title"><%- course.name %></span>
-    </li>
-  <% }); %>
-  </ul>
-  <a class="view-profile" href=<%- '/profile/' + id %>>View all terms &raquo;</a>
-  <!-- TODO(mack): investigate why clearfix does not work -->
-  <div style="clear:both"></div>
-</div>
+<!-- TODO(mack): move course-mini into own backbone view -->
+<ul class="mini-courses">
+<% coursesTook.each(function(course) { %>
+  <% course = course.toJSON(); %>
+  <li class="mini-course">
+    <a href="<%- '/course/' + course.id %>" class="course-id"><%- course.id %></a>
+    -
+    <span class="course-title"><%- course.name %></span>
+  </li>
+<% }); %>
+</ul>
+<a class="view-profile" href=<%- '/profile/' + id %>>View all terms &raquo;</a>
 {% endcall %}
