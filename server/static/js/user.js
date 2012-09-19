@@ -79,12 +79,40 @@ function(Backbone, _, _s, util) {
         name: 'Joseph Hong',
         lastTermName: 'Fall 2012',
         coursesTook: []
+      },
+      {
+        id: '007',
+        fbid: 511515597,
+        name: 'Andy Pincombe',
+        lastTermName: 'Winter 2012',
+        coursesTook: []
+      },
+      {
+        id: '008',
+        fbid: 511515597,
+        name: 'Andy Pincombe',
+        lastTermName: 'Winter 2012',
+        coursesTook: []
+      },
+      {
+        id: '009',
+        fbid: 1286400131,
+        name: 'Vladmir Li',
+        lastTermName: 'Winter 2012',
+        coursesTook: []
+      },
+      {
+        id: '010',
+        fbid: 1652790284,
+        name: 'Jamie Wong',
+        lastTermName: 'Fall 2012',
+        coursesTook: []
       }
     ];
 
     // var num = util.random(0, usersData.length);
     // TODO(mack): remove hardcode
-    var num = 5;
+    var num = 8;
     return new UserCollection(util.randomItems(usersData, num));
   }
 

@@ -48,9 +48,8 @@ function(_) {
   var randomItems = function(items, num) {
     if (num === 0) {
       return [];
-    } else if (num >= items.length) {
-      return _.clone(items);
     }
+    num = Math.min(num, items.length);
 
     var randItems = _.clone(items);
     var max = randItems.length - 1;
