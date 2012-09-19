@@ -22,6 +22,8 @@ function(Backbone, $, _, _s, ratings, select2) {
       }
     },
 
+    urlRoot: '/api/user/course',
+
     initialize: function(attributes) {
       if (!attributes || !attributes.prof_review) {
         this.set('prof_review', _.clone(this.defaults.prof_review));
@@ -33,27 +35,30 @@ function(Backbone, $, _, _s, ratings, select2) {
 
     // TODO(david): If I designed this better, all this code below might not be
     //     necessary
-    getRatingObj: function(name) {
+    _getRatingObj: function(name) {
       var prof = this.get('prof_review');
       if (_.has(prof, name)) {
-        return prof;
+        return [prof, 'prof_review'];
       }
 
       var course = this.get('course_review');
       if (_.has(course, name)) {
-        return course;
+        return [course, 'course_review'];
       }
     },
 
     getRating: function(name) {
-      return this.getRatingObj(name)[name];
+      return this._getRatingObj(name)[0][name];
     },
 
     setRating: function(name, value) {
-      var obj = this.getRatingObj(name);
-      obj[name] = value;
+      var obj = this._getRatingObj(name);
+      var attrs = obj[0];
+      var objName = obj[1];
+      attrs[name] = value;
+      this.set(objName, attrs);
       this.trigger('change');
-      return this.set(name, obj);
+      return this;
     }
   });
 
@@ -114,18 +119,54 @@ function(Backbone, $, _, _s, ratings, select2) {
     },
 
     saveReview: function() {
-      // TODO(david): This should just be an underscore template
       // TODO(david): Should initially be in this state if user had review
-      // TODO(david): This should actually save to backend and show a saving...
-      //     spinner in the meanwhile
-      this.$('.save-review')
-        .removeClass('btn-primary')
-        .addClass('btn-success')
+      // TODO(david): Use spinner instead of static time icon
+      var button = this.$('.save-review');
+      button
+        .removeClass('btn-primary btn-success')
+        .addClass('btn-warning')
         .prop('disabled', true)
-        .html('<i class="icon-ok"></i> Saved.');
+        .html('<i class="icon-time"></i> Saving...');
+
+      this.saving = true;
+      var self = this;
+
+      // TODO(david): Actually get real ratings
+      this.userReviewModel.save({
+        course_review: {
+          comment: this.$('.course-comments').text(),
+          passion: null,
+          clarity: null,
+          overall: null
+        },
+        prof_review: {
+          comment: this.$('.prof-comments').text(),
+          easiness: null,
+          interest: null,
+          overall: null
+        }
+      }).done(function() {
+        button
+          .removeClass('btn-warning')
+          .addClass('btn-success')
+          .prop('disabled', true)
+          .html('<i class="icon-ok"></i> Saved.');
+      }).error(function() {
+        button
+          .removeClass('btn-warning')
+          .addClass('btn-danger')
+          .prop('disabled', false)
+          .html('<i class="icon-exclamation-sign"></i> Error! Click to try again');
+      }).always(function() {
+        self.saving = false;
+      });
     },
 
     allowSave: function() {
+      if (this.saving) {
+        return;
+      }
+
       this.$('.save-review')
         .removeClass('btn-success')
         .addClass('btn-primary')
