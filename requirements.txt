@@ -5,3 +5,4 @@ pep8==1.0.1
 pylint==0.25.1
 pymongo==2.3
 uWSGI==1.2.6
+mongoengine==0.7.5

@@ -1,10 +1,13 @@
 from bson import json_util
 import flask
 import json
+import mongoengine
 import pymongo
 import re
 import functools
 import time
+
+mongoengine.connect('rmc', host='localhost', port=27017)
 
 import rmc.shared.constants as c
 
