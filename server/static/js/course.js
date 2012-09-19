@@ -9,7 +9,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
       name: 'Introduction to Astronomy omg omg omg',
       rating: 2.5,
       numRatings: 49,
-      friendCollection: user.UserCollection.getSampleCollection(),
+      friendCollection: new user.UserCollection(),
       userReviewModel: null,
       professorNames: ['Eddie Dupont', 'Charlie Clarke', 'Mark Smucker', 'Larry Smith'],
       description: 'This couse will introduce you to the wonderful world' +

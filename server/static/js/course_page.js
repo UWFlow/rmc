@@ -1,6 +1,6 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'ext/backbone'],
-function($, _, _s, course, _b, Backbone) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'ext/backbone', 'user'],
+function($, _, _s, course, __, Backbone, user) {
   $(function() {
 
     var CourseSearchView = Backbone.View.extend({
@@ -143,7 +143,13 @@ function($, _, _s, course, _b, Backbone) {
             var courses = data.courses;
             this.hasMore = data.has_more;
             this.offset += courses.length;
-            this.courseCollection.add(courses);
+            _.each(data.courses, function(c) {
+              var friendCollection = user.UserCollection.getSampleCollection()
+              var courseModel = new course.CourseModel(_.extend({
+                friendCollection: friendCollection
+              }, c));
+              this.courseCollection.add(courseModel);
+            }, this);
             this.updatingCourses = false;
             this.$('.loader').addClass('hide');
           }, this)

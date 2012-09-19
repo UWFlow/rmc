@@ -1,6 +1,6 @@
 define(
-['ext/backbone', 'ext/underscore', 'ext/underscore.string'],
-function(Backbone, _, _s) {
+['ext/backbone', 'ext/underscore', 'ext/underscore.string', 'util'],
+function(Backbone, _, _s, util) {
 
   var UserModel = Backbone.Model.extend({
     defaults: {
@@ -8,7 +8,7 @@ function(Backbone, _, _s) {
       fbid: 1647810326,
       name: 'Mack Duan',
       lastTermName: 'Spring 2012',
-      // TODO(mack): should be CourseCollection
+      // TODO(mack): should be CourseCollection rather than array
       coursesTook: []
     },
 
@@ -35,16 +35,14 @@ function(Backbone, _, _s) {
     model: UserModel
   });
 
+  // TODO(mack): remove stub data
   UserCollection.getSampleCollection = function() {
-    var userCollection = new UserCollection();
-    // TODO(mack): remove stub data
     var usersData = [
       {
         id: '001',
         fbid: 541400376,
         name: 'David Hu',
         lastTermName: 'Spring 2012',
-        // TODO(mack): should be CourseCollection rather than array
         coursesTook: [],
       },
       {
@@ -63,33 +61,29 @@ function(Backbone, _, _s) {
       },
       {
         id: '004',
-        fbid: 541400376,
-        name: 'David Hu',
+        fbid: 709180245,
+        name: 'Wen-Hao Lue',
         lastTermName: 'Spring 2012',
-        // TODO(mack): should be CourseCollection rather than array
         coursesTook: [],
       },
       {
         id: '005',
-        fbid: 164710326,
-        name: 'Mack Duan',
+        fbid: 730676205,
+        name: 'Zameer Manji',
         lastTermName: 'Fall 2012',
         coursesTook: []
       },
       {
         id: '006',
-        fbid: 518430508,
-        name: 'Sandy Wu',
+        fbid: 646460492,
+        name: 'Joseph Hong',
         lastTermName: 'Fall 2012',
         coursesTook: []
       }
-    ]
-    _.each(usersData, function(userData) {
-      var userModel = new UserModel(userData);
-      userCollection.add(userModel);
-    });
+    ];
 
-    return userCollection;
+    var num = util.random(0, usersData.length);
+    return new UserCollection(util.randomItems(usersData, num));
   }
 
   return {

@@ -1,5 +1,6 @@
-define([],
-function() {
+define(['ext/underscore'],
+function(_) {
+
   // From http://stackoverflow.com/a/901144
   var getQueryParam = function(name) {
     name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
@@ -34,9 +35,40 @@ function() {
     }
   };
 
+  /**
+   * Generate a random integer between in the range [range, to]
+   */
+  var random = function(from, to) {
+    return Math.floor(Math.random() * (to - from + 1) + from);
+  };
+
+  /**
+   * Generate num random items from an array
+   */
+  var randomItems = function(items, num) {
+    if (num === 0) {
+      return [];
+    } else if (num >= items.length) {
+      return _.clone(items);
+    }
+
+    var randItems = _.clone(items);
+    var max = randItems.length - 1;
+    for (var idx = 0; idx < num; ++idx) {
+      var rand = random(idx, max);
+      var temp = randItems[idx];
+      randItems[idx] = randItems[rand];
+      randItems[rand] = temp;
+    }
+
+    return _.first(randItems, num);
+  };
+
   return {
     getQueryParam: getQueryParam,
     capitalize: capitalize,
-    pluralize: pluralize
+    pluralize: pluralize,
+    random: random,
+    randomItems: randomItems
   };
 });
