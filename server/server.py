@@ -7,12 +7,11 @@ import re
 import functools
 import time
 
-mongoengine.connect('rmc', host='localhost', port=27017)
-
 import rmc.shared.constants as c
 
 app = flask.Flask(__name__)
 db = pymongo.Connection(c.MONGO_HOST, c.MONGO_PORT).rmc
+mongoengine.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
 @app.route('/')
 def index():
