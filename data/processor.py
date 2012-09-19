@@ -15,21 +15,6 @@ def get_db():
     connection = Connection(c.MONGO_HOST, c.MONGO_PORT)
     return connection.rmc
 
-def import_departments():
-    db = get_db()
-    departments = db.departments
-
-    departments.drop()
-    departments.ensure_index('name', unique=True)
-    for file_name in glob.glob(os.path.join(sys.path[0], c.DEPARTMENTS_DATA_DIR, '*.txt')):
-        f = open(file_name, 'r')
-        data = json.load(f)
-        f.close()
-        for department in data:
-            department['name'] = department['Acronym'].lower()
-            departments.insert(department)
-    print 'imported departments:', departments.count()
-
 def ensure_rating_indices(collection):
     collection.ensure_index('ratings.aggregate.average')
     collection.ensure_index('ratings.clarity.average')
@@ -42,12 +27,29 @@ def ensure_rating_indices(collection):
     collection.ensure_index('ratings.helpful.count')
     collection.ensure_index('ratings.interest.count')
 
+def import_departments():
+
+    m.Department.objects._collection.drop()
+
+    def clean_department(department):
+        return {
+            'id': department['Acronym'].lower(),
+            'name': department['Name'],
+            'faculty_id': department['Faculty'].lower(),
+            'url': department['CoursesURL'],
+        }
+
+    for file_name in glob.glob(
+            os.path.join(sys.path[0], c.DEPARTMENTS_DATA_DIR, '*.txt')):
+        f = open(file_name, 'r')
+        data = json.load(f)
+        f.close()
+        for department in data:
+            department = clean_department(department)
+            m.Department(**department).save()
+    print 'imported departments:', m.Department.objects.count()
+
 def import_courses():
-    mongoengine.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
-
-    db = get_db()
-    departments = db.departments
-
     m.Course.objects._collection.drop()
 
     def get_department_name_from_file_path(file_path):
@@ -83,7 +85,7 @@ def import_courses():
             data = json.load(f)
 
         dep_name = get_department_name_from_file_path(file_name)
-        if not departments.find_one({'name': dep_name}):
+        if not m.Department.objects.with_id(dep_name):
             print 'could not find department %s' % dep_name
             continue
 
@@ -114,7 +116,7 @@ def import_courses():
             data = json.load(f)
 
         dep_name = get_department_name_from_file_path(file_name)
-        if not departments.find_one({'name': dep_name}):
+        if not m.Department.objects.with_id(dep_name):
             print 'could not find department %s' % dep_name
             continue
 
@@ -304,6 +306,7 @@ def update_aggr_professors():
     update_ratings('professor')
 
 if __name__ == '__main__':
+    mongoengine.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
     import_departments()
     import_courses()
     #import_professors()

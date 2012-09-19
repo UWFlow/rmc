@@ -1,9 +1,7 @@
-from mongoengine import Document, EmbeddedDocument
-from mongoengine import StringField, IntField, FloatField, EmbeddedDocumentField, ListField
+from mongoengine import Document
+from mongoengine import StringField, EmbeddedDocumentField, ListField
 
-class Rating(EmbeddedDocument):
-    count = IntField(min_value=0, default=0)
-    rating = FloatField(min_value=0.0, max_value=1.0, default=0.0)
+import rmc.models.rating.Rating as Rating
 
 class CourseRating(Document):
     meta = {
@@ -16,7 +14,6 @@ class CourseRating(Document):
     interest = EmbeddedDocumentField(Rating, required=True)
     easiness = EmbeddedDocumentField(Rating, required=True)
 
-
 class MenloCourseRating(CourseRating):
     pass
 
@@ -27,9 +24,6 @@ class FlowCourseRating(CourseRating):
     pass
 
 class Course(Document):
-    # e.g. earth121l
-    id = StringField(primary_key=True)
-
     meta = {
         'indexes': [
             '_keywords',
@@ -42,6 +36,8 @@ class Course(Document):
         ],
     }
 
+    # e.g. earth121l
+    id = StringField(primary_key=True)
 
     # e.g. earth
     department_id = StringField(required=True)
