@@ -7,6 +7,8 @@ function(Backbone, $, _, _s, ratings, select2) {
   var UserReviewModel = Backbone.Model.extend({
     defaults: {
       term: 'Spring 2012',
+      course_id: null,
+      prof_id: null,
       prof_review: {
         name: 'Larry Smith',
         passion: null,
@@ -131,20 +133,15 @@ function(Backbone, $, _, _s, ratings, select2) {
       this.saving = true;
       var self = this;
 
-      // TODO(david): Actually get real ratings
       this.userReviewModel.save({
-        course_review: {
-          comment: this.$('.course-comments').text(),
-          passion: null,
-          clarity: null,
-          overall: null
-        },
-        prof_review: {
-          comment: this.$('.prof-comments').text(),
-          easiness: null,
-          interest: null,
-          overall: null
-        }
+        prof_id: this.$('.prof-select').select2('val'),
+        course_id: this.courseModel.get('id'),
+        course_review: _.extend({}, this.userReviewModel.get('course_review'), {
+          comment: this.$('.course-comments').text()
+        }),
+        prof_review: _.extend({}, this.userReviewModel.get('prof_review'), {
+          comment: this.$('.prof-comments').text()
+        })
       }).done(function() {
         button
           .removeClass('btn-warning')
@@ -156,7 +153,7 @@ function(Backbone, $, _, _s, ratings, select2) {
           .removeClass('btn-warning')
           .addClass('btn-danger')
           .prop('disabled', false)
-          .html('<i class="icon-exclamation-sign"></i> Error! Click to try again');
+          .html('<i class="icon-exclamation-sign"></i> Error! :( Try again.');
       }).always(function() {
         self.saving = false;
       });

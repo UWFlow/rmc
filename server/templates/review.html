@@ -9,10 +9,10 @@
         <span class="term"><%- term %></span>
         with
         <select data-placeholder="which professor?" class="prof-select">
-        <option></option>
-        <% _.each(courseModel.professorNames, function(professorName) { %>
-          <option><%- professorName %></option>
-        <% }); %>
+          <option></option>
+          <% _.each(courseModel.professors, function(prof) { %>
+            <option value="<%- prof.id %>"><%- prof.name %></option>
+          <% }); %>
         </select>
         <button class="add-review btn btn-info">
           <i class="icon-plus"></i> Add review!

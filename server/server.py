@@ -125,7 +125,7 @@ def get_courses(course_names):
     for course in courses_list:
         courses[course['id']] = course
 
-    return flask.jsonify(courses=courses)
+    return json_util.dumps({ 'courses': courses })
 
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
@@ -184,7 +184,11 @@ def search_courses():
     clean_course_func = get_clean_course_func(critiques)
     courses = map(clean_course_func, limited_courses)
     has_more = len(courses) == count
-    return flask.jsonify(courses=courses, has_more=has_more)
+
+    return json_util.dumps({
+        'courses': courses,
+        'has_more': has_more,
+    })
 
 
 @app.route('/api/user/course', methods=['POST', 'PUT'])
@@ -237,16 +241,24 @@ def clean_course(course, critiques):
             professor_name = splits[0].strip()
         return professor_name
 
-    professor_names = []
-    for professor in course['professors']:
-        professor_name = format_professor_name(professor['name'])
-        professor_names.append(professor_name)
-    professor_names = sorted(professor_names)
+    def minify_professor(professor):
+        return {
+            'name': format_professor_name(professor['name']),
+            'id': professor['name']  # XXX TODO(david) FIXME: ORM for actual ID
+        }
+
+    professors = sorted(minify_professor(p) for p in course['professors'])
+
+    # XXX TODO(david) FIXME: search by user as well
+    user_course = db.user_courses.find_one({
+        'course_id': course['name'],
+    })
 
     return {
-        'id': course['name'],
+        'id': course['name'],   # XXX TODO(david) FIXME
         'name': course['title'],
-        'professorNames': professor_names,
+        'userCourse': user_course,
+        'professors': professors,
         'numRatings': overall_course_count,
         'description': course['description'],
         #'availFall': bool(int(course['availFall'])),
