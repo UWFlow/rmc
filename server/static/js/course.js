@@ -73,7 +73,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
         html: true,
         title: title,
         content: _.bind(this.getCourseFriendsPopoverContent, this),
-        trigger: 'click',
+        trigger: 'hover',
         placement: 'in top'
       });
       // Prevent clicking in the hovercard from expanding/collapsing the course
@@ -81,7 +81,6 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
       $target.on('click', '.popover', function(evt) {
         return false;
       });
-      //$target.tooltip({ title: 'Test One', trigger: 'click' });
 
       return this;
     },
