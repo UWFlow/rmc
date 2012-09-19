@@ -11,7 +11,8 @@
     <div class="num-ratings"><%- numRatings %> ratings</div>
   </div>
   <div class="num-friends">
-    <%- _s.sprintf('%d %s', numFriendsTook, pluralize(numFriendsTook, 'friend has', 'friends have')) %> taken this course
+    <% var numFriends = friendCollection.length; %>
+    <%- _s.sprintf('%d %s', numFriends, pluralize(numFriends, 'friend has', 'friends have')) %> taken this course
   </div>
   {# TODO(david): This is really dumb. Fix in a better way. #}
   <div style="clear: both; margin-bottom: -25px;"></div>
@@ -51,7 +52,10 @@
 {% endcall %}
 
 {% call macros.us_template('course-friends-hovercard-tpl') %}
-<p>
-  Testing 1, 2, 3
-</p>
+{% endcall %}
+
+{% call macros.us_template('course-friend-tpl') %}
+<a href="<%- profileUrl %>">
+  <img src="<%- fbPicUrl %>">
+</a>
 {% endcall %}

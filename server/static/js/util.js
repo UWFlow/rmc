@@ -14,14 +14,29 @@ function() {
   };
 
   /**
+   * TODO(mack): check if underscore.string already provides this
    * Capitalize the first letter of a string.
    */
   var capitalize = function(str) {
     return str.charAt(0).toUpperCase() + str.slice(1);
   };
 
+  /**
+   * Return the proper pluralization of num
+   */
+  var pluralize = function(num, singular, plural) {
+    if (num === 1) {
+      return singular;
+    } else if (typeof plural === 'undefined') {
+      return singular + 's';
+    } else {
+      return plural;
+    }
+  };
+
   return {
     getQueryParam: getQueryParam,
-    capitalize: capitalize
+    capitalize: capitalize,
+    pluralize: pluralize
   };
 });

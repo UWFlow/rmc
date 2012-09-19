@@ -8,6 +8,7 @@ function(Backbone, _, _s) {
       fbid: 1647810326,
       name: 'Mack Duan',
       lastTermName: 'Spring 2012',
+      // TODO(mack): should be CourseCollection
       coursesTook: []
     },
 
@@ -60,6 +61,28 @@ function(Backbone, _, _s) {
         lastTermName: 'Fall 2012',
         coursesTook: []
       },
+      {
+        id: '004',
+        fbid: 541400376,
+        name: 'David Hu',
+        lastTermName: 'Spring 2012',
+        // TODO(mack): should be CourseCollection rather than array
+        coursesTook: [],
+      },
+      {
+        id: '005',
+        fbid: 164710326,
+        name: 'Mack Duan',
+        lastTermName: 'Fall 2012',
+        coursesTook: []
+      },
+      {
+        id: '006',
+        fbid: 518430508,
+        name: 'Sandy Wu',
+        lastTermName: 'Fall 2012',
+        coursesTook: []
+      }
     ]
     _.each(usersData, function(userData) {
       var userModel = new UserModel(userData);

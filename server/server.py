@@ -48,8 +48,6 @@ def courses():
 ######## API ##################
 ###############################
 
-import random
-
 @app.route('/api/courses/<string:course_names>', methods=['GET'])
 # TODO(mack): find a better name for function
 def get_courses(course_names):

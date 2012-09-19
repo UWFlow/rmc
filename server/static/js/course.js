@@ -1,7 +1,7 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'review', 'ext/bootstrap'],
-function(Backbone, $, _, _s, ratings, review, __) {
+'ratings', 'review', 'ext/bootstrap', 'user', 'util'],
+function(Backbone, $, _, _s, ratings, review, __, user, util) {
 
   var CourseModel = Backbone.Model.extend({
     defaults: {
@@ -9,7 +9,7 @@ function(Backbone, $, _, _s, ratings, review, __) {
       name: 'Introduction to Astronomy omg omg omg',
       rating: 2.5,
       numRatings: 49,
-      numFriendsTook: 2,
+      friendCollection: user.UserCollection.getSampleCollection(),
       userReviewModel: null,
       professorNames: ['Eddie Dupont', 'Charlie Clarke', 'Mark Smucker', 'Larry Smith'],
       description: 'This couse will introduce you to the wonderful world' +
@@ -63,21 +63,42 @@ function(Backbone, $, _, _s, ratings, review, __) {
       this.$('.review-placeholder').replaceWith(
         this.userReviewView.render().el);
 
+      var $target = $('.num-friends');
+      var numFriends = this.courseModel.get('friendCollection').length;
+      var title = _s.sprintf('%d %s taken %s', numFriends,
+        util.pluralize(numFriends, 'friend has', 'friends have'), this.courseModel.get('id'));
+      // TODO(mack): investigate if offset attribute works for popover, need to
+      // move popover slightly higher
+      $target.popover({
+        html: true,
+        title: title,
+        content: _.bind(this.getCourseFriendsPopoverContent, this),
+        trigger: 'click',
+        placement: 'in top'
+      });
+      // Prevent clicking in the hovercard from expanding/collapsing the course
+      // view
+      $target.on('click', '.popover', function(evt) {
+        return false;
+      });
+      //$target.tooltip({ title: 'Test One', trigger: 'click' });
+
       return this;
     },
 
+    getCourseFriendsPopoverContent: function() {
+      if (!this.courseFriendsHovercardView) {
+        this.courseFriendsHovercardView = new CourseFriendsHovercardView({
+          friendCollection: this.courseModel.get('friendCollection')
+        });
+      }
+      return this.courseFriendsHovercardView.render().$el;
+    },
+
     events: {
-      'mouseenter .friend-name': 'showCourseFriendsHovercard',
       // TODO(david): Figure out a nicer interaction without requiring click
       'click .visible-section': 'toggleCourse',
       'focus .new-review-input': 'expandNewReview'
-    },
-
-    showCourseFriendsHovercard: function(evt) {
-      var hovercardView = new CourseFriendsHovercardView({
-        courseModel: this.courseModel,
-        $target: $(evt.currentTarget)
-      });
     },
 
     toggleCourse: function(evt) {
@@ -120,37 +141,58 @@ function(Backbone, $, _, _s, ratings, review, __) {
   });
 
   var CourseFriendsHovercardView = Backbone.View.extend({
+    tagName: 'ul',
+    className: 'friend-collection',
+
     initialize: function(attributes) {
-      this.$target = attributes.$target;
-      this.courseModel = attributes.courseModel;
+      this.friendCollection = attributes.friendCollection;
+      this.friendViews = [];
     },
 
     render: function() {
-      this.$target.popover({
-        html: true,
-        title: 'Friends',
-        content: _.bind(this.getPopoverContent, this),
-        trigger: 'manual',
-        placement: 'top'
-      }).hover(function(evt) {
-        $(this).popover('show');
-        evt.preventDefault();
-      });
+      this.$el.html(
+        _.template($('#course-friends-hovercard-tpl').html(), {})
+      );
+      this.friendCollection.each(function(friendModel) {
+        this.addFriend(friendModel);
+      }, this);
 
       return this;
     },
 
-    getPopoverContent: function() {
-      this.$el.html(
-        _.template($('#course-friends-hovercard-tpl').html(), this.courseModel.toJSON())
-      );
-      return this.$el;
+    addFriend: function(friendModel) {
+      var friendView = new CourseFriendView({
+        friendModel: friendModel,
+        tagName: 'li'
+      });
+      this.$el.append(friendView.render().el);
+      this.friendViews.push(friendView);
+    }
+
+  });
+
+  var CourseFriendView = Backbone.View.extend({
+    className: 'friend-pic',
+
+    initialize: function(attributes) {
+      this.friendModel = attributes.friendModel;
     },
 
-    // Override remove to also destroy the popover
-    remove: function() {
-      this.__super__.remove.apply(this, arguments);
-      this.$target.popover('destroy');
+    render: function() {
+      this.$el.html(
+        _.template($('#course-friend-tpl').html(), this.friendModel.toJSON())
+      );
+
+      window.setTimeout(_.bind(this.postRender, this));
+
+      return this;
+    },
+
+    // Put logic here that should be run after this.$el is added to the DOM
+    postRender: function() {
+      this.$el.tooltip({
+        title: this.friendModel.get('name')
+      });
     }
   });
 

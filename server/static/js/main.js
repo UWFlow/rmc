@@ -47,7 +47,7 @@ require.config({
   }
 });
 
-require(['ext/underscore', 'ext/underscore.string', 'ext/backbone'], function(_, _s, Backbone) {
+require(['ext/underscore', 'ext/underscore.string', 'ext/backbone', 'util'], function(_, _s, Backbone, util) {
   // Add helpers functions to all templates
   (function() {
     var template = _.template;
@@ -56,15 +56,7 @@ require(['ext/underscore', 'ext/underscore.string', 'ext/backbone'], function(_,
     var templateHelpers = {
       _: _,
       _s: _s,
-      pluralize: function(num, singular, plural) {
-        if (num === 1) {
-          return singular;
-        } else if (!plural) {
-          return singular + 's';
-        } else {
-          return plural;
-        }
-      }
+      pluralize: util.pluralize
     };
 
     _.template = function(templateString, data, settings) {
@@ -82,6 +74,7 @@ require(['ext/underscore', 'ext/underscore.string', 'ext/backbone'], function(_,
   })();
 
   // Extend backbone model
+  // TODO(mack): test in ie
   Backbone.Model.prototype._super = function(funcName) {
     return this.constructor.__super__[funcName].apply(this, _.rest(arguments));
   }

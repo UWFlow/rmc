@@ -69,6 +69,33 @@
     top: $top;
     position: relative;
     width: 125px;
+
+    // TODO(mack): make width dependent on number of friends, probably gotta do in js
+    // since max-width doesn't seem to work
+    $friends-per-row: 5;
+    $friend-width: 50px;
+    $friend-margin: 2px;
+    $friend-collection-width: $friends-per-row*$friend-width + 2 * $friends-per-row * $friend-margin;
+    $padding-horizontal: 9px;
+    .popover {
+      width: $friend-collection-width + 2*$padding-horizontal;
+      cursor: default;
+      text-align: left;
+      .popover-content {
+        padding: 9px $padding-horizontal;
+        .friend-collection {
+          width: $friend-collection-width;
+          list-style: none;
+          margin-left: 0;
+          .friend-pic {
+            display: inline-block;
+            margin: $friend-margin;
+            width: $friend-width;
+            height: $friend-width;
+          }
+        }
+      }
+    }
   }
 
   .expand-section {
