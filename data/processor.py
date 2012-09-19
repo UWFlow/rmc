@@ -1,9 +1,11 @@
 import rmc.shared.constants as c
+import rmc.models as m
 
 import copy
 from datetime import datetime
 import glob
 import json
+import mongoengine
 import os
 from pymongo import Connection
 import re
@@ -24,7 +26,7 @@ def import_departments():
         data = json.load(f)
         f.close()
         for department in data:
-            department['name'] = department['Acronym']
+            department['name'] = department['Acronym'].lower()
             departments.insert(department)
     print 'imported departments:', departments.count()
 
@@ -41,18 +43,15 @@ def ensure_rating_indices(collection):
     collection.ensure_index('ratings.interest.count')
 
 def import_courses():
+    mongoengine.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+
     db = get_db()
-    courses = db.courses
     departments = db.departments
 
-    courses.drop()
-    courses.ensure_index('name', unique=True)
-    courses.ensure_index('title')
-    courses.ensure_index('_keywords')
-    ensure_rating_indices(courses)
+    m.Course.objects._collection.drop()
 
     def get_department_name_from_file_path(file_path):
-        return re.findall(r'([^/]*).txt$', file_path)[0].upper()
+        return re.findall(r'([^/]*).txt$', file_path)[0].lower()
 
     def build_keywords(department, number, course_title):
         department = department.lower()
@@ -63,13 +62,17 @@ def import_courses():
         keywords.extend(course_title.split(' '))
         return keywords
 
-    def clean_opendata_course(course):
+    def clean_opendata_course(dep, course):
+        dep = dep.lower()
+        number = course['Number'].lower()
         return {
-            'name': '%s%s' % (course['DeptAcronym'].upper(), course['Number']),
-            'title': course['Title'],
+            'id': '%s%s' % (dep, number),
+            'department_id': dep,
+            'number': number,
+            'name': course['Title'],
             'description': course['Description'],
             '_keywords': build_keywords(
-                course['DeptAcronym'], course['Number'], course['Title']),
+                dep, number, course['Title']),
         }
 
 
@@ -85,17 +88,21 @@ def import_courses():
             continue
 
         for course in data.values():
-            course = clean_opendata_course(course)
-            courses.insert(course)
+            course = clean_opendata_course(dep_name, course)
+            m.Course(**course).save()
 
     def clean_uwdata_course(dep, course):
         course = course['course']
+        dep = dep.lower()
+        number = course['course_number'].lower()
         return {
-            'name': '%s%s' % (dep.upper(), course['course_number']),
-            'title': course['title'],
+            'id': '%s%s' % (dep, number),
+            'department_id': dep,
+            'number': number,
+            'name': course['title'],
             'description': course['description'],
             '_keywords': build_keywords(
-                    dep, course['course_number'], course['title']),
+                    dep, number, course['title']),
         }
 
     uwdata_count = 0
@@ -114,15 +121,15 @@ def import_courses():
         for course in data:
             course = clean_uwdata_course(dep_name, course)
 
-            if not courses.find_one({'name': course['name']}):
+            if not m.Course.objects.with_id(course['id']):
                 uwdata_count += 1
-                courses.insert(course)
+                m.Course(**course).save()
             else:
                 uwdata_ignored += 1
 
     print 'backfilled %d courses from uwdata' % uwdata_count
     print 'ignored %d courses from uwdata' % uwdata_ignored
-    print 'imported courses:', courses.count()
+    print 'imported courses:', m.Course.objects.count()
 
 def import_professors():
     db = get_db()
@@ -299,7 +306,7 @@ def update_aggr_professors():
 if __name__ == '__main__':
     import_departments()
     import_courses()
-    import_professors()
-    import_ratings() # must be after departments, courses
-    update_aggr_courses()
-    update_aggr_professors()
+    #import_professors()
+    #import_ratings() # must be after departments, courses
+    #update_aggr_courses()
+    #update_aggr_professors()
