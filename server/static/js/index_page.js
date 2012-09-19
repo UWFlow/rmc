@@ -11,14 +11,11 @@ function($, _cookie) {
           // First login, fetch user data from the FB Graph API
           // TODO(Sandy): Grab and send more data: name, email, faculty, program, uni
           FB.api('/me/friends', function(response) {
-            var fbids = [];
-            for (var ii in response.data) {
-              fbids.push(response.data[ii].id);
-            }
+            var fbids = _.pluck(response.data, 'id');
             var friends = JSON.stringify(fbids);
             $.post('/login', { 'friends': friends }, function(data) {
               // TODO(Sandy): handle errors here, expecting none right now though
-              window.location.href = '/profile'
+              window.location.href = '/profile';
             });
           });
 
@@ -33,7 +30,7 @@ function($, _cookie) {
         // TODO(Sandy): Make redirect happen server-side so we don't even need to load the landing page
         // TODO(Sandy): Fetch user data here or better yet use realtime API to get friend updates
         if (response.status === 'connected') {
-          window.location.href = '/profile'
+          window.location.href = '/profile';
         }
       });
     };
