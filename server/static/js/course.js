@@ -33,6 +33,9 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
       }
       this.set('userReviewModel',
           new review.UserReviewModel(attributes.userCourse));
+      if (attributes.userCourse) {
+        console.log(attributes.userCourse);
+      }
     }
   });
 

@@ -14,13 +14,13 @@ function(Backbone, $, _, _s, ratings, select2) {
         passion: null,
         clarity: null,
         overall: null,
-        comment: 'Professor was Larry Smith. Enough said.'
+        comment: ''
       },
       course_review: {
         easiness: null,
         interest: null,
         overall: null,
-        comment: 'blha blahb lbha lbahbla blhabl blah balhb balh balh'
+        comment: ''
       }
     },
 
@@ -105,6 +105,7 @@ function(Backbone, $, _, _s, ratings, select2) {
 
       this.$('.comments')
         .autosize()
+        .height(70)  // Because autosize doesn't respect CSS class height
         .css('resize', 'none');
 
       this.$('.course-ratings-placeholder').replaceWith(
@@ -137,10 +138,10 @@ function(Backbone, $, _, _s, ratings, select2) {
         prof_id: this.$('.prof-select').select2('val'),
         course_id: this.courseModel.get('id'),
         course_review: _.extend({}, this.userReviewModel.get('course_review'), {
-          comment: this.$('.course-comments').text()
+          comment: this.$('.course-comments').val()
         }),
         prof_review: _.extend({}, this.userReviewModel.get('prof_review'), {
-          comment: this.$('.prof-comments').text()
+          comment: this.$('.prof-comments').val()
         })
       }).done(function() {
         button
