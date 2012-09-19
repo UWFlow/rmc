@@ -67,8 +67,11 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
 
       var $target = $('.num-friends');
       var numFriends = this.courseModel.get('friendCollection').length;
-      var title = _s.sprintf('%d %s taken %s', numFriends,
-        util.pluralize(numFriends, 'friend has', 'friends have'), this.courseModel.get('id'));
+      // TODO(mack): change back
+      // var title = _s.sprintf('%d %s taken %s', numFriends,
+      //   util.pluralize(numFriends, 'friend has', 'friends have'), this.courseModel.get('id'));
+      var title = _s.sprintf('%d %s taken this course', numFriends,
+        util.pluralize(numFriends, 'friend has', 'friends have'));
       // TODO(mack): investigate if offset attribute works for popover, need to
       // move popover slightly higher
       $target.popover({
