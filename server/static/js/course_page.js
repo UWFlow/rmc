@@ -143,13 +143,7 @@ function($, _, _s, course, __, Backbone, user) {
             var courses = data.courses;
             this.hasMore = data.has_more;
             this.offset += courses.length;
-            _.each(data.courses, function(c) {
-              var friendCollection = user.UserCollection.getSampleCollection()
-              var courseModel = new course.CourseModel(_.extend({
-                friendCollection: friendCollection
-              }, c));
-              this.courseCollection.add(courseModel);
-            }, this);
+            this.courseCollection.add(courses);
             this.updatingCourses = false;
             this.$('.loader').addClass('hide');
           }, this)

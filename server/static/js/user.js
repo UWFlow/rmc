@@ -89,8 +89,8 @@ function(Backbone, _, _s, util) {
       },
       {
         id: '008',
-        fbid: 511515597,
-        name: 'Andy Pincombe',
+        fbid: 784910429,
+        name: 'Anthony Wong',
         lastTermName: 'Winter 2012',
         coursesTook: []
       },

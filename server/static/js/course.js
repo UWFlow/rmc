@@ -9,8 +9,8 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
       name: 'Introduction to Astronomy omg omg omg',
       rating: 2.5,
       numRatings: 49,
-      friendCollection: new user.UserCollection(),
-      userReviewModel: null,
+      friendCollection: undefined,
+      userReviewModel: undefined,
       professorNames: ['Eddie Dupont', 'Charlie Clarke', 'Mark Smucker', 'Larry Smith'],
       description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
@@ -35,6 +35,9 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
           new review.UserReviewModel(attributes.userCourse));
       if (attributes.userCourse) {
         console.log(attributes.userCourse);
+      }
+      if (!attributes.friendCollection) {
+        this.set('friendCollection', user.UserCollection.getSampleCollection());
       }
     }
   });
