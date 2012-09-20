@@ -155,7 +155,7 @@ def import_professors():
 
 def import_reviews():
 
-    m.MenloCourseReview.objects._collection.drop()
+    m.MenloCourse.objects._collection.drop()
 
     def clean_review(review):
         course = review['class']
@@ -218,11 +218,11 @@ def import_reviews():
                 continue
 
             try:
-                m.MenloCourseReview(**review).save()
+                m.MenloCourse(**review).save()
             except:
                 print 'failed on review', review
 
-    print 'imported reviews:', m.MenloCourseReview.objects.count()
+    print 'imported reviews:', m.MenloCourse.objects.count()
 
 if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
