@@ -11,6 +11,9 @@ class CourseOffering(Document):
     # eg. LEC001 or just 001?
     section_id = f.IntField(required=True)
 
+    # eg. mc2045, distance_ed
+    location_id = f.StringField()
+
     # TODO(mack): should be some kind of list of (day_of_week, time)?
     # class_times = f.ListField(f.DateTimeField(), required=True)
 
