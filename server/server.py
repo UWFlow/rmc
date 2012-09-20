@@ -191,6 +191,7 @@ def search_courses():
 @app.route('/api/user/course', methods=['POST', 'PUT'])
 def user_course():
     # TODO(david) FIXME: Use ORM, don't shove! and ensure_index
+    # TODO(david): This should also update aggregate ratings table, etc.
     data = json_util.loads(flask.request.data)
     db.user_courses.save(data)
     return json_util.dumps(data)
