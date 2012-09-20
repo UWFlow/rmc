@@ -1,6 +1,5 @@
 from bson import json_util
 import flask
-import json
 import mongoengine
 import pymongo
 import re
@@ -27,6 +26,9 @@ def profile(fbid):
         pass
 
 @app.route('/course')
+def course():
+    return flask.redirect('/courses', 301)  # Moved permanently
+
 @app.route('/courses')
 def courses():
     # TODO(mack): move into COURSES_SORT_MODES
@@ -47,8 +49,10 @@ def courses():
         directions=directions,
     )
 
-# We'll just use subdomains to separate courses from schools
 @app.route('/courses/<string:course_id>')
+def courses_page(course_id):
+    return flask.redirect('/course/%s' % course_id, 301)  # Moved permanently
+
 @app.route('/course/<string:course_id>')
 def course_page(course_id):
     return flask.render_template('course_page.html')
