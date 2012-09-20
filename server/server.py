@@ -26,6 +26,7 @@ def profile(fbid):
         # TODO(mack): handle viewing another user's profile
         pass
 
+@app.route('/course')
 @app.route('/courses')
 def courses():
     # TODO(mack): move into COURSES_SORT_MODES
@@ -41,10 +42,16 @@ def courses():
         { 'value': pymongo.DESCENDING, 'name': 'decreasing' },
     ]
     return flask.render_template(
-        'course_page.html',
+        'search_page.html',
         sort_modes=sort_modes,
         directions=directions,
     )
+
+# We'll just use subdomains to separate courses from schools
+@app.route('/courses/<string:course_id>')
+@app.route('/course/<string:course_id>')
+def course_page(course_id):
+    return flask.render_template('course_page.html')
 
 @app.route('/login', methods=['POST'])
 def login():

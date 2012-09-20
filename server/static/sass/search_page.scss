@@ -1,0 +1,42 @@
+@import 'base';
+@import 'course';
+
+#course-page-container {
+  .keywords {
+    width: 98%;
+    padding-top: 10px;
+    line-height: 40px;
+    font-size: 40px;
+    height: 40px;
+  }
+
+  .course-search-form {
+    @extend .clearfix;
+    float: right;
+    .dropdown {
+      display: inline-block;
+      float: none;
+      .dropdown-toggle {
+        $side-padding: 3px;
+        padding-left: $side-padding;
+        padding-right: $side-padding;
+      }
+    }
+  }
+
+  .course-collection {
+    list-style: none;
+    margin-left: 0px;
+  }
+
+  .loader-container {
+    text-align: center;
+    .loader {
+      // TODO(mack): use sass so we can set image directory
+      display: inline-block;
+      background: url('/static/img/bar-loader.gif') no-repeat;
+      width: 16px;
+      height: 11px;
+    }
+  }
+}

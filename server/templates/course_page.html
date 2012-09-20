@@ -1,80 +1,43 @@
 {% extends 'base_page.html' %}
 
-{% set nav_item = "courses" %}
-
 {% block stylesheets %}
-  <link rel="stylesheet" href="/static/css/course_page.css?1">
+  <link rel="stylesheet" href="/static/css/course_page.css">
 {% endblock %}
 
-{% block page_title %}Search courses{% endblock %}
+{% block page_title %}CS 241{% endblock %}
 
 {% block body %}
+
+TESTING
+{#
   <div class="row-fluid">
-    <div class="span12">
-      <div id="course-page-container">
+    <div class="span3 well" id="friend-sidebar-container">
+    </div>
+    <div class="span9" id="profile-container">
+      <div id="term-collection-container"></div>
+      <div id="transcript-container">
+        <h2>Import Transcript from Quest</h2>
+          <p id="transcript-instructions">
+            Copy and paste your
+            <a target="_blank"
+              href="https://quest.pecs.uwaterloo.ca/psp/SS/?cmd=login">
+              transcript from Quest</a>,
+            and <strong>your course history will magically appear</strong> here!
+          </p>
+          <textarea id="transcript-text" wrap="off"></textarea>
       </div>
     </div>
   </div>
+  #}
 {% endblock %}
 
-{% block footer %}
-{% endblock %}
-
+{# TODO(david): Have underscore templates specify their deps. #}
 {% block templates %}
+  {% include 'friend.html' %}
+  {% include 'course.html' %}
+  {% include 'term.html' %}
   {% include 'ratings.html' %}
   {% include 'review.html' %}
-  {% include 'course.html' %}
-
-  <script>
-    var pageData = {
-      sortModes: {{ sort_modes|tojson|safe }},
-    };
-  </script>
-
-  <!-- TODO(mack): add to own file? -->
-  <script type="text/html" id="search-form-tpl">
-    <div class="row-fluid">
-      <div class="span12">
-        <input type="search" class="keywords search-query"
-          placeholder='eg. cs241'>
-      </div>
-    </div>
-    <form class="course-search-form nav nav-pills">
-      <!-- TODO(mack): add search icon -->
-      Sorted
-      <li class="sort-mode-dropdown dropdown">
-        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-          <span class="selected-sort-mode"><%- selectedSortMode.name %></span>
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-        <% _.each(sortModes, function(sortMode) { %>
-          <li data-value="<%- sortMode.value %>">
-            <a href="#"><%-sortMode.name %></a>
-          </li>
-        <% }); %>
-        </ul>
-      </li>
-      in
-      <li class="order-dropdown dropdown">
-        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-          <span class="selected-direction"><%- selectedDirection.name %></span>
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-          <li data-value="1"><a href="#">ascending</a></li>
-          <li data-value="-1"><a href="#">descending</a></li>
-        </ul>
-      </li>
-      order
-    </form>
-    <div style="clear:both;"></div>
-    <div class="course-collection-placeholder">
-    </div>
-    <div class="loader-container">
-      <div class="loader hide"></div>
-    </div>
-  </script>
 {% endblock %}
 
 {% block scripts %}
