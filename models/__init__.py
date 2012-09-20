@@ -5,3 +5,4 @@ from professor import Professor
 from rating import AggregateRating
 from review import UserCourseReview, MenloCourseReview, CritiqueCourseReview, CourseReview, ProfessorReview
 from term import Term
+from user import User
