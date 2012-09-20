@@ -103,6 +103,13 @@ function(Backbone, $, _, _s, ratings, select2) {
       this.$('.prof-select').select2({
       });
 
+      if (this.userReviewModel.has('prof_id')) {
+        this.$('.prof-select')
+          .select2('val', this.userReviewModel.get('prof_id'));
+        this.$('.add-review')
+          .html('<i class="icon-edit"></i> Edit review');
+      }
+
       this.$('.comments')
         .autosize()
         .height(70)  // Because autosize doesn't respect CSS class height

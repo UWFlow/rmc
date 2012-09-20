@@ -48,7 +48,6 @@ function($, _, _s, transcript, term, course, friend, util, user) {
       try {
         coursesByTerm = transcript.parseTranscript(data);
       } catch (ex) {
-        console.log('ex', ex.toString());
         $('#transcript-error').text(
             'Could not extract course information. ' +
             'Please check that you\'ve pasted the transcript correctly.');
