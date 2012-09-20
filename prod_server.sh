@@ -22,5 +22,5 @@ uwsgi --socket /tmp/uwsgi.sock \
   --chmod-socket 666 \
   --wsgi rmc.server.server:app \
   --master \
-  --daemonize /home/rmc/logs/uwsgi.log
+  --daemonize /home/rmc/logs/uwsgi.log \
   --pidfile $1
