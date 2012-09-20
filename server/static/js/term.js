@@ -61,21 +61,19 @@ function(Backbone, _, course) {
           duration: duration,
           queue: false
         })
-        .slideDown(duration, _.bind(function() {
-          this.$('.term-name .arrow')
-            .removeClass('icon-chevron-down')
-            .addClass('icon-chevron-up');
-        }, this));
+        .slideDown(duration)
+        .end().find('.term-name .arrow')
+        .removeClass('icon-caret-right')
+        .addClass('icon-caret-down');
     },
 
     collapseTerm: function(evt) {
       this.$('.course-collection')
         .stop(/* clearQueue */ true)
-        .slideUp(300, _.bind(function() {
-          this.$('.term-name .arrow')
-            .removeClass('icon-chevron-up')
-            .addClass('icon-chevron-down');
-        }, this));
+        .slideUp(300)
+        .end().find('.term-name .arrow')
+          .removeClass('icon-caret-down')
+          .addClass('icon-caret-right');
     }
 
   });
