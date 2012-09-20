@@ -1,0 +1,47 @@
+#!/bin/sh
+
+NAME=rmc_daemon
+PIDFILE=/var/run/$NAME.pid
+DESC="RMC uwsgi daemon"
+DAEMON=/home/rmc/rmc/prod_server.sh
+
+test -x $DAEMON || exit 0
+
+[ -r /etc/default/rmc_daemon ] && . /etc/default/rmc_daemon
+
+. /lib/lsb/init-functions
+
+start_rmc() {
+  $DAEMON $PIDFILE
+}
+
+stop_rmc() {
+  [ -f $PIDFILE ] && ( kill `cat $PIDFILE` 2> /dev/null )
+  rm -f $PIDFILE 2> /dev/null
+}
+
+case "$1" in
+  start)
+  log_begin_msg "Starting $DESC"
+  start_rmc
+  log_end_msg 0
+  ;;
+  stop)
+  log_begin_msg "Stopping $DESC"
+  stop_rmc
+  log_end_msg 0
+  ;;
+  restart|force-reload)
+  log_begin_msg "Restarting $DESC"
+  stop_rmc
+  sleep 1
+  start_rmc
+  log_end_msg 0
+  ;;
+  *)
+  echo "Usage: $0 {start|stop|restart|force-reload}" >&2
+  exit 1
+  ;;
+esac
+
+exit 0

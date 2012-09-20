@@ -101,7 +101,11 @@ sudo gem install rdoc-data; sudo rdoc-data --install
 # Import data from various text files
 ( cd rmc && make import-data )
 
-echo "TODO: start rmc server by running rmc/prod_server.sh"
+echo "Setting up rmc web server a daemon"
+sudo update-rc.d -f rmc_daemon remove
+sudo ln -sfnv $CONFIG_DIR/etc/init.d/rmc_daemon /etc/init.d
+sudo update-rc.d rmc_daemon defaults
+sudo service rmc_daemon restart
 
 # Don't need node yet
 #echo "Installing node and npm"
