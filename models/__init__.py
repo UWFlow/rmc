@@ -1,3 +1,7 @@
-from course import Course, MenloCourseRating, CritiqueCourseRating, FlowCourseRating
+from course import Course
 from department import Department
-from professor import Professor, MenloProfessorRating, CritiqueProfessorRating, FlowProfessorRating
+from offering import CourseOffering
+from professor import Professor
+from rating import AggregateRating
+from review import UserCourseReview, MenloCourseReview, CritiqueCourseReview, CourseReview, ProfessorReview
+from term import Term

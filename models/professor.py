@@ -1,29 +1,7 @@
 from mongoengine import Document
-from mongoengine import ObjectIdField, StringField, EmbeddedDocumentField
+import _field as f
 
-import rmc.models.rating.Rating as Rating
-
-class ProfessorRating(Document):
-    meta = {
-        'abstract': True
-    }
-
-    # eg. professor_id => ObjectId()
-    id = ObjectIdField(primary_key=True)
-
-    clarity = EmbeddedDocumentField(Rating, required=True)
-    easiness = EmbeddedDocumentField(Rating, required=True)
-    passion = EmbeddedDocumentField(Rating, required=True)
-
-
-class MenloProfessorRating(ProfessorRating):
-    pass
-
-class CritiqueProfessorRating(ProfessorRating):
-    pass
-
-class FlowProfessorRating(ProfessorRating):
-    pass
+import rating
 
 class Professor(Document):
     meta = {
@@ -37,19 +15,28 @@ class Professor(Document):
         ],
     }
 
-    # eg. ObjectId()
-    id = ObjectIdField(primary_key=True)
+    # eg. byron_weber_becker
+    id = f.StringField(primary_key=True)
 
-    # eg. Byron
-    first_name = StringField(required=True)
+    # TODO(mack): available in menlo data
+    # department_id = f.StringField()
 
-    # eg. Weber
-    middle_name = StringField(required=False)
+    # eg. Byron Weber
+    first_name = f.StringField(required=True)
 
     # eg. Becker
-    last_name = StringField(required=True)
+    last_name = f.StringField(required=True)
 
-    # aggregate from Menlo/Critique/Flow ProfessorRating
-    easiness = EmbeddedDocumentField(Rating, default=Rating())
-    clarity = EmbeddedDocumentField(Rating, default=Rating())
-    passion = EmbeddedDocumentField(Rating, default=Rating())
+    clarity = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    easiness = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    passion = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+
+    @classmethod
+    def get_id_from_name(cls, first_name, last_name):
+        first_name = first_name.lower()
+        last_name = last_name.lower()
+        return ('%s %s' % (first_name, last_name)).replace(' ', '_')
+
+    def save(self, *args, **kwargs):
+        self.id = Professor.get_id_from_name(self.first_name, self.last_name)
+        super(Professor, self).save(*args, **kwargs)

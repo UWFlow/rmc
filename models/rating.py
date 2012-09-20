@@ -1,6 +1,7 @@
 from mongoengine import EmbeddedDocument
-from mongoengine import IntField, FloatField
+import _field as f
 
-class Rating(EmbeddedDocument):
-    count = IntField(min_value=0, default=0)
-    rating = FloatField(min_value=0.0, max_value=1.0, default=None)
+
+class AggregateRating(EmbeddedDocument):
+    rating = f.FloatField(min_value=0.0, max_value=1.0)
+    count = f.IntField(min_value=0, default=0)

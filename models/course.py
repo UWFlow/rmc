@@ -1,27 +1,8 @@
 from mongoengine import Document
-from mongoengine import StringField, EmbeddedDocumentField, ListField
+import _field as f
 
-import rmc.models.rating.Rating as Rating
+import rating
 
-class CourseRating(Document):
-    meta = {
-        'abstract': True
-    }
-
-    # e.g. earth121l
-    id = StringField(primary_key=True)
-
-    interest = EmbeddedDocumentField(Rating, required=True)
-    easiness = EmbeddedDocumentField(Rating, required=True)
-
-class MenloCourseRating(CourseRating):
-    pass
-
-class CritiqueCourseRating(CourseRating):
-    pass
-
-class FlowCourseRating(CourseRating):
-    pass
 
 class Course(Document):
     meta = {
@@ -36,25 +17,28 @@ class Course(Document):
         ],
     }
 
-    # e.g. earth121l
-    id = StringField(primary_key=True)
+    # eg. earth121l
+    id = f.StringField(primary_key=True)
 
-    # e.g. earth
-    department_id = StringField(required=True)
+    # eg. earth
+    department_id = f.StringField(required=True)
 
-    # e.g. 121l
-    number = StringField(required=True)
+    # eg. 121l
+    number = f.StringField(required=True)
 
-    # Introductory Earth Sciences Laboratory 1
-    name = StringField(required=True)
+    # eg. Introductory Earth Sciences Laboratory 1
+    name = f.StringField(required=True)
 
     # Description about the course
-    description = StringField(required=True)
+    description = f.StringField(required=True)
 
-    # aggregate of Menlo/Critique/Flow CourseRating
-    interest = EmbeddedDocumentField(Rating, default=Rating())
-    easiness = EmbeddedDocumentField(Rating, default=Rating())
-    overall = EmbeddedDocumentField(Rating, default=Rating())
+    # eg. ['earth', '121l', 'earth121l', 'Introductory', 'Earth' 'Sciences', 'Laboratory', '1']
+    _keywords = f.ListField(f.StringField(), required=True)
 
-    # e.g. ['earth', '121l', 'earth121l', 'Introductory', 'Earth' 'Sciences', 'Laboratory', '1']
-    _keywords = ListField(StringField(), required=True)
+    easiness = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    interest = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    overall = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+
+    def save(self, *args, **kwargs):
+        self.id = self.department_id + self.number
+        super(Course, self).save(*args, **kwargs)
