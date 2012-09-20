@@ -6,3 +6,4 @@ pylint==0.25.1
 pymongo==2.3
 uWSGI==1.2.6
 mongoengine==0.7.5
+redis==2.6.2
