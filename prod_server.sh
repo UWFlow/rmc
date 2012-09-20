@@ -5,9 +5,12 @@
 # Bail on errors
 set -e
 
+sudo pkill -f uwsgi
+
 cd /home/rmc
 
-# Compile compass
+# Recompile compass
+compass clean rmc/server/static/
 compass compile rmc/server/static/
 
 # Install requirements
