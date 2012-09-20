@@ -1,3 +1,4 @@
+*.pyc
 .sass-cache/
 mongodb/
 server/static/css/
