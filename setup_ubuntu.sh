@@ -21,6 +21,10 @@ sudo apt-get install mongodb-10gen
 sudo add-apt-repository ppa:rwky/redis
 sudo apt-get update
 sudo apt-get install redis-server
+# we will manually start redis-server when we run local_server.sh
+sudo service redis-server stop
+# this gives you permissions to write to the necessary redis log files
+sudo usermod -a -G redis "${USER}"
 
 # Install rubygems, in order to install compass
 sudo apt-get install ruby rubygems
