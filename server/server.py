@@ -1,16 +1,17 @@
 from bson import json_util
 import flask
-import mongoengine
+import mongoengine as me
 import pymongo
 import re
 import functools
 import time
 
 import rmc.shared.constants as c
+import rmc.models as m
 
 app = flask.Flask(__name__)
 db = pymongo.Connection(c.MONGO_HOST, c.MONGO_PORT).rmc
-mongoengine.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
 @app.route('/')
 def index():
