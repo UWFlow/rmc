@@ -54,7 +54,7 @@ class MenloCourseReview(Document):
     professor_review = f.EmbeddedDocumentField(ProfessorReview)
 
 
-# TODO(mack): should be UserOfferingReview?
+# TODO(mack): should be UserCourseOffering?
 class UserCourseReview(Document):
 
     meta = {
@@ -77,6 +77,11 @@ class UserCourseReview(Document):
     user_id = f.StringField(unique_with=['course_id', 'term_id'])
     course_id = f.StringField(required=True)
     term_id = f.StringField(required=True)
+
+    # TODO(mack): add fields for grade tracking; eg. grades on assignments
+
+    # TODO(mack): should range be 0..1 or 0..100 ?
+    grade = f.FloatField(min_value=0.0, max_value=1.0)
 
     professor_id = f.StringField()
 
