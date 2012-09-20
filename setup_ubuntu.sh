@@ -18,5 +18,9 @@ sudo /bin/sh -c 'echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upsta
 sudo apt-get update
 sudo apt-get install mongodb-10gen
 
+sudo add-apt-repository ppa:rwky/redis
+sudo apt-get update
+sudo apt-get install redis-server
+
 # Install rubygems, in order to install compass
 sudo apt-get install ruby rubygems
