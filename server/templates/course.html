@@ -10,9 +10,7 @@
     <div class="rating"><%- _s.sprintf('%.1f', rating) %></div>
     <div class="num-ratings"><%- numRatings %> ratings</div>
   </div>
-  <div class="num-friends">
-    <% var numFriends = friendCollection.length; %>
-    <%- _s.sprintf('%d %s', numFriends, pluralize(numFriends, 'friend has', 'friends have')) %> taken this course
+  <div class="sample-friends-placeholder">
   </div>
   {# TODO(david): This is really dumb. Fix in a better way. #}
   <div style="clear: both; margin-bottom: -25px;"></div>
@@ -49,6 +47,22 @@
     </div>
   </div>
 </div>
+{% endcall %}
+
+{% call macros.us_template('sample-friends-tpl') %}
+<div class="friends-taken-title">Taken by</div>
+<div class="friend-collection-placeholder"></div>
+<div class="friend-info">
+  <% var numFriends = friendCollection.length; %>
+  <% var remaining = Math.max(numFriends - maxSampleFriends, 0); %>
+  <% if (remaining > 0) { %>
+    and <%- remaining %>
+    <a href="#" rel="popover" class="remaining-friends">
+      other <%- pluralize(remaining, 'friend', 'friends') %>
+    </a>
+  <% } %>
+</div>
+
 {% endcall %}
 
 {% call macros.us_template('course-friends-hovercard-tpl') %}
