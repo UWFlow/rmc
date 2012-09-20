@@ -1,31 +1,13 @@
 import rmc.shared.constants as c
 import rmc.models as m
 
-import copy
 from datetime import datetime
 import glob
 import json
 import mongoengine
 import os
-from pymongo import Connection
 import re
 import sys
-
-def get_db():
-    connection = Connection(c.MONGO_HOST, c.MONGO_PORT)
-    return connection.rmc
-
-def ensure_rating_indices(collection):
-    collection.ensure_index('ratings.aggregate.average')
-    collection.ensure_index('ratings.clarity.average')
-    collection.ensure_index('ratings.easy.average')
-    collection.ensure_index('ratings.helpful.average')
-    collection.ensure_index('ratings.interest.average')
-    collection.ensure_index('ratings.aggregate.count')
-    collection.ensure_index('ratings.clarity.count')
-    collection.ensure_index('ratings.easy.count')
-    collection.ensure_index('ratings.helpful.count')
-    collection.ensure_index('ratings.interest.count')
 
 def import_departments():
 
@@ -133,183 +115,118 @@ def import_courses():
     print 'ignored %d courses from uwdata' % uwdata_ignored
     print 'imported courses:', m.Course.objects.count()
 
+
+# TODO(mack): should return (first_name, last_name)
+def get_prof_name(prof_name_menlo):
+    matches = re.findall(r'^(.+?), (.+)$', prof_name_menlo)[0]
+    return {
+        'first_name': matches[1],
+        'last_name': matches[0],
+    }
+
 def import_professors():
-    db = get_db()
-    professors = db.professors
 
-    professors.drop()
-    professors.ensure_index('department')
-    professors.ensure_index('name', unique=True)
-    professors.ensure_index('first_name')
-    professors.ensure_index('last_name')
-    professors.ensure_index('prof_id', unique=True)
-    ensure_rating_indices(professors)
-    file_names = glob.glob(os.path.join(sys.path[0], c.RATINGS_DATA_DIR, '*.txt'))
-    for file_name in file_names:
-        f = open(file_name, 'r')
-        data = json.load(f)
-        f.close()
-        prof_name = data['prof_name']
-        matches = re.findall(r'^(.+?), (.+)$', prof_name)[0]
-        professor = {
-            'name': prof_name,
-            'last_name': matches[0],
-            'first_name': matches[1],
-            'prof_id': data['prof_id'],
+    m.Professor.objects._collection.drop()
+
+    def clean_professor(professor):
+        # department_name = None
+        # if 'info' in professor and 'Department' in professor['info']:
+        #     department_name = data['info']['Department'].strip()
+
+        def clean_name(name):
+            return re.sub(r'\s+', ' ', name.strip())
+
+        prof_name = get_prof_name(professor['prof_name'])
+        return {
+            'first_name': clean_name(prof_name['first_name']),
+            'last_name': clean_name(prof_name['last_name']),
         }
-        professor['department'] = None
-        if 'info' in data and 'Department' in data['info']:
-            professor['department'] = data['info']['Department'].strip()
-        professors.insert(professor)
-    print 'imported professors:', professors.count()
 
-def import_ratings():
-    db = get_db()
-    ratings = db.ratings
-    courses = db.courses
-    departments = db.departments
-    rating_mappings = {
-        'r_clarity': 'clarity',
-        'r_easy': 'easy',
-        'r_helpful': 'helpful',
-        'r_interest': 'interest',
-    }
 
-    ratings.drop()
-    ratings.ensure_index('course_name')
-    ratings.ensure_index('professor_name')
-    ratings.ensure_index('rating_id', unique=True)
-    ratings.ensure_index('time')
-    file_names = glob.glob(os.path.join(sys.path[0], c.RATINGS_DATA_DIR, '*.txt'))
+    file_names = glob.glob(
+            os.path.join(sys.path[0], c.REVIEWS_DATA_DIR, '*.txt'))
     for file_name in file_names:
-        f = open(file_name, 'r')
-        data = json.load(f)
-        f.close()
-        for rating in data['ratings']:
-            course = rating['class']
-            if course is None:
-                #print 'skipping rating because course is None'
+        with open(file_name, 'r') as f:
+            data = json.load(f)
+        professor = clean_professor(data)
+        m.Professor(**professor).save()
+
+    print 'imported professors:', m.Professor.objects.count()
+
+def import_reviews():
+
+    m.MenloCourseReview.objects._collection.drop()
+
+    def clean_review(review):
+        course = review['class']
+        if course is None:
+            return {}
+
+        course = course.lower()
+        matches = re.findall(r'([a-z]+).*?([0-9]{3}[a-z]?)(?:[^0-9]|$)', course)
+        # TODO(mack): investigate if we are missing any good courses with
+        # this regex
+        if len(matches) != 1 or len(matches[0]) != 2:
+            return {}
+
+        department_id = matches[0][0].lower()
+        course_number = matches[0][1].lower()
+        course_id = department_id + course_number
+        prof_name = get_prof_name(data['prof_name'])
+        prof_id = m.Professor.get_id_from_name(
+                prof_name['first_name'], prof_name['last_name'])
+
+        clean_review = {
+            'professor_id': prof_id,
+            'course_id': course_id,
+            'course_review': m.CourseReview(),
+            'professor_review': m.ProfessorReview(),
+        }
+
+        def normalize_rating(menlo_rating):
+            # normalize 1..5 to 0..1
+            try:
+                return float(int(menlo_rating) - 1) / 4
+            except:
+                return None
+
+        # TODO(mack): include 'r_helpful'?
+        if 'r_clarity' in review:
+            clean_review['professor_review'].clarity = normalize_rating(review['r_clarity'])
+        if 'r_easy' in review:
+            clean_review['course_review'].easiness = normalize_rating(review['r_easy'])
+        if 'r_interest' in review:
+            clean_review['course_review'].interest = normalize_rating(review['r_interest'])
+
+        clean_review['professor_review'].comment = review['comment']
+        clean_review['professor_review'].comment_time = datetime.strptime(
+            review['date'], '%m/%d/%y')
+
+        return clean_review
+
+    file_names = glob.glob(
+            os.path.join(sys.path[0], c.REVIEWS_DATA_DIR, '*.txt'))
+    for file_name in file_names:
+        with open(file_name, 'r') as f:
+            data = json.load(f)
+
+        for review in data['ratings']:
+            review = clean_review(review)
+            if (not 'course_id' in review
+                    or not m.Course.objects.with_id(review['course_id'])):
+                #print 'skipping rating because invalid course_id ' + course_id
                 continue
-            course = course.upper()
-            matches = re.findall(r'([A-Z]+).*?([0-9]{3}[A-Z]?)(?:[^0-9]|$)', course)
-            if len(matches) != 1 or len(matches[0]) != 2:
-                #print 'skipping rating because bad course'
-                continue
-            department = matches[0][0]
-            course = matches[0][1]
-            if departments.find({'name': department}).count() == 0:
-                #print 'skipping rating because invalid department ' + matches[0][0]
-                continue
-            course_name = department + course
-            if courses.find({'name': course_name}).count() == 0:
-                #print 'skipping rating because invalid course ' + course_name
-                continue
-            rating['course_name'] = course_name
-            rating['professor_name'] = data['prof_name']
-            rating['rating'] = {}
-            for rating_key in rating_mappings:
-                if rating_key in rating:
-                    try:
-                        r = rating[rating_key]
-                        del rating[rating_key]
-                        rating['rating'][rating_mappings[rating_key]] = int(r)
-                    except:
-                        pass
-            #print 'adding rating for course ' + course_name
-            rating['time'] = int(datetime.strptime(rating['date'], '%m/%d/%y').strftime('%s'))
-            ratings.insert(rating)
 
-    print 'imported ratings:', ratings.count()
+            try:
+                m.MenloCourseReview(**review).save()
+            except:
+                print 'failed on review', review
 
-def update_ratings(category):
-    db = get_db()
-    category_mapping = {
-        'course': {
-            'collection': db.courses,
-            'key': 'course_name',
-            'list': 'professors',
-            'other': 'professor_name',
-        }, 'professor': {
-            'collection': db.professors,
-            'key': 'professor_name',
-            'list': 'courses',
-            'other': 'course_name',
-        },
-    }
-    category_data = category_mapping[category]
-    collection = category_data['collection']
-    rating_defaults = {
-        'count': 0,
-        'aggregate': {'count': 0, 'total': 0, 'average': 0.0},
-        'clarity': {'count': 0, 'total': 0, 'average': 0.0},
-        'easy': {'count': 0, 'total': 0, 'average': 0.0},
-        'helpful': {'count': 0, 'total': 0, 'average': 0.0},
-        'interest': {'count': 0, 'total': 0, 'average': 0.0},
-    }
-    rating_types = ['clarity', 'easy', 'helpful', 'interest']
-    category_names = collection.distinct('name')
-    counter = 0
-    for category_name in category_names:
-        category_ratings = copy.deepcopy(rating_defaults)
-        others = []
-        other_names = db.ratings.find({category_data['key']: category_name}).distinct(category_data['other'])
-        for other_name in other_names:
-            other = {
-                'name': other_name,
-                'ratings': copy.deepcopy(rating_defaults),
-            }
-            ratings_data = db.ratings.find({category_data['key']: category_name, category_data['other']: other_name})
-            for rating_data in ratings_data:
-                other['ratings']['count'] += 1
-                for rating_type in rating_data['rating']:
-                    other['ratings'][rating_type]['count'] += 1
-                    other['ratings'][rating_type]['total'] += rating_data['rating'][rating_type]
-            count = 0
-            total = 0
-            category_ratings['count'] += other['ratings']['count']
-            for rating_type in rating_types:
-                tmp_count = other['ratings'][rating_type]['count']
-                tmp_total = other['ratings'][rating_type]['total']
-                count += tmp_count
-                total += tmp_total
-                category_ratings[rating_type]['count'] += tmp_count
-                category_ratings[rating_type]['total'] += tmp_total
-                if tmp_count > 0:
-                    other['ratings'][rating_type]['average'] = float(tmp_total) / tmp_count
-            if count > 0:
-                other['ratings']['aggregate']['count'] = count
-                other['ratings']['aggregate']['total'] = total
-                other['ratings']['aggregate']['average'] = float(total) / count
-            others.append(other)
-        count = 0
-        total = 0
-        for rating_type in rating_types:
-            tmp_count = category_ratings[rating_type]['count']
-            tmp_total = category_ratings[rating_type]['total']
-            count += tmp_count
-            total += tmp_total
-            if tmp_count > 0:
-                category_ratings[rating_type]['average'] = float(tmp_total) / tmp_count
-        if count > 0:
-            category_ratings['aggregate']['count'] = count
-            category_ratings['aggregate']['total'] = total
-            category_ratings['aggregate']['average'] = float(total) / count
-        collection.update({'name': category_name}, {'$set': {category_data['list']: others, 'ratings': category_ratings}} )
-        counter += 1
-
-    print 'updated', category, ':', counter
-
-def update_aggr_courses():
-    update_ratings('course')
-
-def update_aggr_professors():
-    update_ratings('professor')
+    print 'imported reviews:', m.MenloCourseReview.objects.count()
 
 if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+    import_professors()
     import_departments()
-    import_courses()
-    #import_professors()
-    #import_ratings() # must be after departments, courses
-    #update_aggr_courses()
-    #update_aggr_professors()
+    import_courses() # must be after departments
+    import_reviews() # must be after courses
