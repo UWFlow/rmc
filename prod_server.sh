@@ -12,9 +12,8 @@ cd /home/rmc
 echo "Installing requirements"
 sudo pip install -q -r rmc/requirements.txt
 
-echo "Recompiling compass"
-compass clean rmc/server/static/
-compass compile rmc/server/static/
+echo "Compiling compass"
+compass compile rmc/server/static/ --config rmc/server/config.rb
 
 # Start the uwsgi server
 # TODO(david): Benchmark with ab and use worker processes if necessary
