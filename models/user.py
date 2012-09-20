@@ -17,7 +17,7 @@ class User(me.Document):
     last_name = me.StringField(required=True)
 
     # eg. 1647810326
-    fbid = me.IntField(required=True, unique=True)
+    fbid = me.StringField(required=True, unique=True)
 
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
     fb_access_token = me.StringField(max_length=255, required=True, unique=True)
