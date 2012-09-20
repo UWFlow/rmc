@@ -47,7 +47,7 @@ function(Backbone, _, _s, util) {
       },
       {
         id: '002',
-        fbid: 164710326,
+        fbid: 1647810326,
         name: 'Mack Duan',
         lastTermName: 'Fall 2012',
         coursesTook: []
