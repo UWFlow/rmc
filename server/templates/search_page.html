@@ -1,5 +1,7 @@
 {% extends 'base_page.html' %}
 
+{% import 'macros.html' as macros %}
+
 {% set nav_item = "courses" %}
 
 {% block stylesheets %}
@@ -7,6 +9,10 @@
 {% endblock %}
 
 {% block page_title %}Search courses{% endblock %}
+
+{% block header %}
+  {{ macros.page_title("Search Courses") }}
+{% endblock %}
 
 {% block body %}
   <div class="row-fluid">

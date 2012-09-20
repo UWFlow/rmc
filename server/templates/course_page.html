@@ -6,14 +6,28 @@
 
 {% block page_title %}CS 241{% endblock %}
 
-{% block body %}
+{% block header %}
+  <div class="container-fluid">
+    <div class="row-fluid">
+      <div class="span12">
+        <h1 class="page-title">CS 241</h1>
+      </div>
+    </div>
+  </div>
+{% endblock %}
 
-TESTING
-{#
+{% block body %}
+  <div class="row-fluid">
+    <div class="span12">
+      <p class="lead">Introduction to Microeconomics</p>
+    </div>
+  </div>
   <div class="row-fluid">
     <div class="span3 well" id="friend-sidebar-container">
     </div>
     <div class="span9" id="profile-container">
+    TESTING
+    {#
       <div id="term-collection-container"></div>
       <div id="transcript-container">
         <h2>Import Transcript from Quest</h2>
@@ -26,9 +40,9 @@ TESTING
           </p>
           <textarea id="transcript-text" wrap="off"></textarea>
       </div>
+      #}
     </div>
   </div>
-  #}
 {% endblock %}
 
 {# TODO(david): Have underscore templates specify their deps. #}

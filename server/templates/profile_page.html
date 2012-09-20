@@ -1,5 +1,7 @@
 {% extends 'base_page.html' %}
 
+{% import 'macros.html' as macros %}
+
 {% block stylesheets %}
   <link rel="stylesheet" href="/static/css/profile_page.css?1">
 {% endblock %}
@@ -7,6 +9,10 @@
 {% set nav_item = "profile" %}
 
 {% block page_title %}Profile{% endblock %}
+
+{% block header %}
+  {{ macros.page_title(self.page_title()) }}
+{% endblock %}
 
 {% block body %}
   <div class="row-fluid">
