@@ -110,9 +110,7 @@ function(Backbone, _, _s, util) {
       }
     ];
 
-    // var num = util.random(0, usersData.length);
-    // TODO(mack): remove hardcode
-    var num = 8;
+    var num = util.random(0, usersData.length);
     return new UserCollection(util.randomItems(usersData, num));
   }
 

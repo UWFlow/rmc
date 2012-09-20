@@ -68,13 +68,12 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
       this.$('.review-placeholder').replaceWith(
         this.userReviewView.render().el);
 
-      var $target = $('.num-friends');
+      var $target = this.$('.num-friends');
       var numFriends = this.courseModel.get('friendCollection').length;
       // TODO(mack): change back
-      // var title = _s.sprintf('%d %s taken %s', numFriends,
-      //   util.pluralize(numFriends, 'friend has', 'friends have'), this.courseModel.get('id'));
-      var title = _s.sprintf('%d %s taken this course', numFriends,
-        util.pluralize(numFriends, 'friend has', 'friends have'));
+      var title = _s.sprintf('%d %s taken %s', numFriends,
+        util.pluralize(numFriends, 'friend has', 'friends have'),
+        this.courseModel.get('id'));
       // TODO(mack): investigate if offset attribute works for popover, need to
       // move popover slightly higher
       $target.popover({
