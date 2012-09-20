@@ -10,7 +10,7 @@ set -e
 cd /home/rmc
 
 echo "Installing requirements"
-sudo pip install -r rmc/requirements.txt
+sudo pip install -q -r rmc/requirements.txt
 
 echo "Recompiling compass"
 compass clean rmc/server/static/

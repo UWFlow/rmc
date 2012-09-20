@@ -3,7 +3,7 @@
 # Updates and restarts rmc webapp on the machine.
 # Can be run either directly on the machine, or by running
 #
-# $ cat update_and_restart.sh | ssh ka-ci sh
+# $ cat deploy.sh | ssh rmc sh
 #
 # TODO(mack): use fancy fabfile to do this and have backups/staging
 
