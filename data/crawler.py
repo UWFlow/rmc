@@ -136,7 +136,7 @@ def get_opendata_courses():
     deps = get_department_codes()
 
     courses = {}
-    file_names = glob.glob(os.path.join(sys.path[0], '%s/*.txt' % c.RATINGS_DATA_DIR))
+    file_names = glob.glob(os.path.join(sys.path[0], '%s/*.txt' % c.REVIEWS_DATA_DIR))
     for file_name in file_names:
         f = open(file_name, 'r')
         data = json.load(f)
@@ -162,6 +162,8 @@ def get_opendata_courses():
     bad_courses = 0
     bad_course_names = set()
     good_courses = 0
+    # TODO(mack): this is only crawling course info for courses which have
+    # menlo rating info; should be crawling all courses
     for dep in courses:
         dep_courses = {}
         print 'Processing department {dep}'.format(dep=dep)

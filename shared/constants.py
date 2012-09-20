@@ -6,5 +6,5 @@ MONGO_DB_RMC = 'rmc'
 
 OPENDATA_COURSES_DATA_DIR = 'opendata_courses'
 UWDATA_COURSES_DATA_DIR = 'uwdata_courses'
-RATINGS_DATA_DIR = 'ratings'
+REVIEWS_DATA_DIR = 'reviews'
 DEPARTMENTS_DATA_DIR = 'departments'
