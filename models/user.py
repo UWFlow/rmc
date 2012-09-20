@@ -1,7 +1,6 @@
-from mongoengine import Document
-import _field as f
+import mongoengine as me
 
-class User(Document):
+class User(me.Document):
     meta = {
         'indexes': [
             'fb_access_token',
@@ -9,37 +8,37 @@ class User(Document):
         ],
     }
 
-    # id = f.ObjectIdField(primary_key=True)
+    # id = me.ObjectIdField(primary_key=True)
 
     # eg. Mack (can include middle name)
-    first_name = f.StringField(required=True)
+    first_name = me.StringField(required=True)
 
     # eg. Duan
-    last_name = f.StringField(required=True)
+    last_name = me.StringField(required=True)
 
     # eg. 1647810326
-    fbid = f.IntField(required=True, unique=True)
+    fbid = me.IntField(required=True, unique=True)
 
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
-    fb_access_token = f.StringField(max_length=255, required=True, unique=True)
+    fb_access_token = me.StringField(max_length=255, required=True, unique=True)
 
-    email = f.EmailField()
+    email = me.EmailField()
 
     # eg. list of user objectids
-    friend_ids = f.ListField(f.ObjectIdField())
+    friend_ids = me.ListField(me.ObjectIdField())
 
-    birth_date = f.DateTimeField()
+    birth_date = me.DateTimeField()
 
-    last_login_time = f.DateTimeField()
+    last_login_time = me.DateTimeField()
     # TODO(mack): consider using SequenceField()
-    num_visits = f.IntField(min_value=0, default=0)
+    num_visits = me.IntField(min_value=0, default=0)
 
     # eg. mduan or 20345619 ?
-    student_id = f.StringField()
+    student_id = me.StringField()
     # eg. university_of_waterloo ?
-    school_id = f.StringField()
+    school_id = me.StringField()
     # eg. software_engineering ?
-    program_id = f.StringField()
+    program_id = me.StringField()
 
 
     @property

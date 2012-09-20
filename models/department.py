@@ -1,16 +1,15 @@
-from mongoengine import Document
-import _field as f
+import mongoengine as me
 
-class Department(Document):
+class Department(me.Document):
 
     # eg. earth
-    id = f.StringField(primary_key=True)
+    id = me.StringField(primary_key=True)
 
     # eg. Earth Sciences
-    name = f.StringField(required=True)
+    name = me.StringField(required=True)
 
     # eg. sci
-    faculty_id = f.StringField(required=True)
+    faculty_id = me.StringField(required=True)
 
     # eg. http://ugradcalendar.uwaterloo.ca/courses/EARTH
-    url = f.URLField(required=True)
+    url = me.URLField(required=True)

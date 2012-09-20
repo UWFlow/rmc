@@ -1,9 +1,8 @@
-from mongoengine import Document
-import _field as f
+import mongoengine as me
 
 import rating
 
-class Professor(Document):
+class Professor(me.Document):
     meta = {
         'indexes': [
             'clarity.rating',
@@ -16,20 +15,20 @@ class Professor(Document):
     }
 
     # eg. byron_weber_becker
-    id = f.StringField(primary_key=True)
+    id = me.StringField(primary_key=True)
 
     # TODO(mack): available in menlo data
-    # department_id = f.StringField()
+    # department_id = me.StringField()
 
     # eg. Byron Weber
-    first_name = f.StringField(required=True)
+    first_name = me.StringField(required=True)
 
     # eg. Becker
-    last_name = f.StringField(required=True)
+    last_name = me.StringField(required=True)
 
-    clarity = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    easiness = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    passion = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    clarity = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    passion = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
     @classmethod
     def get_id_from_name(cls, first_name, last_name):

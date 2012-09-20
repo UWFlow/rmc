@@ -1,13 +1,12 @@
-from mongoengine import Document
-import _field as f
+import mongoengine as me
 
-class Term(Document):
+class Term(me.Document):
 
     SEASONS = ['Winter', 'Spring', 'Fall']
 
     # TODO(mack): should month be 0 or 1 offset?
     # eg. 2011_05 => term that began May, 2011 => Spring 2011
-    id = f.StringField(primary_key=True)
+    id = me.StringField(primary_key=True)
 
     @property
     def year(self):

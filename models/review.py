@@ -1,9 +1,8 @@
-from mongoengine import EmbeddedDocument, Document
-import _field as f
+import mongoengine as me
 
 import rating
 
-class CritiqueCourseReview(Document):
+class CritiqueCourseReview(me.Document):
     meta = {
         'indexes': [
             'course_id',
@@ -11,33 +10,33 @@ class CritiqueCourseReview(Document):
         ],
     }
 
-    # id = f.ObjectIdField(primary_key=True)
+    # id = me.ObjectIdField(primary_key=True)
 
-    course_id = f.StringField(required=True)
+    course_id = me.StringField(required=True)
     # TODO(mack): need section_id or equiv
-    # course_id = f.StringField(required=True, unique_with='section_id')
-    # section_id = f.IntField(required=True)
-    professor_id = f.ObjectIdField(required=True)
+    # course_id = me.StringField(required=True, unique_with='section_id')
+    # section_id = me.IntField(required=True)
+    professor_id = me.ObjectIdField(required=True)
 
-    clarity = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    easiness = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    passion = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-
-
-class CourseReview(EmbeddedDocument):
-    clarity = f.FloatField(min_value=0.0, max_value=1.0)
-    easiness = f.FloatField(min_value=0.0, max_value=1.0)
-    comment = f.StringField(max_length=4096)
-    comment_time = f.DateTimeField()
-
-class ProfessorReview(EmbeddedDocument):
-    clarity = f.FloatField(min_value=0.0, max_value=1.0)
-    passion = f.FloatField(min_value=0.0, max_value=1.0)
-    comment = f.StringField(max_length=4096)
-    comment_time = f.DateTimeField()
+    clarity = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    passion = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
 
-class MenloCourseReview(Document):
+class CourseReview(me.EmbeddedDocument):
+    clarity = me.FloatField(min_value=0.0, max_value=1.0)
+    easiness = me.FloatField(min_value=0.0, max_value=1.0)
+    comment = me.StringField(max_length=4096)
+    comment_time = me.DateTimeField()
+
+class ProfessorReview(me.EmbeddedDocument):
+    clarity = me.FloatField(min_value=0.0, max_value=1.0)
+    passion = me.FloatField(min_value=0.0, max_value=1.0)
+    comment = me.StringField(max_length=4096)
+    comment_time = me.DateTimeField()
+
+
+class MenloCourseReview(me.Document):
     meta = {
         'indexes': [
             'course_id',
@@ -45,17 +44,17 @@ class MenloCourseReview(Document):
         ],
     }
 
-    # id = f.ObjectIdField(primary_key=True)
+    # id = me.ObjectIdField(primary_key=True)
 
-    course_id = f.StringField(required=True)
-    professor_id = f.StringField()
+    course_id = me.StringField(required=True)
+    professor_id = me.StringField()
 
-    course_review = f.EmbeddedDocumentField(CourseReview)
-    professor_review = f.EmbeddedDocumentField(ProfessorReview)
+    course_review = me.EmbeddedDocumentField(CourseReview)
+    professor_review = me.EmbeddedDocumentField(ProfessorReview)
 
 
 # TODO(mack): should be UserCourseOffering?
-class UserCourseReview(Document):
+class UserCourseReview(me.Document):
 
     meta = {
         'indexes': [
@@ -69,29 +68,29 @@ class UserCourseReview(Document):
     }
 
     # date review created implictly stored here
-    # id = f.ObjectIdField(primary_key=True)
+    # id = me.ObjectIdField(primary_key=True)
 
     # TODO(mack): verify this works when user_id is not required
     # TODO(mack): might be better to just enforce uniqueness on
     # ['course_id', 'offering_id']?
-    user_id = f.StringField(unique_with=['course_id', 'term_id'])
-    course_id = f.StringField(required=True)
-    term_id = f.StringField(required=True)
+    user_id = me.StringField(unique_with=['course_id', 'term_id'])
+    course_id = me.StringField(required=True)
+    term_id = me.StringField(required=True)
 
     # TODO(mack): add fields for grade tracking; eg. grades on assignments
 
     # TODO(mack): should range be 0..1 or 0..100 ?
-    grade = f.FloatField(min_value=0.0, max_value=1.0)
+    grade = me.FloatField(min_value=0.0, max_value=1.0)
 
-    professor_id = f.StringField()
+    professor_id = me.StringField()
 
     # is the review posted anonymously?
-    anonymous = f.BooleanField(default=False)
-    course_review = f.EmbeddedDocumentField(CourseReview)
-    professor_review = f.EmbeddedDocumentField(ProfessorReview)
+    anonymous = me.BooleanField(default=False)
+    course_review = me.EmbeddedDocumentField(CourseReview)
+    professor_review = me.EmbeddedDocumentField(ProfessorReview)
 
     # TODO(mack): add section_id
     # section_id = StringField()
 
     # TODO(mack): should we have update_time?
-    # update_time = f.DateTimeField()
+    # update_time = me.DateTimeField()

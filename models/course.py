@@ -1,10 +1,9 @@
-from mongoengine import Document
-import _field as f
+import mongoengine as me
 
 import rating
 
 
-class Course(Document):
+class Course(me.Document):
     meta = {
         'indexes': [
             '_keywords',
@@ -18,26 +17,26 @@ class Course(Document):
     }
 
     # eg. earth121l
-    id = f.StringField(primary_key=True)
+    id = me.StringField(primary_key=True)
 
     # eg. earth
-    department_id = f.StringField(required=True)
+    department_id = me.StringField(required=True)
 
     # eg. 121l
-    number = f.StringField(required=True)
+    number = me.StringField(required=True)
 
     # eg. Introductory Earth Sciences Laboratory 1
-    name = f.StringField(required=True)
+    name = me.StringField(required=True)
 
     # Description about the course
-    description = f.StringField(required=True)
+    description = me.StringField(required=True)
 
     # eg. ['earth', '121l', 'earth121l', 'Introductory', 'Earth' 'Sciences', 'Laboratory', '1']
-    _keywords = f.ListField(f.StringField(), required=True)
+    _keywords = me.ListField(me.StringField(), required=True)
 
-    easiness = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    interest = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    overall = f.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    interest = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    overall = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
     def save(self, *args, **kwargs):
         self.id = self.department_id + self.number
