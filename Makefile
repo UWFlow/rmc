@@ -6,13 +6,16 @@ local:
 setup:
 	./setup.sh
 
-import_data:
+import_menlo:
 	PYTHONPATH=.. python data/processor.py
+
+import_critiques:
+	PYTHONPATH=.. python data/evals/conversion/eng.py data/evals/output/results_testing.txt
 
 aggregate_data:
 	PYTHONPATH=.. python data/aggregator.py all
 
-init_data: import_data aggregate_data
+init_data: import_data import_critiques aggregate_data
 
 deploy:
 	@if [ `whoami` = 'rmc' ]; then \

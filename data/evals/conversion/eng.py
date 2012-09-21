@@ -128,7 +128,7 @@ def import_critiques(input_file):
 
             critique_course = {
                 'course_id': course_id,
-                "professor_id": professor_id,
+                'professor_id': professor_id,
                 'term_id': term_id,
                 'interest': interest,
                 'easiness': easiness,
@@ -140,6 +140,8 @@ def import_critiques(input_file):
             m.CritiqueCourse(**critique_course).save()
 
         line = input_file.readline()
+
+    print 'imported %d course critiques' % m.CritiqueCourse.objects.count()
 
 
 # TODO(Sandy): Write a script that will fetch raw data and feed it into this
