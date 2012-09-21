@@ -13,16 +13,26 @@
     {% endblock %}
 
     <!-- TODO(david): Favicon -->
-    <script data-main="/static/js/main.js" src="/static/js/ext/require-2.0.6.js"></script>
+
+    <!-- Javascript -->
+    <script>
+      window.pageData = {};
+      window.pageData.env = '{{ env }}';
+      {% if page_script %}
+        window.pageData.pageScript = '{{ '/static/js/%s' % page_script }}';
+      {% endif %}
+    </script>
+
+    <script async data-main="/static/js/main.js" src="/static/js/ext/require-2.0.6.js">
+    </script>
+
   </head>
 
   <body>
-    {% block bodytop %}
-    {% endblock %}
-
     <!-- TODO(david): Real responsive layout:
          http://twitter.github.com/bootstrap/scaffolding.html#responsive
     -->
+    <div id="fb-root"></div>
 
     <div class="navbar navbar-static-top">
       <div class="navbar-inner">
@@ -56,14 +66,6 @@
     </footer>
 
     {% block templates %}
-    {% endblock %}
-
-    <!-- Javascript -->
-    <script>
-      window.pageData = {}
-      window.pageData.env = '{{ env }}';
-    </script>
-    {% block scripts %}
     {% endblock %}
 
   </body>

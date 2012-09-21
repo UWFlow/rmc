@@ -32,7 +32,10 @@ require.config({
       exports: function(_) {
         return _.string;
       }
-    }
+    },
+    'ext/facebook': {
+      exports: 'FB'
+    },
   },
 
   baseUrl: '/static/js/',
@@ -47,11 +50,13 @@ require.config({
     // TODO(mack): host locally
     'ext/jqueryui': 'http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min',
     'ext/underscore': 'ext/underscore-1.3.3',
-    'ext/underscore.string': 'ext/underscore.string-2.0.0'
+    'ext/underscore.string': 'ext/underscore.string-2.0.0',
+    // TODO(mack): host locally?
+    'ext/facebook': 'http://connect.facebook.net/en_US/all'
   }
 });
 
-require(['ext/underscore', 'ext/underscore.string', 'ext/backbone', 'util'], function(_, _s, Backbone, util) {
+require(['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone', 'util'], function($, _, _s, Backbone, util) {
   // Add helpers functions to all templates
   (function() {
     var template = _.template;
@@ -81,5 +86,13 @@ require(['ext/underscore', 'ext/underscore.string', 'ext/backbone', 'util'], fun
   // TODO(mack): test in ie
   Backbone.Model.prototype._super = function(funcName) {
     return this.constructor.__super__[funcName].apply(this, _.rest(arguments));
+  };
+
+  if (window.pageData.pageScript) {
+    // TODO(mack): investigate if there's a faster/better way of doing this
+    // than after DOMReady
+    $(function() {
+      require([window.pageData.pageScript]);
+    });
   }
 });

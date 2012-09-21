@@ -20,13 +20,15 @@ flask.render_template = functools.partial(flask.render_template, env=ENV)
 
 @app.route('/')
 def index():
-    return flask.render_template('index_page.html')
+    return flask.render_template('index_page.html',
+            page_script='index_page.js')
 
 @app.route('/profile', defaults={'fbid': None})
 @app.route('/profile/<int:fbid>')
 def profile(fbid):
     if not fbid:
-        return flask.render_template('profile_page.html')
+        return flask.render_template('profile_page.html',
+                page_script='profile_page.js')
     else:
         # TODO(mack): handle viewing another user's profile
         pass
@@ -51,6 +53,7 @@ def courses():
     ]
     return flask.render_template(
         'search_page.html',
+        page_script='search_page.js',
         sort_modes=sort_modes,
         directions=directions,
     )
@@ -61,7 +64,8 @@ def courses_page(course_id):
 
 @app.route('/course/<string:course_id>')
 def course_page(course_id):
-    return flask.render_template('course_page.html')
+    return flask.render_template('course_page.html',
+            page_script='course_page.js')
 
 @app.route('/login', methods=['POST'])
 def login():
