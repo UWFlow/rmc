@@ -1,0 +1,19 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('tip-tpl') %}
+  <div class="tip-row row-fluid">
+    <div class="span12">
+      {# TODO(david): Use fancy pull-quote #}
+      <blockquote class="comment">
+        <p><%- comment %></p>
+        <small><%- name %></small>
+      </blockquote>
+    </div>
+  </div>
+{% endcall %}
+
+{% call macros.us_template('expandable-tips-tpl') %}
+<h3>Course Tips</h3>
+<div class="tips-collection-placeholder"></div>
+<a class="toggle-tips">See <%- numHidden %> more tips &raquo;</a>
+{% endcall %}
