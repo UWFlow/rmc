@@ -38,5 +38,8 @@ class Course(me.Document):
     _keywords = me.ListField(me.StringField(), required=True)
 
     def save(self, *args, **kwargs):
-        self.id = self.department_id + self.number
+        if not self.id:
+            # id should not be set during first save
+            self.id = self.department_id + self.number
+
         super(Course, self).save(*args, **kwargs)

@@ -82,15 +82,7 @@ def import_mongo_course_rating():
                 rating=calculate_overall_rating(course.easiness, course.interest),
                 count = course.easiness.count + course.interest.count)
 
-            # TODO(mack): investigate why course.save() causes exception
-            #course.save()
-            course.update(
-                set__easiness=ratings['easiness'],
-                set__interest=ratings['interest'],
-                set__overall=m.AggregateRating(
-                    rating=calculate_overall_rating(course.easiness, course.interest),
-                    count=course.easiness.count + course.interest.count),
-            )
+            course.save()
             count[0] += 1
 
     set_course_ratings_in_mongo(courses)

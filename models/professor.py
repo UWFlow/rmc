@@ -38,5 +38,7 @@ class Professor(me.Document):
         return ('%s %s' % (first_name, last_name)).replace(' ', '_')
 
     def save(self, *args, **kwargs):
-        self.id = Professor.get_id_from_name(self.first_name, self.last_name)
+        if not self.id:
+            self.id = Professor.get_id_from_name(self.first_name, self.last_name)
+
         super(Professor, self).save(*args, **kwargs)
