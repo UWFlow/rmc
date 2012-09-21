@@ -23,6 +23,8 @@ def get_prof_names(prof_name):
     }
 
 def import_critiques(input_file):
+    number_courses_imported = 0
+    number_reviews_imported = 0
     line = input_file.readline()
     while line:
         data = ast.literal_eval(line);
@@ -138,10 +140,14 @@ def import_critiques(input_file):
                 'overall_prof': overall_prof,
             }
             m.CritiqueCourse(**critique_course).save()
+            number_reviews_imported += 1
 
+        number_courses_imported += 1
         line = input_file.readline()
 
-    print 'imported %d course critiques' % m.CritiqueCourse.objects.count()
+    print 'imported  %d course critiques reviews' % number_reviews_imported
+    print 'imported  %d courses' % number_courses_imported
+    print 'totalling %d courses' % m.CritiqueCourse.objects.count()
 
 
 # TODO(Sandy): Write a script that will fetch raw data and feed it into this
