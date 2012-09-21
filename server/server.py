@@ -1,4 +1,5 @@
 from bson import json_util
+from datetime import datetime
 import flask
 import mongoengine as me
 import pymongo
@@ -12,6 +13,10 @@ import rmc.models as m
 app = flask.Flask(__name__)
 db = pymongo.Connection(c.MONGO_HOST, c.MONGO_PORT).rmc
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+
+# TODO(mack): set env properly
+ENV = 'dev'
+flask.render_template = functools.partial(flask.render_template, env=ENV)
 
 @app.route('/')
 def index():
@@ -68,6 +73,7 @@ def login():
     fb_access_token = req.cookies.get('fb_access_token')
     # Compensate for network latency by subtracting 10 seconds
     fb_access_token_expiry_time = int(time.time()) + int(req.cookies.get('fb_access_token_expires_in')) - 10;
+    fb_access_token_expiry_time = datetime.fromtimestamp(fb_access_token_expiry_time)
 
     if (fbid is None or
         fb_access_token is None or
@@ -78,22 +84,25 @@ def login():
 
     try:
         friend_fbids = flask.json.loads(req.form['friends'])
-        now = int(time.time())
-        user = {
+
+        now = datetime.now()
+        user_obj = {
+            'first_name': 'Mack', # TODO(mack): get from facebook
+            'last_name': 'Duan', # TODO(mack): get from facebook
             'fbid': fbid,
-            'fb_friends': friend_fbids,
             'fb_access_token': fb_access_token,
             'fb_access_token_expiry_time': fb_access_token_expiry_time,
 #TODO(Sandy): Count visits properly
-            'visits': 1,
-            'last_visited': now,
-            'join_date': now,
-            'user_source': 'F',
+            'join_time': now,
+            'join_source': m.User.JoinSource.FACEBOOK,
+            'num_visits': 1,
+            'last_visit_time': now,
 #TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
         }
+        user = m.User(**user_obj)
+        user.add_friend_fbids(friend_fbids)
 
-        db.users.ensure_index('fbid', unique=True)
-        db.users.save(user)
+        user.save()
     except KeyError:
         # Invalid key (shouldn't be happening)
 # TODO(Sandy): redirect to landing page, or nothing

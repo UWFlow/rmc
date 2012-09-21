@@ -32,9 +32,7 @@
   {% include 'course.html' %}
 
   <script>
-    var pageData = {
-      sortModes: {{ sort_modes|tojson|safe }},
-    };
+    window.pageData.sortModes = {{ sort_modes|tojson|safe }};
   </script>
 
   <!-- TODO(mack): add to own file? -->

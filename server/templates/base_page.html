@@ -59,6 +59,10 @@
     {% endblock %}
 
     <!-- Javascript -->
+    <script>
+      window.pageData = {}
+      window.pageData.env = '{{ env }}';
+    </script>
     {% block scripts %}
     {% endblock %}
 

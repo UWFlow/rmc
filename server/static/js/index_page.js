@@ -3,7 +3,12 @@ require(
 function($, _cookie) {
   $(function() {
     window.fbAsyncInit = function() {
-      FB.init({appId: '219309734863464', status: true, cookie: true, xfbml: true});
+      if (window.pageData.env === 'dev') {
+        var appId = '289196947861602';
+      } else {
+        var appId = '219309734863464';
+      }
+      FB.init({appId: appId, status: true, cookie: true, xfbml: true});
 
       FB.Event.subscribe('auth.login', function(response) {
         if (response.status === 'connected') {
@@ -19,7 +24,7 @@ function($, _cookie) {
             });
           });
 
-          authResp = response.authResponse;
+          var authResp = response.authResponse;
           $.cookie('fbid', authResp.userID, { path: '/' });
           $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
           $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
