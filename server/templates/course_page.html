@@ -29,9 +29,9 @@
     <div class="span3 well" id="took-this-sidebar-container">
     </div>
     <div class="span9">
-      <div class="course-inner-placeholder">[course inner]</div>
-      <div class="course-tips-placeholder">[course tips]</div>
-      <div class="professor-review-container">[professor reviews]</div>
+      <div id="course-inner-placeholder">[course inner]</div>
+      <div id="tips-collection-placeholder">[course tips]</div>
+      <div id="professor-review-container">[professor reviews]</div>
     </div>
     </div>
   </div>
@@ -39,6 +39,7 @@
 
 {# TODO(david): Have underscore templates specify their deps. #}
 {% block templates %}
+  {% include 'tips.html' %}
   {% include 'took_this.html' %}
   {% include 'course.html' %}
   {% include 'term.html' %}
