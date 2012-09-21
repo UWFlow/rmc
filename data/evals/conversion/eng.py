@@ -9,7 +9,7 @@ import rmc.models as m
 
 # Normalize critique scores to be in [0, 1]
 def normalize_score(score):
-    return (score["A"] * 4 + score["B"] * 3 + score["C"] * 2 + score["D"]) / 400.0
+    return (score['A'] * 4 + score['B'] * 3 + score['C'] * 2 + score['D']) / 400.0
 
 def clean_name(name):
     return re.sub(r'\s+', ' ', name.strip())
@@ -23,15 +23,16 @@ def get_prof_names(prof_name):
     }
 
 def import_critiques(input_file):
+    print 'Begin importing Engineering course critiques'
     number_courses_imported = 0
     number_reviews_imported = 0
     line = input_file.readline()
     while line:
         data = ast.literal_eval(line);
 
-        course_id = (data["code"] + data["num"]).lower()
+        course_id = (data['code'] + data['num']).lower()
 
-        for critique in data["critiques"]:
+        for critique in data['critiques']:
 
             # arch247 and math212 are dumb. Has 'n/a' or '' for prof, which becomes '/a' or '' after parsing
             prof_name = critique['prof']
@@ -46,12 +47,12 @@ def import_critiques(input_file):
             prof.save()
             professor_id = prof.id
 
-            season = critique["term"]
-            year = critique["year"]
+            season = critique['term']
+            year = critique['year']
             term_id = m.Term.get_id_from_year_season(year, season)
 
             # The score index correspond directly to the question numbers (ie. arrays are 1-indexed)
-            scores = critique["scores"]
+            scores = critique['scores']
 
             def clarity_from_scores(scores):
                 Q1_WEIGHT = 0.2
@@ -148,14 +149,15 @@ def import_critiques(input_file):
     print 'imported  %d course critiques reviews' % number_reviews_imported
     print 'imported  %d courses' % number_courses_imported
     print 'totalling %d courses' % m.CritiqueCourse.objects.count()
+    print 'Finished importing Engineering course critiques'
 
 
 # TODO(Sandy): Write a script that will fetch raw data and feed it into this
 if __name__ == '__main__':
     if (len(sys.argv) < 2):
-        print "Please pass the Eng data filename as the first Argument"
+        print 'Please pass the Eng data filename as the first Argument'
         sys.exit()
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
-    input_file = open(sys.argv[1], "r")
+    input_file = open(sys.argv[1], 'r')
     import_critiques(input_file)
