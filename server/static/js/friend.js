@@ -1,6 +1,7 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap'],
-function(Backbone, $, _, _s, __) {
+['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+'ext/bootstrap', 'base_views'],
+function(Backbone, $, _, _s, bootstrap, baseViews) {
 
   var FriendView = Backbone.View.extend({
     className: 'friend',
@@ -11,7 +12,7 @@ function(Backbone, $, _, _s, __) {
 
     render: function() {
       this.$el.html(
-        _.template($('#friend-tpl').html(), this.friendModel.toJSON()))
+        _.template($('#friend-tpl').html(), this.friendModel.toJSON()));
 
       this.$('.friend-pic, .friend-name')
         .popover({
@@ -57,29 +58,12 @@ function(Backbone, $, _, _s, __) {
     }
   });
 
-
-  // TODO(mack): make generic CollectionView
-  var FriendCollectionView = Backbone.View.extend({
+  var FriendCollectionView = baseViews.CollectionView.extend({
     tagName: 'ol',
     className: 'friend-collection',
 
-    initialize: function(options) {
-      this.friendCollection = options.friendCollection;
-      this.friendViews = [];
-    },
-
-    render: function() {
-      this.$el.empty();
-      this.friendCollection.each(function(friendModel) {
-        var friendView = new FriendView({
-          friendModel: friendModel,
-          tagName: 'li'
-        });
-        this.$el.append(friendView.render().el);
-        this.friendViews.push(friendView);
-      }, this);
-
-      return this;
+    createItemView: function(model) {
+      return new FriendView({ friendModel: model });
     }
   });
 
@@ -95,7 +79,7 @@ function(Backbone, $, _, _s, __) {
         numFriends: this.friendCollection.length
       }));
       var collectionView = new FriendCollectionView({
-        friendCollection: this.friendCollection
+        collection: this.friendCollection
       });
       this.$('.friend-collection-placeholder').replaceWith(
         collectionView.render().$el);
@@ -110,5 +94,5 @@ function(Backbone, $, _, _s, __) {
     FriendHovercardView: FriendHovercardView,
     FriendCollectionView: FriendCollectionView,
     FriendSidebarView: FriendSidebarView
-  }
+  };
 });
