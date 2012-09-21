@@ -1,6 +1,6 @@
 require(
-['ext/jquery','course', 'took_this', 'user', 'tips'],
-function($, course, tookThis, user, tips) {
+['ext/jquery','course', 'took_this', 'user', 'tips', 'prof'],
+function($, course, tookThis, user, tips, prof) {
   // TODO(david): Customize with people who took this course.
   courseIds = ['CS137', 'SCI238', 'CS241'];
   $.getJSON(
@@ -38,6 +38,35 @@ function($, course, tookThis, user, tips) {
 
       var tipsView = new tips.ExpandableTipsView({ tips: tipsCollection });
       $('#tips-collection-placeholder').replaceWith(tipsView.render().el);
+
+      var profModel = new prof.Prof();
+      var profReviews = [{
+        name: 'Larry Smith',
+        passion: 5,
+        clarity: 3,
+        overall: 6,
+        comment: 'Was great!!!!!!!!!!!!!!!!'
+      }, {
+        name: 'Charles Clarke',
+        passion: 4,
+        clarity: 5,
+        overall: null,
+        comment: 'Great lecturer overall. Funny and casual. blah blah blah'
+      }, {
+        name: 'Andrew Morton',
+        passion: 2,
+        clarity: 4,
+        overall: null,
+        comment: 'Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. '
+      }];
+      var profReviewsCollection = new prof.ProfReviewCollection(profReviews);
+
+      var profView = new prof.ExpandableProfView({
+        reviews: profReviewsCollection,
+        prof: profModel
+      });
+      $('#professor-review-container').html(profView.render().el);
     }
   );
+
 });

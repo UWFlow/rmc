@@ -1,5 +1,6 @@
 define(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap', 'ext/backbone', 'base_views', 'user', 'jquery.slide'],
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
+'ext/backbone', 'base_views', 'user', 'jquery.slide'],
 function($, _, _s, bootstrap, Backbone, baseViews, user, jqSlide) {
 
   var Tip = Backbone.Model.extend({

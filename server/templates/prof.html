@@ -1,0 +1,20 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('prof-card-tpl') %}
+<div class="prof-card">
+  HERE IS THE BUSINESS CARD OF THE PROF!!!
+</div>
+{% endcall %}
+
+{% call macros.us_template('prof-review-tpl') %}
+<div class="prof-review">
+  HERE BE SINGLE REVIEW OF A PROF
+</div>
+{% endcall %}
+
+{% call macros.us_template('prof-expandable-reviews-tpl') %}
+<h2>Professors</h2>
+<div class="prof-card-placeholder"></div>
+<div class="reviews-collection-placeholder"></div>
+<a class="toggle-reviews">See <%- numHidden %> more reviews &raquo;</a>
+{% endcall %}

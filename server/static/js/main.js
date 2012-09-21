@@ -76,7 +76,7 @@ require(['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone'
         var compiled = template(templateString);
         return function(data, settings) {
           var data = _.extend({}, templateHelpers, data);
-          compiled(data, settings);
+          return compiled(data, settings);
         }
       }
     };

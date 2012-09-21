@@ -4,6 +4,7 @@ define(
 function(Backbone, $, _, _s, ratings, select2) {
 
   // TODO(david): May want to refactor to just a UserCourse model
+  // TODO(david): Refactor to use sub-models for reviews
   var UserReviewModel = Backbone.Model.extend({
     defaults: {
       term: 'Spring 2012',
