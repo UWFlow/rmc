@@ -1,10 +1,29 @@
 @import 'base';
 @import 'term';
 @import 'course';
-@import 'friend';
+@import 'took_this';
+
+header {
+  margin-top: 20px;
+}
 
 // TODO(david): Does it actually make sense to have inconsistent title styling?
 .page-title {
   font-size: 60px;
-  margin-top: 20px;
+}
+
+.rating-box {
+  float: right;
+  width: 80px;
+  height: 80px;
+  text-align: center;
+  margin-top: 5px;
+
+  .rating {
+    font-size: 60px;
+    line-height: 60px;
+  }
+
+  .num-ratings {
+  }
 }

@@ -9,8 +9,16 @@
 {% block header %}
   <div class="container-fluid">
     <div class="row-fluid">
-      <div class="span12">
+      <div class="span10">
         <h1 class="page-title">CS 241</h1>
+        <p class="lead">Introduction to Microeconomics</p>
+      </div>
+      {# TODO(david): Re-use ratings box HTML (but different styling) #}
+      <div class="span2">
+        <div class="rating-box badge badge-inverse">
+          <div class="rating">2.3</div>
+          <div class="num-ratings">1023 ratings</div>
+        </div>
       </div>
     </div>
   </div>
@@ -18,36 +26,20 @@
 
 {% block body %}
   <div class="row-fluid">
-    <div class="span12">
-      <p class="lead">Introduction to Microeconomics</p>
+    <div class="span3 well" id="took-this-sidebar-container">
     </div>
-  </div>
-  <div class="row-fluid">
-    <div class="span3 well" id="friend-sidebar-container">
+    <div class="span9">
+      <div class="course-inner-placeholder">[course inner]</div>
+      <div class="course-tips-placeholder">[course tips]</div>
+      <div class="professor-review-container">[professor reviews]</div>
     </div>
-    <div class="span9" id="profile-container">
-    TESTING
-    {#
-      <div id="term-collection-container"></div>
-      <div id="transcript-container">
-        <h2>Import Transcript from Quest</h2>
-          <p id="transcript-instructions">
-            Copy and paste your
-            <a target="_blank"
-              href="https://quest.pecs.uwaterloo.ca/psp/SS/?cmd=login">
-              transcript from Quest</a>,
-            and <strong>your course history will magically appear</strong> here!
-          </p>
-          <textarea id="transcript-text" wrap="off"></textarea>
-      </div>
-      #}
     </div>
   </div>
 {% endblock %}
 
 {# TODO(david): Have underscore templates specify their deps. #}
 {% block templates %}
-  {% include 'friend.html' %}
+  {% include 'took_this.html' %}
   {% include 'course.html' %}
   {% include 'term.html' %}
   {% include 'ratings.html' %}

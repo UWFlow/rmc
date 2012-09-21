@@ -1,0 +1,18 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('took-this-sidebar-tpl') %}
+<h3 class="num-friends"><%- numFriends %> friends took CS 241</h3>
+<div class="took-this-collection-placeholder"></div>
+{% endcall %}
+
+{% call macros.us_template('took-this-tpl') %}
+<a class="person-pic" href="<%- profileUrl %>">
+  <img src="<%- fbPicUrl %>">
+</a>
+<div class="person-info">
+  <a class="person-name" href="<%- profileUrl %>">
+    <%- name %>
+  </a>
+  <div class="mutual-courses">took this in Spring 2012</div>
+</div>
+{% endcall %}
