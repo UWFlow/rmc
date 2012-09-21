@@ -73,6 +73,7 @@ def login():
     req = flask.request
 # TODO(Sandy): Use Flask Sessions instead of raw cookie
 # TODO(Sandy): Security: Authenticate with fbsr (FB signed request) to ensure these are legit values
+
     fbid = req.cookies.get('fbid')
     fb_access_token = req.cookies.get('fb_access_token')
     # Compensate for network latency by subtracting 10 seconds
@@ -87,13 +88,21 @@ def login():
             return 'Error'
 
     try:
-        friend_fbids = flask.json.loads(req.form['friends'])
+        friend_fbids = flask.json.loads(req.form.get('friend_fbids'))
+        gender = req.form.get('gender')
+        first_name = req.form.get('first_name')
+        middle_name = req.form.get('middle_name')
+        last_name = req.form.get('last_name')
+        email = req.form.get('email')
 
         now = datetime.now()
         user_obj = {
-            'first_name': 'Mack', # TODO(mack): get from facebook
-            'last_name': 'Duan', # TODO(mack): get from facebook
             'fbid': fbid,
+            'first_name': first_name,
+            'middle_name': middle_name,
+            'last_name': last_name,
+            'email': email,
+            'gender': gender,
             'fb_access_token': fb_access_token,
             'fb_access_token_expiry_time': fb_access_token_expiry_time,
 #TODO(Sandy): Count visits properly
@@ -107,10 +116,10 @@ def login():
         user.add_friend_fbids(friend_fbids)
 
         user.save()
-    except KeyError:
+    except KeyError as ex:
         # Invalid key (shouldn't be happening)
 # TODO(Sandy): redirect to landing page, or nothing
-        print 'Invalid key at /login. Redirecting to landing page'
+        print 'Exception while saving user: %s' % ex
         return 'Error'
     return ''
 
