@@ -36,4 +36,4 @@ class Term(me.Document):
         if month == Term.INVALID_TERM_MONTH:
             print "Term: Invalid seasons '%s'. Using month %d in term id" % (season, Term.INVALID_TERM_MONTH)
 
-        return ('%s %s' % (year, month)).replace(' ', '_')
+        return ('%s %02d' % (year, month)).replace(' ', '_')
