@@ -1,7 +1,7 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'review', 'ext/bootstrap', 'user', 'util'],
-function(Backbone, $, _, _s, ratings, review, __, user, util) {
+'ratings', 'review', 'ext/bootstrap', 'user', 'util', 'jquery.slide'],
+function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
 
   var CourseModel = Backbone.Model.extend({
     defaults: {
@@ -93,15 +93,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
     // XXX TODO(david) FIXME: need to not render expanded HTML until needed
     expandCourse: function(evt) {
       var duration = 300;
-      this.$('.expand-section')
-        .css('opacity', 0)
-        .animate({
-          opacity: 1.0
-        }, {
-          duration: duration,
-          queue: false
-        })
-        .slideDown(duration);
+      this.$('.expand-section').fancySlide('down', duration);
 
       this.ratingsView.removeBars();
       window.setTimeout(_.bind(function() {
@@ -110,9 +102,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util) {
     },
 
     collapseCourse: function(evt) {
-      this.$('.expand-section')
-        .stop(/* clearQueue */ true)
-        .slideUp(300);
+      this.$('.expand-section').fancySlide('up');
     },
 
     expandNewReview: function(evt) {

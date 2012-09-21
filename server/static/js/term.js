@@ -1,6 +1,6 @@
 define(
-['ext/backbone', 'ext/underscore', 'course'],
-function(Backbone, _, course) {
+['ext/backbone', 'ext/underscore', 'course', 'jquery.slide'],
+function(Backbone, _, course, jqSlide) {
 
   var TermModel = Backbone.Model.extend({
     defaults: {
@@ -52,25 +52,14 @@ function(Backbone, _, course) {
     },
 
     expandTerm: function(evt) {
-      var duration = 300;
-      this.$('.course-collection')
-        .css('opacity', 0)
-        .animate({
-          opacity: 1.0
-        }, {
-          duration: duration,
-          queue: false
-        })
-        .slideDown(duration)
+      this.$('.course-collection').fancySlide('down')
         .end().find('.term-name .arrow')
-        .removeClass('icon-caret-right')
-        .addClass('icon-caret-down');
+          .removeClass('icon-caret-right')
+          .addClass('icon-caret-down');
     },
 
     collapseTerm: function(evt) {
-      this.$('.course-collection')
-        .stop(/* clearQueue */ true)
-        .slideUp(300)
+      this.$('.course-collection').fancySlide('up')
         .end().find('.term-name .arrow')
           .removeClass('icon-caret-down')
           .addClass('icon-caret-right');
