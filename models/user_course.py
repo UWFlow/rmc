@@ -65,7 +65,7 @@ class UserCourse(me.Document):
     # TODO(mack): verify this works when user_id is not required
     # TODO(mack): might be better to just enforce uniqueness on
     # ['course_id', 'offering_id']?
-    user_id = me.StringField(unique_with=['course_id', 'term_id'])
+    user_id = me.ObjectIdField(unique_with=['course_id', 'term_id'])
     course_id = me.StringField(required=True)
     term_id = me.StringField(required=True)
 
