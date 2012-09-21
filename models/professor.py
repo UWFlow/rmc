@@ -14,6 +14,7 @@ class Professor(me.Document):
         ],
     }
 
+    #FIXME(Sandy): Becker actually shows up as byron_becker
     # eg. byron_weber_becker
     id = me.StringField(primary_key=True)
 

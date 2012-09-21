@@ -22,6 +22,15 @@ class Term(me.Document):
     def name(self):
         return '%s %d' % (self.season, self.year)
 
+    @classmethod
+    def get_id_from_year_season(cls, year, season):
+        season = season.lower()
+        month = 13
+        for idx, ssn in enumerate(Term.SEASONS):
+            if ssn.lower() == season:
+                month = idx * 4 + 1
 
+        if month == 13:
+            print "Term: Invalid seasons '%s'. Using month 13 in term id" % season
 
-
+        return ('%s %s' % (year, month)).replace(' ', '_')
