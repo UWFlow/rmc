@@ -21,6 +21,7 @@ class CritiqueCourse(me.Document):
 
     clarity = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
     easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    interest = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
     passion = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
 
