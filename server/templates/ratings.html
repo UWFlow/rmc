@@ -1,14 +1,14 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('ratings-tpl') %}
-<div class="ratings">
+<div class="ratings <%- editOnly ? 'edit-only' : '' %> <%- readOnly ? 'read-only' : '' %>">
   <% ratings.each(function(rating) { %>
     <div class="row-fluid">
       <div class="rating-name span3">
         <%- rating.getDisplayName() %>
       </div>
       <div class="rating-bar-span span8">
-        <% if (!userOnly) { %>
+        <% if (!editOnly) { %>
           <div class="shown-rating">
             <div class="rating-progress progress <%- rating.getClass() %>">
               <div class="rating-bar bar active" style="width: 0%;"></div>
@@ -16,17 +16,19 @@
           </div>
         <% } %>
 
-        <div class="input-rating <%- userOnly ? '' : 'hide-initial' %>">
-          {# TODO(david): 5 should not be hardcoded #}
-          <% for (var i = 0; i < 5; ++i) { %>
-            <div class="rating-progress progress <%- rating.getClass() %>">
-              <div class="rating-bar active"></div>
-            </div>
-          <% } %>
-        </div>
+        <% if (!readOnly) { %>
+          <div class="input-rating <%- editOnly ? '' : 'hide-initial' %>">
+            {# TODO(david): 5 should not be hardcoded #}
+            <% for (var i = 0; i < 5; ++i) { %>
+              <div class="rating-progress progress <%- rating.getClass() %>">
+                <div class="rating-bar active"></div>
+              </div>
+            <% } %>
+          </div>
+        <% } %>
 
       </div>
-      <% if (!userOnly) { %>
+      <% if (!editOnly) { %>
         <div class="shown-rating-num rating-num-span span1">
           <%- rating.getDisplayRating() %>
         </div>

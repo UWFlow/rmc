@@ -1,7 +1,7 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'ext/backbone', 'jquery.slide', 'base_views'],
-function($, _, _s, bootstrap, Backbone, jqSlide, baseViews) {
+'ext/backbone', 'jquery.slide', 'base_views', 'ratings'],
+function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings) {
 
   var Prof = Backbone.Model.extend({
     defaults: {
@@ -10,12 +10,13 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews) {
       phone: '519-888-4567 x35241',
       office: 'DC 2506',
       department: 'School of Computer Science',
-      pictureUrl: 'http://placekitten.com/400/400'
+      pictureUrl: 'http://placehold.it/150x150'
     }
   });
 
   // TODO(david): Convert other backbone views to pre-compile templates
   var ProfCardView = Backbone.View.extend({
+    className: 'prof-card',
     template: _.template($('#prof-card-tpl').html()),
 
     render: function() {
@@ -36,6 +37,7 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews) {
   });
 
   var ProfReviewView = Backbone.View.extend({
+    className: 'prof-review',
     template: _.template($('#prof-review-tpl').html()),
 
     render: function() {
@@ -76,6 +78,16 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews) {
       this.profReviewCollectionView = new ProfReviewCollectionView({
         collection: this.reviews
       });
+
+      // TODO(david): Removed mocked data
+      var ratingsCollection = new ratings.RatingCollection([
+        { name: 'interest', count: 20, total: 15 },
+        { name: 'easiness', count: 40, total: 37 }
+      ]);
+      this.ratingsView = new ratings.RatingsView({
+        ratings: ratingsCollection,
+        readOnly: true
+      });
     },
 
     render: function() {
@@ -83,8 +95,14 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews) {
         numHidden: this.numHidden()
       }));
 
+      // Professor business card
       this.$('.prof-card-placeholder').replaceWith(this.profView.render().el);
 
+      // Aggregate rating
+      this.$('.aggregate-ratings-placeholder').replaceWith(
+        this.ratingsView.render().el);
+
+      // Professor reviews
       this.$('.reviews-collection-placeholder').replaceWith(
         this.profReviewCollectionView.render().el);
 
@@ -112,6 +130,20 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews) {
         this.$('.toggle-reviews').html('&laquo; Hide reviews');
       }
       this.expanded = !this.expanded;
+    }
+  });
+
+  var ProfCollectionView = baseViews.CollectionView.extend({
+    className: 'prof-collection',
+
+    initialize: function(options) {
+
+    },
+
+    createItemView: function(model) {
+      return new ExpandableProfView({
+        model: model
+      });
     }
   });
 

@@ -55,9 +55,8 @@
   <% var numFriends = friendCollection.length; %>
   <% var remaining = Math.max(numFriends - maxSampleFriends, 0); %>
   <% if (remaining > 0) { %>
-    and <%- remaining %>
     <a href="#" rel="popover" class="remaining-friends">
-      other <%- pluralize(remaining, 'friend', 'friends') %>
+      + <%- remaining %> other <%- pluralize(remaining, 'friend', 'friends') %>
     </a>
   <% } %>
 </div>

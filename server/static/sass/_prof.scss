@@ -1,0 +1,28 @@
+.prof-picture {
+  float: left;
+  width: 30%;
+}
+
+.prof-info {
+  float: left;
+  margin-left: 20px;
+  width: 60%;
+  display: inline-block;
+
+  .prof-name {
+    line-height: 24px;
+  }
+
+  .dept-name {
+    font-weight: lighter;
+  }
+
+  .dl-horizontal {
+    dt {
+      width: 50px;
+    }
+    dd {
+      margin-left: 70px;
+    }
+  }
+}

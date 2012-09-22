@@ -149,6 +149,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
         html: true,
         content: _.bind(this.getFriendsPopoverContent, this),
         trigger: 'hover',
+        // TODO(david) TODO(mack): This should be 'bottom' but needs fixing
         placement: 'in top'
       });
       // Prevent clicking in the hovercard from expanding/collapsing the course

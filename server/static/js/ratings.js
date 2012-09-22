@@ -7,6 +7,7 @@ function(Backbone, $, _, _s, util) {
   // TODO(david): Refactor all the row-fluid to use an actual class name
 
   // A rating of a single metric
+  // TODO(david): Fix this to just be count + rating (instead of total)
   var RatingModel = Backbone.Model.extend({
     defaults: {
       name: 'interest',
@@ -62,16 +63,20 @@ function(Backbone, $, _, _s, util) {
     initialize: function(options) {
       this.ratings = options.ratings;
       this.userReviewModel = options.userReviewModel;
-      this.userOnly = options.userOnly;
+      this.editOnly = options.editOnly;
+      this.readOnly = options.readOnly;
 
-      this.userReviewModel.on('change', this.setUserRatings, this);
+      if (!this.readOnly) {
+        this.userReviewModel.on('change', this.setUserRatings, this);
+      }
     },
 
     render: function() {
       var ratings = this.ratings;
       this.$el.html(_.template($('#ratings-tpl').html(), {
-          ratings: ratings,
-          userOnly: this.userOnly
+        ratings: ratings,
+        editOnly: this.editOnly,
+        readOnly: this.readOnly
       }));
 
       // Set the width here instead of in the template for animations
@@ -85,6 +90,10 @@ function(Backbone, $, _, _s, util) {
     },
 
     setUserRatings: function() {
+      if (this.readOnly) {
+        return;
+      }
+
       var self = this;
       this.$('.input-rating').each(function(i, inputRating) {
         var name = self.ratings.getNameAt(i);
@@ -100,6 +109,10 @@ function(Backbone, $, _, _s, util) {
 
     // TODO(david): Refactor to use single model+view for each rating
     onRatingHover: function(evt) {
+      if (this.readOnly) {
+        return;
+      }
+
       this.setUserRatings();
 
       var $target = $(evt.currentTarget);
@@ -118,6 +131,9 @@ function(Backbone, $, _, _s, util) {
     },
 
     onRatingClick: function(evt) {
+      if (this.readOnly) {
+        return;
+      }
       var $target = $(evt.currentTarget);
       var index = $target.closest('.row-fluid').index();
       var name = this.ratings.getNameAt(index);

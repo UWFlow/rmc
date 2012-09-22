@@ -1,20 +1,46 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('prof-card-tpl') %}
-<div class="prof-card">
-  HERE IS THE BUSINESS CARD OF THE PROF!!!
-</div>
+  <img width="150" height="150"
+    class="prof-picture img-polaroid" src="<%- pictureUrl %>"></img>
+  <div class="prof-info">
+    <h3 class="prof-name">Charles L.A. Clarke</h3>
+    <p class="dept-name"><%- department %></p>
+    <dl class="dl-horizontal">
+      <dt>Email</dt>
+      <dd><%- email %></dd>
+      <dt>Phone</dt>
+      <dd><%- phone %></dd>
+      <dt>Office</dt>
+      <dd><%- office %></dd>
+    </dl>
+  </div>
 {% endcall %}
 
 {% call macros.us_template('prof-review-tpl') %}
-<div class="prof-review">
   HERE BE SINGLE REVIEW OF A PROF
-</div>
 {% endcall %}
 
 {% call macros.us_template('prof-expandable-reviews-tpl') %}
-<h2>Professors</h2>
-<div class="prof-card-placeholder"></div>
-<div class="reviews-collection-placeholder"></div>
-<a class="toggle-reviews">See <%- numHidden %> more reviews &raquo;</a>
+<div class="well">
+  <div class="row-fluid">
+    <div class="span6">
+      <div class="prof-card-placeholder"></div>
+    </div>
+    <div class="span6">
+      <div class="row-fluid">
+        <div class="span12">
+          [rating box here]
+        </div>
+      </div>
+      <div class="row-fluid">
+        <div class="span12">
+          <div class="aggregate-ratings-placeholder"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="reviews-collection-placeholder"></div>
+  <a class="toggle-reviews">See <%- numHidden %> more reviews &raquo;</a>
+</div>
 {% endcall %}

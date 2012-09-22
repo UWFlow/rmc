@@ -12,7 +12,7 @@ function(Backbone, $, _) {
    * Optionally override this.postRender() to do stuff after this.render().
    */
   var CollectionView = Backbone.View.extend({
-    tagName: 'ul',
+    tagName: 'article',
 
     initialize: function(options) {
       this.viewCallback = options.viewCallback;
@@ -29,7 +29,7 @@ function(Backbone, $, _) {
       this.$el.empty();
       this.collection.each(function(model) {
         var view = this.createItemView(model);
-        view.tagName = 'li';
+        view.tagName = 'section';
         // TODO(david): Append all at once for faster DOM rendering
         this.$el.append(view.render().el);
       }, this);
