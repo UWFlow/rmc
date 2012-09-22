@@ -56,7 +56,7 @@ function($, _, _s) {
       // TODO(mack): filter non-courses from matches
       if (matches) {
         _.each(matches, function(courseId) {
-          courseId = courseId.replace(/\s+/g, '');
+          courseId = courseId.replace(/\s+/g, '').toLowerCase();
           courseIds.push(courseId);
         });
         coursesByTerm.push({

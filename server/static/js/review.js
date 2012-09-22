@@ -6,30 +6,31 @@ function(Backbone, $, _, _s, ratings, select2) {
   // TODO(david): May want to refactor to just a UserCourse model
   // TODO(david): Refactor to use sub-models for reviews
   var UserReviewModel = Backbone.Model.extend({
+    // TODO(mack): use undefined rather than null
     defaults: {
-      term: 'Spring 2012',
+      id: null,
+      term_id: '2012_05',
       course_id: null,
-      prof_id: null,
-      prof_review: {
-        name: 'Larry Smith',
+      professor_id: null,
+      professor_review: {
         passion: null,
         clarity: null,
-        overall: null,
         comment: ''
       },
       course_review: {
         easiness: null,
         interest: null,
-        overall: null,
         comment: ''
       }
     },
 
-    urlRoot: '/api/user/course',
+    url: function() {
+      return '/api/user/course';
+    },
 
     initialize: function(attributes) {
-      if (!attributes || !attributes.prof_review) {
-        this.set('prof_review', _.clone(this.defaults.prof_review));
+      if (!attributes || !attributes.professor_review) {
+        this.set('professor_review', _.clone(this.defaults.professor_review));
       }
       if (!attributes || !attributes.course_review) {
         this.set('course_review', _.clone(this.defaults.course_review));
@@ -39,9 +40,9 @@ function(Backbone, $, _, _s, ratings, select2) {
     // TODO(david): If I designed this better, all this code below might not be
     //     necessary
     _getRatingObj: function(name) {
-      var prof = this.get('prof_review');
+      var prof = this.get('professor_review');
       if (_.has(prof, name)) {
-        return [prof, 'prof_review'];
+        return [prof, 'professor_review'];
       }
 
       var course = this.get('course_review');
@@ -143,12 +144,14 @@ function(Backbone, $, _, _s, ratings, select2) {
       var self = this;
 
       this.userReviewModel.save({
-        prof_id: this.$('.prof-select').select2('val'),
+        //id: this.userReviewModel.get('id'),
+        //term_id: this.userReviewModel.get('term_id'),
+        professor_id: this.$('.prof-select').select2('val'),
         course_id: this.courseModel.get('id'),
         course_review: _.extend({}, this.userReviewModel.get('course_review'), {
           comment: this.$('.course-comments').val()
         }),
-        prof_review: _.extend({}, this.userReviewModel.get('prof_review'), {
+        professor_review: _.extend({}, this.userReviewModel.get('professor_review'), {
           comment: this.$('.prof-comments').val()
         })
       }).done(function() {

@@ -28,7 +28,6 @@ class User(me.Document):
     last_name = me.StringField(required=True)
 
     # TODO(mack): check if facebook always returns gender field
-    # eg. m => male, f => female
     gender = me.StringField(choices=['male', 'female'])
 
     # eg. 1647810326

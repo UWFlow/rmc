@@ -37,9 +37,14 @@ class Course(me.Document):
     # eg. ['earth', '121l', 'earth121l', 'Introductory', 'Earth' 'Sciences', 'Laboratory', '1']
     _keywords = me.ListField(me.StringField(), required=True)
 
+    @property
+    def code(self):
+        return '%s %s' % (self.department_id.upper(), self.number.upper())
+
     def save(self, *args, **kwargs):
         if not self.id:
             # id should not be set during first save
             self.id = self.department_id + self.number
 
         super(Course, self).save(*args, **kwargs)
+

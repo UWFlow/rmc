@@ -37,6 +37,10 @@ class Professor(me.Document):
         last_name = last_name.lower()
         return ('%s %s' % (first_name, last_name)).replace(' ', '_')
 
+    @property
+    def name(self):
+        return '%s %s' % (self.first_name, self.last_name)
+
     def save(self, *args, **kwargs):
         if not self.id:
             self.id = Professor.get_id_from_name(self.first_name, self.last_name)

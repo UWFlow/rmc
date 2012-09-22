@@ -6,7 +6,7 @@
     <div class="span12">
       <div class="select2-inline">
         You took this course in
-        <span class="term"><%- term %></span>
+        <span class="term"><%- term_id /* TODO(mack): convert to term name */ %></span>
         with
         <select data-placeholder="which professor?" class="prof-select">
           <option></option>
@@ -52,7 +52,7 @@
       </div>
       <div class="span6">
         <textarea placeholder="Write some comments... please?"
-          class="comments prof-comments"><%- prof_review.comment %></textarea>
+          class="comments prof-comments"><%- professor_review.comment %></textarea>
       </div>
     </div>
 

@@ -130,41 +130,29 @@ def login():
 ######## API ##################
 ###############################
 
-@app.route('/api/courses/<string:course_names>', methods=['GET'])
+@app.route('/api/courses/<string:course_ids>', methods=['GET'])
 # TODO(mack): find a better name for function
-def get_courses(course_names):
-    course_names = course_names.upper()
-    course_names = course_names.split(',')
-    courses_list = list(db.courses.find(
-      {'name': { '$in': course_names }},
-      {'_id': 0}
-    ))
+def get_courses(course_ids):
+    course_ids = [c.lower() for c in course_ids.split(',')]
+    courses = m.Course.objects(
+      id__in=course_ids,
+    )
 
-# XXX(Sandy): Use the filters instead of find() all
-    '''
-    critiques = list(db.course_evals.find(
-      {'course': { '$in': course_names }},
-      {'_id': 0}
-    ))
-    '''
-    critiques = [dict(x) for x in db.course_evals.find()]
-
-    clean_course_func = get_clean_course_func(critiques)
     # TODO(mack): do this more cleanly
-    courses_list = map(clean_course_func, courses_list)
-    courses = {}
-    for course in courses_list:
-        courses[course['id']] = course
+    courses = map(clean_course, courses)
+    course_map = {}
+    for course in courses:
+        course_map[course['id']] = course
 
-    return json_util.dumps({ 'courses': courses })
+    return json_util.dumps({ 'courses': course_map })
 
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
-    { 'value': 'num_ratings', 'name': 'by popularity', 'direction': pymongo.DESCENDING, 'field': 'ratings.count'},
-    { 'value': 'alphabetical', 'name': 'alphabetically', 'direction': pymongo.ASCENDING, 'field': 'name'},
-    { 'value': 'overall', 'name': 'by overall rating', 'direction': pymongo.DESCENDING, 'field': 'ratings.aggregate.average'},
-    { 'value': 'interest', 'name': 'by interest', 'direction': pymongo.DESCENDING, 'field': 'ratings.interest.average'},
-    { 'value': 'easiness', 'name': 'by easiness' , 'direction': pymongo.DESCENDING, 'field': 'ratings.easy.average'},
+    { 'value': 'num_ratings', 'name': 'by popularity', 'direction': pymongo.DESCENDING, 'field': 'overall.count' },
+    { 'value': 'alphabetical', 'name': 'alphabetically', 'direction': pymongo.ASCENDING, 'field': 'id' },
+    { 'value': 'overall', 'name': 'by overall rating', 'direction': pymongo.DESCENDING, 'field': 'overall.rating' },
+    { 'value': 'interest', 'name': 'by interest', 'direction': pymongo.DESCENDING, 'field': 'interest.rating' },
+    { 'value': 'easiness', 'name': 'by easiness' , 'direction': pymongo.DESCENDING, 'field': 'easiness.rating' },
 ]
 COURSES_SORT_MODES_BY_VALUE = {}
 for sort_mode in COURSES_SORT_MODES:
@@ -184,7 +172,6 @@ def search_courses():
     count = int(request.values.get('count', 10))
     offset = int(request.values.get('offset', 0))
 
-    filters = None
     if keywords:
         keywords = re.sub('\s+', ' ', keywords)
         keywords = keywords.split(' ')
@@ -195,25 +182,22 @@ def search_courses():
             #return '^%s' % keyword
 
         keywords = map(regexify_keywords, keywords)
-        filters = { '_keywords': { '$all': keywords } }
-    if filters:
-        unsorted_courses = db.courses.find(filters)
-        # TODO(mack): add support for course_evals
-        #critiques = db.course_evals.find({'$and': filters})
-        critiques =[]
+
+    if keywords:
+        unsorted_courses = m.Course.objects(_keywords__all=keywords)
     else:
-        unsorted_courses = db.courses.find()
-        critiques = db.course_evals.find()
+        unsorted_courses = m.Course.objects()
 
     sort_options = COURSES_SORT_MODES_BY_VALUE[sort_mode]
-    sorted_courses = unsorted_courses.sort(
-        sort_options['field'],
-        direction=direction,
-    )
+    sort_instr = ''
+    if direction < 0:
+        sort_instr = '-'
+    sort_instr += sort_options['field']
+
+    sorted_courses = unsorted_courses.order_by(sort_instr)
     limited_courses = sorted_courses.skip(offset).limit(count)
 
-    clean_course_func = get_clean_course_func(critiques)
-    courses = map(clean_course_func, limited_courses)
+    courses = map(clean_course, limited_courses)
     has_more = len(courses) == count
 
     return json_util.dumps({
@@ -226,99 +210,105 @@ def search_courses():
 def user_course():
     # TODO(david) FIXME: Use ORM, don't shove! and ensure_index
     # TODO(david): This should also update aggregate ratings table, etc.
-    data = json_util.loads(flask.request.data)
-    db.user_courses.save(data)
-    return json_util.dumps(data)
+    uc = json_util.loads(flask.request.data)
+
+    print 'uc', uc
+
+    now = datetime.now()
+    def set_comment_time_if_necessary(review):
+        if not review:
+            return None
+
+        # TODO(mack): add more stringent checking against user manually
+        # setting time on the frontend
+        if 'comment' in review and not 'comment_time':
+            review['comment_time'] = now
+
+    set_comment_time_if_necessary(uc.get('user_review'))
+    set_comment_time_if_necessary(uc.get('course_review'))
+
+    # TODO(mack): remove user_id hardcode
+    user_id = m.User.objects.get(fbid='1647810326').id
+    uc['user_id'] = user_id
+
+    if 'course_review' in uc:
+        uc['course_review'] = m.CourseReview(**uc['course_review'])
+
+    if 'professor_review' in uc:
+        uc['professor_review'] = m.ProfessorReview(**uc['professor_review'])
+
+    uc = m.UserCourse(**uc)
+    uc.save()
+
+    return json_util.dumps(clean_user_course(uc))
 
 ###############################################################################
 # Helper functions
 
-def clean_course(course, critiques):
-    NORMALIZE_FACTOR = 5
-    interest_count = course['ratings']['interest']['count']
-    interest_total = float(course['ratings']['interest']['total']) / NORMALIZE_FACTOR
-    easiness_count = course['ratings']['easy']['count']
-    easiness_total = float(course['ratings']['easy']['total']) / NORMALIZE_FACTOR
-    overall_course_count = course['ratings']['aggregate']['count']
-    overall_course_total = float(course['ratings']['aggregate']['average']) / NORMALIZE_FACTOR * overall_course_count
-
-    if course['name'] in critiques:
-        print course['name'] + ' found in critiques'
-# TODO(Sandy): eventually pass in prof specific info here (from crit)
-        for crit in critiques[course['name']]:
-            int_count = crit['interest_count']
-            eas_count = crit['easiness_count']
-            co_count = crit['overall_course_count']
-
-            interest_total += crit['interest'] * int_count
-            easiness_total += crit['easiness'] * eas_count
-            overall_course_total += crit['overall_course'] * co_count
-            interest_count += int_count
-            easiness_count += eas_count
-            overall_course_count += co_count
-    else:
-# TODO(Sandy): log somewhere so we can track this
-        print course['name'] + ' not found in critiques'
-
-# TODO(Sandy): Might we want to normalize the overall on the client-side too?
-    overall_course = overall_course_total / max(1, overall_course_count) * NORMALIZE_FACTOR
-    overall_course = round(overall_course*10)/10
-
-    def format_professor_name(professor_name):
-        splits = professor_name.split(',', 1)
-        professor_name = splits[0]
-        if len(splits) == 2:
-            professor_name = '%s %s' % (splits[1].strip(), splits[0].strip())
-        else:
-            professor_name = splits[0].strip()
-        return professor_name
-
-    def minify_professor(professor):
-        return {
-            'name': format_professor_name(professor['name']),
-            'id': professor['name']  # XXX TODO(david) FIXME: ORM for actual ID
-        }
-
-    professors = sorted(minify_professor(p) for p in course['professors'])
-
-    # XXX TODO(david) FIXME: search by user as well
-    user_course = db.user_courses.find_one({
-        'course_id': course['name'],
-    })
+def clean_user_course(user_course):
+    course_review = user_course.course_review
+    professor_review = user_course.professor_review
 
     return {
-        'id': course['name'],   # XXX TODO(david) FIXME
-        'name': course['title'],
-        'userCourse': user_course,
-        'professors': professors,
-        'numRatings': overall_course_count,
-        'description': course['description'],
+        'id': user_course.id,
+        'user_id': user_course.user_id,
+        'course_id': user_course.course_id,
+        'professor_id': user_course.professor_id,
+        'anonymous': user_course.anonymous,
+        'course_review': {
+            'easiness': course_review.easiness,
+            'interest': course_review.interest,
+            'comment': course_review.comment,
+            'comment_time': course_review.comment_time,
+        },
+        'professor_review': {
+            'clarity': professor_review.clarity,
+            'passion': professor_review.passion,
+            'comment': professor_review.comment,
+            'comment_time': professor_review.comment_time,
+        },
+    }
+
+def clean_course(course):
+
+    # TODO(mack): this should be cached, or stored in m.Course
+    def get_professors(course):
+        def get_professor_ids(course, coll):
+            return set(
+                [x.professor_id for x in coll.objects(course_id=course.id)]
+            )
+        professor_ids = get_professor_ids(course, m.UserCourse).union(
+                get_professor_ids(course, m.MenloCourse))
+
+        professors = []
+        professors = m.Professor.objects(id__in=list(professor_ids))
+        return [{'id': p.id, 'name': p.name} for p in professors]
+
+    def get_user_course(course):
+        # XXX TODO(david) FIXME: search by user as well
+        user_course = m.UserCourse.objects(course_id=course.id).first()
+
+        if not user_course:
+            return None
+
+        return clean_user_course(user_course)
+
+    return {
+        'id': course.id,
+        'code': course.code,
+        'name': course.name,
+        'description': course.description,
         #'availFall': bool(int(course['availFall'])),
         #'availSpring': bool(int(course['availSpring'])),
         #'availWinter': bool(int(course['availWinter'])),
         # TODO(mack): create user models for friends
         #'friends': [1647810326, 518430508, 541400376],
-# XXX(Sandy): factor in critique data into overall
-        'rating': overall_course,
-        'ratings': [{
-            'name': 'interest',
-            'count': interest_count,
-            'total': interest_total,
-        }, {
-            'name': 'easiness',
-            'count': easiness_count,
-            'total': easiness_total,
-        }]
+        'easiness': course.easiness,
+        'interest': course.interest,
+        'overall': course.overall,
+        'professors': get_professors(course),
+        'userCourse': get_user_course(course),
     }
-
-def get_clean_course_func(critiques_data):
-    course_crit_map = {}
-    for critique in critiques_data:
-        if not critique['course'] in course_crit_map:
-            course_crit_map[critique['course']] = []
-        course_crit_map[critique['course']].append(critique)
-
-    return functools.partial(clean_course, critiques=course_crit_map)
 
 if __name__ == '__main__':
   app.debug = True

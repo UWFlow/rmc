@@ -26,7 +26,7 @@
 <% coursesTook.each(function(course) { %>
   <% course = course.toJSON(); %>
   <li class="mini-course">
-    <a href="<%- '/course/' + course.id %>" class="course-id"><%- course.id %></a>
+    <a href="<%- '/course/' + course.id %>" class="course-code"><%- course.code %></a>
     -
     <span class="course-title"><%- course.name %></span>
   </li>

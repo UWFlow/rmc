@@ -6,7 +6,7 @@ function($, _, _s, transcript, term, course, friend, util, user) {
   // Render friend sidebar
 
   // TODO(mack): remove stub data
-  courseIds = ['CS137', 'SCI238', 'CS241'];
+  courseIds = ['cs137', 'sci238', 'cs241'];
   $.getJSON(
     '/api/courses/' + courseIds.join(','),
     function(data) {

@@ -17,11 +17,14 @@ class AggregateRating(me.EmbeddedDocument):
         self.rating = ((self.rating * self.count) + total) / (self.count + ar.count)
         self.count += ar.count
 
-    def to_json(self):
-        return json.dumps({
+    def to_dict(self):
+        return {
             'rating': self.rating,
             'count': self.count,
-        })
+        }
+
+    def to_json(self):
+        return json.dumps(self.to_dict())
 
     @classmethod
     def from_json(cls, json_str):
