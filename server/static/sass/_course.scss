@@ -62,7 +62,7 @@
   }
 
   .friend-pic-img {
-    opacity: 0.7;
+    opacity: 0.5;
   }
 
   &:hover .friend-pic-img {
@@ -74,18 +74,16 @@
 
     $friend-pic-size: 30px;
     $friend-pic-margin: 3px;
-    $friend-info-width: 85px;
+    $friend-info-width: 120px;
     $num-sample-friends: 3;
 
     @extend .clearfix;
     margin-top: -3px;
 
-    width: ($friend-pic-size + $friend-pic-margin) * $num-sample-friends + $friend-info-width + 10px;
-
     display: inline-block;
     float: right;
     margin-right: 10px;
-    top: $top;
+    top: -5px;
     position: relative;
 
     .friends-taken-title {
@@ -97,8 +95,7 @@
 
     > .friend-collection {
       clear: both;
-      float: left;
-      display: inline-block;
+      float: right;
       list-style: none;
       margin-left: 0;
 
@@ -111,13 +108,10 @@
     }
 
     .friend-info {
-      float: left;
-      display: inline-block;
       margin-left: 3px;
       font-size: 15px;
       line-height: 15px;
       position: relative;
-      width: $friend-info-width;
     }
 
     .remaining-friends {
