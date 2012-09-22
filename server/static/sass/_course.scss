@@ -61,6 +61,15 @@
     }
   }
 
+  .friend-pic-img {
+    opacity: 0.7;
+  }
+
+  &:hover .friend-pic-img {
+    @include transition(all 0.3s ease-out);
+    opacity: 1.0;
+  }
+
   .sample-friends {
 
     $friend-pic-size: 30px;
