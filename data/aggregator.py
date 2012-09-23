@@ -133,26 +133,59 @@ def import_redis_course_professor_rating():
                     count[0] += 1
 
     set_course_professor_ratings_in_redis(courses)
-    print 'set %d keys in redis' % count[0]
+    print 'set %d course professor rating keys in redis' % count[0]
 
-# TODO(mack): store mutual courses between friends in redis
-def import_friend_mutual_courses():
-    pass
 
+# TODO(mack): test it when we get data to test with
+def import_redis_friend_mutual_courses():
+
+    courses_by_user = {}
+    for user in  m.User.objects.only('friend_ids', 'course_history'):
+        friend_ids = [str(friend_id) for friend_id in user.friend_ids]
+        ucs = m.UserCourse.objects(id__in=user.course_history).only('course_id')
+        course_ids = [uc.course_id for uc in ucs]
+        courses_by_user[str(user.id)] = [friend_ids, set(course_ids)]
+
+    count = 0
+    user_pair = set()
+    for user_id, (friend_ids, courses) in courses_by_user.iteritems():
+        for friend_id in friend_ids:
+            if user_id < friend_id:
+                first_id = user_id
+                second_id = friend_id
+            else:
+                first_id = friend_id
+                second_id = user_id
+            if (first_id, second_id) in user_pair:
+                continue
+
+            friend_courses = courses_by_user[friend_id][1]
+            mutual_courses = courses.intersection(friend_courses)
+            if mutual_courses:
+                count += 1
+                redis_key = 'mutual_courses:%s:%s' %  (first_id, second_id)
+                r.rpush(redis_key, *list(mutual_courses))
+            user_pair.add((first_id, second_id))
+
+    print 'set %d friend pair keys in redis' % count
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     supported_modes = [
         'all',
         'redis_course_professor_rating',
+        'redis_friend_mutual_courses',
         'mongo_course_rating',
     ]
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
 
     if args.mode == 'all':
+
         import_redis_course_professor_rating()
         import_mongo_course_rating()
+    elif args.mode == 'redis_friend_mutual_courses':
+        import_redis_friend_mutual_courses()
     elif args.mode == 'redis_course_professor_rating':
         import_redis_course_professor_rating()
     elif args.mode == 'mongo_course_rating':
