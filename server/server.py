@@ -12,11 +12,54 @@ import rmc.models as m
 
 app = flask.Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
-db = pymongo.Connection(c.MONGO_HOST, c.MONGO_PORT).rmc
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
 flask.render_template = functools.partial(flask.render_template,
         env=app.config['ENV'])
+
+
+class ApiError(Exception):
+    """
+        All errors during api calls should use this rather than Exception
+        directly.
+    """
+    pass
+
+
+def get_current_user():
+    """
+        Get the logged in user (if it exists) based on fbid and fb_access_token.
+        Cache the user across multiple calls during the same request.
+    """
+    req = flask.request
+
+    if 'current_user' in req.__dict__:
+        return req.user
+
+    # TODO(Sandy): Eventually support non-fb users?
+    fbid = req.cookies.get('fbid')
+    fb_access_token = req.cookies.get('fb_access_token')
+    if fbid is None or fb_access_token is None:
+        req.current_user = None
+    else:
+        req.current_user = m.User.objects(
+                fbid=fbid, fb_access_token=fb_access_token).first()
+
+    return req.current_user
+
+def login_required(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        if not get_current_user():
+            resp = flask.make_response(flask.redirect('/'))
+            resp.set_cookie('fbid', None)
+            resp.set_cookie('fb_access_token', None)
+            return resp
+
+        return f(*args, **kwargs)
+
+    return wrapper
+
 
 @app.route('/')
 def index():
@@ -25,6 +68,7 @@ def index():
 
 @app.route('/profile', defaults={'fbid': None})
 @app.route('/profile/<int:fbid>')
+@login_required
 def profile(fbid):
     if not fbid:
         return flask.render_template('profile_page.html',
@@ -86,6 +130,15 @@ def login():
 # TODO(Sandy): redirect to landing page, or nothing
             #print 'No fbid/access_token specified'
             return 'Error'
+
+    # TODO(mack): Someone could pass fake fb_access_token for an fbid, need to
+    # validate on facebook before creating the user
+    user = m.User.objects(fbid=fbid).first()
+    if user:
+        user.fb_access_token = fb_access_token
+        user.fb_access_token_expiry_time = fb_access_token_expiry_time
+        user.save()
+        return ''
 
     try:
         friend_fbids = flask.json.loads(req.form.get('friend_fbids'))
@@ -205,28 +258,17 @@ def search_courses():
         'has_more': has_more,
     })
 
+
 @app.route('/api/transcript', methods=['POST'])
+@login_required
 def upload_transcript():
     req = flask.request
     # TODO(Sandy): The following two cases involve users trying to import their transcript without being logged in.
     # We have to decide how we treat those users. E.g. we might prevent this from the frontend, or maybe save it and
     # tell them to make an account, etc
 
-    # TODO(Sandy): Eventually support non-fb users?
-    fbid = req.cookies.get('fbid')
-    fb_access_token = req.cookies.get('fb_access_token')
-    if fbid is None or fb_access_token is None:
-        # Cookie not set properly
-        # TODO(Sandy): Redirect to the landing page to force a login and cookie set?
-        return 'Error'
-
-    user_obj = m.User.objects(fbid=fbid, fb_access_token=fb_access_token).first()
-    if user_obj is None:
-        # User not found in DB
-        # TODO(Sandy): Redirect to landing to force create account?
-        return 'Error'
-
-    user_id = user_obj.id
+    user = req.user
+    user_id = user.id
     course_history_list = []
 
     try:
@@ -249,8 +291,8 @@ def upload_transcript():
 
                 course_history_list.append(user_course.id)
 
-        user_obj.course_history = course_history_list
-        user_obj.save()
+        user.course_history = course_history_list
+        user.save()
 
     except KeyError:
         # Invalid key (shouldn't be happening)
@@ -260,16 +302,12 @@ def upload_transcript():
     return ''
 
 
-
-
 @app.route('/api/user/course', methods=['POST', 'PUT'])
 def user_course():
     # TODO(david) FIXME: check FB access token. Authentication + authorization!
     # TODO(david) FIXME: Use ORM, don't shove! and ensure_index
     # TODO(david): This should also update aggregate ratings table, etc.
     uc = json_util.loads(flask.request.data)
-
-    print 'uc', uc
 
     now = datetime.now()
     def set_comment_time_if_necessary(review):

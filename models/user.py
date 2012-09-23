@@ -1,7 +1,5 @@
 import mongoengine as me
 
-import user_course
-
 class User(me.Document):
 
     class JoinSource(object):

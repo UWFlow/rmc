@@ -9,6 +9,24 @@ function($, _cookie, FB) {
 
   FB.init({appId: appId, status: true, cookie: true, xfbml: true});
 
+  var login = function(authResp, params) {
+    // XXX(Sandy): Sending all this info in the cookie will easily allow
+    // others to hijack someonne's session. We should probably look into
+    // a way of verifying the request. Maybe that's what Facebook Signed
+    // Requests are for?
+    $.cookie('fbid', authResp.userID, { path: '/' });
+    $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
+    $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
+    $.post(
+      '/login',
+      params,
+      function(data) {
+        // TODO(Sandy): handle errors here, expecting none right now though
+        window.location.href = '/profile';
+      }
+    );
+  };
+
   FB.Event.subscribe('auth.login', function(response) {
     if (response.status === 'connected') {
       // TODO(Sandy): Put up drip loader here
@@ -28,27 +46,15 @@ function($, _cookie, FB) {
 
       $.when(deferredMe, deferredFriends).done(function(me, friendFbids) {
         var authResp = response.authResponse;
-        // XXX(Sandy): Sending all this info in the cookie will easily allow
-        // others to hijack someonne's session. We should probably look into
-        // a way of verifying the request. Maybe that's what Facebook Signed
-        // Requests are for?
-        $.cookie('fbid', authResp.userID, { path: '/' });
-        $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
-        $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
-        $.post(
-          '/login',
-          {
-            'friend_fbids': JSON.stringify(friendFbids),
-            'first_name': me.first_name,
-            'middle_name': me.middle_name,
-            'last_name': me.last_name,
-            'email': me.email,
-            'gender': me.gender
-          },
-          function(data) {
-          // TODO(Sandy): handle errors here, expecting none right now though
-          window.location.href = '/profile';
-        });
+        var params = {
+          'friend_fbids': JSON.stringify(friendFbids),
+          'first_name': me.first_name,
+          'middle_name': me.middle_name,
+          'last_name': me.last_name,
+          'email': me.email,
+          'gender': me.gender
+        };
+        login(authResp, params);
       });
     }
   });
@@ -58,12 +64,9 @@ function($, _cookie, FB) {
     // TODO(Sandy): Fetch user data here or better yet use realtime API to get friend updates
     if (response.status === 'connected') {
       // The user is already logged into Facebook and has ToSed our app before
-      // Restore the cookie if it was delete for whatever reason
+      // Store the potentially updated access token in DB if necessary
       var authResp = response.authResponse;
-      $.cookie('fbid', authResp.userID, { path: '/' });
-      $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
-      $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
-      window.location.href = '/profile';
+      login(authResp, {});
     }
   });
 
