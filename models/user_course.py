@@ -78,8 +78,8 @@ class UserCourse(me.Document):
 
     # is the review posted anonymously?
     anonymous = me.BooleanField(default=False)
-    course_review = me.EmbeddedDocumentField(review.CourseReview)
-    professor_review = me.EmbeddedDocumentField(review.ProfessorReview)
+    course_review = me.EmbeddedDocumentField(review.CourseReview, default=review.CourseReview())
+    professor_review = me.EmbeddedDocumentField(review.ProfessorReview, default=review.ProfessorReview())
 
     # TODO(mack): add section_id
     # section_id = StringField()
