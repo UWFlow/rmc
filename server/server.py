@@ -303,9 +303,9 @@ def clean_course(course):
         #'availWinter': bool(int(course['availWinter'])),
         # TODO(mack): create user models for friends
         #'friends': [1647810326, 518430508, 541400376],
-        'easiness': course.easiness,
-        'interest': course.interest,
-        'overall': course.overall,
+        'easiness': course.easiness.to_dict(),
+        'interest': course.interest.to_dict(),
+        'overall': course.overall.to_dict(),
         'professors': get_professors(course),
         'userCourse': get_user_course(course),
     }

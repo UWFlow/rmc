@@ -7,8 +7,6 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
     defaults: {
       id: 'SCI 238',
       name: 'Introduction to Astronomy omg omg omg',
-      rating: 2.5,
-      numRatings: 49,
       friendCollection: undefined,
       userReviewModel: undefined,
       professorNames: ['Eddie Dupont', 'Charlie Clarke', 'Mark Smucker', 'Larry Smith'],
