@@ -3,101 +3,122 @@ $cell-height: 28px;
 
 .ratings {
 
-@mixin force-height($height) {
-  height: $height;
-  line-height: $height;
-  min-height: $height;
-}
+  @mixin force-height($height) {
+    height: $height;
+    line-height: $height;
+    min-height: $height;
+  }
 
-.row-fluid .rating-name {
-  text-align: right;
-  @include force-height($cell-height);
-  padding-right: 8px;
-}
+  .row-fluid .rating-name {
+    text-align: right;
+    @include force-height($cell-height);
+    padding-right: 8px;
+  }
 
-.row-fluid .rating-bar-span {
-  border-left: 1px solid #CCC;
-  @include force-height($cell-height);
-  margin-left: 0px;
+  .row-fluid .rating-bar-span {
+    border-left: 1px solid #CCC;
+    @include force-height($cell-height);
+    margin-left: 0px;
 
-  .rating-progress.progress {
-    @include border-radius(0 4px 4px 0);
-    @include background-image(linear-gradient(top, #e2e2e2, #f3f3f3));
-    @include force-height($bar-height);
-    margin-top: $cell-height / 2 - $bar-height / 2;
-
-    .rating-bar.bar {
+    .rating-progress.progress {
       @include border-radius(0 4px 4px 0);
+      @include background-image(linear-gradient(top, #e2e2e2, #f3f3f3));
       @include force-height($bar-height);
+      margin-top: $cell-height / 2 - $bar-height / 2;
+
+      .rating-bar.bar {
+        @include border-radius(0 4px 4px 0);
+        @include force-height($bar-height);
+      }
     }
   }
-}
 
-// TODO(david): Make it so only hovering over bar shows input
-&:hover .input-rating {
-  display: block;
-}
+  // TODO(david): Make it so only hovering over bar shows input
+  &:hover .input-rating {
+    display: block;
+  }
 
-&:hover .shown-rating {
-  display: none;
-}
+  &:hover .shown-rating {
+    display: none;
+  }
 
-&.read-only:hover .shown-rating {
-  display: block;
-}
+  &.read-only:hover .shown-rating {
+    display: block;
+  }
 
-&:hover .shown-rating-num {
-  display: none;
-}
+  &:hover .shown-rating-num {
+    display: none;
+  }
 
-&.read-only:hover .shown-rating-num {
-  display: block;
-}
+  &.read-only:hover .shown-rating-num {
+    display: block;
+  }
 
-.input-rating-num{
-  display: none;
-}
-&:hover .input-rating-num {
-  display: block;
-}
-&.read-only:hover .input-rating-num {
-  display: none;
-}
+  .input-rating-num{
+    display: none;
+  }
+  &:hover .input-rating-num {
+    display: block;
+  }
+  &.read-only:hover .input-rating-num {
+    display: none;
+  }
 
-// TODO(david): Needs refactoring to be closer to other declarations
-// TODO(david): needs to be made the same length as normal bar
-.row-fluid .input-rating {
-  .rating-progress.progress {
-    display: inline-block;
-    width: 18%;
-    -webkit-border-radius: none !important;
-    @include border-radius(0);
-    // TODO(david): Transitions on mouse-over
-    .rating-bar.bar {
-      width: 100%;
-      @include transition(none);
-      @include transition(opacity 0.3s ease-out);
+  // TODO(david): Needs refactoring to be closer to other declarations
+  // TODO(david): needs to be made the same length as normal bar
+  .row-fluid .input-rating {
+    .rating-progress.progress {
+      display: inline-block;
+      width: 18%;
+      -webkit-border-radius: none !important;
       @include border-radius(0);
+      // TODO(david): Transitions on mouse-over
+      .rating-bar.bar {
+        width: 100%;
+        @include transition(none);
+        @include transition(opacity 0.3s ease-out);
+        @include border-radius(0);
+      }
     }
-  }
-  .rating-progress:last-child {
-    @include border-radius(0 4px 4px 0);
-    .rating-bar.bar {
+    .rating-progress:last-child {
       @include border-radius(0 4px 4px 0);
+      .rating-bar.bar {
+        @include border-radius(0 4px 4px 0);
+      }
     }
   }
+
+  // TODO(david): REFACTORRRRRR
+  .row-fluid .input-rating:hover .rating-progress .rating-bar.bar {
+    opacity: 0.4;
+    cursor: pointer;
+  }
+
+  .row-fluid .rating-num-span {
+    @include force-height($cell-height);
+    font-weight: lighter;
+    text-align: right;
+  }
+
 }
 
-// TODO(david): REFACTORRRRRR
-.row-fluid .input-rating:hover .rating-progress .rating-bar.bar {
-  opacity: 0.4;
-  cursor: pointer;
-}
+.rating-box {
+  $rating-size: 35px;
+  $num-size: 11px;
 
-.row-fluid .rating-num-span {
-  @include force-height($cell-height);
-  font-weight: lighter;
-  text-align: right;
-}
-
+  position: relative;
+  text-align: center;
+  line-height: $rating-size + $num-size;
+  width: 52px;
+  .rating {
+    font-size: $rating-size;
+    line-height: $rating-size;
+  }
+  .num-ratings {
+    font-size: $num-size;
+    line-height: $num-size - 3px;
+    top: -3px;
+    font-weight: normal;
+    position: relative;
+  }
 }

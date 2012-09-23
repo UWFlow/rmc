@@ -7,19 +7,13 @@
 {% block page_title %}CS 241{% endblock %}
 
 {% block header %}
-  <div class="container-fluid">
+  <div class="container-fluid course-header">
     <div class="row-fluid">
       <div class="span10">
         <h1 class="page-title">CS 241</h1>
         <p class="lead">Introduction to Microeconomics</p>
       </div>
-      {# TODO(david): Re-use ratings box HTML (but different styling) #}
-      <div class="span2">
-        <div class="rating-box badge badge-inverse">
-          <div class="rating">2.3</div>
-          <div class="num-ratings">1023 ratings</div>
-        </div>
-      </div>
+      <div class="span2" id="rating-box-container"></div>
     </div>
   </div>
 {% endblock %}

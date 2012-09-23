@@ -4,27 +4,30 @@
 @import 'took_this';
 @import 'prof';
 
-header {
+.course-header {
   margin-top: 20px;
-}
 
-// TODO(david): Does it actually make sense to have inconsistent title styling?
-.page-title {
-  font-size: 60px;
-}
-
-.rating-box {
-  float: right;
-  width: 80px;
-  height: 80px;
-  text-align: center;
-  margin-top: 5px;
-
-  .rating {
+  // TODO(david): Does it actually make sense to have inconsistent title styling?
+  .page-title {
     font-size: 60px;
-    line-height: 60px;
   }
 
-  .num-ratings {
+  #rating-box-container .rating-box {
+    float: right;
+    width: 80px;
+    height: 80px;
+    margin-top: 5px;
+
+    .rating {
+      font-size: 60px;
+      line-height: 60px;
+    }
+
+    .num-ratings {
+      font-size: 14px;
+      line-height: 14px;
+      top: 0px;
+    }
   }
+
 }

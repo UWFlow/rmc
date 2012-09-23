@@ -5,13 +5,7 @@
 <div class="visible-section">
   <div class="course-code"><%- code %></div>
   <div class="course-name"><%- name %></div>
-  <!-- TODO(mack): include functions to handle singular/plural -->
-  <div class="rating-box badge badge-inverse">
-    <div class="rating"><%- getDisplayRating(overall.rating, overall.count) %></div>
-    <div class="num-ratings">
-      <%- overall.count %> <%- pluralize(overall.count, 'rating', 'ratings') %>
-    </div>
-  </div>
+  <div class="rating-box-placeholder"></div>
   <div class="sample-friends-placeholder">
   </div>
   {# TODO(david): This is really dumb. Fix in a better way. #}

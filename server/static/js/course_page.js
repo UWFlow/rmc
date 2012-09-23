@@ -1,11 +1,17 @@
 require(
-['ext/jquery','course', 'took_this', 'user', 'tips', 'prof'],
-function($, course, tookThis, user, tips, prof) {
+['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'ratings'],
+function($, course, tookThis, user, tips, prof, ratings) {
   // TODO(david): Customize with people who took this course.
   courseIds = ['CS137', 'SCI238', 'CS241'];
   $.getJSON(
     '/api/courses/' + courseIds.join(','),
     function(data) {
+      // TODO(david): Replace mock data
+      var ratingBoxView = new ratings.RatingBoxView({
+        model: new ratings.RatingModel()
+      });
+      $('#rating-box-container').html(ratingBoxView.render().el);
+
       var userCollection = user.UserCollection.getSampleCollection();
       var tookThisSidebarView = new tookThis.TookThisSidebarView({
         collection: userCollection

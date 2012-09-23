@@ -143,10 +143,20 @@ function(Backbone, $, _, _s, util) {
 
   });
 
+  var RatingBoxView = Backbone.View.extend({
+    template: _.template($('#rating-box-tpl').html()),
+
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      return this;
+    }
+  });
+
   return {
     RatingModel: RatingModel,
     RatingCollection: RatingCollection,
-    RatingsView: RatingsView
+    RatingsView: RatingsView,
+    RatingBoxView: RatingBoxView
   };
 
 });

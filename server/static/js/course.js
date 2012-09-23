@@ -47,6 +47,9 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
     initialize: function(options) {
       this.courseModel = options.courseModel;
       var userReviewModel = this.courseModel.get('userReviewModel');
+      this.ratingBoxView = new ratings.RatingBoxView({
+        model: new ratings.RatingModel(this.courseModel.get('overall'))
+      });
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
         userReviewModel: userReviewModel
@@ -63,6 +66,8 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
       this.$el.html(
         _.template($('#course-tpl').html(), this.courseModel.toJSON()));
 
+      this.$('.rating-box-placeholder').replaceWith(
+          this.ratingBoxView.render().el);
       this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
       this.$('.review-placeholder').replaceWith(
         this.userReviewView.render().el);

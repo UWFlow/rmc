@@ -97,6 +97,9 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
         { name: 'interest', count: 20, total: 15 },
         { name: 'easiness', count: 40, total: 37 }
       ]);
+      this.ratingBoxView = new ratings.RatingBoxView({
+        model: new ratings.RatingModel()
+      });
       this.ratingsView = new ratings.RatingsView({
         ratings: ratingsCollection,
         readOnly: true
@@ -112,6 +115,8 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
       this.$('.prof-card-placeholder').replaceWith(this.profView.render().el);
 
       // Aggregate rating
+      this.$('.rating-box-placeholder').replaceWith(
+          this.ratingBoxView.render().el);
       this.$('.aggregate-ratings-placeholder').replaceWith(
         this.ratingsView.render().el);
 

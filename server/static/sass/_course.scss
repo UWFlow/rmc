@@ -40,25 +40,8 @@
   }
 
   .rating-box {
-    $rating-size: 35px;
-    $num-size: 11px;
-    position: relative;
     float: right;
     top: $top;
-    text-align: center;
-    line-height: $rating-size + $num-size;
-    width: 52px;
-    .rating {
-      font-size: $rating-size;
-      line-height: $rating-size;
-    }
-    .num-ratings {
-      font-size: $num-size;
-      line-height: $num-size - 3px;
-      top: -3px;
-      font-weight: normal;
-      position: relative;
-    }
   }
 
   .sample-friends {

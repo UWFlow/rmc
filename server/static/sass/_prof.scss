@@ -1,28 +1,37 @@
-.prof-picture {
-  float: left;
-  width: 30%;
-}
+.expandable-prof {
 
-.prof-info {
-  float: left;
-  margin-left: 20px;
-  width: 60%;
-  display: inline-block;
-
-  .prof-name {
-    line-height: 24px;
+  .prof-picture {
+    float: left;
+    width: 30%;
   }
 
-  .dept-name {
-    font-weight: lighter;
-  }
+  .prof-info {
+    float: left;
+    margin-left: 20px;
+    width: 60%;
+    display: inline-block;
 
-  .dl-horizontal {
-    dt {
-      width: 50px;
+    .prof-name {
+      line-height: 24px;
     }
-    dd {
-      margin-left: 70px;
+
+    .dept-name {
+      font-weight: lighter;
+    }
+
+    .dl-horizontal {
+      dt {
+        width: 50px;
+      }
+      dd {
+        margin-left: 70px;
+      }
     }
   }
+
+  .prof-rating-container .rating-box {
+    float: right;
+    margin-bottom: 25px;
+  }
+
 }
