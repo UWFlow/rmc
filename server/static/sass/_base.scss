@@ -105,10 +105,6 @@ a:hover {
 }
 
 footer {
-  //@include background(url(/static/img/footer_background_2000.jpg) center center no-repeat);
-  // TODO(david): Async-load this
-  // TODO(david): Use jpg and have it fade out into bg color
-  @include background(url(/static/img/footer_background_2000.png) center center no-repeat);
   // TODO(david): Figure out background-size: cover instead of height
   // TODO(david): FIgure out empty gap on Sandy's computer
   height: 388px;

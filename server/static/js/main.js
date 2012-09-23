@@ -93,6 +93,14 @@ require(['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone'
     // TODO(mack): investigate if there's a faster/better way of doing this
     // than after DOMReady
     $(function() {
+
+      // Async-load footer background image
+      var $footer = $('footer');
+      if ($footer.length) {
+        // TODO(david): Use jpg and have it fade out into bg color
+        $footer.css('background',
+          'url(/static/img/footer_background_2000.png) center center no-repeat');
+      }
       require([window.pageData.pageScript]);
     });
   }
