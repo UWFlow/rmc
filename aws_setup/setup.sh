@@ -78,6 +78,9 @@ sudo update-rc.d mongo_daemon defaults
 sudo service mongo_daemon restart
 
 echo "Setting up redis and installing as a daemon"
+# TODO(david): Should actually make and build a specific version
+sudo add-apt-repository -y ppa:rwky/redis
+sudo apt-get update
 sudo apt-get install -y redis-server
 mkdir -p /home/rmc/data/redis/
 sudo service redis-server stop  # Stop so we can start redis using our config
