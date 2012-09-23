@@ -150,6 +150,8 @@ def import_redis_course_professor_rating():
     def set_course_professor_ratings_in_redis(courses):
         for course_id, professors in courses.items():
             for professor_id, ratings in professors.items():
+                if professor_id is None:
+                    continue
                 for rating_type, aggregate_rating in ratings.items():
                     redis_key = ':'.join([course_id, professor_id, rating_type])
                     r.set(redis_key, aggregate_rating.to_json())
