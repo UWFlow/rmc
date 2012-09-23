@@ -214,12 +214,13 @@ def upload_transcript():
 
     # TODO(Sandy): Eventually support non-fb users?
     fbid = req.cookies.get('fbid')
-    if fbid is None:
+    fb_access_token = req.cookies.get('fb_access_token')
+    if fbid is None or fb_access_token is None:
         # Cookie not set properly
         # TODO(Sandy): Redirect to the landing page to force a login and cookie set?
         return 'Error'
 
-    user_obj = m.User.objects(fbid=fbid).first()
+    user_obj = m.User.objects(fbid=fbid, fb_access_token=fb_access_token).first()
     if user_obj is None:
         # User not found in DB
         # TODO(Sandy): Redirect to landing to force create account?
@@ -239,6 +240,9 @@ def upload_transcript():
                 course_id = course_id.lower()
                 # TODO(Sandy): Fill in course weight and grade info here
                 user_course = m.UserCourse.objects(user_id=user_id, course_id=course_id, term_id=term_id).first()
+                # TODO(Sandy): This assumes the transcript is real and we create a UserCourse even if the course_id
+                # doesn't exist. It is possible for the user to spam us with fake courses on their transcript. Decide
+                # whether or not we should be creating these entries
                 if user_course is None:
                     user_course = m.UserCourse(user_id=user_id, course_id=course_id, term_id=term_id)
                     user_course.save()
