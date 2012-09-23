@@ -89,6 +89,22 @@ def import_mongo_course_rating():
     print 'saved ratings for %d courses in mongodb' % count[0]
 
 
+def import_mongo_course_professors():
+
+    count = 0
+    for course in m.Course.objects.only('professor_ids'):
+        def get_professor_ids(course, coll):
+            return set(
+                [x.professor_id for x in coll.objects(course_id=course.id).only('professor_id')]
+            )
+        professor_ids = get_professor_ids(course, m.UserCourse).union(
+                get_professor_ids(course, m.MenloCourse))
+        course.update(add_to_set__professor_ids=list(professor_ids))
+        count += 1
+
+    print 'added professors for %d courses in mongodb' % count
+
+
 def import_redis_course_professor_rating():
     # course => professors => ratings
     def get_rating_fn(courses, uc):
@@ -171,24 +187,22 @@ def import_redis_friend_mutual_courses():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    supported_modes = [
-        'all',
-        'redis_course_professor_rating',
-        'redis_friend_mutual_courses',
-        'mongo_course_rating',
-    ]
-    parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
+    'all',
+    mode_mapping = {
+        'redis_course_professor_rating': import_redis_course_professor_rating,
+        'redis_friend_mutual_courses': import_redis_friend_mutual_courses,
+        'mongo_course_rating': import_mongo_course_rating,
+        'mongo_course_professors': import_mongo_course_professors,
+    }
+    parser.add_argument('mode',
+            help='one of %s' % ','.join(mode_mapping.keys() + ['all']))
     args = parser.parse_args()
 
     if args.mode == 'all':
-
-        import_redis_course_professor_rating()
-        import_mongo_course_rating()
-    elif args.mode == 'redis_friend_mutual_courses':
-        import_redis_friend_mutual_courses()
-    elif args.mode == 'redis_course_professor_rating':
-        import_redis_course_professor_rating()
-    elif args.mode == 'mongo_course_rating':
-        import_mongo_course_rating()
+        for func in mode_mapping.values():
+            func()
+    elif args.mode in mode_mapping:
+        func = mode_mapping[args.mode]
+        func()
     else:
         sys.exit('The mode %s is not supported' % args.mode)

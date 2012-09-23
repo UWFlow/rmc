@@ -328,17 +328,9 @@ def clean_user_course(user_course):
 
 def clean_course(course):
 
-    # TODO(mack): this should be cached, or stored in m.Course
     def get_professors(course):
-        def get_professor_ids(course, coll):
-            return set(
-                [x.professor_id for x in coll.objects(course_id=course.id)]
-            )
-        professor_ids = get_professor_ids(course, m.UserCourse).union(
-                get_professor_ids(course, m.MenloCourse))
-
-        professors = []
-        professors = m.Professor.objects(id__in=list(professor_ids))
+        professors = m.Professor.objects(
+                id__in=course.professor_ids).only('id', 'first_name', 'last_name')
         return [{'id': p.id, 'name': p.name} for p in professors]
 
     def get_user_course(course):

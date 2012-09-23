@@ -34,6 +34,8 @@ class Course(me.Document):
     interest = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
     overall = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
+    professor_ids = me.ListField(me.StringField())
+
     # eg. ['earth', '121l', 'earth121l', 'Introductory', 'Earth' 'Sciences', 'Laboratory', '1']
     _keywords = me.ListField(me.StringField(), required=True)
 
