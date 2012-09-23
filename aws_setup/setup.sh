@@ -77,6 +77,15 @@ sudo ln -sfnv $CONFIG_DIR/etc/init.d/mongo_daemon /etc/init.d
 sudo update-rc.d mongo_daemon defaults
 sudo service mongo_daemon restart
 
+echo "Setting up redis and installing as a daemon"
+sudo apt-get install -y redis-server
+mkdir -p /home/rmc/data/redis/
+sudo service redis-server stop  # Stop so we can start redis using our config
+sudo update-rc.d -f redis-server remove
+sudo ln -sfnv $CONFIG_DIR/etc/init.d/redis-server /etc/init.d
+sudo update-rc.d redis-server defaults
+sudo service redis-server start
+
 echo "Installing nginx"
 sudo apt-get install -y nginx
 sudo rm -f /etc/nginx/sites-enabled/default
