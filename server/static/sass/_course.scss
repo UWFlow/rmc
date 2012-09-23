@@ -94,7 +94,6 @@
     }
 
     > .friend-collection {
-      clear: both;
       float: right;
       list-style: none;
       margin-left: 0;
@@ -107,7 +106,9 @@
       }
     }
 
-    .friend-info {
+    .remaining-friends {
+      clear: both;
+      display: block;
       margin-left: 3px;
       font-size: 15px;
       line-height: 15px;
@@ -122,28 +123,33 @@
       // since max-width doesn't seem to work
       $friends-per-row: 5;
       $friend-margin: 2px;
-      $friend-collection-width: $friends-per-row*$friend-pic-size + 2 * $friends-per-row * $friend-margin;
+      $border-width: 1px;
+      $friend-collection-width: $friends-per-row*$friend-pic-size + 2*($friends-per-row*$friend-margin + $border-width);
       $padding-horizontal: 4px;
       .popover {
         width: $friend-collection-width + 2*$padding-horizontal;
         cursor: default;
         text-align: left;
 
-        .popover-title {
-          display: none;
-        }
+        .popover-inner {
+          border-width: $border-width;
 
-        .popover-content {
-          padding: $padding-horizontal;
-          .friend-collection {
-            width: $friend-collection-width;
-            list-style: none;
-            margin-left: 0;
-            .friend-pic {
-              display: inline-block;
-              margin: $friend-margin;
-              width: $friend-pic-size;
-              height: $friend-pic-size;
+          .popover-title {
+            display: none;
+          }
+
+          .popover-content {
+            padding: $padding-horizontal;
+            .friend-collection {
+              width: $friend-collection-width;
+              list-style: none;
+              margin-left: 0;
+              .friend-pic {
+                display: inline-block;
+                margin: $friend-margin;
+                width: $friend-pic-size;
+                height: $friend-pic-size;
+              }
             }
           }
         }

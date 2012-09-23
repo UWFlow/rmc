@@ -151,8 +151,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
         html: true,
         content: _.bind(this.getFriendsPopoverContent, this),
         trigger: 'hover',
-        // TODO(david) TODO(mack): This should be 'bottom' but needs fixing
-        placement: 'in top'
+        placement: 'in bottom'
       });
       // Prevent clicking in the hovercard from expanding/collapsing the course
       // view
@@ -232,6 +231,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
       var title = _s.sprintf('%s (%s)',
         this.friendModel.get('name'), this.friendModel.get('lastTermName'));
       this.$el.tooltip({
+        trigger: 'hover',
         title: title
       });
     }
