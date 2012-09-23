@@ -7,7 +7,7 @@
   <div class="course-name"><%- name %></div>
   <!-- TODO(mack): include functions to handle singular/plural -->
   <div class="rating-box badge badge-inverse">
-    <div class="rating"><%- _s.sprintf('%.1f', overall.rating) %></div>
+    <div class="rating"><%- getDisplayRating(overall.rating) %></div>
     <div class="num-ratings">
       <%- overall.count %> <%- pluralize(overall.count, 'rating', 'ratings') %>
     </div>

@@ -11,8 +11,8 @@ function(Backbone, $, _, _s, util) {
   var RatingModel = Backbone.Model.extend({
     defaults: {
       name: 'interest',
-      count: 10,
-      total: 7
+      rating: 0.66,
+      count: 7
     },
 
     getDisplayName: function() {
@@ -20,8 +20,7 @@ function(Backbone, $, _, _s, util) {
     },
 
     getAverage: function() {
-      // TODO(david) FIXME: Normalize all the numbers correctly
-      return (this.get('total') / Math.max(1, this.get('count'))) * 0.8 + 0.2;
+      return util.skewRating(this.get('rating'));
     },
 
     getPercent: function() {
@@ -29,7 +28,7 @@ function(Backbone, $, _, _s, util) {
     },
 
     getDisplayRating: function() {
-      return _s.sprintf("%.1f", this.getAverage() * NUM_SEGMENTS);
+      return util.getDisplayRating(this.get('rating'));
     },
 
     // TODO(david): This shouldn't be here. Refactor this away.

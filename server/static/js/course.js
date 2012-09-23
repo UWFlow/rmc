@@ -27,8 +27,12 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
 
     initialize: function(attributes) {
       if (attributes.ratings) {
-        this.set('ratings', new ratings.RatingCollection(attributes.ratings));
+        var ratingsArray = _.map(attributes.ratings, function(rating, name) {
+          return _.extend(rating, { name: name });
+        });
+        this.set('ratings', new ratings.RatingCollection(ratingsArray));
       }
+
       this.set('userReviewModel',
           new review.UserReviewModel(attributes.userCourse));
       if (!attributes.friendCollection) {

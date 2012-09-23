@@ -61,11 +61,11 @@
     }
   }
 
-  .friend-pic-img {
-    opacity: 0.5;
+  .sample-friends {
+    opacity: 0.7;
   }
 
-  &:hover .friend-pic-img {
+  &:hover .sample-friends {
     @include transition(all 0.3s ease-out);
     opacity: 1.0;
   }
@@ -115,6 +115,8 @@
     }
 
     .remaining-friends {
+
+      color: #333;
 
       // TODO(mack): make width dependent on number of friends, probably gotta do in js
       // since max-width doesn't seem to work

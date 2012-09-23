@@ -65,7 +65,8 @@ require(['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone'
     var templateHelpers = {
       _: _,
       _s: _s,
-      pluralize: util.pluralize
+      pluralize: util.pluralize,
+      getDisplayRating: util.getDisplayRating
     };
 
     _.template = function(templateString, data, settings) {

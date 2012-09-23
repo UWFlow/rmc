@@ -1,5 +1,7 @@
-define(['ext/underscore'],
-function(_) {
+define(['ext/underscore', 'ext/underscore.string'],
+function(_, _s) {
+
+  var NUM_RATINGS_SEGMENTS = 5;
 
   // From http://stackoverflow.com/a/901144
   var getQueryParam = function(name) {
@@ -63,11 +65,23 @@ function(_) {
     return _.first(randItems, num);
   };
 
+  // Skews a rating to use our [1.0, 5.0] scale, because that's the range that
+  // the user can rate (like ratings with stars)
+  var skewRating = function(rating) {
+    return rating * 0.8 + 0.2;
+  };
+
+  var getDisplayRating = function(rating) {
+    return _s.sprintf("%.1f", skewRating(rating) * NUM_RATINGS_SEGMENTS);
+  };
+
   return {
     getQueryParam: getQueryParam,
     capitalize: capitalize,
     pluralize: pluralize,
     random: random,
-    randomItems: randomItems
+    randomItems: randomItems,
+    skewRating: skewRating,
+    getDisplayRating: getDisplayRating
   };
 });
