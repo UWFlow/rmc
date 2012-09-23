@@ -17,9 +17,8 @@ mkdir -p mongodb
 echo "Starting mongodb"
 mongod --config config/mongodb.conf &
 
-# TODO(mack): get command to start redis-server working
-# echo "Starting redis-server"
-# redis-server config/redis.conf &
+echo "Starting redis-server"
+redis-server config/redis_local.conf &
 
 echo "Starting compass watch"
 compass watch server &
