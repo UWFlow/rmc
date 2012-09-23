@@ -205,6 +205,58 @@ def search_courses():
         'has_more': has_more,
     })
 
+@app.route('/api/transcript', methods=['POST'])
+def upload_transcript():
+    req = flask.request
+    # TODO(Sandy): The following two cases involve users trying to import their transcript without being logged in.
+    # We have to decide how we treat those users. E.g. we might prevent this from the frontend, or maybe save it and
+    # tell them to make an account, etc
+
+    # TODO(Sandy): Eventually support non-fb users?
+    fbid = req.cookies.get('fbid')
+    if fbid is None:
+        # Cookie not set properly
+        # TODO(Sandy): Redirect to the landing page to force a login and cookie set?
+        return 'Error'
+
+    user_obj = m.User.objects(fbid=fbid).first()
+    if user_obj is None:
+        # User not found in DB
+        # TODO(Sandy): Redirect to landing to force create account?
+        return 'Error'
+
+    user_id = user_obj.id
+    course_history_list = []
+
+    try:
+        courses_by_term = json_util.loads(req.form['courses_by_term'])
+
+        for term in courses_by_term:
+            season, year = term['name'].split()
+            term_id = m.Term.get_id_from_year_season(year, season)
+
+            for course_id in term['courseIds']:
+                course_id = course_id.lower()
+                # TODO(Sandy): Fill in course weight and grade info here
+                user_course = m.UserCourse.objects(user_id=user_id, course_id=course_id, term_id=term_id).first()
+                if user_course is None:
+                    user_course = m.UserCourse(user_id=user_id, course_id=course_id, term_id=term_id)
+                    user_course.save()
+
+                course_history_list.append(user_course.id)
+
+        user_obj.course_history = course_history_list
+        user_obj.save()
+
+    except KeyError:
+        # Invalid key (shouldn't be happening)
+        print 'KeyError at /api/transcript.'
+        return 'Error'
+
+    return ''
+
+
+
 
 @app.route('/api/user/course', methods=['POST', 'PUT'])
 def user_course():

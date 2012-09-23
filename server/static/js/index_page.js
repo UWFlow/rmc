@@ -28,6 +28,10 @@ function($, _cookie, FB) {
 
       $.when(deferredMe, deferredFriends).done(function(me, friendFbids) {
         var authResp = response.authResponse;
+        // XXX(Sandy): Sending all this info in the cookie will easily allow
+        // others to hijack someonne's session. We should probably look into
+        // a way of verifying the request. Maybe that's what Facebook Signed
+        // Requests are for?
         $.cookie('fbid', authResp.userID, { path: '/' });
         $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
         $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
@@ -53,6 +57,12 @@ function($, _cookie, FB) {
     // TODO(Sandy): Make redirect happen server-side so we don't even need to load the landing page
     // TODO(Sandy): Fetch user data here or better yet use realtime API to get friend updates
     if (response.status === 'connected') {
+      // The user is already logged into Facebook and has ToSed our app before
+      // Restore the cookie if it was delete for whatever reason
+      var authResp = response.authResponse;
+      $.cookie('fbid', authResp.userID, { path: '/' });
+      $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
+      $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
       window.location.href = '/profile';
     }
   });

@@ -1,5 +1,7 @@
 import mongoengine as me
 
+import user_course
+
 class User(me.Document):
 
     class JoinSource(object):
@@ -58,6 +60,8 @@ class User(me.Document):
     # eg. software_engineering ?
     program_id = me.StringField()
 
+    # List of UserCourse.id's
+    course_history = me.ListField(me.ObjectIdField())
 
     @property
     def name(self):

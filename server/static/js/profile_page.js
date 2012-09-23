@@ -61,6 +61,15 @@ function($, _, _s, transcript, term, course, friend, util, user) {
       });
     });
 
+    $.post(
+      '/api/transcript',
+      { 'courses_by_term': JSON.stringify(coursesByTerm) },
+      function(data) {
+        // TODO(Sandy): Logic for rendering the termCollectionView here (move
+        // the stuff from below up here)
+      },
+      'json');
+
     $.getJSON(
       '/api/courses/' + courseIds.join(','),
       function(data) {
