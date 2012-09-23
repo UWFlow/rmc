@@ -3,3 +3,4 @@
 mongodb/
 server/static/css/
 server/Gemfile.lock
+dump.rdb
