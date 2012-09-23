@@ -45,28 +45,31 @@
             cursor: default;
             color: $textColor;
 
-            @extend .clearfix;
-            width: 350px;
+            .friend-hovercard {
 
-            .mini-courses {
-              list-style: none;
-              margin-left: 0;
-              padding: 10px;
+              @extend .clearfix;
+              width: 350px;
 
-              .mini-course {
-                margin-top: 3px;
-                .course-code {
-                  font-size: 20px;
-                }
-                .course-name {
-                  font-size: 20px;
+              .mini-courses {
+                list-style: none;
+                margin-left: 0;
+                padding: 10px;
+
+                .mini-course {
+                  margin-top: 3px;
+                  .course-code {
+                    font-size: 20px;
+                  }
+                  .course-name {
+                    font-size: 20px;
+                  }
                 }
               }
-            }
 
-            .view-profile {
-              float: right;
-              padding: 0 10px 10px 0;
+              .view-profile {
+                float: right;
+                padding: 0 10px 10px 0;
+              }
             }
           }
         }
