@@ -17,9 +17,10 @@ compass compile rmc/server
 
 # Start the uwsgi server
 # TODO(david): Benchmark with ab and use worker processes if necessary
-FLASK_CONFIG=rmc/config/flask_prod.py uwsgi \
+uwsgi \
   --socket /tmp/uwsgi.sock \
   --chmod-socket 666 \
+  --env FLASK_CONFIG=/home/rmc/rmc/config/flask_prod.py \
   --wsgi rmc.server.server:app \
   --master \
   --daemonize /home/rmc/logs/uwsgi.log \
