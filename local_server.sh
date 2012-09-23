@@ -24,7 +24,10 @@ echo "Starting compass watch"
 compass watch server &
 
 echo "Starting flask server"
-PARENT_DIR=$(dirname `pwd`) PYTHONPATH="${PARENT_DIR}" python server/server.py &
+FLASK_CONFIG=../config/flask_debug.py \
+  PARENT_DIR=$(dirname `pwd`) \
+  PYTHONPATH="${PARENT_DIR}" \
+  python server/server.py &
 
 # Only exit on terminate or interrupt signal
 while true; do

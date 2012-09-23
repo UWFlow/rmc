@@ -11,12 +11,12 @@ import rmc.shared.constants as c
 import rmc.models as m
 
 app = flask.Flask(__name__)
+app.config.from_envvar('FLASK_CONFIG')
 db = pymongo.Connection(c.MONGO_HOST, c.MONGO_PORT).rmc
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
-# TODO(mack): set env properly
-ENV = 'dev'
-flask.render_template = functools.partial(flask.render_template, env=ENV)
+flask.render_template = functools.partial(flask.render_template,
+        env=app.config['ENV'])
 
 @app.route('/')
 def index():
