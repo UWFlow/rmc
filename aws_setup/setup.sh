@@ -108,7 +108,7 @@ sudo gem install rdoc-data; sudo rdoc-data --install
 # Install pip requirements: sudo because we don't set up virtualenv
 ( cd rmc && sudo pip install -r requirements.txt )
 # Import data from various text files
-( cd rmc && make import-data )
+( cd rmc && make init_data )
 
 echo "Setting up rmc web server a daemon"
 sudo update-rc.d -f rmc_daemon remove
