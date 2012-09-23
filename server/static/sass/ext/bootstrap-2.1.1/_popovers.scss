@@ -9,23 +9,24 @@
   left: 0;
   z-index: $zindexPopover;
   display: none;
-  width: 236px;
-  padding: 1px;
+
+  // Offset the popover to account for the popover arrow
+  &.top     { padding-bottom: 10px; }
+  &.right   { padding-left: 10px; }
+  &.bottom  { padding-top: 10px; }
+  &.left    { padding-right: 10px; }
+
+}
+
+.popover-inner {
   background-color: $popoverBackground;
   -webkit-background-clip: padding-box;
-     -moz-background-clip: padding;
+    -moz-background-clip: padding;
           background-clip: padding-box;
   border: 1px solid #ccc;
   border: 1px solid rgba(0,0,0,.2);
   @include border-radius(6px);
   @include box-shadow(0 5px 10px rgba(0,0,0,.2));
-
-  // Offset the popover to account for the popover arrow
-  &.top     { margin-bottom: 10px; }
-  &.right   { margin-left: 10px; }
-  &.bottom  { margin-top: 10px; }
-  &.left    { margin-right: 10px; }
-
 }
 
 .popover-title {
@@ -63,7 +64,7 @@
 
 .popover {
   &.top .arrow {
-    bottom: -$popoverArrowWidth;
+    bottom: 1px;
     left: 50%;
     margin-left: -$popoverArrowWidth;
     border-width: $popoverArrowWidth $popoverArrowWidth 0;
@@ -77,7 +78,7 @@
   }
   &.right .arrow {
     top: 50%;
-    left: -$popoverArrowWidth;
+    left: 1px;
     margin-top: -$popoverArrowWidth;
     border-width: $popoverArrowWidth $popoverArrowWidth $popoverArrowWidth 0;
     border-right-color: $popoverArrowColor;
@@ -89,7 +90,7 @@
     }
   }
   &.bottom .arrow {
-    top: -$popoverArrowWidth;
+    top: 1px;
     left: 50%;
     margin-left: -$popoverArrowWidth;
     border-width: 0 $popoverArrowWidth $popoverArrowWidth;
@@ -103,7 +104,7 @@
   }
   &.left .arrow {
     top: 50%;
-    right: -$popoverArrowWidth;
+    right: 1px;
     margin-top: -$popoverArrowWidth;
     border-width: $popoverArrowWidth 0 $popoverArrowWidth $popoverArrowWidth;
     border-left-color: $popoverArrowColor;
