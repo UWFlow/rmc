@@ -1,2 +1,2 @@
-DEBUG = True
-ENV = 'dev'
+DEBUG = False
+ENV = 'prod'
