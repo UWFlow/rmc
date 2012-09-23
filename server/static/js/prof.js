@@ -1,7 +1,7 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'ext/backbone', 'jquery.slide', 'base_views', 'ratings'],
-function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings) {
+'ext/backbone', 'jquery.slide', 'base_views', 'ratings', 'util'],
+function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
 
   var Prof = Backbone.Model.extend({
     defaults: {
@@ -10,7 +10,20 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings) {
       phone: '519-888-4567 x35241',
       office: 'DC 2506',
       department: 'School of Computer Science',
-      pictureUrl: 'http://placehold.it/150x150'
+      pictureUrl: ''
+    },
+
+    initialize: function(attributes) {
+      // TODO(david): Use some other instructional placeholder
+      if (!attributes || !attributes.pictureUrl) {
+        var attrs = attributes ? attributes : this.defaults;
+        var size = [
+            util.getHashCode(attrs.name) % 20 + 140,
+            util.getHashCode(attrs.email) % 20 + 140
+        ];
+        this.set('pictureUrl',
+            'http://placekitten.com/' + size[0] + '/' + size[1]);
+      }
     }
   });
 

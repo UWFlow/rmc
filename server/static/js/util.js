@@ -81,6 +81,21 @@ function(_, _s) {
     return _s.sprintf("%.1f", skewRating(rating) * NUM_RATINGS_SEGMENTS);
   };
 
+  /**
+   * Dumb simple hash code function based on Java's String.hashCode().
+   * @param {string} str The string to hash.
+   * @return {number} The hash code as an integer.
+   */
+  var getHashCode = function(str) {
+    var hash = 0;
+    if (str.length === 0) return hash;
+    for (var i = str.length - 1; i >= 0; --i) {
+      hash = ((hash << 5) - hash) + str.charCodeAt(i);
+      hash &= hash;  // Convert to 32-bit integer
+    }
+    return hash;
+  };
+
   return {
     getQueryParam: getQueryParam,
     capitalize: capitalize,
@@ -88,6 +103,7 @@ function(_, _s) {
     random: random,
     randomItems: randomItems,
     skewRating: skewRating,
-    getDisplayRating: getDisplayRating
+    getDisplayRating: getDisplayRating,
+    getHashCode: getHashCode
   };
 });
