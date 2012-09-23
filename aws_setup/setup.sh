@@ -83,6 +83,7 @@ sudo add-apt-repository -y ppa:rwky/redis
 sudo apt-get update
 sudo apt-get install -y redis-server
 mkdir -p /home/rmc/data/redis/
+sudo rm -f /etc/init/redis-server.conf  # Remove annoying upstart daemon
 sudo service redis-server stop  # Stop so we can start redis using our config
 sudo update-rc.d -f redis-server remove
 sudo ln -sfnv $CONFIG_DIR/etc/init.d/redis-server /etc/init.d
