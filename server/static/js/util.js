@@ -67,11 +67,17 @@ function(_, _s) {
 
   // Skews a rating to use our [1.0, 5.0] scale, because that's the range that
   // the user can rate (like ratings with stars)
-  var skewRating = function(rating) {
+  var skewRating = function(rating, count) {
+    if (count !== undefined && count === 0) {
+      return 0;
+    }
     return rating * 0.8 + 0.2;
   };
 
-  var getDisplayRating = function(rating) {
+  var getDisplayRating = function(rating, count) {
+    if (count !== undefined && count === 0) {
+      return '-';
+    }
     return _s.sprintf("%.1f", skewRating(rating) * NUM_RATINGS_SEGMENTS);
   };
 

@@ -20,7 +20,7 @@ function(Backbone, $, _, _s, util) {
     },
 
     getAverage: function() {
-      return util.skewRating(this.get('rating'));
+      return util.skewRating(this.get('rating'), this.get('count'));
     },
 
     getPercent: function() {
@@ -28,7 +28,7 @@ function(Backbone, $, _, _s, util) {
     },
 
     getDisplayRating: function() {
-      return util.getDisplayRating(this.get('rating'));
+      return util.getDisplayRating(this.get('rating'), this.get('count'));
     },
 
     // TODO(david): This shouldn't be here. Refactor this away.
