@@ -72,13 +72,20 @@ def login_required(f):
 # TODO(Sandy): Move this somewhere more appropraite. It is currently being called by api/transcript and /profile
 def get_sorted_transcript_for_user(user):
     transcript = {}
-    courses = m.Course.objects(id__in=user.course_history)
-    courses = map(clean_course, courses)
+    cid_to_tid = {}
+    cids = []
 
-    for course in courses:
-        # TODO(Sandy): UserCourse is already fetched inside clean_course, don't do this twice
+    ucs = m.UserCourse.objects(id__in=user.course_history).only('course_id', 'term_id')
+    for uc in ucs:
+        cids.append(uc.course_id)
+        cid_to_tid[uc.course_id] = uc.term_id
+
+    courses = m.Course.objects(id__in=cids)
+    cleaned_courses = map(clean_course, courses)
+
+    for course in cleaned_courses:
         user_course = m.UserCourse.objects(course_id=course['id'], user_id=user.id).first()
-        transcript.setdefault(user_course.term_id, []).append(course)
+        transcript.setdefault(cid_to_tid[course['id']], []).append(course)
 
     # TODO(Sandy): Do this more cleanly?
     sorted_transcript = []
