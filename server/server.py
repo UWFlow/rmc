@@ -448,7 +448,7 @@ def upload_transcript():
                     user_course = m.UserCourse(user_id=user_id, course_id=course_id, term_id=term_id)
                     user_course.save()
 
-                course_history_list.append(course_id)
+                course_history_list.append(user_course.id)
 
         user.course_history = course_history_list
         user.save()
