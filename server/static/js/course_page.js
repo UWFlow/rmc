@@ -5,7 +5,6 @@ function($, course, tookThis, user, tips, prof, ratings) {
   courseIds = ['CS137', 'SCI238', 'CS241'];
 
   var courseData = window.pageData.data;
-  console.log(courseData);
 
   var ratingBoxView = new ratings.RatingBoxView({
     model: new ratings.RatingModel(courseData.overall)

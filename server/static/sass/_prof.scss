@@ -3,6 +3,12 @@
   .prof-picture {
     float: left;
     width: 30%;
+    opacity: 0.8;
+  }
+
+  &:hover .prof-picture {
+    @include transition(all 0.2s ease-out);
+    opacity: 1.0;
   }
 
   .prof-info {
