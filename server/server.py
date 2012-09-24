@@ -13,6 +13,9 @@ import time
 import rmc.shared.constants as c
 import rmc.models as m
 
+import base64
+import hashlib
+import hmac
 
 app = flask.Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
@@ -231,24 +234,57 @@ def course_page(course_id):
 
 @app.route('/login', methods=['POST'])
 def login():
-    # TODO(Sandy): Differentiate between new account and update account
+    # TODO(Sandy): move this to a more appropriate place
+    def base64_url_decode(inp):
+        padding_factor = (4 - len(inp) % 4) % 4
+        inp += "="*padding_factor
+        return base64.b64decode(unicode(inp).translate(dict(zip(map(ord, u'-_'), u'+/'))))
+
+    def parse_signed_request(signed_request, secret):
+
+        l = signed_request.split('.', 2)
+        encoded_sig = l[0]
+        payload = l[1]
+
+        sig = base64_url_decode(encoded_sig)
+        data = json_util.loads(base64_url_decode(payload))
+
+        if data.get('algorithm').upper() != 'HMAC-SHA256':
+            print 'Unknown algorithm during fbsr decode'
+            return None
+
+        expected_sig = hmac.new(secret, msg=payload, digestmod=hashlib.sha256).digest()
+
+        if sig != expected_sig:
+            return None
+
+        return data
+
     req = flask.request
-# TODO(Sandy): Use Flask Sessions instead of raw cookie
-# TODO(Sandy): Security: Authenticate with fbsr (FB signed request) to ensure these are legit values
+
+    # TODO(Sandy): Use Flask Sessions instead of raw cookie
 
     fbid = req.cookies.get('fbid')
     fb_access_token = req.cookies.get('fb_access_token')
     # Compensate for network latency by subtracting 10 seconds
     fb_access_token_expiry_date = int(time.time()) + int(req.cookies.get('fb_access_token_expires_in')) - 10;
     fb_access_token_expiry_date = datetime.fromtimestamp(fb_access_token_expiry_date)
+    fbsr = req.form.get('fb_signed_request')
 
     if (fbid is None or
         fb_access_token is None or
-        fb_access_token_expiry_date is None):
+        fb_access_token_expiry_date is None or
+        fbsr is None):
             # TODO(Sandy): redirect to landing page, or nothing
             # Shouldn't happen normally, user probably manually requested this page
             #print 'No fbid/access_token specified'
             return 'Error'
+
+    # Validate against Facebook's signed request
+    fb_data = parse_signed_request(fbsr, c.FB_APP_SECRET)
+    if fb_data is None or fb_data['user_id'] != fbid:
+        # Data is invalid
+        return 'Error'
 
     # XXX(mack): Someone could pass fake fb_access_token for an fbid, need to
     # validate on facebook before creating the user

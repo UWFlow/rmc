@@ -12,3 +12,5 @@ OPENDATA_COURSES_DATA_DIR = 'opendata_courses'
 UWDATA_COURSES_DATA_DIR = 'uwdata_courses'
 REVIEWS_DATA_DIR = 'reviews'
 DEPARTMENTS_DATA_DIR = 'departments'
+
+FB_APP_SECRET = 'c92ab5e56e509dd73a96f065de197ccd'

@@ -14,6 +14,7 @@ function($, _cookie, FB) {
     // others to hijack someonne's session. We should probably look into
     // a way of verifying the request. Maybe that's what Facebook Signed
     // Requests are for?
+    params.fb_signed_request = authResp.signedRequest;
     $.cookie('fbid', authResp.userID, { path: '/' });
     $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
     $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
