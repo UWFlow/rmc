@@ -10,6 +10,7 @@ import rmc.shared.constants as c
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 mongoengine.connect(c.MONGO_DB_RMC)
 
+# TODO(mack): store 'overall' in professor
 PROFESSOR_RATING_FIELDS = [
     'easiness',
     'clarity',
@@ -107,11 +108,7 @@ def import_mongo_course_rating():
             course.interest = ratings['interest']
             course.overall = ratings['overall']
 
-
-            try:
-                course.save()
-            except:
-                print 'course.profs', course.professor_ids
+            course.save()
             count[0] += 1
 
     set_course_ratings_in_mongo(courses)
@@ -182,6 +179,11 @@ def import_redis_course_professor_rating():
                 if professor_id is None:
                     continue
                 for rating_type, aggregate_rating in ratings.items():
+                    # TODO(mack): store all ratings under single hash which is
+                    # supposed to be more memory efficient (and probably faster
+                    # fetching as well)
+                    # TODO(mack): redis key should be namespaced under
+                    # course_professor or something....
                     redis_key = ':'.join([course_id, professor_id, rating_type])
                     r.set(redis_key, aggregate_rating.to_json())
                     count[0] += 1
