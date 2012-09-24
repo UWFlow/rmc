@@ -23,6 +23,25 @@ function($, _, _s, transcript, term, course, friend, util, user) {
     }
   );
 
+  // Render the transcript, if available
+  if (window.pageData.transcriptData) {
+    var termCollection = new term.TermCollection();
+
+    _.each(window.pageData.transcriptData, function(termData) {
+      var termModel = new term.TermModel({
+        name: termData.term_name,
+        courseCollection: new course.CourseCollection(termData.course_models)
+      });
+      termCollection.add(termModel);
+    });
+
+    // Add the parsed term and course info to the page for live preview
+    var termCollectionView = new term.TermCollectionView({
+      termCollection: termCollection
+    });
+    $('#term-collection-container').html(termCollectionView.render().el);
+  }
+
   var $transcript = $('#transcript-text');
 
   $transcript.bind('input paste', function(evt) {

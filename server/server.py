@@ -70,9 +70,34 @@ def index():
 @app.route('/profile/<int:fbid>')
 @login_required
 def profile(fbid):
-    if not fbid:
+    req = flask.request
+    user = get_current_user()
+
+    if not fbid or fbid == user.fbid:
+        transcript = {}
+        courses = m.Course.objects(id__in=user.course_history)
+        courses = map(clean_course, courses)
+
+        for course in courses:
+            # TODO(Sandy): UserCourse is already fetched inside clean_course, don't do this twice
+            user_course = m.UserCourse.objects(course_id=course['id'], user_id=user.id).first()
+            transcript.setdefault(user_course.term_id, []).append(course)
+
+        # TODO(Sandy): Do this more cleanly?
+        sorted_transcript = []
+        for term_id, course_models in sorted(transcript.items(), reverse=True):
+            cur_term = m.Term(id=term_id)
+            term_name = cur_term.name
+            term_data = {
+                'term_name': term_name,
+                'course_models': course_models,
+            }
+
+            sorted_transcript.append(term_data)
+
         return flask.render_template('profile_page.html',
-                page_script='profile_page.js')
+                page_script='profile_page.js',
+                transcript_data=json_util.dumps(sorted_transcript))
     else:
         # TODO(mack): handle viewing another user's profile
         pass
@@ -113,7 +138,7 @@ def course_page(course_id):
 
 @app.route('/login', methods=['POST'])
 def login():
-# TODO(Sandy): Differentiate between new account and update account
+    # TODO(Sandy): Differentiate between new account and update account
     req = flask.request
 # TODO(Sandy): Use Flask Sessions instead of raw cookie
 # TODO(Sandy): Security: Authenticate with fbsr (FB signed request) to ensure these are legit values
@@ -289,7 +314,7 @@ def upload_transcript():
                     user_course = m.UserCourse(user_id=user_id, course_id=course_id, term_id=term_id)
                     user_course.save()
 
-                course_history_list.append(user_course.id)
+                course_history_list.append(course_id)
 
         user.course_history = course_history_list
         user.save()

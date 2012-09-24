@@ -45,4 +45,7 @@
   {% include 'term.html' %}
   {% include 'ratings.html' %}
   {% include 'review.html' %}
+  <script>
+    window.pageData.transcriptData = {{ transcript_data|safe }};
+  </script>
 {% endblock %}

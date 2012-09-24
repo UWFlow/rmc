@@ -58,8 +58,8 @@ class User(me.Document):
     # eg. software_engineering ?
     program_id = me.StringField()
 
-    # List of UserCourse.id's
-    course_history = me.ListField(me.ObjectIdField())
+    # List of Course.id's
+    course_history = me.ListField(me.StringField())
 
     @property
     def name(self):
