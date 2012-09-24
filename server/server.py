@@ -34,7 +34,7 @@ def get_current_user():
     req = flask.request
 
     if 'current_user' in req.__dict__:
-        return req.user
+        return req.current_user
 
     # TODO(Sandy): Eventually support non-fb users?
     fbid = req.cookies.get('fbid')
@@ -267,7 +267,7 @@ def upload_transcript():
     # We have to decide how we treat those users. E.g. we might prevent this from the frontend, or maybe save it and
     # tell them to make an account, etc
 
-    user = req.user
+    user = get_current_user()
     user_id = user.id
     course_history_list = []
 
