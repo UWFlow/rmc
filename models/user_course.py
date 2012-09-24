@@ -13,7 +13,7 @@ class CritiqueCourse(me.Document):
 
     # id = me.ObjectIdField(primary_key=True)
 
-    course_id = me.StringField(primary_key=True, required=True)
+    course_id = me.StringField(required=True)
     # TODO(mack): need section_id or equiv
     # course_id = me.StringField(required=True, unique_with='section_id')
     # section_id = me.IntField(required=True)
