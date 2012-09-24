@@ -3,9 +3,9 @@ define(
 'ratings', 'ext/select2', 'ext/autosize'],
 function(Backbone, $, _, _s, ratings, select2) {
 
-  // TODO(david): May want to refactor to just a UserCourse model
   // TODO(david): Refactor to use sub-models for reviews
-  var UserReviewModel = Backbone.Model.extend({
+  // TODO(david): Refactor this model to match our mongo UserCourse model
+  var UserCourse = Backbone.Model.extend({
     // TODO(mack): use undefined rather than null
     defaults: {
       id: null,
@@ -66,7 +66,7 @@ function(Backbone, $, _, _s, ratings, select2) {
     }
   });
 
-  var UserReviewView = Backbone.View.extend({
+  var UserCourseView = Backbone.View.extend({
     events: {
       'change .prof-select': 'showReview',
       'click .add-review': 'showReview',
@@ -75,39 +75,39 @@ function(Backbone, $, _, _s, ratings, select2) {
     },
 
     initialize: function(options) {
-      this.userReviewModel = options.userReviewModel;
+      this.userCourse = options.userCourse;
       this.courseModel = options.courseModel;
 
       this.courseRatingsView = new ratings.RatingsView({
-        userReviewModel: this.userReviewModel,
+        userCourse: this.userCourse,
         userOnly: true,
         ratings: new ratings.RatingCollection(
             [{ name: 'interest' }, { name: 'easiness' }])
       });
       this.profRatingsView = new ratings.RatingsView({
-        userReviewModel: this.userReviewModel,
+        userCourse: this.userCourse,
         userOnly: true,
         ratings: new ratings.RatingCollection(
             [{ name: 'clarity' }, { name: 'passion' }])
       });
 
-      this.userReviewModel.on('change', this.allowSave, this);
+      this.userCourse.on('change', this.allowSave, this);
     },
 
     render: function() {
-      var context = _.extend(this.userReviewModel.toJSON(), {
+      var context = _.extend(this.userCourse.toJSON(), {
         courseModel: this.courseModel.toJSON()
       });
-      this.$el.html(_.template($('#review-tpl').html(), context));
+      this.$el.html(_.template($('#add-review-tpl').html(), context));
 
       // TODO(david): Make this prettier and conform to our styles
       // TODO(david): Allow adding a prof
       this.$('.prof-select').select2({
       });
 
-      if (this.userReviewModel.has('prof_id')) {
+      if (this.userCourse.has('prof_id')) {
         this.$('.prof-select')
-          .select2('val', this.userReviewModel.get('prof_id'));
+          .select2('val', this.userCourse.get('prof_id'));
         this.$('.add-review')
           .html('<i class="icon-edit"></i> Edit review');
       }
@@ -143,15 +143,15 @@ function(Backbone, $, _, _s, ratings, select2) {
       this.saving = true;
       var self = this;
 
-      this.userReviewModel.save({
-        //id: this.userReviewModel.get('id'),
-        //term_id: this.userReviewModel.get('term_id'),
+      this.userCourse.save({
+        //id: this.userCourse.get('id'),
+        //term_id: this.userCourse.get('term_id'),
         professor_id: this.$('.prof-select').select2('val'),
         course_id: this.courseModel.get('id'),
-        course_review: _.extend({}, this.userReviewModel.get('course_review'), {
+        course_review: _.extend({}, this.userCourse.get('course_review'), {
           comment: this.$('.course-comments').val()
         }),
-        professor_review: _.extend({}, this.userReviewModel.get('professor_review'), {
+        professor_review: _.extend({}, this.userCourse.get('professor_review'), {
           comment: this.$('.prof-comments').val()
         })
       }).done(function() {
@@ -185,7 +185,7 @@ function(Backbone, $, _, _s, ratings, select2) {
   });
 
   return {
-    UserReviewModel: UserReviewModel,
-    UserReviewView: UserReviewView
+    UserCourse: UserCourse,
+    UserCourseView: UserCourseView
   };
 });

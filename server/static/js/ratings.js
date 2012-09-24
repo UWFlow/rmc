@@ -61,12 +61,12 @@ function(Backbone, $, _, _s, util) {
 
     initialize: function(options) {
       this.ratings = options.ratings;
-      this.userReviewModel = options.userReviewModel;
+      this.userCourse = options.userCourse;
       this.editOnly = options.editOnly;
       this.readOnly = options.readOnly;
 
       if (!this.readOnly) {
-        this.userReviewModel.on('change', this.setUserRatings, this);
+        this.userCourse.on('change', this.setUserRatings, this);
       }
     },
 
@@ -96,7 +96,7 @@ function(Backbone, $, _, _s, util) {
       var self = this;
       this.$('.input-rating').each(function(i, inputRating) {
         var name = self.ratings.getNameAt(i);
-        var userRating = self.userReviewModel.getRating(name);
+        var userRating = self.userCourse.getRating(name);
         var value = userRating ? userRating * NUM_SEGMENTS : 0;
         self.selectRating(inputRating, value);
       });
@@ -137,7 +137,7 @@ function(Backbone, $, _, _s, util) {
       var index = $target.closest('.row-fluid').index();
       var name = this.ratings.getNameAt(index);
       var value = ($target.index() + 1) / NUM_SEGMENTS;
-      this.userReviewModel.setRating(name, value);
+      this.userCourse.setRating(name, value);
       $target.parent().find('.bar').css('opacity', 1.0);
     }
 

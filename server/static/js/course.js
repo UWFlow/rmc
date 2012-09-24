@@ -1,14 +1,14 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'review', 'ext/bootstrap', 'user', 'util', 'jquery.slide'],
-function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
+'ratings', 'user_course', 'ext/bootstrap', 'user', 'util', 'jquery.slide'],
+function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
 
   var CourseModel = Backbone.Model.extend({
     defaults: {
       id: 'SCI 238',
       name: 'Introduction to Astronomy omg omg omg',
       friendCollection: undefined,
-      userReviewModel: undefined,
+      userCourse: undefined,
       professorNames: ['Eddie Dupont', 'Charlie Clarke', 'Mark Smucker', 'Larry Smith'],
       description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
@@ -33,8 +33,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
         this.set('ratings', new ratings.RatingCollection(ratingsArray));
       }
 
-      this.set('userReviewModel',
-          new review.UserReviewModel(attributes.userCourse));
+      this.set('userCourse', new u_c.UserCourse(attributes.userCourse));
       if (!attributes.friendCollection) {
         this.set('friendCollection', user.UserCollection.getSampleCollection());
       }
@@ -46,18 +45,18 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
 
     initialize: function(options) {
       this.courseModel = options.courseModel;
-      var userReviewModel = this.courseModel.get('userReviewModel');
+      var userCourse = this.courseModel.get('userCourse');
       this.ratingBoxView = new ratings.RatingBoxView({
         model: new ratings.RatingModel(this.courseModel.get('overall'))
       });
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
-        userReviewModel: userReviewModel
+        userCourse: userCourse
       });
       // TODO(david): Get user review data, and don't show or show altered if no
       //     user or user didn't take course.
-      this.userReviewView = new review.UserReviewView({
-        userReviewModel: userReviewModel,
+      this.userCourseView = new u_c.UserCourseView({
+        userCourse: userCourse,
         courseModel: this.courseModel
       });
     },
@@ -70,7 +69,7 @@ function(Backbone, $, _, _s, ratings, review, __, user, util, jqSlide) {
           this.ratingBoxView.render().el);
       this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
       this.$('.review-placeholder').replaceWith(
-        this.userReviewView.render().el);
+        this.userCourseView.render().el);
 
       if (this.courseModel.get('friendCollection').length) {
         var sampleFriendsView = new SampleFriendsView({

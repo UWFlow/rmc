@@ -1,7 +1,8 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'ext/backbone', 'jquery.slide', 'base_views', 'ratings', 'util'],
-function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
+'ext/backbone', 'jquery.slide', 'base_views', 'ratings', 'util', 'comment'],
+function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
+    comment) {
 
   var Prof = Backbone.Model.extend({
     defaults: {
@@ -74,14 +75,13 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
       passion: 5,
       clarity: 3,
       overall: 6,
-      comment: 'Was great!!!!!!!!!!!!!!!!',
-      comment_date: new Date(0)
+      comment: new comment.Comment()
     },
 
     initialize: function(attributes) {
       if (attributes) {
         util.convertDate(attributes, 'comment_date');
-        this.set('comment_date', attributes.comment_date);
+        this.set('comment', new comment.Comment(attributes));
       }
     }
   });

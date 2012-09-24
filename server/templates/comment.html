@@ -1,0 +1,10 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('comment-tpl') %}
+<div class="comment-text">
+  <%- comment %>
+</div>
+<div class="comment-date">
+  <%- comment_date %>
+</div>
+{% endcall %}
