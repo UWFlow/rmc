@@ -72,8 +72,11 @@ def index():
 def profile(fbid):
     req = flask.request
     user = get_current_user()
+    if fbid:
+        # Fbid's stored in our DB are unicode types
+        fbid = unicode(fbid)
 
-    if not fbid or fbid == user.fbid:
+    def get_sorted_transcript_for_user(user):
         transcript = {}
         courses = m.Course.objects(id__in=user.course_history)
         courses = map(clean_course, courses)
@@ -95,12 +98,19 @@ def profile(fbid):
 
             sorted_transcript.append(term_data)
 
-        return flask.render_template('profile_page.html',
-                page_script='profile_page.js',
-                transcript_data=json_util.dumps(sorted_transcript))
+        return sorted_transcript
+
+    if not fbid or fbid == user.fbid:
+        sorted_transcript = get_sorted_transcript_for_user(user)
+
     else:
-        # TODO(mack): handle viewing another user's profile
-        pass
+        other_user = m.User.objects(fbid=fbid).first()
+        sorted_transcript = get_sorted_transcript_for_user(other_user)
+        # TODO(Sandy): Figure out what should and shouldn't be displayed when viewing someone else's profile
+
+    return flask.render_template('profile_page.html',
+            page_script='profile_page.js',
+            transcript_data=json_util.dumps(sorted_transcript))
 
 @app.route('/course')
 def course():
