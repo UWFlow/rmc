@@ -61,6 +61,33 @@ def login_required(f):
     return wrapper
 
 
+# TODO(Sandy): Move this somewhere more appropraite. It is currently being called by api/transcript and /profile
+def get_sorted_transcript_for_user(user):
+    transcript = {}
+    courses = m.Course.objects(id__in=user.course_history)
+    courses = map(clean_course, courses)
+
+    for course in courses:
+        # TODO(Sandy): UserCourse is already fetched inside clean_course, don't do this twice
+        user_course = m.UserCourse.objects(course_id=course['id'], user_id=user.id).first()
+        transcript.setdefault(user_course.term_id, []).append(course)
+
+    # TODO(Sandy): Do this more cleanly?
+    sorted_transcript = []
+    for term_id, course_models in sorted(transcript.items(), reverse=True):
+        cur_term = m.Term(id=term_id)
+        term_name = cur_term.name
+        term_data = {
+            'term_name': term_name,
+            'course_models': course_models,
+        }
+
+        sorted_transcript.append(term_data)
+
+    return sorted_transcript
+
+
+
 @app.route('/')
 def index():
     return flask.render_template('index_page.html',
@@ -75,30 +102,6 @@ def profile(fbid):
     if fbid:
         # Fbid's stored in our DB are unicode types
         fbid = unicode(fbid)
-
-    def get_sorted_transcript_for_user(user):
-        transcript = {}
-        courses = m.Course.objects(id__in=user.course_history)
-        courses = map(clean_course, courses)
-
-        for course in courses:
-            # TODO(Sandy): UserCourse is already fetched inside clean_course, don't do this twice
-            user_course = m.UserCourse.objects(course_id=course['id'], user_id=user.id).first()
-            transcript.setdefault(user_course.term_id, []).append(course)
-
-        # TODO(Sandy): Do this more cleanly?
-        sorted_transcript = []
-        for term_id, course_models in sorted(transcript.items(), reverse=True):
-            cur_term = m.Term(id=term_id)
-            term_name = cur_term.name
-            term_data = {
-                'term_name': term_name,
-                'course_models': course_models,
-            }
-
-            sorted_transcript.append(term_data)
-
-        return sorted_transcript
 
     if not fbid or fbid == user.fbid:
         sorted_transcript = get_sorted_transcript_for_user(user)
@@ -337,7 +340,8 @@ def upload_transcript():
         print 'KeyError at /api/transcript.'
         return 'Error'
 
-    return ''
+    sorted_transcript = get_sorted_transcript_for_user(user)
+    return json_util.dumps(sorted_transcript)
 
 
 @app.route('/api/user/course', methods=['POST', 'PUT'])

@@ -23,11 +23,10 @@ function($, _, _s, transcript, term, course, friend, util, user) {
     }
   );
 
-  // Render the transcript, if available
-  if (window.pageData.transcriptData) {
+  var renderTranscript = function(transcriptData) {
     var termCollection = new term.TermCollection();
 
-    _.each(window.pageData.transcriptData, function(termData) {
+    _.each(transcriptData, function(termData) {
       var termModel = new term.TermModel({
         name: termData.term_name,
         courseCollection: new course.CourseCollection(termData.course_models)
@@ -40,6 +39,11 @@ function($, _, _s, transcript, term, course, friend, util, user) {
       termCollection: termCollection
     });
     $('#term-collection-container').html(termCollectionView.render().el);
+  }
+
+  // Render the transcript, if available
+  if (window.pageData.transcriptData) {
+    renderTranscript(window.pageData.transcriptData)
   }
 
   var $transcript = $('#transcript-text');
@@ -83,40 +87,8 @@ function($, _, _s, transcript, term, course, friend, util, user) {
     $.post(
       '/api/transcript',
       { 'courses_by_term': JSON.stringify(coursesByTerm) },
-      function(data) {
-        // TODO(Sandy): Logic for rendering the termCollectionView here (move
-        // the stuff from below up here)
-      },
+      renderTranscript,
       'json');
-
-    $.getJSON(
-      '/api/courses/' + courseIds.join(','),
-      function(data) {
-        var courseById = data.courses;
-
-        var termCollection = new term.TermCollection();
-
-        _.each(coursesByTerm, function(termObj) {
-          var courseCollection = new course.CourseCollection();
-          _.each(termObj.courseIds, function(courseId) {
-            if (courseId in courseById) {
-              courseCollection.add(courseById[courseId]);
-            }
-          });
-          var termModel = new term.TermModel({
-            name: termObj.name,
-            courseCollection: courseCollection
-          });
-          termCollection.add(termModel);
-        });
-
-        // Add the parsed term and course info to the page for live preview
-        var termCollectionView = new term.TermCollectionView({
-          termCollection: termCollection
-        });
-        $('#term-collection-container').html(termCollectionView.render().el);
-      }
-    );
   };
 
   // Handle the case that the user inputs into the transcript text area
