@@ -55,7 +55,12 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
   });
 
   var ProfCollection = Backbone.Collection.extend({
-    model: Prof
+    model: Prof,
+
+    // TODO(david): Allow changing sort/filter options
+    comparator: function(prof) {
+      return -prof.get('overall').get('count');
+    }
   });
 
   // TODO(david): This might just be a user-course model
