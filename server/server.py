@@ -265,6 +265,8 @@ def login():
     # TODO(Sandy): Use Flask Sessions instead of raw cookie
 
     fbid = req.cookies.get('fbid')
+    # FIXME(Sandy): No need to pass the fb_access_token up, we can just exchange fb_data.code for the token from FB
+    # https://developers.facebook.com/docs/authentication/signed_request/
     fb_access_token = req.cookies.get('fb_access_token')
     # Compensate for network latency by subtracting 10 seconds
     fb_access_token_expiry_date = int(time.time()) + int(req.cookies.get('fb_access_token_expires_in')) - 10;
