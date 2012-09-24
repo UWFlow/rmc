@@ -24,6 +24,9 @@ require.config({
     'ext/cookie': {
       deps: ['ext/jquery']
     },
+    'ext/slimScroll': {
+      deps: ['ext/jquery', 'ext/jqueryui']
+    },
     'ext/underscore': {
       exports: '_'
     },
@@ -47,8 +50,8 @@ require.config({
     'ext/select2': 'ext/select2.min',
     'ext/autosize': 'ext/jquery.autosize-min',
     'ext/cookie': 'ext/jquery.cookie',
-    // TODO(mack): host locally
-    'ext/jqueryui': 'http://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min',
+    'ext/slimScroll': 'ext/slimScroll-0.6.0',
+    'ext/jqueryui': 'ext/jquery-ui-1.8.23.custom.min',
     'ext/underscore': 'ext/underscore-1.3.3',
     'ext/underscore.string': 'ext/underscore.string-2.0.0',
     // TODO(mack): host locally?
