@@ -4,6 +4,7 @@
     float: left;
     width: 30%;
     opacity: 0.8;
+    @include transition(all 0.2s ease-out);
   }
 
   &:hover .prof-picture {
