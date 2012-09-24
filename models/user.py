@@ -16,7 +16,7 @@ class User(me.Document):
 
     # TODO(mack): join_date should be encapsulate in _id, but store it
     # for now, just in case; can remove it when sure that info is in _id
-    join_time = me.DateTimeField(required=True)
+    join_date = me.DateTimeField(required=True)
     join_source = me.IntField(required=True, choices=[JoinSource.FACEBOOK])
 
     # eg. Mack
@@ -35,7 +35,7 @@ class User(me.Document):
 
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
     fb_access_token = me.StringField(max_length=255, required=True, unique=True)
-    fb_access_token_expiry_time = me.DateTimeField(required=True)
+    fb_access_token_expiry_date = me.DateTimeField(required=True)
 
     email = me.EmailField()
 
@@ -47,7 +47,7 @@ class User(me.Document):
 
     birth_date = me.DateTimeField()
 
-    last_login_time = me.DateTimeField()
+    last_visited = me.DateTimeField()
     # TODO(mack): consider using SequenceField()
     num_visits = me.IntField(min_value=0, default=0)
 

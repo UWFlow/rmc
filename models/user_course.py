@@ -85,4 +85,4 @@ class UserCourse(me.Document):
     # section_id = StringField()
 
     # TODO(mack): should we have update_time?
-    # update_time = me.DateTimeField()
+    # update_date = me.DateTimeField()

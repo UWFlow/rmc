@@ -239,12 +239,12 @@ def login():
     fbid = req.cookies.get('fbid')
     fb_access_token = req.cookies.get('fb_access_token')
     # Compensate for network latency by subtracting 10 seconds
-    fb_access_token_expiry_time = int(time.time()) + int(req.cookies.get('fb_access_token_expires_in')) - 10;
-    fb_access_token_expiry_time = datetime.fromtimestamp(fb_access_token_expiry_time)
+    fb_access_token_expiry_date = int(time.time()) + int(req.cookies.get('fb_access_token_expires_in')) - 10;
+    fb_access_token_expiry_date = datetime.fromtimestamp(fb_access_token_expiry_date)
 
     if (fbid is None or
         fb_access_token is None or
-        fb_access_token_expiry_time is None):
+        fb_access_token_expiry_date is None):
 # TODO(Sandy): redirect to landing page, or nothing
             #print 'No fbid/access_token specified'
             return 'Error'
@@ -254,7 +254,7 @@ def login():
     user = m.User.objects(fbid=fbid).first()
     if user:
         user.fb_access_token = fb_access_token
-        user.fb_access_token_expiry_time = fb_access_token_expiry_time
+        user.fb_access_token_expiry_date = fb_access_token_expiry_date
         user.save()
         return ''
 
@@ -275,12 +275,12 @@ def login():
             'email': email,
             'gender': gender,
             'fb_access_token': fb_access_token,
-            'fb_access_token_expiry_time': fb_access_token_expiry_time,
+            'fb_access_token_expiry_date': fb_access_token_expiry_date,
 #TODO(Sandy): Count visits properly
-            'join_time': now,
+            'join_date': now,
             'join_source': m.User.JoinSource.FACEBOOK,
             'num_visits': 1,
-            'last_visit_time': now,
+            'last_visited': now,
 #TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
         }
         user = m.User(**user_obj)
@@ -430,17 +430,17 @@ def user_course():
     uc = json_util.loads(flask.request.data)
 
     now = datetime.now()
-    def set_comment_time_if_necessary(review):
+    def set_comment_date_if_necessary(review):
         if not review:
             return None
 
         # TODO(mack): add more stringent checking against user manually
         # setting time on the frontend
-        if 'comment' in review and not 'comment_time':
-            review['comment_time'] = now
+        if 'comment' in review and not 'comment_date':
+            review['comment_date'] = now
 
-    set_comment_time_if_necessary(uc.get('user_review'))
-    set_comment_time_if_necessary(uc.get('course_review'))
+    set_comment_date_if_necessary(uc.get('user_review'))
+    set_comment_date_if_necessary(uc.get('course_review'))
 
     # TODO(mack): remove user_id hardcode
     user_id = m.User.objects.get(fbid='1647810326').id
@@ -481,13 +481,13 @@ def clean_user_course(user_course):
             'easiness': course_review.easiness,
             'interest': course_review.interest,
             'comment': course_review.comment,
-            'comment_time': course_review.comment_time,
+            'comment_date': course_review.comment_date,
         },
         'professor_review': {
             'clarity': professor_review.clarity,
             'passion': professor_review.passion,
             'comment': professor_review.comment,
-            'comment_time': professor_review.comment_time,
+            'comment_date': professor_review.comment_date,
         },
     }
 

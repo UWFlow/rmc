@@ -199,7 +199,7 @@ def import_reviews():
             clean_review['course_review'].interest = normalize_rating(review['r_interest'])
 
         clean_review['professor_review'].comment = review['comment']
-        clean_review['professor_review'].comment_time = datetime.strptime(
+        clean_review['professor_review'].comment_date = datetime.strptime(
             review['date'], '%m/%d/%y')
 
         return clean_review
