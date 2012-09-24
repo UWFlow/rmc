@@ -16,13 +16,16 @@
   <a class="friend-name" href=<%- profileUrl %>>
     <%- name %>
   </a>
-  <div class="mutual-courses"><%- coursesTook.length %> mutual courses</div>
+  <a href="#" class="mutual-courses">
+    <%- mutual_courses.length %>
+    mutual <%- pluralize(mutual_courses.length, 'course', 'courses') %>
+  </a>
 </div>
 {% endcall %}
 
 {% call macros.us_template('friend-hovercard-tpl') %}
 <!-- TODO(mack): move course-mini into own backbone view -->
-<ul class="mini-courses">
+<ul class="mini-courses unstyled">
 <% coursesTook.each(function(course) { %>
   <% course = course.toJSON(); %>
   <li class="mini-course">
@@ -33,4 +36,18 @@
 <% }); %>
 </ul>
 <a class="view-profile" href=<%- '/profile/' + id %>>View all terms &raquo;</a>
+{% endcall %}
+
+{# TODO(mack): remove duplication with friend-hovercard-tpl #}
+{% call macros.us_template('mutual-courses-hovercard-tpl') %}
+<ul class="mini-courses unstyled">
+<% mutual_courses.each(function(course) { %>
+  <% course = course.toJSON(); %>
+  <li class="mini-course">
+    <a href="<%- '/course/' + course.id %>" class="course-code"><%- course.code %></a>
+    -
+    <span class="course-title"><%- course.name %></span>
+  </li>
+<% }); %>
+</ul>
 {% endcall %}

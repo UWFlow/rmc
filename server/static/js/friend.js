@@ -1,7 +1,7 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'base_views'],
-function(Backbone, $, _, _s, bootstrap, baseViews) {
+'ext/bootstrap', 'base_views', 'ext/slimScroll'],
+function(Backbone, $, _, _s, bootstrap, baseViews, __) {
 
   var FriendView = Backbone.View.extend({
     className: 'friend',
@@ -28,6 +28,20 @@ function(Backbone, $, _, _s, bootstrap, baseViews) {
           return false;
         });
 
+      this.$('.mutual-courses')
+        .popover({
+          html: true,
+          title: 'Mutual Courses',
+          content: _.bind(this.getMutualCoursesPopoverContent, this),
+          trigger: 'hover',
+          placement: 'in right'
+        })
+        .click(function(evt) {
+          // Prevent clicking in the hovercard from going to triggering the
+          // link the hovercard is attached to
+          return false;
+        });
+
       return this;
     },
 
@@ -38,6 +52,26 @@ function(Backbone, $, _, _s, bootstrap, baseViews) {
         });
       }
       return this.friendHovercardView.render().$el;
+    },
+
+    getMutualCoursesPopoverContent: function() {
+      if (!this.mutualCoursesPopoverView) {
+        this.mutualCoursesHovercardView = new MutualCoursesHovercardView({
+          friendModel: this.friendModel
+        });
+      }
+      var $el = this.mutualCoursesHovercardView.render().$el;
+      window.setTimeout(function() {
+        var maxHeight = 300;
+        if ($el.find('.mini-courses').outerHeight() > maxHeight) {
+          $el.slimScroll({
+            height: maxHeight,
+            width: $el.outerWidth(),
+            alwaysVisible: true
+          });
+        }
+      });
+      return $el;
     }
 
   });
@@ -52,11 +86,30 @@ function(Backbone, $, _, _s, bootstrap, baseViews) {
 
     render: function() {
       this.$el.html(
-        _.template($('#friend-hovercard-tpl').html(), this.friendModel.toJSON()));
+        _.template($('#friend-hovercard-tpl').html(),
+          this.friendModel.toJSON()));
 
       return this;
     }
   });
+
+
+  var MutualCoursesHovercardView = Backbone.View.extend({
+    className: 'mutual-courses-hovercard',
+
+    initialize: function(options) {
+      this.friendModel = options.friendModel;
+    },
+
+    render: function() {
+      this.$el.html(
+        _.template($('#mutual-courses-hovercard-tpl').html(),
+          this.friendModel.toJSON()));
+
+      return this;
+    }
+  });
+
 
   var FriendCollectionView = baseViews.CollectionView.extend({
     tagName: 'ol',

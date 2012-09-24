@@ -49,3 +49,9 @@
     window.pageData.transcriptData = {{ transcript_data|safe }};
   </script>
 {% endblock %}
+
+{% block scripts %}
+<script>
+  window.pageData.userData = {{ user_data|safe }};
+</script>
+{% endblock %}

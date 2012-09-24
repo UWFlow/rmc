@@ -9,17 +9,24 @@ function(Backbone, _, _s, util) {
       name: 'Mack Duan',
       lastTermName: 'Spring 2012',
       // TODO(mack): should be CourseCollection rather than array
-      coursesTook: []
+      coursesTook: [],
+      // If this user is a friend, mutual_courses will be stored
+      // TODO(mack): maybe should have FriendModel as subclass of UserModel
+      // TODO(mack): should be CourseCollection rather than array
+      mutual_courses: []
+    },
+
+    initialize: function(attributes) {
     },
 
     getFbPicUrl: function() {
       // TODO(mack): add support for custom width and height
       return _s.sprintf(
-        'https://graph.facebook.com/%d/picture', this.get('fbid'));
+        'https://graph.facebook.com/%s/picture', this.get('fbid'));
     },
 
     getProfileUrl: function() {
-      return '/profile/' + this.get('id');
+      return '/profile/' + this.get('id').$oid;
     },
 
     toJSON: function() {

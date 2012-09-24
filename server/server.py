@@ -1,10 +1,13 @@
 from bson import json_util
 from datetime import datetime
 import flask
+import functools
+import itertools
 import mongoengine as me
 import pymongo
+import random
 import re
-import functools
+import redis
 import time
 
 import rmc.shared.constants as c
@@ -14,6 +17,7 @@ import rmc.models as m
 app = flask.Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
 flask.render_template = functools.partial(flask.render_template,
         env=app.config['ENV'])
@@ -88,6 +92,60 @@ def get_sorted_transcript_for_user(user):
     return sorted_transcript
 
 
+# TODO(mack): move this somehwere more appropriate
+def get_user_obj(user):
+
+    # fetch mutual friends from redis
+    pipe = r.pipeline()
+    for friend_id in user.friend_ids:
+        pipe.smembers(user.mutual_courses_redis_key(friend_id))
+    results = pipe.execute()
+
+    zipped = itertools.izip(user.friend_ids, results)
+    zipped = sorted(
+        zipped,
+        key=lambda (friend_id, mutual_course_ids): len(mutual_course_ids),
+        reverse=True,
+    )
+
+    # TODO(mack): fetching and returning so much data!!!
+
+    # find all courses we need to pass to frontend; combo of
+    # your courses and friends' courses
+    all_course_ids = set()
+    for _, mutual_course_ids in zipped:
+        all_course_ids = all_course_ids.union(set(mutual_course_ids))
+
+    courses_map = {}
+    for course in m.Course.objects(id__in=list(all_course_ids)):
+        courses_map[course.id] = clean_course(course)
+
+    # FIXME(mack): get courses i've taken; get data from sandy's
+    # transcript data
+    user_obj = clean_user(user)
+
+    friend_map = {}
+    for friend in m.User.objects(id__in=user.friend_ids):
+        friend_map[friend.id] = clean_user(friend)
+
+    # get friend data for user
+    user_obj['friends'] = []
+    for friend_id, mutual_course_ids in zipped:
+        friend_obj = friend_map[friend_id]
+        friend_obj['mutual_courses'] = []
+        for course_id in mutual_course_ids:
+            if course_id in courses_map:
+                friend_obj['mutual_courses'].append(
+                    courses_map[course_id])
+                # TODO(mack): get actual latest courses taken by friend
+                if random.randint(0, 4) == 0:
+                    friend_obj['coursesTook'].append(
+                        courses_map[course_id])
+        user_obj['friends'].append(friend_obj)
+
+    return user_obj
+
+
 @app.route('/')
 def index():
     return flask.render_template('index_page.html',
@@ -99,15 +157,17 @@ def index():
 @login_required
 def profile(fbid):
     user = get_current_user()
+
     if fbid:
         # Fbid's stored in our DB are unicode types
         fbid = unicode(fbid)
 
     if not fbid or fbid == user.fbid:
         sorted_transcript = get_sorted_transcript_for_user(user)
-
+        user_obj = get_user_obj(user)
     else:
         other_user = m.User.objects(fbid=fbid).first()
+        user_obj = get_user_obj(other_user)
         if other_user is None:
             return flask.redirect('/profile', 302)
 
@@ -115,8 +175,10 @@ def profile(fbid):
         # TODO(Sandy): Figure out what should and shouldn't be displayed when viewing someone else's profile
 
     return flask.render_template('profile_page.html',
-            page_script='profile_page.js',
-            transcript_data=json_util.dumps(sorted_transcript))
+        page_script='profile_page.js',
+        transcript_data=json_util.dumps(sorted_transcript),
+        user_data=json_util.dumps(user_obj),
+    )
 
 
 @app.route('/course')
@@ -222,6 +284,7 @@ def login():
 #TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
         }
         user = m.User(**user_obj)
+        # FIXME(mack): need to also update for each friend using the site
         user.add_friend_fbids(friend_fbids)
 
         user.save()
@@ -491,6 +554,16 @@ def clean_course(course, expanded=False):
         'userCourse': get_user_course(course),
     }
 
+
+def clean_user(user):
+    return {
+        'id': user.id,
+        'fbid': user.fbid,
+        'name': user.name,
+        # FIXME(mack): remove harcode
+        'lastTermName': 'Spring 2012',
+        'coursesTook': [],
+    }
 
 if __name__ == '__main__':
   app.debug = True

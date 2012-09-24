@@ -6,22 +6,36 @@ function($, _, _s, transcript, term, course, friend, util, user) {
   // Render friend sidebar
 
   // TODO(mack): remove stub data
-  courseIds = ['cs137', 'sci238', 'cs241'];
-  $.getJSON(
-    '/api/courses/' + courseIds.join(','),
-    function(data) {
-      var userCollection = user.UserCollection.getSampleCollection();
-      var courses = _.toArray(data.courses);
-      userCollection.each(function(userModel) {
-        var collection = new course.CourseCollection(courses)
-        userModel.set('coursesTook', collection);
-      });
-      var friendSidebarView = new friend.FriendSidebarView({
-        friendCollection: userCollection
-      });
-      $('#friend-sidebar-container').html(friendSidebarView.render().el);
-    }
-  );
+  //courseIds = ['cs137', 'sci238', 'cs241'];
+  //$.getJSON(
+  //  '/api/courses/' + courseIds.join(','),
+  //  function(data) {
+  //    var userCollection = user.UserCollection.getSampleCollection();
+  //    var courses = _.toArray(data.courses);
+  //    userCollection.each(function(userModel) {
+  //      var collection = new course.CourseCollection(courses)
+  //      userModel.set('coursesTook', collection);
+  //    });
+  //    var friendSidebarView = new friend.FriendSidebarView({
+  //      friendCollection: userCollection
+  //    });
+  //    $('#friend-sidebar-container').html(friendSidebarView.render().el);
+  //  }
+  //);
+  (function() {
+    var userCollection = new user.UserCollection(
+      window.pageData.userData.friends)
+    userCollection.each(function(userModel) {
+      userModel.set('coursesTook',
+        new course.CourseCollection(userModel.get('coursesTook')));
+      userModel.set('mutual_courses',
+        new course.CourseCollection(userModel.get('mutual_courses')));
+    });
+    var friendSidebarView = new friend.FriendSidebarView({
+      friendCollection: userCollection
+    });
+    $('#friend-sidebar-container').html(friendSidebarView.render().el);
+  })();
 
   var renderTranscript = function(transcriptData) {
     var termCollection = new term.TermCollection();

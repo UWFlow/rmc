@@ -67,9 +67,22 @@ class User(me.Document):
 
     def add_friend_fbids(self, fbids):
         new_fbids = set(fbids) - set(self.friend_fbids)
-        self.friend_fbids.extend(new_fbids)
-        friend_ids = [u.id for u in User.objects(fbid__in=new_fbids).only('id')]
-        self.friend_ids.extend(friend_ids)
+        friend_ids = set([u.id for u in User.objects(fbid__in=new_fbids).only('id')])
+        friend_ids.add(self.friend_ids)
+        self.friend_ids = friend_ids
 
     def save(self, *args, **kwargs):
         super(User, self).save(*args, **kwargs)
+
+    @classmethod
+    def cls_mutual_courses_redis_key(cls, user_id_one, user_id_two):
+        if user_id_one < user_id_two:
+            first_id = user_id_one
+            second_id = user_id_two
+        else:
+            first_id = user_id_two
+            second_id = user_id_one
+        return 'mutual_courses:%s:%s' %  (first_id, second_id)
+
+    def mutual_courses_redis_key(self, other_user_id):
+        return User.cls_mutual_courses_redis_key(self.id, other_user_id)

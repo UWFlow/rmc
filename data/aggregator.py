@@ -188,8 +188,9 @@ def import_redis_friend_mutual_courses():
             mutual_courses = courses.intersection(friend_courses)
             if mutual_courses:
                 count += 1
-                redis_key = 'mutual_courses:%s:%s' %  (first_id, second_id)
-                r.rpush(redis_key, *list(mutual_courses))
+                redis_key = m.User.cls_mutual_courses_redis_key(
+                    first_id, second_id)
+                r.sadd(redis_key, *list(mutual_courses))
             user_pair.add((first_id, second_id))
 
     print 'set %d friend pair keys in redis' % count

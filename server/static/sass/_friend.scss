@@ -30,12 +30,14 @@
           padding-left: 10px;
 
           .friend-name {
+            display: block;
           }
           .mutual-courses {
+            display: block;
           }
         }
 
-        .friend-pic, .friend-name {
+        .friend-pic, .friend-name, .mutual-courses {
           position: relative;
 
           .popover {
@@ -45,14 +47,13 @@
             cursor: default;
             color: $textColor;
 
-            .friend-hovercard {
+            .friend-hovercard, .mutual-courses-hovercard {
 
               @extend .clearfix;
               width: 350px;
 
               .mini-courses {
-                list-style: none;
-                margin-left: 0;
+                width: 350px;
                 padding: 10px;
 
                 .mini-course {
@@ -65,12 +66,19 @@
                   }
                 }
               }
+            }
 
+            .friend-hovercard {
               .view-profile {
                 float: right;
                 padding: 0 10px 10px 0;
               }
             }
+
+            .mutual-courses-hovercard {
+              height: 300px;
+            }
+
           }
         }
       }

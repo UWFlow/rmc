@@ -49,8 +49,7 @@
         </div>
       </div>
     </div>
-
-    <header>
+<header>
       {% block header %}
       {% endblock %}
     </header>
@@ -68,6 +67,9 @@
     {% block templates %}
     {% endblock %}
 
+    {# Put json data passed from backend here under window.pageData.
+        Since the script for specific to this page does not run until
+        domready, it should be safe to init data here #}
     {% block scripts %}
     {% endblock %}
 
