@@ -245,7 +245,8 @@ def login():
     if (fbid is None or
         fb_access_token is None or
         fb_access_token_expiry_date is None):
-# TODO(Sandy): redirect to landing page, or nothing
+            # TODO(Sandy): redirect to landing page, or nothing
+            # Shouldn't happen normally, user probably manually requested this page
             #print 'No fbid/access_token specified'
             return 'Error'
 
@@ -258,6 +259,7 @@ def login():
         user.save()
         return ''
 
+    # TODO(Sandy): Can remove the try except now becaues we're uisng form.get, same for all the other lines
     try:
         friend_fbids = flask.json.loads(req.form.get('friend_fbids'))
         gender = req.form.get('gender')

@@ -67,9 +67,11 @@ class User(me.Document):
 
     def add_friend_fbids(self, fbids):
         new_fbids = set(fbids) - set(self.friend_fbids)
-        friend_ids = set([u.id for u in User.objects(fbid__in=new_fbids).only('id')])
-        friend_ids.add(self.friend_ids)
-        self.friend_ids = friend_ids
+        friend_ids = [u.id for u in User.objects(fbid__in=new_fbids).only('id')]
+        self.friend_ids += friend_ids
+        # TODO(Sandy): We're assuming people won't unfriend anyone. Fix this later?
+        # Adding new_fbids instead of setting to fbids to be consistent with the friends in self.friend_ids
+        self.friend_fbids += new_fbids
 
     def save(self, *args, **kwargs):
         super(User, self).save(*args, **kwargs)

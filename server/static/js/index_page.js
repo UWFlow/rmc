@@ -27,6 +27,8 @@ function($, _cookie, FB) {
     );
   };
 
+  // TODO(Sandy): This is firing even if the user is already logged in...FIX IT
+  //              This results in two requests to /login
   FB.Event.subscribe('auth.login', function(response) {
     if (response.status === 'connected') {
       // TODO(Sandy): Put up drip loader here
