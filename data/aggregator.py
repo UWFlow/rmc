@@ -21,17 +21,21 @@ COURSE_RATING_FIELDS = [
     'interest',
 ]
 
-def increment_ratings(courses, get_ratings_fn, get_fields_fn, ucs):
+def increment_ratings(courses, get_rating_fn, get_fields_fn, ucs):
     for uc in ucs:
-        ratings = get_ratings_fn(courses, uc)
+        ratings = get_rating_fn(courses, uc)
+        if not ratings:
+            continue
         for field_key, field_value in get_fields_fn(uc):
             if field_value is not None:
                 ratings[field_key].add_rating(field_value)
 
 
-def increment_aggregate_ratings(courses, get_ratings_fn, get_fields_fn, ucs):
+def increment_aggregate_ratings(courses, get_rating_fn, get_fields_fn, ucs):
     for uc in ucs:
-        ratings = get_ratings_fn(courses, uc)
+        ratings = get_rating_fn(courses, uc)
+        if not ratings:
+            continue
         for field_key, field_value in get_fields_fn(uc):
             if field_value is not None:
                 ratings[field_key].add_aggregate_rating(field_value)
@@ -108,6 +112,9 @@ def import_mongo_course_professors():
 def import_redis_course_professor_rating():
     # course => professors => ratings
     def get_rating_fn(courses, uc):
+        if uc.professor_id is None:
+            return None
+
         if uc.course_id not in courses:
             courses[uc.course_id] = {}
         professors = courses[uc.course_id]
