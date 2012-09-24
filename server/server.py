@@ -10,6 +10,7 @@ import time
 import rmc.shared.constants as c
 import rmc.models as m
 
+
 app = flask.Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
@@ -87,17 +88,16 @@ def get_sorted_transcript_for_user(user):
     return sorted_transcript
 
 
-
 @app.route('/')
 def index():
     return flask.render_template('index_page.html',
             page_script='index_page.js')
 
+
 @app.route('/profile', defaults={'fbid': None})
 @app.route('/profile/<int:fbid>')
 @login_required
 def profile(fbid):
-    req = flask.request
     user = get_current_user()
     if fbid:
         # Fbid's stored in our DB are unicode types
@@ -118,9 +118,11 @@ def profile(fbid):
             page_script='profile_page.js',
             transcript_data=json_util.dumps(sorted_transcript))
 
+
 @app.route('/course')
 def course():
     return flask.redirect('/courses', 301)  # Moved permanently
+
 
 @app.route('/courses')
 def courses():
@@ -143,14 +145,27 @@ def courses():
         directions=directions,
     )
 
+
 @app.route('/courses/<string:course_id>')
 def courses_page(course_id):
     return flask.redirect('/course/%s' % course_id, 301)  # Moved permanently
 
+
 @app.route('/course/<string:course_id>')
 def course_page(course_id):
+    course = m.Course.objects.with_id(course_id)
+    if not course:
+        # TODO(david): 404 page
+        flask.abort(404)
+
+    course_cleaned = clean_course(course)
+
+    # TODO(david): Protect against the </script> injection XSS hack
     return flask.render_template('course_page.html',
-            page_script='course_page.js')
+            page_script='course_page.js',
+            course=course_cleaned,
+            page_data=json_util.dumps(course_cleaned))
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -379,6 +394,7 @@ def user_course():
 
     return json_util.dumps(clean_user_course(uc))
 
+
 ###############################################################################
 # Helper functions
 
@@ -406,7 +422,18 @@ def clean_user_course(user_course):
         },
     }
 
-def clean_course(course):
+
+def clean_professor(professor):
+    pass
+
+
+def clean_course(course, expanded=False):
+    """Returns information about a course to be sent down an API.
+
+    Args:
+        course: The course object.
+        expanded: Whether to fetch more information, such as professor reviews.
+    """
 
     def get_professors(course):
         professors = m.Professor.objects(
@@ -440,6 +467,7 @@ def clean_course(course):
         'professors': get_professors(course),
         'userCourse': get_user_course(course),
     }
+
 
 if __name__ == '__main__':
   app.debug = True

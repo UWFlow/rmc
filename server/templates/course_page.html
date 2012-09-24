@@ -4,14 +4,14 @@
   <link rel="stylesheet" href="/static/css/course_page.css">
 {% endblock %}
 
-{% block page_title %}CS 241{% endblock %}
+{% block page_title %}{{ course['code'] }}{% endblock %}
 
 {% block header %}
   <div class="container-fluid course-header">
     <div class="row-fluid">
       <div class="span10">
-        <h1 class="page-title">CS 241</h1>
-        <p class="lead">Introduction to Microeconomics</p>
+        <h1 class="page-title">{{ course['code'] }}</h1>
+        <p class="lead">{{ course['name'] }}</p>
       </div>
       <div class="span2" id="rating-box-container"></div>
     </div>
@@ -30,6 +30,12 @@
     </div>
     </div>
   </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.pageData.data = {{ page_data|safe }};
+</script>
 {% endblock %}
 
 {# TODO(david): Have underscore templates specify their deps. #}
