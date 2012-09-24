@@ -131,7 +131,7 @@ def login():
             #print 'No fbid/access_token specified'
             return 'Error'
 
-    # TODO(mack): Someone could pass fake fb_access_token for an fbid, need to
+    # XXX(mack): Someone could pass fake fb_access_token for an fbid, need to
     # validate on facebook before creating the user
     user = m.User.objects(fbid=fbid).first()
     if user:
