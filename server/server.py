@@ -84,7 +84,6 @@ def get_sorted_transcript_for_user(user):
     cleaned_courses = map(clean_course, courses)
 
     for course in cleaned_courses:
-        user_course = m.UserCourse.objects(course_id=course['id'], user_id=user.id).first()
         transcript.setdefault(cid_to_tid[course['id']], []).append(course)
 
     # TODO(Sandy): Do this more cleanly?
