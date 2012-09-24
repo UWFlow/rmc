@@ -105,6 +105,9 @@ def profile(fbid):
 
     else:
         other_user = m.User.objects(fbid=fbid).first()
+        if other_user is None:
+            return flask.redirect('/profile', 302)
+
         sorted_transcript = get_sorted_transcript_for_user(other_user)
         # TODO(Sandy): Figure out what should and shouldn't be displayed when viewing someone else's profile
 
