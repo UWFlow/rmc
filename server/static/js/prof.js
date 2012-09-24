@@ -37,7 +37,10 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
         this.set('ratings', new ratings.RatingCollection());
       }
 
-      if (!attributes || !attributes.reviews) {
+      if (attributes && attributes.course_reviews) {
+        var reviewsColl = new ProfReviewCollection(attributes.course_reviews);
+        this.set('reviews', reviewsColl);
+      } else {
         this.set('reviews', new ProfReviewCollection());
       }
     }
@@ -63,14 +66,23 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
     }
   });
 
-  // TODO(david): This might just be a user-course model
+  // TODO(david): This might just be a user-course model... merge with
+  //     UserCourseReview perhaps
   var ProfReview = Backbone.Model.extend({
     defaults: {
       name: 'Larry Smith',
       passion: 5,
       clarity: 3,
       overall: 6,
-      comment: 'Was great!!!!!!!!!!!!!!!!'
+      comment: 'Was great!!!!!!!!!!!!!!!!',
+      comment_date: new Date(0)
+    },
+
+    initialize: function(attributes) {
+      if (attributes) {
+        util.convertDate(attributes, 'comment_date');
+        this.set('comment_date', attributes.comment_date);
+      }
     }
   });
 

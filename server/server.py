@@ -492,19 +492,40 @@ def clean_user_course(user_course):
     }
 
 
+def clean_prof_review(review):
+    review = {
+        'comment': review.professor_review.comment,
+        'comment_date': review.professor_review.comment_date,
+    }
+
+    if hasattr(review, 'user_id') and not review.anonymous:
+        author = m.User.objects.with_id(review.user_id)
+        author_name = author.only('first_name', 'last_name').name
+        review.update({
+            'author_id': review.user_id,
+            'author_name': author_name,
+        })
+
+    return review
+
+
 def clean_professor(professor, course_id=None):
     # TODO(david): Get department, contact info
     ratings_cleaned = clean_ratings(professor.get_ratings())
 
-    # TODO(david) FIXME: get reviews
+    # TODO(david): Generic reviews for prof? Don't need that yet
     prof = {
         'name': professor.name,
-        'ratings': ratings_cleaned,
+        'ratings': ratings_cleaned
     }
 
     if course_id:
         course_ratings = professor.get_ratings_for_course(course_id)
         prof['course_ratings'] = clean_ratings(course_ratings)
+
+        course_reviews = m.user_course.get_reviews_for_course_prof(course_id,
+                professor.id)
+        prof['course_reviews'] = map(clean_prof_review, course_reviews)
 
     return prof
 
@@ -564,6 +585,7 @@ def clean_user(user):
         'lastTermName': 'Spring 2012',
         'coursesTook': [],
     }
+
 
 if __name__ == '__main__':
   app.debug = True

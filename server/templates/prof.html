@@ -18,7 +18,12 @@
 {% endcall %}
 
 {% call macros.us_template('prof-review-tpl') %}
-  HERE BE SINGLE REVIEW OF A PROF
+<div class="comment-text">
+  <%- comment %>
+</div>
+<div class="comment-date">
+  <%- comment_date %>
+</div>
 {% endcall %}
 
 {% call macros.us_template('prof-expandable-reviews-tpl') %}

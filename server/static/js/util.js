@@ -88,12 +88,22 @@ function(_, _s) {
    */
   var getHashCode = function(str) {
     var hash = 0;
-    if (str.length === 0) return hash;
+    if (!_.isString(str) || str.length === 0) return hash;
     for (var i = str.length - 1; i >= 0; --i) {
       hash = ((hash << 5) - hash) + str.charCodeAt(i);
       hash &= hash;  // Convert to 32-bit integer
     }
     return hash;
+  };
+
+  /**
+   * Converts a date object that json_util sends us into a JS datetime.
+   * TODO(david): Do this in a more automated way somehow...
+   */
+  var convertDate = function(obj, property) {
+    if (obj[property] && obj[property].$date) {
+      obj[property] = new Date(obj[property].$date);
+    }
   };
 
   return {
@@ -104,6 +114,7 @@ function(_, _s) {
     randomItems: randomItems,
     skewRating: skewRating,
     getDisplayRating: getDisplayRating,
-    getHashCode: getHashCode
+    getHashCode: getHashCode,
+    convertDate: convertDate,
   };
 });

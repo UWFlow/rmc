@@ -1,3 +1,5 @@
+import itertools
+
 import mongoengine as me
 
 import rating
@@ -86,3 +88,18 @@ class UserCourse(me.Document):
 
     # TODO(mack): should we have update_time?
     # update_date = me.DateTimeField()
+
+
+# TODO(david): Should be static method of ProfCourse
+def get_reviews_for_course_prof(course_id, prof_id):
+    menlo_reviews = MenloCourse.objects(
+        course_id=course_id,
+        professor_id=prof_id,
+    ).only('professor_review')
+
+    user_reviews = UserCourse.objects(
+        course_id=course_id,
+        professor_id=prof_id,
+    ).only('professor_review', 'user_id', 'term_id', 'anonymous')
+
+    return itertools.chain(menlo_reviews, user_reviews)
