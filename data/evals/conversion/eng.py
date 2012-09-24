@@ -22,7 +22,7 @@ def get_prof_names(prof_name):
         'last_name': clean_name(matches[0]),
     }
 
-def import_critiques(input_file):
+def import_engineering_critiques(input_file):
     print 'Begin importing Engineering course critiques'
     number_courses_imported = 0
     number_reviews_imported = 0
@@ -146,9 +146,9 @@ def import_critiques(input_file):
         number_courses_imported += 1
         line = input_file.readline()
 
-    print 'imported  %d course critiques reviews' % number_reviews_imported
-    print 'imported  %d courses' % number_courses_imported
-    print 'totalling %d courses' % m.CritiqueCourse.objects.count()
+    print 'imported  %d engineering course critiques reviews' % number_reviews_imported
+    print 'from      %d courses' % number_courses_imported
+    print 'totalling %d courses critiques' % m.CritiqueCourse.objects.count()
     print 'Finished importing Engineering course critiques'
 
 
@@ -160,4 +160,4 @@ if __name__ == '__main__':
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
     input_file = open(sys.argv[1], 'r')
-    import_critiques(input_file)
+    import_engineering_critiques(input_file)
