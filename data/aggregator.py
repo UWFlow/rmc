@@ -19,6 +19,7 @@ PROFESSOR_RATING_FIELDS = [
 COURSE_RATING_FIELDS = [
     'easiness',
     'interest',
+    'overall',
 ]
 
 def increment_ratings(courses, get_rating_fn, get_fields_fn, ucs):
@@ -52,15 +53,41 @@ def import_mongo_course_rating():
         return courses[uc.course_id]
 
     def get_fields_fn(uc):
+        easiness = uc.course_review.easiness
+        interest = uc.course_review.interest
+        if easiness and interest:
+            overall = (easiness + interest) / 2
+        elif easiness:
+            overall = easiness
+        else:
+            overall = interest
+
         return [
-            ('easiness', uc.course_review.easiness),
-            ('interest', uc.course_review.interest),
+            ('easiness', easiness),
+            ('interest', interest),
+            ('overall', overall),
         ]
 
     def get_aggregate_fields_fn(uc):
+        easiness = uc.easiness
+        interest = uc.interest
+
+        def calculate_overall_rating(e, i):
+            return (e.count * e.rating + i.count * i.rating) / (e.count + i.count)
+
+        # heuristic for getting the overall rating:
+        # 1. the count will max of the count for each attribute
+        # 2. the rating will be average
+        overall = m.AggregateRating(
+            count=max(easiness.count, interest.count),
+            rating=calculate_overall_rating(easiness, interest),
+        )
+
         return [
-            ('easiness', uc.easiness),
-            ('interest', uc.interest), ]
+            ('easiness', easiness),
+            ('interest', interest),
+            ('overall', overall),
+        ]
 
     courses = {}
     args = [courses, get_rating_fn]
@@ -76,17 +103,15 @@ def import_mongo_course_rating():
                 print 'could not find course %s in mongo' % course_id
                 continue
 
-
-            def calculate_overall_rating(e, i):
-                return (e.count * e.rating + i.count * i.rating) / (e.count + i.count)
-
             course.easiness = ratings['easiness']
             course.interest = ratings['interest']
-            course.overall = m.AggregateRating(
-                rating=calculate_overall_rating(course.easiness, course.interest),
-                count = course.easiness.count + course.interest.count)
+            course.overall = ratings['overall']
 
-            course.save()
+
+            try:
+                course.save()
+            except:
+                print 'course.profs', course.professor_ids
             count[0] += 1
 
     set_course_ratings_in_mongo(courses)
@@ -99,10 +124,14 @@ def import_mongo_course_professors():
     for course in m.Course.objects.only('professor_ids'):
         def get_professor_ids(course, coll):
             return set(
-                [x.professor_id for x in coll.objects(course_id=course.id).only('professor_id')]
+                [x.professor_id for x in coll.objects(course_id=course.id).only('professor_id') if x.professor_id]
             )
         professor_ids = get_professor_ids(course, m.UserCourse).union(
                 get_professor_ids(course, m.MenloCourse))
+        # TODO(mack): Looks like add_to_set doesn't validate that each item
+        # in the list meets the schema since it seemed to be letting me
+        # writing lists that contained None. Investigate if this is what it
+        # is doing.
         course.update(add_to_set__professor_ids=list(professor_ids))
         count += 1
 
