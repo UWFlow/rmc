@@ -30,3 +30,12 @@ class AggregateRating(me.EmbeddedDocument):
     def from_json(cls, json_str):
         obj = json.loads(json_str)
         return cls(**obj)
+
+
+def get_overall_rating(ar_ratings):
+    sum_ratings = sum(r['rating'] * r['count'] for r in ar_ratings)
+    num_ratings = sum(r['count'] for r in ar_ratings)
+    return AggregateRating(
+        count=max(r['count'] for r in ar_ratings),
+        rating=sum_ratings / max(num_ratings, 1),
+    )

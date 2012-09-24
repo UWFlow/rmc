@@ -158,7 +158,7 @@ def course_page(course_id):
         # TODO(david): 404 page
         flask.abort(404)
 
-    course_cleaned = clean_course(course)
+    course_cleaned = clean_course(course, expanded=True)
 
     # TODO(david): Protect against the </script> injection XSS hack
     return flask.render_template('course_page.html',
@@ -398,6 +398,12 @@ def user_course():
 ###############################################################################
 # Helper functions
 
+# TODO(david): This fn has a weird signature
+def clean_ratings(rating_dict):
+    update_with_name = lambda ar, name: dict(ar.to_dict(), **{ 'name': name})
+    return [update_with_name(v, k) for k, v in rating_dict.iteritems()]
+
+
 def clean_user_course(user_course):
     course_review = user_course.course_review
     professor_review = user_course.professor_review
@@ -423,8 +429,21 @@ def clean_user_course(user_course):
     }
 
 
-def clean_professor(professor):
-    pass
+def clean_professor(professor, course_id=None):
+    # TODO(david): Get department, contact info
+    ratings_cleaned = clean_ratings(professor.get_ratings())
+
+    # TODO(david) FIXME: get reviews
+    prof = {
+        'name': professor.name,
+        'ratings': ratings_cleaned,
+    }
+
+    if course_id:
+        course_ratings = professor.get_ratings_for_course(course_id)
+        prof['course_ratings'] = clean_ratings(course_ratings)
+
+    return prof
 
 
 def clean_course(course, expanded=False):
@@ -436,9 +455,13 @@ def clean_course(course, expanded=False):
     """
 
     def get_professors(course):
-        professors = m.Professor.objects(
-                id__in=course.professor_ids).only('id', 'first_name', 'last_name')
-        return [{'id': p.id, 'name': p.name} for p in professors]
+        professors = m.Professor.objects(id__in=course.professor_ids)
+
+        if expanded:
+            return [clean_professor(p, course.id) for p in professors]
+        else:
+            professors = professors.only('id', 'first_name', 'last_name')
+            return [{'id': p.id, 'name': p.name} for p in professors]
 
     def get_user_course(course):
         # XXX TODO(david) FIXME: search by user as well

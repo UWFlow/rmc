@@ -10,7 +10,9 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
       phone: '519-888-4567 x35241',
       office: 'DC 2506',
       department: 'School of Computer Science',
-      pictureUrl: ''
+      pictureUrl: '',
+      course_ratings: [],
+      reviews: null
     },
 
     initialize: function(attributes) {
@@ -24,6 +26,20 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
         this.set('pictureUrl',
             'http://placekitten.com/' + size[0] + '/' + size[1]);
       }
+
+      if (attributes && attributes.course_ratings) {
+        var coll = new ratings.RatingCollection(attributes.course_ratings);
+        var overall = coll.where({ name: 'overall' })[0];
+        this.set('overall', overall);
+        coll.remove(overall);
+        this.set('ratings', coll);
+      } else {
+        this.set('ratings', new ratings.RatingCollection());
+      }
+
+      if (!attributes || !attributes.reviews) {
+        this.set('reviews', new ProfReviewCollection());
+      }
     }
   });
 
@@ -36,6 +52,10 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
     }
+  });
+
+  var ProfCollection = Backbone.Collection.extend({
+    model: Prof
   });
 
   // TODO(david): This might just be a user-course model
@@ -87,21 +107,18 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
         model: this.prof
       });
 
+      // Reviews
       this.reviews = options.reviews;
       this.profReviewCollectionView = new ProfReviewCollectionView({
         collection: this.reviews
       });
 
-      // TODO(david): Removed mocked data
-      var ratingsCollection = new ratings.RatingCollection([
-        { name: 'interest', count: 20, total: 15 },
-        { name: 'easiness', count: 40, total: 37 }
-      ]);
+      // Rating info
       this.ratingBoxView = new ratings.RatingBoxView({
-        model: new ratings.RatingModel()
+        model: this.prof.get('overall')
       });
       this.ratingsView = new ratings.RatingsView({
-        ratings: ratingsCollection,
+        ratings: this.prof.get('ratings'),
         readOnly: true
       });
     },
@@ -154,13 +171,10 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
   var ProfCollectionView = baseViews.CollectionView.extend({
     className: 'prof-collection',
 
-    initialize: function(options) {
-
-    },
-
     createItemView: function(model) {
       return new ExpandableProfView({
-        model: model
+        prof: model,
+        reviews: model.get('reviews')
       });
     }
   });
@@ -168,10 +182,12 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util) {
   return {
     Prof: Prof,
     ProfCardView: ProfCardView,
+    ProfCollection: ProfCollection,
     ProfReview: ProfReview,
     ProfReviewCollection: ProfReviewCollection,
     ProfReviewCollectionView: ProfReviewCollectionView,
-    ExpandableProfView: ExpandableProfView
+    ExpandableProfView: ExpandableProfView,
+    ProfCollectionView: ProfCollectionView
   };
 
 });

@@ -47,7 +47,6 @@ function($, course, tookThis, user, tips, prof, ratings) {
   var tipsView = new tips.ExpandableTipsView({ tips: tipsCollection });
   $('#tips-collection-placeholder').replaceWith(tipsView.render().el);
 
-  var profModel = new prof.Prof();
   var profReviews = [{
     name: 'Larry Smith',
     passion: 5,
@@ -69,10 +68,9 @@ function($, course, tookThis, user, tips, prof, ratings) {
   }];
   var profReviewsCollection = new prof.ProfReviewCollection(profReviews);
 
-  var profView = new prof.ExpandableProfView({
-    reviews: profReviewsCollection,
-    prof: profModel
-  });
-  $('#professor-review-container').html(profView.render().el);
+  // TODO(david): Handle no professors for course
+  var profsCollection = new prof.ProfCollection(courseData.professors);
+  var profsView = new prof.ProfCollectionView({ collection: profsCollection });
+  $('#professor-review-container').html(profsView.render().el);
 
 });

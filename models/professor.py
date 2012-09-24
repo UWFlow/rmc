@@ -1,6 +1,12 @@
+from bson import json_util
 import mongoengine as me
+import redis
 
 import rating
+import rmc.shared.constants as c
+
+r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
+
 
 class Professor(me.Document):
     meta = {
@@ -46,3 +52,30 @@ class Professor(me.Document):
             self.id = Professor.get_id_from_name(self.first_name, self.last_name)
 
         super(Professor, self).save(*args, **kwargs)
+
+    def get_ratings(self):
+        ratings_dict = {
+            'clarity': self.clarity,
+            'easiness': self.easiness,
+            'passion': self.passion,
+        }
+        ratings_dict['overall'] = rating.get_overall_rating(
+                ratings_dict.values())
+        return ratings_dict
+
+    # TODO(david): This should go on ProfCourse
+    def get_ratings_for_course(self, course_id):
+        rating_dict = {}
+        for name in ['clarity', 'easiness', 'passion']:
+            rating_json = r.get(':'.join([course_id, self.id, name]))
+            if rating_json:
+                rating_loaded = json_util.loads(rating_json)
+                rating_dict[name] = rating.AggregateRating(
+                    rating=rating_loaded['rating'],
+                    count=rating_loaded['count'],
+                )
+
+        rating_dict['overall'] = rating.get_overall_rating(
+                rating_dict.values())
+
+        return rating_dict
