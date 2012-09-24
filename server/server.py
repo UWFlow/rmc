@@ -33,7 +33,7 @@ def get_current_user():
     """
     req = flask.request
 
-    if 'current_user' in req.__dict__:
+    if hasattr(req, 'current_user'):
         return req.current_user
 
     # TODO(Sandy): Eventually support non-fb users?
