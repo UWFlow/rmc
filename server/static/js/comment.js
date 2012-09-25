@@ -15,7 +15,7 @@ function(Backbone, $, _, util) {
     },
 
     initialize: function(attributes) {
-      if (attributes) {
+      if (attributes && attributes.comment_date) {
         this.set('comment_date', util.toDate(attributes.comment_date));
       }
 

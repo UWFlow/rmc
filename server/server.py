@@ -522,10 +522,10 @@ def user_course():
 
         # TODO(mack): add more stringent checking against user manually
         # setting time on the frontend
-        if 'comment' in review and not 'comment_date':
+        if 'comment' in review:
             review['comment_date'] = now
 
-    set_comment_date_if_necessary(uc.get('user_review'))
+    set_comment_date_if_necessary(uc.get('professor_review'))
     set_comment_date_if_necessary(uc.get('course_review'))
 
     user = get_current_user()
@@ -606,6 +606,7 @@ def clean_professor(professor, course_id=None):
 
     # TODO(david): Generic reviews for prof? Don't need that yet
     prof = {
+        'id': professor.id,
         'name': professor.name,
         'ratings': ratings_cleaned
     }

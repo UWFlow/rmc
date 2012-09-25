@@ -43,7 +43,11 @@ function(Backbone, $, _, comment, ratings, base_views) {
   });
 
   var ReviewCollection = Backbone.Collection.extend({
-    model: Review
+    model: Review,
+
+    comparator: function(model) {
+      return -model.get('comment').get('comment_date');
+    }
   });
 
   var ReviewCollectionView = base_views.CollectionView.extend({
