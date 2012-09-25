@@ -5,7 +5,7 @@ from rmc.models.rating import AggregateRating
 class CourseReview(me.EmbeddedDocument):
     interest = me.FloatField(min_value=0.0, max_value=1.0)
     easiness = me.FloatField(min_value=0.0, max_value=1.0)
-    comment = me.StringField(max_length=4096)
+    comment = me.StringField(default='', max_length=4096)
     comment_date = me.DateTimeField()
 
     def get_ratings(self):
@@ -18,7 +18,7 @@ class CourseReview(me.EmbeddedDocument):
 class ProfessorReview(me.EmbeddedDocument):
     clarity = me.FloatField(min_value=0.0, max_value=1.0)
     passion = me.FloatField(min_value=0.0, max_value=1.0)
-    comment = me.StringField(max_length=4096)
+    comment = me.StringField(default='', max_length=4096)
     comment_date = me.DateTimeField()
 
     def get_ratings(self):
