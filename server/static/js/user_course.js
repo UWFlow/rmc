@@ -84,13 +84,13 @@ function(Backbone, $, _, _s, ratings, select2) {
 
       this.courseRatingsView = new ratings.RatingsView({
         userCourse: this.userCourse,
-        userOnly: true,
+        editOnly: true,
         ratings: new ratings.RatingCollection(
             [{ name: 'interest' }, { name: 'easiness' }])
       });
       this.profRatingsView = new ratings.RatingsView({
         userCourse: this.userCourse,
-        userOnly: true,
+        editOnly: true,
         ratings: new ratings.RatingCollection(
             [{ name: 'clarity' }, { name: 'passion' }])
       });
