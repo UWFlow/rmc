@@ -70,7 +70,6 @@ function($, _cookie, FB) {
       if (response.status === 'connected') {
         // The user is already logged into Facebook and has ToSed our app before
         // Store the potentially updated access token in DB if necessary
-        //var authResp = response.authResponse;
         login(response.authResponse, {});
       }
     });

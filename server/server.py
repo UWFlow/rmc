@@ -332,13 +332,10 @@ def login():
             'join_source': m.User.JoinSource.FACEBOOK,
             'num_visits': 1,
             'last_visited': now,
+            'friend_fbids': friend_fbids,
 #TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
         }
-        user = m.User(**user_obj)
-        # FIXME(mack): need to also update for each friend using the site
-        user.add_friend_fbids(friend_fbids)
-
-        user.save()
+        user = m.User(**user_obj).save()
     except KeyError as ex:
         # Invalid key (shouldn't be happening)
 # TODO(Sandy): redirect to landing page, or nothing

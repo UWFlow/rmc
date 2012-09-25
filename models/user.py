@@ -65,16 +65,29 @@ class User(me.Document):
     def name(self):
         return '%s %s' % (self.first_name , self.last_name)
 
-    def add_friend_fbids(self, fbids):
-        new_fbids = set(fbids) - set(self.friend_fbids)
-        friend_ids = [u.id for u in User.objects(fbid__in=new_fbids).only('id')]
-        self.friend_ids += friend_ids
-        # TODO(Sandy): We're assuming people won't unfriend anyone. Fix this later?
-        # Adding new_fbids instead of setting to fbids to be consistent with the friends in self.friend_ids
-        self.friend_fbids += new_fbids
-
     def save(self, *args, **kwargs):
+
+        # TODO(mack): If _changed_fields attribute does not exist, it mean
+        # document has been saved yet. Just need to verify. In this case,
+        # we could just check if id has been set
+        first_save = not hasattr(self, '_changed_fields')
+
+        if first_save:
+            # TODO(Sandy): We're assuming people won't unfriend anyone.
+            # Fix this later?
+
+            # TODO(mack): this isn't safe against race condition of both
+            # friends signing up at same time
+            #print 'friend_fbids', self.friend_fbids
+            friends = User.objects(fbid__in=self.friend_fbids).only('id', 'friend_ids')
+            self.friend_ids = [f.id for f in friends]
+
         super(User, self).save(*args, **kwargs)
+
+        if first_save:
+            # TODO(mack): should do this asynchronously
+            # Using update rather than save because it should be more efficient
+            friends.update(add_to_set__friend_ids=self.id)
 
     @classmethod
     def cls_mutual_courses_redis_key(cls, user_id_one, user_id_two):
