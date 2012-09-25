@@ -12,6 +12,7 @@ import redis
 import time
 
 import rmc.shared.constants as c
+import rmc.shared.secrets as s
 import rmc.models as m
 
 import base64
@@ -304,7 +305,7 @@ def login():
             return 'Error'
 
     # Validate against Facebook's signed request
-    fb_data = parse_signed_request(fbsr, c.FB_DEV_APP_SECRET)
+    fb_data = parse_signed_request(fbsr, s.FB_APP_SECRET)
     if fb_data is None or fb_data['user_id'] != fbid:
         # Data is invalid
         return 'Error'
