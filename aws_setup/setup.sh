@@ -83,6 +83,8 @@ sudo add-apt-repository -y ppa:rwky/redis
 sudo apt-get update
 sudo apt-get install -y redis-server
 mkdir -p /home/rmc/data/redis/
+# TODO(david): Do this better (redis daemon changes user to redis)
+chmod a+w /home/rmc/data/redis/
 sudo rm -f /etc/init/redis-server.conf  # Remove annoying upstart daemon
 sudo service redis-server stop  # Stop so we can start redis using our config
 sudo update-rc.d -f redis-server remove
