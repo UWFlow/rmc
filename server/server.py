@@ -6,7 +6,6 @@ import functools
 import itertools
 import mongoengine as me
 import pymongo
-import random
 import re
 import redis
 import time
@@ -665,9 +664,12 @@ def clean_course(course, expanded=False, user=None):
         for friend in m.User.objects(id__in=friend_map.keys()).only(
                 'fbid', 'first_name', 'last_name'):
             # TODO(mack): should be storing in user objects
-            friend_map[friend.id]['user_name'] = friend.name
-            friend_map[friend.id]['user_fbid'] = friend.fbid
-
+            friend_map[friend.id].update({
+                'user_name': friend.name,
+                'user_fbid': friend.fbid,
+                'user_fb_pic_url': friend.fb_pic_url,
+                'user_profile_url': friend.profile_url,
+            })
 
         return friend_map.values()
 

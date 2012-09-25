@@ -1,18 +1,20 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('took-this-sidebar-tpl') %}
-<h3 class="num-friends"><%- numFriends %> friends took CS 241</h3>
+<h3 class="num-friends"><%- numFriends %>
+  <%- pluralize(numFriends, 'friend', 'friends') %> took <%- courseCode %>
+</h3>
 <div class="took-this-collection-placeholder"></div>
 {% endcall %}
 
 {% call macros.us_template('took-this-tpl') %}
-<a class="person-pic" href="<%- profileUrl %>">
-  <img src="<%- fbPicUrl %>">
+<a class="person-pic" href="<%- user_profile_url %>">
+  <img src="<%- user_fb_pic_url %>">
 </a>
 <div class="person-info">
-  <a class="person-name" href="<%- profileUrl %>">
-    <%- name %>
+  <a class="person-name" href="<%- user_profile_url %>">
+    <%- user_name %>
   </a>
-  <div class="mutual-courses">in Spring 2012</div>
+  <div class="mutual-courses">in <%- term_name %></div>
 </div>
 {% endcall %}

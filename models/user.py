@@ -137,3 +137,8 @@ class User(me.Document):
     # TODO(mack): support different sized pictures
     def fb_pic_url(self):
         return 'https://graph.facebook.com/%s/picture' % self.fbid
+
+    @property
+    def profile_url(self):
+        return '/profile/%s' % self.id
+

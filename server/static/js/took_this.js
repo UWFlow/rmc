@@ -26,9 +26,15 @@ function(Backbone, $, _, _s, bootstrap, baseViews) {
   TookThisSidebarView = Backbone.View.extend({
     className: 'took-this-sidebar',
 
+    initialize: function(attributes) {
+      this.courseCode = attributes.courseCode,
+      this.collection = attributes.collection
+    },
+
     render: function() {
       this.$el.html(_.template($('#took-this-sidebar-tpl').html(), {
-        numFriends: this.collection.length
+        numFriends: this.collection.length,
+        courseCode: this.courseCode
       }));
       var collectionView = new UserCollectionView({
         collection: this.collection

@@ -1,13 +1,12 @@
 require(
 ['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'ratings',
-'course'],
-function($, course, tookThis, user, tips, prof, ratings) {
+'user_course'],
+function($, course, tookThis, user, tips, prof, ratings, user_course) {
   // TODO(david): Customize with people who took this course.
   courseIds = ['CS137', 'SCI238', 'CS241'];
 
   var courseData = window.pageData.data;
   var courseModel = new course.CourseModel(courseData);
-  console.log(courseData);
 
   var ratingBoxView = new ratings.RatingBoxView({
     model: new ratings.RatingModel(courseData.overall)
@@ -20,9 +19,9 @@ function($, course, tookThis, user, tips, prof, ratings) {
   $('#course-inner-placeholder').html(courseInnerView.render().el);
   courseInnerView.animateBars();
 
-  var userCollection = user.UserCollection.getSampleCollection();
   var tookThisSidebarView = new tookThis.TookThisSidebarView({
-    collection: userCollection
+    collection: new user_course.UserCourses(pageData.data.friend_user_courses),
+    courseCode: courseModel.get('code')
   });
   $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
 
