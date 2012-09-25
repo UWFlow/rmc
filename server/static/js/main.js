@@ -60,7 +60,6 @@ require.config({
     'ext/underscore.string': 'ext/underscore.string-2.0.0',
     // TODO(mack): host locally?
     'ext/facebook': 'http://connect.facebook.net/en_US/all'
-    //'main': 'main.js?v=' + pageData.version
   }
 });
 

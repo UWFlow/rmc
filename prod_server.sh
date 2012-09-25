@@ -15,9 +15,6 @@ sudo pip install -r rmc/requirements.txt
 echo "Compiling compass"
 compass compile rmc/server
 
-echo "Compiling js"
-( cd rmc/server && node r.js -o build.js )
-
 # Start the uwsgi server
 # TODO(david): Benchmark with ab and use worker processes if necessary
 uwsgi \
@@ -28,4 +25,3 @@ uwsgi \
   --master \
   --daemonize /home/rmc/logs/uwsgi.log \
   --pidfile $1
-
