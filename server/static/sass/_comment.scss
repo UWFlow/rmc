@@ -1,0 +1,45 @@
+.author {
+  padding-left: 10px;
+}
+
+.comment-text {
+  $border-color: #DDD;
+  $inner-color: #FCFCFC;
+  $triangle-size: 7px;
+
+  position: relative;
+  @include border-radius(10px);
+  @include box-shadow(0 0 3px rgba(0, 0, 0, 0.1));
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  background-color: $inner-color;
+  padding: 12px;
+
+
+  // Speech bubble triangle outline
+  &:before {
+    position: absolute;
+    left: 100%;
+    margin-left: 1px;
+    top: 10px;
+    content: ' ';
+    width: 0;
+    height: 0;
+    border: $triangle-size solid;
+    border-color: darken($border-color, 10%) transparent transparent darken($border-color, 10%);
+    @include border-radius(0 2px 0 0);
+  }
+
+  // Speech bubble triangle inner
+  &:after {
+    position: absolute;
+    content: ' ';
+    width: 0;
+    height: 0;
+    left: 100%;
+    margin-left: 1px;
+    top: 11px;
+    border: ($triangle-size - 1px) solid;
+    border-color: $inner-color transparent transparent $inner-color;
+    @include border-radius(0 1px 0 0);
+  }
+}

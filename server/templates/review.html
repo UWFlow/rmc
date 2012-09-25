@@ -1,6 +1,12 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('review-tpl') %}
-<div class="ratings-placeholder"></div>
-<div class="comment-placeholder"></div>
+<div class="row-fluid">
+  <div class="span4">
+    <div class="ratings-placeholder"></div>
+  </div>
+  <div class="span8">
+    <div class="comment-placeholder"></div>
+  </div>
+</div>
 {% endcall %}
