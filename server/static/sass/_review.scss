@@ -2,4 +2,9 @@
 
 .review-post {
   margin-top: 15px;
+
+  .ratings {
+    @include transform(scale(0.9));
+  }
 }
+
