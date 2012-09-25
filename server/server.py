@@ -459,6 +459,7 @@ def upload_transcript():
                 course_history_list.append(user_course.id)
 
         user.course_history = course_history_list
+        user.cache_mutual_courses(r)
         user.save()
 
     except KeyError:

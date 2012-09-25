@@ -193,10 +193,11 @@ def import_redis_course_professor_rating():
 
 
 # TODO(mack): test it when we get data to test with
+# TODO(mack): currently sort of duplicate logic in User.cache_mutual_courses()
 def import_redis_friend_mutual_courses():
 
     courses_by_user = {}
-    for user in  m.User.objects.only('friend_ids', 'course_history'):
+    for user in m.User.objects.only('friend_ids', 'course_history'):
         friend_ids = [str(friend_id) for friend_id in user.friend_ids]
         ucs = m.UserCourse.objects(id__in=user.course_history).only('course_id')
         course_ids = [uc.course_id for uc in ucs]

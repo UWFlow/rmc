@@ -1,5 +1,7 @@
 import mongoengine as me
 
+from user_course import UserCourse
+
 class User(me.Document):
 
     class JoinSource(object):
@@ -101,3 +103,29 @@ class User(me.Document):
 
     def mutual_courses_redis_key(self, other_user_id):
         return User.cls_mutual_courses_redis_key(self.id, other_user_id)
+
+    # TODO(mack): cache value
+    @property
+    def course_ids(self):
+        return [uc.course_id for uc in UserCourse.objects(id__in=self.course_history)]
+
+    def cache_mutual_courses(self, redis):
+        courses_by_user = {}
+        for user in User.objects.only('friend_ids', 'course_history'):
+            friend_ids = [str(friend_id) for friend_id in user.friend_ids]
+            ucs = UserCourse.objects(id__in=user.course_history).only('course_id')
+            course_ids = [uc.course_id for uc in ucs]
+            courses_by_user[str(user.id)] = [friend_ids, set(course_ids)]
+
+        friends = User.objects(id__in=self.friend_ids).only('course_history')
+        friend_map = {}
+        for friend in friends:
+            friend_map[friend.id] = friend
+
+        my_course_ids = set(self.course_ids)
+        for friend in friends:
+            mutual_course_ids = my_course_ids.intersection(friend.course_ids)
+            if mutual_course_ids:
+                redis_key = self.mutual_courses_redis_key(friend.id)
+                redis.sadd(redis_key, *list(mutual_course_ids))
+
