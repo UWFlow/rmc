@@ -74,7 +74,7 @@ def import_mongo_course_rating():
         interest = uc.interest
 
         def calculate_overall_rating(e, i):
-            return (e.count * e.rating + i.count * i.rating) / (e.count + i.count)
+            return (e.count * e.rating + i.count * i.rating) / max(1, (e.count + i.count))
 
         # heuristic for getting the overall rating:
         # 1. the count will max of the count for each attribute
