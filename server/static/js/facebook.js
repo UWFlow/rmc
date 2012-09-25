@@ -19,14 +19,19 @@ function($, _cookie, FB) {
     $.cookie('fbid', authResp.userID, { path: '/' });
     $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
     $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
-    $.post(
-      '/login',
-      params,
-      function(data) {
+    $.ajax('/login', {
+      data: params,
+      type: 'POST',
+      success: function(data) {
         // TODO(Sandy): handle errors here, expecting none right now though
         window.location.href = '/profile';
+      },
+      error: function(xhr) {
+        FB.logout(function() {
+          window.location.href = '/';
+        });
       }
-    );
+    });
   };
 
   var firstLogin = function() {
