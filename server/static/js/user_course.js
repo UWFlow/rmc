@@ -76,7 +76,10 @@ function(Backbone, $, _, _s, ratings, select2) {
       'change .prof-select': 'showReview',
       'click .add-review': 'showReview',
       'click .save-review': 'saveReview',
-      'change .comments,.prof-select': 'allowSave'
+      // TODO(david): Figure out issue with change event fired after clicking
+      // 'save'
+      'keyup .comments': 'allowSave',
+      'change ,.prof-select': 'allowSave'
     },
 
     initialize: function(options) {
@@ -115,6 +118,7 @@ function(Backbone, $, _, _s, ratings, select2) {
           .select2('val', this.userCourse.get('professor_id'));
         this.$('.add-review')
           .html('<i class="icon-edit"></i> Edit review');
+        this.saveButtonSuccess();
       }
 
       this.$('.comments')
@@ -160,11 +164,7 @@ function(Backbone, $, _, _s, ratings, select2) {
           comment: this.$('.prof-comments').val()
         })
       }).done(function() {
-        button
-          .removeClass('btn-warning')
-          .addClass('btn-success')
-          .prop('disabled', true)
-          .html('<i class="icon-ok"></i> Saved.');
+        self.saveButtonSuccess();
       }).error(function() {
         button
           .removeClass('btn-warning')
@@ -174,6 +174,14 @@ function(Backbone, $, _, _s, ratings, select2) {
       }).always(function() {
         self.saving = false;
       });
+    },
+
+    saveButtonSuccess: function() {
+      this.$('.save-review')
+        .removeClass('btn-warning btn-danger')
+        .addClass('btn-success')
+        .prop('disabled', true)
+        .html('<i class="icon-ok"></i> Saved.');
     },
 
     allowSave: function() {
