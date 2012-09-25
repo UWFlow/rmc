@@ -251,7 +251,7 @@ def course_page(course_id):
 
     course_cleaned = clean_course(course, expanded=True)
     ucs = m.UserCourse.objects(course_id=course_id)
-    tips = map(tip_from_uc, ucs)
+    tips = map(tip_from_uc, filter(course_review_exists, ucs))
 
     # TODO(david): Protect against the </script> injection XSS hack
     return flask.render_template('course_page.html',
@@ -731,6 +731,11 @@ def clean_user(user, courses_map):
         'lastTermName': last_term_name,
         'coursesTook': courses_took,
     }
+
+def course_review_exists(uc):
+    if uc.course_review.comment is None or uc.course_review.comment == '':
+        return False
+    return True
 
 def tip_from_uc(uc):
     user_id = uc.user_id
