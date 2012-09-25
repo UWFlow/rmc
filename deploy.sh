@@ -14,9 +14,9 @@ cd $HOME/rmc
 git pull
 
 echo "Installing requirements"
-sudo pip install -r rmc/requirements.txt
+sudo pip install -r requirements.txt
 
 echo "Compiling compass"
-compass compile rmc/server
+compass compile server
 
 sudo service rmc_daemon restart
