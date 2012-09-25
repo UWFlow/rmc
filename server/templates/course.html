@@ -16,7 +16,7 @@
 
 {% call macros.us_template('sample-friends-tpl') %}
 <div class="friend-collection-placeholder"></div>
-<% var numFriends = friendCollection.length; %>
+<% var numFriends = friend_user_courses.length; %>
 <% var remaining = Math.max(numFriends - maxSampleFriends, 0); %>
 <% if (remaining > 0) { %>
   <a href="#" rel="popover" class="remaining-friends">
@@ -73,7 +73,10 @@
 {% endcall %}
 
 {% call macros.us_template('course-friend-tpl') %}
-<a href="<%- profileUrl %>">
-  <img class="friend-pic-img" src="<%- fbPicUrl %>">
+{# TODO(mack): remove harcode by storing attributes in User rather than
+  stashing in UserCourse #}
+<a href="<%- _s.sprintf('/profile/%s', user_id.$oid) %>">
+  <img class="friend-pic-img"
+    src="<%- _s.sprintf('https://graph.facebook.com/%s/picture', user_fbid) %>">
 </a>
 {% endcall %}

@@ -66,6 +66,10 @@ function(Backbone, $, _, _s, ratings, select2) {
     }
   });
 
+  var UserCourses = Backbone.Collection.extend({
+    model: UserCourse
+  });
+
   var UserCourseView = Backbone.View.extend({
     events: {
       'change .prof-select': 'showReview',
@@ -186,6 +190,7 @@ function(Backbone, $, _, _s, ratings, select2) {
 
   return {
     UserCourse: UserCourse,
+    UserCourses: UserCourses,
     UserCourseView: UserCourseView
   };
 });

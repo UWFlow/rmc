@@ -94,7 +94,10 @@ def get_sorted_transcript_for_user(user):
         cid_to_tid[uc.course_id] = (uc.term_id, uc.program_year_id)
 
     courses = m.Course.objects(id__in=cids)
-    cleaned_courses = map(clean_course, courses)
+    # TODO(mack): since this can be called for other users, need to
+    # explicitly set the user to appropriate user; but should do
+    # in cleaner way
+    cleaned_courses = map(functools.partial(clean_course, user=user), courses)
 
     for course in cleaned_courses:
         transcript.setdefault(cid_to_tid[course['id']], []).append(course)
@@ -115,7 +118,7 @@ def get_sorted_transcript_for_user(user):
     return sorted_transcript
 
 
-# TODO(mack): move this somehwere more appropriate
+# TODO(mack): move this somewhere more appropriate
 def get_user_obj(user):
     # fetch mutual friends from redis
     pipe = r.pipeline()
@@ -452,7 +455,6 @@ def upload_transcript():
     course_history_list = []
 
     def get_term_id(term_name):
-        print 'term_name', term_name
         season, year = term_name.split()
         return m.Term.get_id_from_year_season(year, season)
 
@@ -621,13 +623,15 @@ def clean_professor(professor, course_id=None):
     return prof
 
 
-def clean_course(course, expanded=False):
+def clean_course(course, expanded=False, user=None):
     """Returns information about a course to be sent down an API.
 
     Args:
         course: The course object.
         expanded: Whether to fetch more information, such as professor reviews.
     """
+
+    user = user or get_current_user()
 
     def get_professors(course):
         professors = m.Professor.objects(id__in=course.professor_ids)
@@ -639,13 +643,34 @@ def clean_course(course, expanded=False):
             return [{'id': p.id, 'name': p.name} for p in professors]
 
     def get_user_course(course):
-        user = get_current_user()
-        user_course = m.UserCourse.objects(course_id=course.id, user_id=user.id).first()
+        user_course = m.UserCourse.objects(
+                course_id=course.id, user_id=user.id).first()
 
         if not user_course:
             return None
 
         return clean_user_course(user_course)
+
+    def get_friend_user_courses(course):
+        ucs = m.UserCourse.objects(
+            course_id=course.id, user_id__in=user.friend_ids).only('user_id', 'term_id')
+        friend_map = {}
+        for uc in ucs:
+            friend_map[uc.user_id] = {
+                # FIXME(mack): should use json to convert id to objectid
+                'id': str(uc.id),
+                'user_id': uc.user_id,
+                # TODO(mack): send term_id or term_name?
+                'term_name': m.Term(id=uc.term_id).name,
+            }
+        for friend in m.User.objects(id__in=friend_map.keys()).only(
+                'fbid', 'first_name', 'last_name'):
+            # TODO(mack): should be storing in user objects
+            friend_map[friend.id]['user_name'] = friend.name
+            friend_map[friend.id]['user_fbid'] = friend.fbid
+
+
+        return friend_map.values()
 
     return {
         'id': course.id,
@@ -664,6 +689,7 @@ def clean_course(course, expanded=False):
         'overall': course.overall.to_dict(),
         'professors': get_professors(course),
         'userCourse': get_user_course(course),
+        'friend_user_courses': get_friend_user_courses(course),
     }
 
 

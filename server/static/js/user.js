@@ -8,6 +8,9 @@ function(Backbone, _, _s, util) {
       fbid: 1647810326,
       name: 'Mack Duan',
       lastTermName: 'Spring 2012',
+      // if this model if on a course, it indicates when this user took
+      // the course
+      term_took: 'Spring 2012',
       // TODO(mack): should be CourseCollection rather than array
       coursesTook: [],
       // If this user is a friend, mutual_courses will be stored
@@ -17,6 +20,8 @@ function(Backbone, _, _s, util) {
     },
 
     initialize: function(attributes) {
+      // FIXME(mack): need to convert backend to return strings for objectids
+      this.set('id', attributes.id.$oid);
     },
 
     getFbPicUrl: function() {
@@ -26,7 +31,7 @@ function(Backbone, _, _s, util) {
     },
 
     getProfileUrl: function() {
-      return '/profile/' + this.get('id').$oid;
+      return '/profile/' + this.get('id');
     },
 
     toJSON: function() {

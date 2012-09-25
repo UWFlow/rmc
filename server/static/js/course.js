@@ -7,7 +7,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     defaults: {
       id: 'SCI 238',
       name: 'Introduction to Astronomy omg omg omg',
-      friendCollection: undefined,
+      friend_user_courses: new u_c.UserCourses(),
       userCourse: undefined,
       professorNames: ['Eddie Dupont', 'Charlie Clarke', 'Mark Smucker', 'Larry Smith'],
       description: 'This couse will introduce you to the wonderful world' +
@@ -33,10 +33,13 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
         this.set('ratings', new ratings.RatingCollection(ratingsArray));
       }
 
-      this.set('userCourse', new u_c.UserCourse(attributes.userCourse));
-      if (!attributes.friendCollection) {
-        this.set('friendCollection', user.UserCollection.getSampleCollection());
+      if (attributes.friend_user_courses) {
+        var friend_user_courses = new u_c.UserCourses(
+            attributes.friend_user_courses);
+        this.set('friend_user_courses', friend_user_courses);
       }
+
+      this.set('userCourse', new u_c.UserCourse(attributes.userCourse));
     }
   });
 
@@ -52,7 +55,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
       this.courseInnerView = new CourseInnerView({
         courseModel: this.courseModel
       });
-      if (this.courseModel.get('friendCollection').length) {
+      if (this.courseModel.get('friend_user_courses').length) {
         this.sampleFriendsView = new SampleFriendsView({
           courseModel: this.courseModel
         });
@@ -63,9 +66,9 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
       this.$el.html(this.template(this.courseModel.toJSON()));
 
       this.$('.rating-box-placeholder').replaceWith(
-          this.ratingBoxView.render().el);
+          this.ratingBoxView.render().$el);
 
-      if (this.SampleFriendsView) {
+      if (this.sampleFriendsView) {
         this.$('.sample-friends-placeholder').replaceWith(
           this.sampleFriendsView.render().$el);
       }
@@ -164,27 +167,27 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     },
 
     render: function() {
-      var friendCollection = this.courseModel.get('friendCollection');
+      var friendUserCourses = this.courseModel.get('friend_user_courses');
 
       this.$el.html(
         _.template($('#sample-friends-tpl').html(), {
-          friendCollection: friendCollection,
+          friend_user_courses: friendUserCourses,
           maxSampleFriends: this.MAX_SAMPLE_FRIENDS
         })
       );
 
       var sampleFriendCollection = new user.UserCollection(
-        friendCollection.first(this.MAX_SAMPLE_FRIENDS)
+        friendUserCourses.first(this.MAX_SAMPLE_FRIENDS)
       );
       var friendCollectionView = new FriendCollectionView({
-        friendCollection: sampleFriendCollection
+        friendUserCourses: sampleFriendCollection
       });
       this.$('.friend-collection-placeholder').replaceWith(
         friendCollectionView.render().$el);
 
       var $target = this.$('.remaining-friends');
 
-      var numFriends = friendCollection.length;
+      var numFriends = friendUserCourses.length;
       // TODO(mack): investigate if offset attribute works for popover, need to
       // move popover slightly higher
       $target.popover({
@@ -204,12 +207,12 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
 
     getFriendsPopoverContent: function() {
       if (!this.friendsHovercardView) {
-        var friendCollection = this.courseModel.get('friendCollection');
-        var remainingFriendCollection = new user.UserCollection(
-          friendCollection.rest(this.MAX_SAMPLE_FRIENDS)
+        var friendUserCourses = this.courseModel.get('friend_user_courses');
+        var remainingUserCourses = new u_c.UserCourses(
+          friendUserCourses.rest(this.MAX_SAMPLE_FRIENDS)
         );
         this.friendsHovercardView = new FriendCollectionView({
-          friendCollection: remainingFriendCollection
+          friendUserCourses: remainingUserCourses
         });
       }
       // TODO(mack): custom width based on number of friends in hovercard
@@ -218,12 +221,13 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
 
   });
 
+  // Rename since it no longer holds FriendCollectionView
   var FriendCollectionView = Backbone.View.extend({
     tagName: 'ul',
     className: 'friend-collection clearfix',
 
     initialize: function(attributes) {
-      this.friendCollection = attributes.friendCollection;
+      this.friendUserCourses = attributes.friendUserCourses;
       this.friendViews = [];
     },
 
@@ -231,16 +235,16 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
       this.$el.html(
         _.template($('#course-friends-hovercard-tpl').html(), {})
       );
-      this.friendCollection.each(function(friendModel) {
-        this.addFriend(friendModel);
+      this.friendUserCourses.each(function(userCourse) {
+        this.addFriend(userCourse);
       }, this);
 
       return this;
     },
 
-    addFriend: function(friendModel) {
+    addFriend: function(userCourse) {
       var friendView = new CourseFriendView({
-        friendModel: friendModel,
+        userCourse: userCourse,
         tagName: 'li'
       });
       this.$el.append(friendView.render().el);
@@ -253,12 +257,12 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     className: 'friend-pic',
 
     initialize: function(attributes) {
-      this.friendModel = attributes.friendModel;
+      this.userCourse = attributes.userCourse;
     },
 
     render: function() {
       this.$el.html(
-        _.template($('#course-friend-tpl').html(), this.friendModel.toJSON())
+        _.template($('#course-friend-tpl').html(), this.userCourse.toJSON())
       );
 
       window.setTimeout(_.bind(this.postRender, this));
@@ -269,7 +273,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     // Put logic here that should be run after this.$el is added to the DOM
     postRender: function() {
       var title = _s.sprintf('%s (%s)',
-        this.friendModel.get('name'), this.friendModel.get('lastTermName'));
+        this.userCourse.get('user_name'), this.userCourse.get('term_name'));
       this.$el.tooltip({
         trigger: 'hover',
         title: title
