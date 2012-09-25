@@ -41,14 +41,84 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
   });
 
   var CourseView = Backbone.View.extend({
+    template: _.template($('#course-tpl').html()),
     className: 'course well',
 
     initialize: function(options) {
       this.courseModel = options.courseModel;
-      var userCourse = this.courseModel.get('userCourse');
       this.ratingBoxView = new ratings.RatingBoxView({
         model: new ratings.RatingModel(this.courseModel.get('overall'))
       });
+      this.courseInnerView = new CourseInnerView({
+        courseModel: this.courseModel
+      });
+      if (this.courseModel.get('friendCollection').length) {
+        this.sampleFriendsView = new SampleFriendsView({
+          courseModel: this.courseModel
+        });
+      }
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.courseModel.toJSON()));
+
+      this.$('.rating-box-placeholder').replaceWith(
+          this.ratingBoxView.render().el);
+
+      if (this.SampleFriendsView) {
+        this.$('.sample-friends-placeholder').replaceWith(
+          this.sampleFriendsView.render().$el);
+      }
+
+      return this;
+    },
+
+    events: {
+      // TODO(david): Figure out a nicer interaction without requiring click
+      'click .visible-section': 'toggleCourse',
+      'focus .new-review-input': 'expandNewReview'
+    },
+
+    toggleCourse: function(evt) {
+      if (this.$('.course-inner').is(':visible')) {
+        this.collapseCourse(evt);
+      } else {
+        this.expandCourse(evt);
+      }
+    },
+
+    expandCourse: function(evt) {
+      if (!this.innerRendered) {
+        this.innerRendered = true;
+
+        // TODO(david): Neaten this jQuery
+        var $inner = this.courseInnerView.render().$el;
+        $inner.addClass('hide-initial');
+        this.$('.course-inner-placeholder').replaceWith($inner);
+      }
+
+      this.courseInnerView.$el.fancySlide('down', 300);
+      this.courseInnerView.animateBars(300 / 4);
+    },
+
+    collapseCourse: function(evt) {
+      this.$('.course-inner').fancySlide('up');
+    },
+
+    expandNewReview: function(evt) {
+      this.$('.new-review').addClass('new-review-expanded');
+    }
+
+  });
+
+  // TODO(david): Refactor things to use implicit "model" on views
+  var CourseInnerView = Backbone.View.extend({
+    template: _.template($('#course-inner-tpl').html()),
+    className: 'course-inner',
+
+    initialize: function(options) {
+      this.courseModel = options.courseModel;
+      var userCourse = this.courseModel.get('userCourse');
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
         userCourse: userCourse
@@ -62,59 +132,23 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     },
 
     render: function() {
-      this.$el.html(
-        _.template($('#course-tpl').html(), this.courseModel.toJSON()));
+      this.$el.html(this.template(this.courseModel.toJSON()));
 
-      this.$('.rating-box-placeholder').replaceWith(
-          this.ratingBoxView.render().el);
-      this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
       this.$('.review-placeholder').replaceWith(
         this.userCourseView.render().el);
-
-      if (this.courseModel.get('friendCollection').length) {
-        var sampleFriendsView = new SampleFriendsView({
-          courseModel: this.courseModel
-        });
-        this.$('.sample-friends-placeholder').replaceWith(
-          sampleFriendsView.render().$el);
-      }
+      this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
 
       return this;
     },
 
-    events: {
-      // TODO(david): Figure out a nicer interaction without requiring click
-      'click .visible-section': 'toggleCourse',
-      'focus .new-review-input': 'expandNewReview'
-    },
-
-    toggleCourse: function(evt) {
-      if (this.$('.expand-section').is(':visible')) {
-        this.collapseCourse(evt);
-      } else {
-        this.expandCourse(evt);
-      }
-    },
-
-    // XXX TODO(david) FIXME: need to not render expanded HTML until needed
-    expandCourse: function(evt) {
-      var duration = 300;
-      this.$('.expand-section').fancySlide('down', duration);
-
+    animateBars: function(pause) {
+      pause = pause === undefined ? 0 : pause;
       this.ratingsView.removeBars();
       window.setTimeout(_.bind(function() {
         this.ratingsView.render();
-      }, this), duration / 4);
-    },
-
-    collapseCourse: function(evt) {
-      this.$('.expand-section').fancySlide('up');
-    },
-
-    expandNewReview: function(evt) {
-      this.$('.new-review').addClass('new-review-expanded');
+      }, this), pause);
+      return this;
     }
-
   });
 
   var SampleFriendsView = Backbone.View.extend({
