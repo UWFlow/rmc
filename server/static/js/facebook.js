@@ -24,7 +24,6 @@ function($, _cookie, FB) {
       params,
       function(data) {
         // TODO(Sandy): handle errors here, expecting none right now though
-        return;
         window.location.href = '/profile';
       }
     );
