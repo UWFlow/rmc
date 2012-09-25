@@ -710,7 +710,9 @@ def clean_user(user, courses_map):
     if user.program_name:
         program_name = user.program_name.split(',')[0]
 
-    last_term_name = m.Term(id=user.last_term_id).name
+    last_term_name = None
+    if user.last_term_id:
+        last_term_name = m.Term(id=user.last_term_id).name
 
     courses_took = []
     for uc in m.UserCourse.objects(id__in=user.course_history).only('course_id', 'term_id'):
