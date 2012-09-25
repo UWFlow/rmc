@@ -559,6 +559,9 @@ def clean_user_course(user_course):
     return {
         'id': user_course.id,
         'user_id': user_course.user_id,
+        # TODO(Sandy): We probably don't need to pass down term_id
+        'term_id': user_course.term_id,
+        'term_name': m.Term(id=user_course.term_id).name,
         'course_id': user_course.course_id,
         'professor_id': user_course.professor_id,
         'anonymous': user_course.anonymous,

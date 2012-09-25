@@ -49,13 +49,15 @@
   </div>
 </div>
 
-<div class="row-fluid">
-  <div class="span12">
-    <div class="alert alert-info user-review-box">
-      <div class="review-placeholder"></div>
+<% if (userCourse.has('term_name')) { %>
+  <div class="row-fluid">
+    <div class="span12">
+      <div class="alert alert-info user-review-box">
+        <div class="review-placeholder"></div>
+      </div>
     </div>
   </div>
-</div>
+<% } %>
 
 <% if (more_details) { %>
   <div class="row-fluid">

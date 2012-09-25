@@ -9,7 +9,8 @@ function(Backbone, $, _, _s, ratings, select2) {
     // TODO(mack): use undefined rather than null
     defaults: {
       id: null,
-      term_id: '2012_05',
+      term_id: null,
+      term_name: null,
       course_id: null,
       professor_id: null,
       professor_review: {
