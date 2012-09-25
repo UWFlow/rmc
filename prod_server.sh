@@ -7,6 +7,8 @@
 # Bail on errors
 set -e
 
+cd $HOME/rmc
+
 # Start the uwsgi server
 # TODO(david): Benchmark with ab and use worker processes if necessary
 uwsgi \
@@ -16,4 +18,5 @@ uwsgi \
   --wsgi rmc.server.server:app \
   --master \
   --daemonize /home/rmc/logs/uwsgi.log \
+  --uid rmc \
   --pidfile $1
