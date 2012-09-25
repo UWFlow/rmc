@@ -8,7 +8,13 @@
   <div class="span3 author">
     <img class="img-polaroid" width="80" height="80"
         src="<%- author_pic_url %>" class="author-pic">
-    <div class="comment-date"><%- comment_date %></div>
+    <div>
+      <small class="comment-date">
+        <span class="muted">Says</span> <%- author_name %>
+        <span class="muted">on</span>
+        <%- moment(comment_date).format('MMM D, YYYY') %>
+      </small>
+    </div>
   </div>
 </div>
 {% endcall %}

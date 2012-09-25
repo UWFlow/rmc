@@ -7,6 +7,7 @@ function(Backbone, $, _, util) {
     defaults: {
       user_id: null,
       fbid: null,
+      author_name: 'a puppy',
       comment: '',
       comment_date: new Date(0),
       author_pic_url: ''

@@ -24,6 +24,9 @@ require.config({
     'ext/cookie': {
       deps: ['ext/jquery']
     },
+    'ext/moment': {
+      exports: 'moment'
+    },
     'ext/slimScroll': {
       deps: ['ext/jquery', 'ext/jqueryui']
     },
@@ -50,6 +53,7 @@ require.config({
     'ext/select2': 'ext/select2.min',
     'ext/autosize': 'ext/jquery.autosize-min',
     'ext/cookie': 'ext/jquery.cookie',
+    'ext/moment': 'ext/moment.min',
     'ext/slimScroll': 'ext/slimScroll-0.6.0',
     'ext/jqueryui': 'ext/jquery-ui-1.8.23.custom.min',
     'ext/underscore': 'ext/underscore-1.3.3',
@@ -59,7 +63,9 @@ require.config({
   }
 });
 
-require(['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone', 'util'], function($, _, _s, Backbone, util) {
+require(['ext/jquery', 'ext/underscore', 'ext/underscore.string',
+    'ext/backbone', 'util', 'ext/moment'],
+function($, _, _s, Backbone, util, moment) {
   // Add helpers functions to all templates
   (function() {
     var template = _.template;
@@ -69,7 +75,8 @@ require(['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone'
       _: _,
       _s: _s,
       pluralize: util.pluralize,
-      getDisplayRating: util.getDisplayRating
+      getDisplayRating: util.getDisplayRating,
+      moment: moment
     };
 
     _.template = function(templateString, data, settings) {
