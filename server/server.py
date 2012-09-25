@@ -1,5 +1,6 @@
 from bson import json_util
 from datetime import datetime
+import bson
 import flask
 import functools
 import itertools
@@ -166,23 +167,25 @@ def index():
             page_script='index_page.js')
 
 
-@app.route('/profile', defaults={'fbid': None})
-@app.route('/profile/<int:fbid>')
+# TODO(mack): maybe support fbid in addition to user_id
+@app.route('/profile', defaults={'user_id': None})
+@app.route('/profile/<string:user_id>')
 @login_required
-def profile(fbid):
+def profile(user_id):
+
     user = get_current_user()
 
-    if fbid:
-        # Fbid's stored in our DB are unicode types
-        fbid = unicode(fbid)
+    if user_id:
+        user_id = bson.ObjectId(user_id)
 
-    if not fbid or fbid == user.fbid:
+    if not user_id or user_id == user.id:
         sorted_transcript = get_sorted_transcript_for_user(user)
         user_obj = get_user_obj(user)
     else:
-        other_user = m.User.objects(fbid=fbid).first()
+        other_user = m.User.objects(id=user_id).first()
         user_obj = get_user_obj(other_user)
         if other_user is None:
+            print 'other-use is None'
             return flask.redirect('/profile', 302)
 
         sorted_transcript = get_sorted_transcript_for_user(other_user)
