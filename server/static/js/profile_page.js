@@ -52,7 +52,28 @@ function($, _, _s, transcript, term, course, friend, util, user) {
     var termCollectionView = new term.TermCollectionView({
       termCollection: termCollection
     });
-    $('#term-collection-container').html(termCollectionView.render().el);
+    $('#term-collection-container').html(termCollectionView.render().el).show();
+
+    transcript_remove_text = $('#transcript-remove-text')
+      .html('<a id="remove-transcript-link">Remove my transcript!</a>')
+      .show();
+    $('#remove-transcript-link').click(function(event) {
+      event.preventDefault();
+      // TODO(Sandy): Ask for confirmation?
+
+      $.post('/api/remove_transcript', {}, function(response) {
+        // TODO(Sandy: Make duration dependent on the # of courses the user has
+        duration = 1500;
+        term_collection_container = $('#term-collection-container')
+          .fancySlide('up', duration);
+        transcript_remove_text.fadeOut(duration);
+
+        setTimeout(function() {
+          term_collection_container.html('');
+          transcript_remove_text.html('');
+        }, duration);
+      });
+    });
   }
 
   // Render the transcript, if available

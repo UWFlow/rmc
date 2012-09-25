@@ -71,11 +71,16 @@ def login_required(f):
 
 # TODO(Sandy): Move this somewhere more appropraite. It is currently being called by api/transcript and /profile
 def get_sorted_transcript_for_user(user):
+
+    course_history = user.course_history
+    if not course_history:
+        return ''
+
     transcript = {}
     cid_to_tid = {}
     cids = []
 
-    ucs = m.UserCourse.objects(id__in=user.course_history).only('course_id', 'term_id')
+    ucs = m.UserCourse.objects(id__in=course_history).only('course_id', 'term_id')
     for uc in ucs:
         cids.append(uc.course_id)
         cid_to_tid[uc.course_id] = uc.term_id
@@ -466,6 +471,15 @@ def upload_transcript():
 
     sorted_transcript = get_sorted_transcript_for_user(user)
     return json_util.dumps(sorted_transcript)
+
+
+@app.route('/api/remove_transcript', methods=['POST'])
+@login_required
+def remove_transcript():
+    user = get_current_user()
+    user.course_history = []
+    user.save()
+    return flask.make_response(flask.redirect('/'))
 
 
 @app.route('/api/user/course', methods=['POST', 'PUT'])
