@@ -2,7 +2,7 @@
 
 {% call macros.us_template('friend-sidebar-tpl') %}
 <div class="num-friends">
-  <%- numFriends %> <%- pluralize(numFriends, 'Friend', 'Friends') %>
+  <%- numFriends %> <%- pluralize(numFriends, 'friend', 'friends') %>
 </div>
 <div class="friend-collection-placeholder"></div>
 <% if (pageData.profileObj.own_profile) { %>
