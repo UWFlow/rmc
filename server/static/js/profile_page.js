@@ -110,7 +110,10 @@ function($, _, _s, transcript, term, course, friend, util, user) {
       {
         'transcriptData': JSON.stringify(transcriptData)
       },
-      renderTranscript,
+      function() {
+        // TODO(mack): load and update page with js rather th reloading
+        window.location.reload();
+      },
       'json'
     );
   };
