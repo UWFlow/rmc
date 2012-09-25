@@ -9,16 +9,14 @@
 {% set nav_item = "profile" %}
 
 {% block page_title %}
-  {% if profile_obj['own_profile'] %}
-    My
-  {% else %}
-    {{ profile_obj['name'] }}'s
-  {% endif %}
-  Profile
+  {{ profile_obj['name'] }}
 {% endblock %}
 
 {% block header %}
-  {{ macros.page_title(self.page_title()) }}
+  <h1>
+    <img class="profile-pic img-polaroid" src="{{ profile_obj['fb_pic_url'] }}">
+    {{ profile_obj['name'] }}
+  </h1>
 {% endblock %}
 
 {% block body %}

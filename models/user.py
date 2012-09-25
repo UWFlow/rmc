@@ -129,3 +129,9 @@ class User(me.Document):
                 redis_key = self.mutual_courses_redis_key(friend.id)
                 redis.sadd(redis_key, *list(mutual_course_ids))
 
+
+
+    @property
+    # TODO(mack): support different sized pictures
+    def fb_pic_url(self):
+        return 'https://graph.facebook.com/%s/picture' % self.fbid

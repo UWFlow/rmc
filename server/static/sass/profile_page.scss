@@ -3,6 +3,14 @@
 @import 'course';
 @import 'friend';
 
+header {
+  .profile-pic {
+    $profile-pic-size: 40px;
+    width: $profile-pic-size;
+    height: $profile-pic-size;
+  }
+}
+
 #transcript-container {
   #transcript-instructions {
     float: left;

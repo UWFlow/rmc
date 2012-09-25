@@ -654,6 +654,7 @@ def clean_user(user):
         'first_name': user.first_name,
         'last_name': user.last_name,
         'name': user.name,
+        'fb_pic_url': user.fb_pic_url,
         # FIXME(mack): remove harcode
         'lastTermName': 'Spring 2012',
         'coursesTook': [],
