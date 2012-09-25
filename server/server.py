@@ -580,25 +580,29 @@ def clean_user_course(user_course):
     }
 
 
-def clean_prof_review(review):
-    prof_ratings = review.professor_review.get_ratings()
-    prof_ratings.update(review.course_review.get_ratings())
+def clean_prof_review(entity):
+    prof_ratings = entity.professor_review.get_ratings()
+    prof_ratings.update(entity.course_review.get_ratings())
 
     review = {
         'comment': {
-            'comment': review.professor_review.comment,
-            'comment_date': review.professor_review.comment_date,
+            'comment': entity.professor_review.comment,
+            'comment_date': entity.professor_review.comment_date,
         },
         'ratings': clean_ratings(prof_ratings)
     }
 
-    if hasattr(review, 'user_id') and not review.anonymous:
-        author = m.User.objects.with_id(review.user_id)
-        author_name = author.only('first_name', 'last_name').name
-        review.update({
-            'author_id': review.user_id,
-            'author_name': author_name,
-        })
+    # TODO(david): Maybe just pass down the entire user object
+    # TODO(david) FIXME[uw](david): Should not nest comment
+    if hasattr(entity, 'user_id') and not entity.anonymous:
+        author = m.User.objects.only('first_name', 'last_name', 'fbid'
+                ).with_id(entity.user_id)
+        review['comment']['author'] = {
+            'id': author.id,
+            'name': author.name,
+            'fbid': author.fbid,
+            'fb_pic_url': author.fb_pic_url,
+        }
 
     return review
 

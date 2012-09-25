@@ -3,6 +3,7 @@ define(
 function(Backbone, $, _, comment, ratings, base_views) {
 
   // TODO(david): Remove "Model" suffixes from other Backbone models
+  // TODO(david): Remove the comment being nested
   var Review = Backbone.Model.extend({
     defaults: {
       comment: new comment.Comment(),

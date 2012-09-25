@@ -5,21 +5,23 @@ function(Backbone, $, _, util) {
   // TODO(david): Remove "Model" suffixes from other Backbone models
   var Comment = Backbone.Model.extend({
     defaults: {
-      user_id: null,
-      fbid: null,
-      author_name: 'a puppy',
       comment: '',
       comment_date: new Date(0),
-      author_pic_url: '',
-      anonymous: false
+      anonymous: false,
+      author: {
+        'name': 'a puppy'
+      },
+      author_pic_url: ''
     },
 
-    initialize: function(attributes) {
+    initialize: function(attributes, options) {
       if (attributes && attributes.comment_date) {
         this.set('comment_date', util.toDate(attributes.comment_date));
       }
 
-      if (!attributes || !attributes.author_pic_url) {
+      if (attributes && attributes.author && attributes.author.fb_pic_url) {
+        this.set('author_pic_url', attributes.author.fb_pic_url);
+      } else {
         var attrs = attributes ? attributes : this.defaults;
         var size = [
             util.getHashCode('' + this.get('comment_date')) % 20 + 50,
