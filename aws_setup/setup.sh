@@ -98,6 +98,10 @@ sudo ln -sfnv $CONFIG_DIR/etc/nginx/sites-available/rmc \
 sudo ln -sfnv /etc/nginx/sites-available/rmc /etc/nginx/sites-enabled/rmc
 sudo service nginx restart
 
+echo "Installing node and npm"
+sudo apt-get install -y nodejs
+curl https://npmjs.org/install.sh | sudo sh
+
 echo "Setting up rmc and dependencies"
 # TODO(david): Call setup_ubuntu.sh
 # Install libraries needed for lxml
@@ -119,8 +123,3 @@ sudo update-rc.d -f rmc_daemon remove
 sudo ln -sfnv $CONFIG_DIR/etc/init.d/rmc_daemon /etc/init.d
 sudo update-rc.d rmc_daemon defaults
 sudo service rmc_daemon restart
-
-# Don't need node yet
-#echo "Installing node and npm"
-#sudo apt-get install -y nodejs
-#curl https://npmjs.org/install.sh | sudo sh
