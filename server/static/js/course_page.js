@@ -18,6 +18,7 @@ function($, course, tookThis, user, tips, prof, ratings) {
     courseModel: courseModel
   });
   $('#course-inner-placeholder').html(courseInnerView.render().el);
+  courseInnerView.animateBars();
 
   var userCollection = user.UserCollection.getSampleCollection();
   var tookThisSidebarView = new tookThis.TookThisSidebarView({
