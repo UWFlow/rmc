@@ -100,11 +100,12 @@ def get_reviews_for_course_prof(course_id, prof_id):
     menlo_reviews = MenloCourse.objects(
         course_id=course_id,
         professor_id=prof_id,
-    ).only('professor_review')
+    ).only('professor_review', 'course_review')
 
     user_reviews = UserCourse.objects(
         course_id=course_id,
         professor_id=prof_id,
-    ).only('professor_review', 'user_id', 'term_id', 'anonymous')
+    ).only('professor_review', 'course_review', 'user_id', 'term_id',
+            'anonymous')
 
     return itertools.chain(menlo_reviews, user_reviews)

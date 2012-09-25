@@ -10,7 +10,8 @@ class CourseReview(me.EmbeddedDocument):
 
     def get_ratings(self):
         return {
-            'interest': AggregateRating.from_single_rating(self.interest),
+            # FIXME(david): Uncomment. This is just for prof review display
+            #'interest': AggregateRating.from_single_rating(self.interest),
             'easiness': AggregateRating.from_single_rating(self.easiness),
         }
 
@@ -23,5 +24,6 @@ class ProfessorReview(me.EmbeddedDocument):
     def get_ratings(self):
         return {
             'clarity': AggregateRating.from_single_rating(self.clarity),
-            'passion': AggregateRating.from_single_rating(self.passion),
+            # FIXME(david): Uncomment. Don't have any passion data yet...
+            #'passion': AggregateRating.from_single_rating(self.passion),
         }
