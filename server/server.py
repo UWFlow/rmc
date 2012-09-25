@@ -506,11 +506,14 @@ def remove_transcript():
     return flask.make_response(flask.redirect('/'))
 
 
+# XXX[uw](Sandy): Make this not completely fail when hitting this endpoint, otherwise the user would have wasted all
+# their work. We can do one of 1. a FB login on the client 2. store their data for after they login 3. don't let them
+# start writing if they aren't logged in. 1 or 3 seems best
+@login_required
 @app.route('/api/user/course', methods=['POST', 'PUT'])
 def user_course():
-    # TODO(david) FIXME: check FB access token. Authentication + authorization!
     # TODO(david) FIXME: Use ORM, don't shove! and ensure_index
-    # TODO(david): This should also update aggregate ratings table, etc.
+    # FIXME[uw](david): This should also update aggregate ratings table, etc.
     uc = json_util.loads(flask.request.data)
 
     now = datetime.now()
