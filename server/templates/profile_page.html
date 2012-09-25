@@ -3,7 +3,7 @@
 {% import 'macros.html' as macros %}
 
 {% block stylesheets %}
-  <link rel="stylesheet" href="/static/css/profile_page.css?1">
+  <link rel="stylesheet" href="{{ '/static/css/profile_page.css'|version }}">
 {% endblock %}
 
 {% set nav_item = "profile" %}
