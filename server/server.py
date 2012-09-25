@@ -289,7 +289,7 @@ def login():
     # TODO(Sandy): Use Flask Sessions instead of raw cookie
 
     fbid = req.cookies.get('fbid')
-    # FIXME(Sandy): No need to pass the fb_access_token up, we can just exchange fb_data.code for the token from FB
+    # FIXME[uw](Sandy): No need to pass the fb_access_token up, we can just exchange fb_data.code for the token from FB
     # https://developers.facebook.com/docs/authentication/signed_request/
     fb_access_token = req.cookies.get('fb_access_token')
     # Compensate for network latency by subtracting 10 seconds
@@ -312,8 +312,8 @@ def login():
         # Data is invalid
         return 'Error'
 
-    # XXX(mack): Someone could pass fake fb_access_token for an fbid, need to
-    # validate on facebook before creating the user
+    # FIXME[uw](mack): Someone could pass fake fb_access_token for an fbid, need to
+    # validate on facebook before creating the user. (Sandy): See the note above on using signed_request
     user = m.User.objects(fbid=fbid).first()
     if user:
         user.fb_access_token = fb_access_token

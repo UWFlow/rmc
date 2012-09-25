@@ -11,10 +11,10 @@ function($, _cookie, FB) {
   FB.init({appId: appId, status: true, cookie: true, xfbml: true});
 
   var login = function(authResp, params) {
-    // XXX(Sandy): Sending all this info in the cookie will easily allow
+    // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
     // others to hijack someonne's session. We should probably look into
     // a way of verifying the request. Maybe that's what Facebook Signed
-    // Requests are for?
+    // Requests are for? There are two corresponding server-side FIXMEs for this
     params.fb_signed_request = authResp.signedRequest;
     $.cookie('fbid', authResp.userID, { path: '/' });
     $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
