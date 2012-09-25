@@ -512,7 +512,6 @@ def remove_transcript():
 @login_required
 @app.route('/api/user/course', methods=['POST', 'PUT'])
 def user_course():
-    # TODO(david) FIXME: Use ORM, don't shove! and ensure_index
     # FIXME[uw](david): This should also update aggregate ratings table, etc.
     uc = json_util.loads(flask.request.data)
 
