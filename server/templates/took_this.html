@@ -1,8 +1,8 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('took-this-sidebar-tpl') %}
-<h3 class="num-friends"><%- numFriends %>
-  <%- pluralize(numFriends, 'friend', 'friends') %> took <%- courseCode %>
+<h3 class="num-friends">
+  Taken by <%- numFriends %> <%- pluralize(numFriends, 'friend', 'friends') %>
 </h3>
 <div class="took-this-collection-placeholder"></div>
 {% endcall %}
