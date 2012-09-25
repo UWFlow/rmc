@@ -495,8 +495,7 @@ def upload_transcript():
     user.cache_mutual_courses(r)
     user.save()
 
-    sorted_transcript = get_sorted_transcript_for_user(user)
-    return json_util.dumps(sorted_transcript)
+    return ''
 
 
 @app.route('/api/remove_transcript', methods=['POST'])
