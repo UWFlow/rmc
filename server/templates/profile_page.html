@@ -8,7 +8,14 @@
 
 {% set nav_item = "profile" %}
 
-{% block page_title %}Profile{% endblock %}
+{% block page_title %}
+  {% if user_obj['own_profile'] %}
+    My
+  {% else %}
+    {{ user_obj['name'] }}'s
+  {% endif %}
+  Profile
+{% endblock %}
 
 {% block header %}
   {{ macros.page_title(self.page_title()) }}
@@ -54,6 +61,6 @@
 
 {% block scripts %}
 <script>
-  window.pageData.userData = {{ user_data|safe }};
+  window.pageData.userData = {{ user_obj|tojson|safe }};
 </script>
 {% endblock %}

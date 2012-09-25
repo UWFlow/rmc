@@ -27,6 +27,11 @@ flask.render_template = functools.partial(flask.render_template,
         env=app.config['ENV'])
 
 
+# Jinja filters
+@app.template_filter()
+def tojson(obj):
+    return json_util.dumps(obj)
+
 class ApiError(Exception):
     """
         All errors during api calls should use this rather than Exception
@@ -181,20 +186,22 @@ def profile(user_id):
     if not user_id or user_id == user.id:
         sorted_transcript = get_sorted_transcript_for_user(user)
         user_obj = get_user_obj(user)
+        user_obj['own_profile'] = True
     else:
         other_user = m.User.objects(id=user_id).first()
-        user_obj = get_user_obj(other_user)
         if other_user is None:
             print 'other-use is None'
             return flask.redirect('/profile', 302)
 
+        user_obj = get_user_obj(other_user)
+        user_obj['own_profile'] = False
         sorted_transcript = get_sorted_transcript_for_user(other_user)
         # TODO(Sandy): Figure out what should and shouldn't be displayed when viewing someone else's profile
 
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
         transcript_data=json_util.dumps(sorted_transcript),
-        user_data=json_util.dumps(user_obj),
+        user_obj=user_obj,
     )
 
 
