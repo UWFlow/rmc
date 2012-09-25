@@ -26,6 +26,7 @@ function($, _, _s, transcript, term, course, friend, util, user) {
     _.each(transcriptData, function(termData) {
       var termModel = new term.TermModel({
         name: termData.term_name,
+        program_year_id: termData.program_year_id,
         courseCollection: new course.CourseCollection(termData.course_models)
       });
       termCollection.add(termModel);
@@ -86,7 +87,9 @@ function($, _, _s, transcript, term, course, friend, util, user) {
     // Try/catch around parsing logic so that we show error message
     // should anything go wrong
     try {
-      coursesByTerm = transcript.parseTranscript(data);
+
+      var transcriptData = transcript.parseTranscript(data);
+      var coursesByTerm = transcriptData.coursesByTerm;
     } catch (ex) {
       $('#transcript-error').text(
           'Could not extract course information. ' +
@@ -104,9 +107,12 @@ function($, _, _s, transcript, term, course, friend, util, user) {
 
     $.post(
       '/api/transcript',
-      { 'courses_by_term': JSON.stringify(coursesByTerm) },
+      {
+        'transcriptData': JSON.stringify(transcriptData)
+      },
       renderTranscript,
-      'json');
+      'json'
+    );
   };
 
   // Handle the case that the user inputs into the transcript text area

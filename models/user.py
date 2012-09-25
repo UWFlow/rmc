@@ -58,10 +58,14 @@ class User(me.Document):
     # eg. university_of_waterloo ?
     school_id = me.StringField()
     # eg. software_engineering ?
-    program_id = me.StringField()
+    # TODO(mack): should store program_id, not program_name
+    # program_id = me.StringField()
+    program_name = me.StringField()
 
     # List of UserCourse.id's
     course_history = me.ListField(me.ObjectIdField())
+    last_term_id = me.StringField()
+    last_program_year_id = me.StringField()
 
     @property
     def name(self):
@@ -128,8 +132,6 @@ class User(me.Document):
             if mutual_course_ids:
                 redis_key = self.mutual_courses_redis_key(friend.id)
                 redis.sadd(redis_key, *list(mutual_course_ids))
-
-
 
     @property
     # TODO(mack): support different sized pictures

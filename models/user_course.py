@@ -70,6 +70,11 @@ class UserCourse(me.Document):
     user_id = me.ObjectIdField(unique_with=['course_id', 'term_id'])
     course_id = me.StringField(required=True)
     term_id = me.StringField(required=True)
+    # TODO(mack): might not appropriate to store here, maybe should be
+    # calculated using combination of info about when user started
+    # school and term this course was taken
+    # eg. 3A
+    program_year_id = me.StringField()
 
     # TODO(mack): add fields for grade tracking; eg. grades on assignments
 

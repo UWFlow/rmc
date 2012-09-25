@@ -5,6 +5,7 @@ function(Backbone, _, course, jqSlide) {
   var TermModel = Backbone.Model.extend({
     defaults: {
       'name': 'Fall 2012',
+      'program_year_id': '3A',
       'courses': new course.CourseCollection()
     },
 

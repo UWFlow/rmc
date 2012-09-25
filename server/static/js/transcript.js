@@ -23,10 +23,10 @@ function($, _, _s) {
     data = data.substring(beginIndex, endIndex);
 
     // TODO(mack): utilize studentId and program information
-    //var matches = data.match(/Student ID: (\d+)/)
-    //var studentId = parseInt(matches[1], 10);
-    //matches = data.match(/Program: (.*?)[\n]/);
-    //var program = _s.trim(matches[1]);
+    var matches = data.match(/Student ID: (\d+)/)
+    var studentId = parseInt(matches[1], 10);
+    matches = data.match(/Program: (.*?)[\n]/);
+    var programName = _s.trim(matches[1]);
 
     var termsRaw = [];
 
@@ -48,8 +48,9 @@ function($, _, _s) {
     var coursesByTerm = [];
     // Parse out the term and courses taken in that term
     _.each(termsRaw, function(termRaw) {
-      matches = termRaw.match(/^((?:Spring|Fall|Winter) \d{4})/);
-      var termName = matches[0];
+      matches = termRaw.match(/^((?:Spring|Fall|Winter) \d{4})\s+(\d[A-B])/);
+      var termName = matches[1];
+      var programYearId = matches[2];
       termRaw = termRaw.substring(termName.length);
       matches = termRaw.match(/[A-Z]+ \d{3}[A-Z]?/g);
       var courseIds = [];
@@ -61,12 +62,17 @@ function($, _, _s) {
         });
         coursesByTerm.push({
           name: termName,
+          programYearId: programYearId,
           courseIds: courseIds
         });
       }
     });
 
-    return coursesByTerm;
+    return {
+      coursesByTerm: coursesByTerm,
+      studentId: studentId,
+      programName: programName
+    }
   }
 
   return {

@@ -81,16 +81,17 @@ def get_sorted_transcript_for_user(user):
 
     course_history = user.course_history
     if not course_history:
-        return ''
+        return []
 
     transcript = {}
     cid_to_tid = {}
     cids = []
 
-    ucs = m.UserCourse.objects(id__in=course_history).only('course_id', 'term_id')
+    ucs = m.UserCourse.objects(id__in=course_history).only(
+            'course_id', 'term_id', 'program_year_id')
     for uc in ucs:
         cids.append(uc.course_id)
-        cid_to_tid[uc.course_id] = uc.term_id
+        cid_to_tid[uc.course_id] = (uc.term_id, uc.program_year_id)
 
     courses = m.Course.objects(id__in=cids)
     cleaned_courses = map(clean_course, courses)
@@ -100,11 +101,12 @@ def get_sorted_transcript_for_user(user):
 
     # TODO(Sandy): Do this more cleanly?
     sorted_transcript = []
-    for term_id, course_models in sorted(transcript.items(), reverse=True):
+    for (term_id, program_year_id), course_models in sorted(transcript.items(), reverse=True):
         cur_term = m.Term(id=term_id)
         term_name = cur_term.name
         term_data = {
             'term_name': term_name,
+            'program_year_id': program_year_id,
             'course_models': course_models,
         }
 
@@ -198,6 +200,9 @@ def profile(user_id):
         profile_obj['own_profile'] = False
         sorted_transcript = get_sorted_transcript_for_user(other_user)
         # TODO(Sandy): Figure out what should and shouldn't be displayed when viewing someone else's profile
+
+    if sorted_transcript:
+        profile_obj['last_term_name'] = sorted_transcript[0]['term_name']
 
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
@@ -449,34 +454,47 @@ def upload_transcript():
     user_id = user.id
     course_history_list = []
 
-    try:
-        courses_by_term = json_util.loads(req.form['courses_by_term'])
+    def get_term_id(term_name):
+        print 'term_name', term_name
+        season, year = term_name.split()
+        return m.Term.get_id_from_year_season(year, season)
 
-        for term in courses_by_term:
-            season, year = term['name'].split()
-            term_id = m.Term.get_id_from_year_season(year, season)
+    transcript_data = json_util.loads(req.form['transcriptData'])
+    courses_by_term = transcript_data['coursesByTerm']
 
-            for course_id in term['courseIds']:
-                course_id = course_id.lower()
-                # TODO(Sandy): Fill in course weight and grade info here
-                user_course = m.UserCourse.objects(user_id=user_id, course_id=course_id, term_id=term_id).first()
-                # TODO(Sandy): This assumes the transcript is real and we create a UserCourse even if the course_id
-                # doesn't exist. It is possible for the user to spam us with fake courses on their transcript. Decide
-                # whether or not we should be creating these entries
-                if user_course is None:
-                    user_course = m.UserCourse(user_id=user_id, course_id=course_id, term_id=term_id)
-                    user_course.save()
+    for term in courses_by_term:
+        term_id = get_term_id(term['name'])
+        program_year_id = term['programYearId']
 
-                course_history_list.append(user_course.id)
+        for course_id in term['courseIds']:
+            course_id = course_id.lower()
+            # TODO(Sandy): Fill in course weight and grade info here
+            user_course = m.UserCourse.objects(
+                user_id=user_id, course_id=course_id, term_id=term_id).first()
+            # TODO(Sandy): This assumes the transcript is real and we create a UserCourse even if the course_id
+            # doesn't exist. It is possible for the user to spam us with fake courses on their transcript. Decide
+            # whether or not we should be creating these entries
+            if user_course is None:
+                user_course = m.UserCourse(
+                    user_id=user_id,
+                    course_id=course_id,
+                    term_id=term_id,
+                    program_year_id=program_year_id,
+                )
+                user_course.save()
 
-        user.course_history = course_history_list
-        user.cache_mutual_courses(r)
-        user.save()
+            course_history_list.append(user_course.id)
 
-    except KeyError:
-        # Invalid key (shouldn't be happening)
-        print 'KeyError at /api/transcript.'
-        return 'Error'
+    if courses_by_term:
+        last_term = courses_by_term[0]
+        term_id = get_term_id(last_term['name'])
+        user.last_term_id = term_id
+        user.last_program_year_id = last_term['programYearId']
+    user.program_name = transcript_data['programName']
+    user.student_id = str(transcript_data['studentId'])
+    user.course_history = course_history_list
+    user.cache_mutual_courses(r)
+    user.save()
 
     sorted_transcript = get_sorted_transcript_for_user(user)
     return json_util.dumps(sorted_transcript)
@@ -648,6 +666,10 @@ def clean_course(course, expanded=False):
 
 
 def clean_user(user):
+    program_name = None
+    if user.program_name:
+        program_name = user.program_name.split(',')[0]
+
     return {
         'id': user.id,
         'fbid': user.fbid,
@@ -655,6 +677,8 @@ def clean_user(user):
         'last_name': user.last_name,
         'name': user.name,
         'fb_pic_url': user.fb_pic_url,
+        'program_name': program_name,
+        'last_program_year_id': user.last_program_year_id,
         # FIXME(mack): remove harcode
         'lastTermName': 'Spring 2012',
         'coursesTook': [],

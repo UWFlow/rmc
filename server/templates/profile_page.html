@@ -16,6 +16,13 @@
   <h1>
     <img class="profile-pic img-polaroid" src="{{ profile_obj['fb_pic_url'] }}">
     {{ profile_obj['name'] }}
+    {% if profile_obj['program_name'] %}
+      –
+      {% if profile_obj['last_program_year_id'] %}
+        {{ profile_obj['last_program_year_id'] }}
+      {% endif %}
+      {{ profile_obj['program_name'] }}
+    {% endif %}
   </h1>
 {% endblock %}
 

@@ -5,7 +5,8 @@
   <%- numFriends %> <%- pluralize(numFriends, 'Friend', 'Friends') %>
 </div>
 <div class="friend-collection-placeholder"></div>
-<% if (pageData.profileObj.ownProfile) { %>
+<% console.log('profileObj', pageData.profileObj); %>
+<% if (pageData.profileObj.own_profile) { %>
   <button class="invite-friends-btn btn btn-primary">
     <i class="icon-plus"></i> Invite more friends!
   </button>
