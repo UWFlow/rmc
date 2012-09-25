@@ -109,7 +109,7 @@ function($, _, _s, Backbone, util, moment) {
       if ($footer.length) {
         // TODO(david): Use jpg and have it fade out into bg color
         $footer.css('background',
-          'url(/static/img/footer_background_2000.png) center center no-repeat');
+          'url(/static/img/footer_background_2000_min.png) center center no-repeat');
       }
       require([window.pageData.pageScript]);
     });
