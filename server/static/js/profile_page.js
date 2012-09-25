@@ -7,7 +7,7 @@ function($, _, _s, transcript, term, course, friend, util, user) {
 
   (function() {
     var userCollection = new user.UserCollection(
-      window.pageData.userData.friends)
+      window.pageData.profileObj.friends)
     userCollection.each(function(userModel) {
       userModel.set('coursesTook',
         new course.CourseCollection(userModel.get('coursesTook')));

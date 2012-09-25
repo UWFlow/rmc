@@ -185,23 +185,23 @@ def profile(user_id):
 
     if not user_id or user_id == user.id:
         sorted_transcript = get_sorted_transcript_for_user(user)
-        user_obj = get_user_obj(user)
-        user_obj['own_profile'] = True
+        profile_obj = get_user_obj(user)
+        profile_obj['own_profile'] = True
     else:
         other_user = m.User.objects(id=user_id).first()
         if other_user is None:
             print 'other-use is None'
             return flask.redirect('/profile', 302)
 
-        user_obj = get_user_obj(other_user)
-        user_obj['own_profile'] = False
+        profile_obj = get_user_obj(other_user)
+        profile_obj['own_profile'] = False
         sorted_transcript = get_sorted_transcript_for_user(other_user)
         # TODO(Sandy): Figure out what should and shouldn't be displayed when viewing someone else's profile
 
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
         transcript_data=json_util.dumps(sorted_transcript),
-        user_obj=user_obj,
+        profile_obj=profile_obj,
     )
 
 
@@ -651,6 +651,8 @@ def clean_user(user):
     return {
         'id': user.id,
         'fbid': user.fbid,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
         'name': user.name,
         # FIXME(mack): remove harcode
         'lastTermName': 'Spring 2012',

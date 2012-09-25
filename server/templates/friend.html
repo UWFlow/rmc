@@ -1,11 +1,15 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('friend-sidebar-tpl') %}
-<div class="num-friends"><%- numFriends %> Friends</div>
+<div class="num-friends">
+  <%- numFriends %> <%- pluralize(numFriends, 'Friend', 'Friends') %>
+</div>
 <div class="friend-collection-placeholder"></div>
-<button class="invite-friends-btn btn btn-primary">
-  <i class="icon-plus"></i> Invite more friends!
-</button>
+<% if (pageData.profileObj.ownProfile) { %>
+  <button class="invite-friends-btn btn btn-primary">
+    <i class="icon-plus"></i> Invite more friends!
+  </button>
+<% } %>
 {% endcall %}
 
 {% call macros.us_template('friend-tpl') %}

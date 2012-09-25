@@ -9,10 +9,10 @@
 {% set nav_item = "profile" %}
 
 {% block page_title %}
-  {% if user_obj['own_profile'] %}
+  {% if profile_obj['own_profile'] %}
     My
   {% else %}
-    {{ user_obj['name'] }}'s
+    {{ profile_obj['name'] }}'s
   {% endif %}
   Profile
 {% endblock %}
@@ -27,19 +27,21 @@
     </div>
     <div class="span9" id="profile-container">
       <div id="term-collection-container"></div>
-      <div id="transcript-container">
-        <h2>Import Transcript from Quest</h2>
-          <p id="transcript-instructions">
-            Copy and paste your
-            <a target="_blank"
-              href="https://quest.pecs.uwaterloo.ca/psp/SS/?cmd=login">
-              transcript from Quest</a>,
-            and <strong>your course history will magically appear</strong> here!
-          </p>
-          <textarea id="transcript-text" placeholder="Feed me a transcript! Mmm... transcripts...." wrap="off"></textarea>
-          <p id="transcript-remove-text">
-          </p>
-      </div>
+      {% if profile_obj['own_profile'] %}
+        <div id="transcript-container">
+          <h2>Import Transcript from Quest</h2>
+            <p id="transcript-instructions">
+              Copy and paste your
+              <a target="_blank"
+                href="https://quest.pecs.uwaterloo.ca/psp/SS/?cmd=login">
+                transcript from Quest</a>,
+              and <strong>your course history will magically appear</strong> here!
+            </p>
+            <textarea id="transcript-text" placeholder="Feed me a transcript! Mmm... transcripts...." wrap="off"></textarea>
+            <p id="transcript-remove-text">
+            </p>
+        </div>
+      {% endif %}
     </div>
   </div>
 {% endblock %}
@@ -61,6 +63,6 @@
 
 {% block scripts %}
 <script>
-  window.pageData.userData = {{ user_obj|tojson|safe }};
+  window.pageData.profileObj = {{ profile_obj|tojson|safe }};
 </script>
 {% endblock %}

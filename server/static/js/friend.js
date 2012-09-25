@@ -62,7 +62,7 @@ function(Backbone, $, _, _s, bootstrap, baseViews, __) {
       }
       var $el = this.mutualCoursesHovercardView.render().$el;
       window.setTimeout(function() {
-        var maxHeight = 300;
+        var maxHeight = 250;
         if ($el.find('.mini-courses').outerHeight() > maxHeight) {
           $el.slimScroll({
             height: maxHeight,
