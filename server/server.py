@@ -511,9 +511,8 @@ def user_course():
     set_comment_date_if_necessary(uc.get('user_review'))
     set_comment_date_if_necessary(uc.get('course_review'))
 
-    # TODO(mack): remove user_id hardcode
-    user_id = m.User.objects.get(fbid='1647810326').id
-    uc['user_id'] = user_id
+    user = get_current_user()
+    uc['user_id'] = user.id
 
     if 'course_review' in uc:
         uc['course_review'] = m.CourseReview(**uc['course_review'])
@@ -620,8 +619,8 @@ def clean_course(course, expanded=False):
             return [{'id': p.id, 'name': p.name} for p in professors]
 
     def get_user_course(course):
-        # XXX TODO(david) FIXME: search by user as well
-        user_course = m.UserCourse.objects(course_id=course.id).first()
+        user = get_current_user()
+        user_course = m.UserCourse.objects(course_id=course.id, user_id=user.id).first()
 
         if not user_course:
             return None
