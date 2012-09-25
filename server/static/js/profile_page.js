@@ -61,8 +61,9 @@ function($, _, _s, transcript, term, course, friend, util, user) {
   }
 
   // Render the transcript, if available
-  if (window.pageData.transcriptData) {
-    renderTranscript(window.pageData.transcriptData)
+  transcriptData = window.pageData.transcriptData
+  if (transcriptData && transcriptData.length != 0) {
+    renderTranscript(transcriptData)
   }
 
   var $transcript = $('#transcript-text');
