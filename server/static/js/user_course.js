@@ -110,9 +110,9 @@ function(Backbone, $, _, _s, ratings, select2) {
       this.$('.prof-select').select2({
       });
 
-      if (this.userCourse.has('prof_id')) {
+      if (this.userCourse.has('professor_id')) {
         this.$('.prof-select')
-          .select2('val', this.userCourse.get('prof_id'));
+          .select2('val', this.userCourse.get('professor_id'));
         this.$('.add-review')
           .html('<i class="icon-edit"></i> Edit review');
       }
