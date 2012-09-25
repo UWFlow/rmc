@@ -250,12 +250,15 @@ def course_page(course_id):
         flask.abort(404)
 
     course_cleaned = clean_course(course, expanded=True)
+    ucs = m.UserCourse.objects(course_id=course_id)
+    tips = map(tip_from_uc, ucs)
 
     # TODO(david): Protect against the </script> injection XSS hack
     return flask.render_template('course_page.html',
             page_script='course_page.js',
             course=course_cleaned,
-            page_data=json_util.dumps(course_cleaned))
+            page_data=json_util.dumps(course_cleaned),
+            tips_data=json_util.dumps(tips))
 
 
 @app.route('/login', methods=['POST'])
@@ -729,6 +732,20 @@ def clean_user(user, courses_map):
         'coursesTook': courses_took,
     }
 
+def tip_from_uc(uc):
+    user_id = uc.user_id
+    user = m.User.objects(id=user_id).only('first_name', 'middle_name', 'last_name').first()
+    names = [user.first_name, user.last_name]
+    if user.middle_name is not None:
+        names.insert(1, user.middle_name)
+
+    full_name = ' '.join(names)
+    return {
+        'userId': user_id,
+        'name': full_name,
+        'comment': uc.course_review.comment,
+        'comment_date': uc.course_review.comment_date,
+    }
 
 if __name__ == '__main__':
   app.debug = True

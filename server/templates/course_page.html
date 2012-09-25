@@ -36,6 +36,7 @@
 {% block scripts %}
 <script>
   window.pageData.data = {{ page_data|safe }};
+  window.pageData.tips = {{ tips_data|safe }};
 </script>
 {% endblock %}
 
