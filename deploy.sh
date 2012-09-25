@@ -10,5 +10,13 @@
 set -e  # Bail on errors
 
 cd $HOME/rmc
+
 git pull
+
+echo "Installing requirements"
+sudo pip install -r rmc/requirements.txt
+
+echo "Compiling compass"
+compass compile rmc/server
+
 sudo service rmc_daemon restart

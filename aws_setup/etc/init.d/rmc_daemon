@@ -16,8 +16,15 @@ start_rmc() {
 }
 
 stop_rmc() {
-  [ -f $PIDFILE ] && ( kill `cat $PIDFILE` 2> /dev/null )
-  rm -f $PIDFILE 2> /dev/null
+  uwsgi --stop $PIDFILE
+}
+
+reload_rmc() {
+  if [ -f $PIDFILE ]; then
+    uwsgi --reload $PIDFILE
+  else
+    start_rmc
+  fi
 }
 
 case "$1" in
@@ -33,9 +40,7 @@ case "$1" in
   ;;
   restart|force-reload)
   log_begin_msg "Restarting $DESC"
-  stop_rmc
-  sleep 1
-  start_rmc
+  reload_rmc
   log_end_msg 0
   ;;
   *)

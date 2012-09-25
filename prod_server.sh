@@ -7,14 +7,6 @@
 # Bail on errors
 set -e
 
-cd /home/rmc
-
-echo "Installing requirements"
-sudo pip install -r rmc/requirements.txt
-
-echo "Compiling compass"
-compass compile rmc/server
-
 # Start the uwsgi server
 # TODO(david): Benchmark with ab and use worker processes if necessary
 uwsgi \
