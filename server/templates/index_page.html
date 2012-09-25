@@ -17,9 +17,20 @@
 {# TODO(sandy): fix width alignment issue and test max-rows #}
 {# XXX(sandy): shws "1 friend using" instead of the friend's name and pic. doesn't show them when logged in...or use facepile? #}
 {# TODO(sandy): try using facepile here after we buy domain? #}
+          <script>
+            {# TODO(mack): current hacky way to get access to event that only
+              happens during connecting via facebook button; see:
+              http://stackoverflow.com/questions/11771534/facebook-api-how-is-onlogin-called;
+              need to find a better way to do this. #}
+            var facebookLogin = function() {
+              require(['facebook'], function(facebook) {
+                facebook.firstLogin();
+              });
+            };
+          </script>
           <div class="fb-login-button" data-show-faces="true"
               data-width="335" data-max-rows="2" data-scope="email"
-              size="xlarge">
+              size="xlarge" onlogin="facebookLogin();">
             Connect with Facebook
           </div>
         </div>
