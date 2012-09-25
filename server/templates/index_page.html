@@ -14,12 +14,12 @@
             Ask your friends!
           </h1>
 {# TODO(sandy): fix width alignment issue and test max-rows #}
-{# FIXME[uw](Sandy): Try using Facepile?
-          <script>
+{# FIXME[uw](Sandy): Try using Facepile? #}
             {# TODO(mack): current hacky way to get access to event that only
               happens during connecting via facebook button; see:
               http://stackoverflow.com/questions/11771534/facebook-api-how-is-onlogin-called;
               need to find a better way to do this. #}
+          <script>
             var facebookLogin = function() {
               require(['facebook'], function(facebook) {
                 facebook.firstLogin();
