@@ -10,7 +10,8 @@ function(Backbone, $, _, util) {
       author_name: 'a puppy',
       comment: '',
       comment_date: new Date(0),
-      author_pic_url: ''
+      author_pic_url: '',
+      anonymous: false
     },
 
     initialize: function(attributes) {
@@ -21,11 +22,12 @@ function(Backbone, $, _, util) {
       if (!attributes || !attributes.author_pic_url) {
         var attrs = attributes ? attributes : this.defaults;
         var size = [
-            util.getHashCode('' + this.get('comment_date')) % 20 + 80,
-            util.getHashCode(attrs.comment) % 20 + 80
+            util.getHashCode('' + this.get('comment_date')) % 20 + 50,
+            util.getHashCode(attrs.comment) % 10 + 40
         ];
         this.set('author_pic_url',
             'http://placedog.com/' + size[0] + '/' + size[1]);
+        this.set('anonymous', true);  // TODO(david): Move this elsewhere
       }
     }
   });

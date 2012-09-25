@@ -2,19 +2,21 @@
 
 {% call macros.us_template('comment-tpl') %}
 <div class="row-fluid">
-  <div class="comment-text span9">
-    <%- comment %>
-  </div>
   <div class="span3 author">
-    <img class="img-polaroid" width="80" height="80"
+    <img class="img-polaroid" width="50" height="50"
         src="<%- author_pic_url %>" class="author-pic">
     <div>
       <small class="comment-date">
-        <span class="muted">Says</span> <%- author_name %>
-        <span class="muted">on</span>
+        <% if (!anonymous) { %>
+          <span class="muted">Says</span> <%- author_name %>
+          <span class="muted">on</span>
+        <% } %>
         <%- moment(comment_date).format('MMM D, YYYY') %>
       </small>
     </div>
+  </div>
+  <div class="comment-text span9">
+    <%- comment %>
   </div>
 </div>
 {% endcall %}
