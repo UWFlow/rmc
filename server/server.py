@@ -675,7 +675,7 @@ def clean_user(user, courses_map):
     courses_took = []
     for uc in m.UserCourse.objects(id__in=user.course_history).only('course_id', 'term_id'):
         # TODO(Sandy): Handle courses that we have from UserCourse, but not in Course
-        # XXX(Sandy): Don't hardcore this
+        # TODO(Sandy): Don't hardcore this. REMEMBER TO DO THIS BEFORE 2013_01
         if courses_map.has_key(uc.course_id) and uc.term_id == '2012_09':
             courses_took.append(courses_map[uc.course_id])
 
