@@ -1,8 +1,8 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'ext/backbone', 'jquery.slide', 'base_views', 'ratings', 'util', 'comment'],
+'ext/backbone', 'jquery.slide', 'base_views', 'ratings', 'util', 'comment', 'review'],
 function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
-    comment) {
+    comment, review) {
 
   var Prof = Backbone.Model.extend({
     defaults: {
@@ -39,10 +39,10 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
       }
 
       if (attributes && attributes.course_reviews) {
-        var reviewsColl = new ProfReviewCollection(attributes.course_reviews);
-        this.set('reviews', reviewsColl);
+        var reviews = new review.ReviewCollection(attributes.course_reviews);
+        this.set('reviews', reviews);
       } else {
-        this.set('reviews', new ProfReviewCollection());
+        this.set('reviews', new review.ReviewCollection());
       }
     }
   });
@@ -67,47 +67,6 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
     }
   });
 
-  // TODO(david): This might just be a user-course model... merge with
-  //     UserCourseReview perhaps
-  var ProfReview = Backbone.Model.extend({
-    defaults: {
-      name: 'Larry Smith',
-      passion: 5,
-      clarity: 3,
-      overall: 6,
-      comment: new comment.Comment()
-    },
-
-    initialize: function(attributes) {
-      if (attributes) {
-        util.convertDate(attributes, 'comment_date');
-        this.set('comment', new comment.Comment(attributes));
-      }
-    }
-  });
-
-  var ProfReviewView = Backbone.View.extend({
-    className: 'prof-review',
-    template: _.template($('#prof-review-tpl').html()),
-
-    render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
-      return this;
-    }
-  });
-
-  var ProfReviewCollection = Backbone.Collection.extend({
-    model: ProfReview
-  });
-
-  var ProfReviewCollectionView = baseViews.CollectionView.extend({
-    className: 'prof-review-collection',
-
-    createItemView: function(model) {
-      return new ProfReviewView({ model: model });
-    }
-  });
-
   // TODO(david): Need base expandable collection view
   var ExpandableProfView = Backbone.View.extend({
     template: _.template($('#prof-expandable-reviews-tpl').html()),
@@ -126,7 +85,7 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
 
       // Reviews
       this.reviews = options.reviews;
-      this.profReviewCollectionView = new ProfReviewCollectionView({
+      this.profReviewCollectionView = new review.ReviewCollectionView({
         collection: this.reviews
       });
 
@@ -158,7 +117,8 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
       this.$('.reviews-collection-placeholder').replaceWith(
         this.profReviewCollectionView.render().el);
 
-      this.$('.prof-review').slice(this.numShown)
+      // TODO(david): Performance: delay rendering of hidden reviews
+      this.$('.review-post').slice(this.numShown)
         .wrapAll('<div class="expanded-reviews hide-initial">');
 
       return this;
@@ -200,9 +160,6 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
     Prof: Prof,
     ProfCardView: ProfCardView,
     ProfCollection: ProfCollection,
-    ProfReview: ProfReview,
-    ProfReviewCollection: ProfReviewCollection,
-    ProfReviewCollectionView: ProfReviewCollectionView,
     ExpandableProfView: ExpandableProfView,
     ProfCollectionView: ProfCollectionView
   };

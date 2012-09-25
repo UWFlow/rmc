@@ -551,8 +551,11 @@ def clean_user_course(user_course):
 
 def clean_prof_review(review):
     review = {
-        'comment': review.professor_review.comment,
-        'comment_date': review.professor_review.comment_date,
+        'comment': {
+            'comment': review.professor_review.comment,
+            'comment_date': review.professor_review.comment_date,
+        },
+        'ratings': clean_ratings(review.professor_review.get_ratings())
     }
 
     if hasattr(review, 'user_id') and not review.anonymous:

@@ -47,27 +47,6 @@ function($, course, tookThis, user, tips, prof, ratings) {
   var tipsView = new tips.ExpandableTipsView({ tips: tipsCollection });
   $('#tips-collection-placeholder').replaceWith(tipsView.render().el);
 
-  var profReviews = [{
-    name: 'Larry Smith',
-    passion: 5,
-    clarity: 3,
-    overall: 6,
-    comment: 'Was great!!!!!!!!!!!!!!!!'
-  }, {
-    name: 'Charles Clarke',
-    passion: 4,
-    clarity: 5,
-    overall: null,
-    comment: 'Great lecturer overall. Funny and casual. blah blah blah'
-  }, {
-    name: 'Andrew Morton',
-    passion: 2,
-    clarity: 4,
-    overall: null,
-    comment: 'Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. Really easy going and cool guy. '
-  }];
-  var profReviewsCollection = new prof.ProfReviewCollection(profReviews);
-
   // TODO(david): Handle no professors for course
   var profsCollection = new prof.ProfCollection(courseData.professors);
   var profsView = new prof.ProfCollectionView({ collection: profsCollection });

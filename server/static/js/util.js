@@ -97,13 +97,12 @@ function(_, _s) {
   };
 
   /**
-   * Converts a date object that json_util sends us into a JS datetime.
-   * TODO(david): Do this in a more automated way somehow...
+   * Possibly converts a date object we get from json_util into a JS datetime.
+   * @param {Object|Date} obj
+   * @return {Date}
    */
-  var convertDate = function(obj, property) {
-    if (obj[property] && obj[property].$date) {
-      obj[property] = new Date(obj[property].$date);
-    }
+  var toDate = function(obj) {
+    return obj.$date ? new Date(obj.$date) : obj;
   };
 
   return {
@@ -115,6 +114,6 @@ function(_, _s) {
     skewRating: skewRating,
     getDisplayRating: getDisplayRating,
     getHashCode: getHashCode,
-    convertDate: convertDate,
+    toDate: toDate
   };
 });
