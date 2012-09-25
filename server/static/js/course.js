@@ -315,6 +315,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
   return {
     CourseModel: CourseModel,
     CourseView: CourseView,
+    CourseInnerView: CourseInnerView,
     CourseCollection: CourseCollection,
     CourseCollectionView: CourseCollectionView
   };

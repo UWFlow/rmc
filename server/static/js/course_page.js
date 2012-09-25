@@ -1,10 +1,12 @@
 require(
-['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'ratings'],
+['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'ratings',
+'course'],
 function($, course, tookThis, user, tips, prof, ratings) {
   // TODO(david): Customize with people who took this course.
   courseIds = ['CS137', 'SCI238', 'CS241'];
 
   var courseData = window.pageData.data;
+  var courseModel = new course.CourseModel(courseData);
   console.log(courseData);
 
   var ratingBoxView = new ratings.RatingBoxView({
@@ -12,7 +14,10 @@ function($, course, tookThis, user, tips, prof, ratings) {
   });
   $('#rating-box-container').html(ratingBoxView.render().el);
 
-  // TODO(david): Replace mock data
+  var courseInnerView = new course.CourseInnerView({
+    courseModel: courseModel
+  });
+  $('#course-inner-placeholder').html(courseInnerView.render().el);
 
   var userCollection = user.UserCollection.getSampleCollection();
   var tookThisSidebarView = new tookThis.TookThisSidebarView({
