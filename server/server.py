@@ -141,8 +141,13 @@ def get_user_obj(user):
         all_course_ids = all_course_ids.union(set(mutual_course_ids))
 
     courses_map = {}
-    for course in m.Course.objects(id__in=list(all_course_ids)):
-        courses_map[course.id] = clean_course(course)
+    for course in m.Course.objects(id__in=list(all_course_ids)).only(
+            'department_id', 'number', 'name'):
+        courses_map[course.id] = {
+            'code': course.code,
+            'name': course.name,
+            'id': str(course.id),
+        }
 
     # TODO(Sandy): So hacky, shouldn't need to pass in courses_map every time...
     user_obj = clean_user(user, courses_map)
