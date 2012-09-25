@@ -56,6 +56,16 @@
     </div>
   </div>
 </div>
+
+<% if (more_details) { %>
+  <div class="row-fluid">
+    <div class="span12 more-info">
+      <a href="/course/<%- id %>">
+        Show 23 reviews and 12 professors teaching this course &raquo;
+      </a>
+    </div>
+  </div>
+<% } %>
 {% endcall %}
 
 {% call macros.us_template('course-friends-hovercard-tpl') %}

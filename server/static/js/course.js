@@ -92,7 +92,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
         this.innerRendered = true;
 
         // TODO(david): Neaten this jQuery
-        var $inner = this.courseInnerView.render().$el;
+        var $inner = this.courseInnerView.render(/* moreDetails */ true).$el;
         $inner.addClass('hide-initial');
         this.$('.course-inner-placeholder').replaceWith($inner);
       }
@@ -131,8 +131,10 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
       });
     },
 
-    render: function() {
-      this.$el.html(this.template(this.courseModel.toJSON()));
+    render: function(moreDetails) {
+      var context = this.courseModel.toJSON();
+      _.extend(context, { more_details: moreDetails });
+      this.$el.html(this.template(context));
 
       this.$('.review-placeholder').replaceWith(
         this.userCourseView.render().el);

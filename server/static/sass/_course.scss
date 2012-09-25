@@ -166,9 +166,13 @@
   }
 
   .user-review-box {
-    margin-bottom: 0;
     .add-review {
       margin-right: -14px;
     }
+  }
+
+  .more-info {
+    margin-bottom: 0;
+    min-height: 0;
   }
 }
