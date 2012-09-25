@@ -75,8 +75,8 @@
 {% call macros.us_template('course-friend-tpl') %}
 {# TODO(mack): remove harcode by storing attributes in User rather than
   stashing in UserCourse #}
-<a href="<%- _s.sprintf('/profile/%s', user_id.$oid) %>">
+<a href="<%- user_profile_url %>">
   <img class="friend-pic-img"
-    src="<%- _s.sprintf('https://graph.facebook.com/%s/picture', user_fbid) %>">
+    src="<%- user_fb_pic_url %>">
 </a>
 {% endcall %}
