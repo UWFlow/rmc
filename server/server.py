@@ -117,7 +117,6 @@ def get_sorted_transcript_for_user(user):
 
 # TODO(mack): move this somehwere more appropriate
 def get_user_obj(user):
-
     # fetch mutual friends from redis
     pipe = r.pipeline()
     for friend_id in user.friend_ids:
@@ -143,27 +142,25 @@ def get_user_obj(user):
     for course in m.Course.objects(id__in=list(all_course_ids)):
         courses_map[course.id] = clean_course(course)
 
-    # FIXME(mack): get courses i've taken; get data from sandy's
-    # transcript data
-    user_obj = clean_user(user)
+    # TODO(Sandy): So hacky, shouldn't need to pass in courses_map every time...
+    user_obj = clean_user(user, courses_map)
 
     friend_map = {}
     for friend in m.User.objects(id__in=user.friend_ids):
-        friend_map[friend.id] = clean_user(friend)
+        friend_map[friend.id] = clean_user(friend, courses_map)
 
     # get friend data for user
     user_obj['friends'] = []
     for friend_id, mutual_course_ids in zipped:
         friend_obj = friend_map[friend_id]
         friend_obj['mutual_courses'] = []
+
+        # Get the list of mutual courses the user took with the friend
         for course_id in mutual_course_ids:
             if course_id in courses_map:
                 friend_obj['mutual_courses'].append(
                     courses_map[course_id])
-                # TODO(mack): get actual latest courses taken by friend
-                if random.randint(0, 4) == 0:
-                    friend_obj['coursesTook'].append(
-                        courses_map[course_id])
+
         user_obj['friends'].append(friend_obj)
 
     return user_obj
@@ -668,10 +665,19 @@ def clean_course(course, expanded=False):
     }
 
 
-def clean_user(user):
+def clean_user(user, courses_map):
     program_name = None
     if user.program_name:
         program_name = user.program_name.split(',')[0]
+
+    last_term_name = m.Term(id=user.last_term_id).name
+
+    courses_took = []
+    for uc in m.UserCourse.objects(id__in=user.course_history).only('course_id', 'term_id'):
+        # TODO(Sandy): Handle courses that we have from UserCourse, but not in Course
+        # XXX(Sandy): Don't hardcore this
+        if courses_map.has_key(uc.course_id) and uc.term_id == '2012_09':
+            courses_took.append(courses_map[uc.course_id])
 
     return {
         'id': user.id,
@@ -682,9 +688,8 @@ def clean_user(user):
         'fb_pic_url': user.fb_pic_url,
         'program_name': program_name,
         'last_program_year_id': user.last_program_year_id,
-        # FIXME(mack): remove harcode
-        'lastTermName': 'Spring 2012',
-        'coursesTook': [],
+        'lastTermName': last_term_name,
+        'coursesTook': courses_took,
     }
 
 
