@@ -129,7 +129,7 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
     },
 
     numHidden: function() {
-      return this.numReviews() - this.numShown;
+      return Math.max(this.numReviews() - this.numShown);
     },
 
     toggleExpand: function() {

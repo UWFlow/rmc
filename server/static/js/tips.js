@@ -65,7 +65,7 @@ function($, _, _s, bootstrap, Backbone, baseViews, user, jqSlide) {
     },
 
     numHidden: function() {
-      return this.numTips() - this.numShown;
+      return Math.max(0, this.numTips() - this.numShown);
     },
 
     toggleExpand: function() {
