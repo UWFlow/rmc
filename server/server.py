@@ -183,6 +183,12 @@ def get_user_obj(user):
 
 @app.route('/')
 def index():
+    # Redirect logged-in users to profile
+    # TODO(Sandy): If we request extra permissions from FB, we'll need to show them the landing page to let them to
+    # Connect again and accept the new permissions. Alternatively, we could use other means of requesting for new perms
+    if get_current_user():
+        return flask.make_response(flask.redirect('profile'))
+
     return flask.render_template('index_page.html',
             page_script='index_page.js')
 

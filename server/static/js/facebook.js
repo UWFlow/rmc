@@ -68,6 +68,10 @@ function($, _cookie, FB) {
     });
   };
 
+  // TODO(Sandy): MARKED FOR DELETEION. Now that we redirect from the server, we
+  // might not need this logic here. We should consider if there are any other
+  // cases that needs this logic (eg. maybe we want the user to be able to see
+  // the landing page?)
   var loginIfPossible = function() {
     FB.getLoginStatus(function(response) {
       // TODO(Sandy): Make redirect happen server-side so we don't even need to load the landing page
