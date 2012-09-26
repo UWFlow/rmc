@@ -126,14 +126,16 @@ def get_sorted_transcript_for_user(user):
 
 
 # TODO(mack): move this somewhere more appropriate
-def get_user_obj(user):
+def get_js_profile_friends_obj(viewer_user, profile_user):
     # fetch mutual friends from redis
     pipe = r.pipeline()
-    for friend_id in user.friend_ids:
-        pipe.smembers(user.mutual_courses_redis_key(friend_id))
+
+    # Show mutual courses between the viewing user and the friends of the profile user
+    for friend_id in profile_user.friend_ids:
+        pipe.smembers(viewer_user.mutual_courses_redis_key(friend_id))
     results = pipe.execute()
 
-    zipped = itertools.izip(user.friend_ids, results)
+    zipped = itertools.izip(profile_user.friend_ids, results)
     zipped = sorted(
         zipped,
         key=lambda (friend_id, mutual_course_ids): len(mutual_course_ids),
@@ -158,10 +160,10 @@ def get_user_obj(user):
         }
 
     # TODO(Sandy): So hacky, shouldn't need to pass in courses_map every time...
-    user_obj = clean_user(user, courses_map)
+    user_obj = clean_user(profile_user, courses_map)
 
     friend_map = {}
-    for friend in m.User.objects(id__in=user.friend_ids):
+    for friend in m.User.objects(id__in=profile_user.friend_ids):
         friend_map[friend.id] = clean_user(friend, courses_map)
 
     # get friend data for user
@@ -204,9 +206,10 @@ def profile(user_id):
     if user_id:
         user_id = bson.ObjectId(user_id)
 
+    # XXX[uw]: Run permission check on this user to show restricted profile view if not friends. simple fbid lookup should do
     if not user_id or user_id == user.id:
         sorted_transcript = get_sorted_transcript_for_user(user)
-        profile_obj = get_user_obj(user)
+        profile_obj = get_js_profile_friends_obj(user, user)
         profile_obj['own_profile'] = True
     else:
         other_user = m.User.objects(id=user_id).first()
@@ -214,7 +217,7 @@ def profile(user_id):
             print 'other-use is None'
             return flask.redirect('/profile', 302)
 
-        profile_obj = get_user_obj(other_user)
+        profile_obj = get_js_profile_friends_obj(user, other_user)
         profile_obj['own_profile'] = False
         sorted_transcript = get_sorted_transcript_for_user(other_user)
         # TODO(Sandy): Figure out what should and shouldn't be displayed when viewing someone else's profile
