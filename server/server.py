@@ -24,13 +24,19 @@ me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
 flask.render_template = functools.partial(flask.render_template,
-        env=app.config['ENV'])
+        env=app.config['ENV'],
+        version=app.config['VERSION'],
+        js_dir=app.config['JS_DIR'])
 
 
 # Jinja filters
 @app.template_filter()
 def tojson(obj):
     return json_util.dumps(obj)
+
+@app.template_filter()
+def version(file_name):
+    return '%s?v=%s' % (file_name, app.config['VERSION'])
 
 class ApiError(Exception):
     """

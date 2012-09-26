@@ -19,3 +19,4 @@ uwsgi \
   --master \
   --daemonize /home/rmc/logs/uwsgi.log \
   --pidfile $1
+
