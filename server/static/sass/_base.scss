@@ -80,6 +80,7 @@ html, body {
 body {
   // TODO(mack): setup image dir to auto-use
   @include background(url(/static/img/pinstripe.png));
+  background-attachment: fixed;
 
   // Background we tried... last one is the one we're using
   //@include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/grey.png));
