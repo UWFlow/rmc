@@ -651,7 +651,7 @@ def clean_professor(professor, course_id=None):
     return prof
 
 
-def clean_course(course, expanded=False, user=None):
+def clean_course(course, expanded=False):
     """Returns information about a course to be sent down an API.
 
     Args:
@@ -659,7 +659,7 @@ def clean_course(course, expanded=False, user=None):
         expanded: Whether to fetch more information, such as professor reviews.
     """
 
-    user = user or get_current_user()
+    user = get_current_user()
 
     def get_professors(course):
         professors = m.Professor.objects(id__in=course.professor_ids)
