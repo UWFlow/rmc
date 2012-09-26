@@ -41,7 +41,7 @@ require.config({
     },
     'ext/facebook': {
       exports: 'FB'
-    },
+    }
   },
 
   baseUrl: '/static/js/',

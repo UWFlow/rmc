@@ -18,6 +18,10 @@ sudo /bin/sh -c 'echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upsta
 sudo apt-get update
 sudo apt-get install mongodb-10gen
 
+sudo add-apt-repository ppa:chris-lea/node.js
+sudo apt-get update
+sudo apt-get install nodejs
+
 sudo add-apt-repository ppa:rwky/redis
 sudo apt-get update
 sudo apt-get install redis-server
