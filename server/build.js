@@ -3,10 +3,6 @@
   baseUrl: '.',
   mainConfigFile: 'static/js/main.js',
   dir: 'static/js_prod',
-
-  // Removes uncessary licensing comments
-  preserveLicenseComments: false,
-
   modules: [
     //First set up the common build layer.
     {
