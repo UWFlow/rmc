@@ -203,7 +203,8 @@ def profile(user_id):
     if user_id:
         user_id = bson.ObjectId(user_id)
 
-    # XXX[uw]: Run permission check on this user to show restricted profile view if not friends. simple fbid lookup should do
+    # XXX(Sandy)[uw]: Run permission check on this user to show restricted profile view if not friends. simple fbid
+    # lookup should do
     if not user_id or user_id == user.id:
         sorted_transcript = get_sorted_transcript_for_user(user)
         profile_obj = get_js_profile_friends_obj(user, user)
@@ -222,6 +223,8 @@ def profile(user_id):
     if sorted_transcript:
         profile_obj['last_term_name'] = sorted_transcript[0]['term_name']
 
+    # TODO(Sandy): Merge profile_obj and sorted_transcript into one object...? And/Or rename them appropriately
+    # (profile_obj sounds like it should include the transcript data, which is part of the profile)
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
         transcript_data=json_util.dumps(sorted_transcript),

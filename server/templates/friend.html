@@ -2,6 +2,12 @@
 
 {% call macros.us_template('friend-sidebar-tpl') %}
 <div class="num-friends">
+<!-- TODO(Sandy): wording -->
+  <% if (pageData.profileObj.own_profile) { %>
+    My
+  <% } else { %>
+    <%- pageData.profileObj.first_name %>'s
+  <% } %>
   <%- numFriends %> <%- pluralize(numFriends, 'friend', 'friends') %>
 </div>
 <div class="friend-collection-placeholder"></div>
