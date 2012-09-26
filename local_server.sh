@@ -24,7 +24,7 @@ echo "Starting compass watch"
 compass watch server &
 
 echo "Starting flask server"
-FLASK_CONFIG=../config/flask_debug.py \
+FLASK_CONFIG=../config/flask_dev \
   PARENT_DIR=$(dirname `pwd`) \
   PYTHONPATH="${PARENT_DIR}" \
   python server/server.py &
