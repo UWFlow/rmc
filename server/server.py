@@ -101,10 +101,7 @@ def get_sorted_transcript_for_user(user):
         cid_to_tid[uc.course_id] = (uc.term_id, uc.program_year_id)
 
     courses = m.Course.objects(id__in=cids)
-    # TODO(mack): since this can be called for other users, need to
-    # explicitly set the user to appropriate user; but should do
-    # in cleaner way
-    cleaned_courses = map(functools.partial(clean_course, user=user), courses)
+    cleaned_courses = map(clean_course, courses)
 
     for course in cleaned_courses:
         transcript.setdefault(cid_to_tid[course['id']], []).append(course)
