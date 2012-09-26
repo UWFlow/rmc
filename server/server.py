@@ -18,6 +18,8 @@ import base64
 import hashlib
 import hmac
 
+VERSION = int(time.time())
+
 app = flask.Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
@@ -25,7 +27,7 @@ r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
 flask.render_template = functools.partial(flask.render_template,
         env=app.config['ENV'],
-        version=app.config['VERSION'],
+        version=VERSION,
         js_dir=app.config['JS_DIR'])
 
 
@@ -36,7 +38,7 @@ def tojson(obj):
 
 @app.template_filter()
 def version(file_name):
-    return '%s?v=%s' % (file_name, app.config['VERSION'])
+    return '%s?v=%s' % (file_name, VERSION)
 
 class ApiError(Exception):
     """
