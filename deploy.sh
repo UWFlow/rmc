@@ -17,9 +17,11 @@ echo "Installing requirements"
 sudo pip install -r requirements.txt
 
 echo "Compiling compass"
-compass compile server
+compass compile server --output-style compressed --force
 
 echo "Compiling js"
 ( cd server && node r.js -o build.js )
+
+
 
 sudo service rmc_daemon restart
