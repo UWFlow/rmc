@@ -39,7 +39,7 @@ function($, _, _s, transcript, term, course, friend, util, user) {
     $('#term-collection-container').html(termCollectionView.render().el).show();
 
     transcript_remove_text = $('#transcript-remove-text')
-      .html('<a id="remove-transcript-link">Remove my transcript!</a>')
+      .html('<a id="remove-transcript-link">Remove my course history!</a>')
       .show();
     $('#remove-transcript-link').click(function(event) {
       event.preventDefault();
