@@ -519,7 +519,7 @@ def remove_transcript():
     user = get_current_user()
     user.course_history = []
     user.save()
-    return flask.make_response(flask.redirect('/'))
+    return ''
 
 
 # XXX[uw](Sandy): Make this not completely fail when hitting this endpoint, otherwise the user would have wasted all
