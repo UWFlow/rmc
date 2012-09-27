@@ -20,7 +20,7 @@ start() {
     mkdir -p /home/rmc/data/mongo
     echo "Starting mongodb on default port with dbpath /home/rmc/data/mongo"
     # Note - default mongo port 27017
-    /usr/bin/mongod --fork --config /home/rmc/rmc/config/mongodb_prod.conf
+    /usr/bin/mongod --config /home/rmc/rmc/config/mongodb_prod.conf
 }
 stop() {
     echo "Killing all mongod processes"

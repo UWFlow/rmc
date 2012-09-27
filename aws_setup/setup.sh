@@ -71,7 +71,14 @@ ln -sf data/logs
 
 # TODO(david): Use prod_mongodb.conf
 echo "Setting up mongodb and installing as a daemon"
-sudo apt-get install -y mongodb
+
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+sudo rm -rf /etc/apt/sources.list.d/10gen.list
+sudo /bin/sh -c 'echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" > /etc/apt/sources.list.d/10gen.list'
+sudo apt-get update
+sudo apt-get install -y mongodb-10gen
+sudo killall mongod
+rm -f /etc/init/mongodb.conf  # Remove annoying upstart daemon to install ours
 sudo update-rc.d -f mongo_daemon remove
 sudo ln -sfnv $CONFIG_DIR/etc/init.d/mongo_daemon /etc/init.d
 sudo update-rc.d mongo_daemon defaults
