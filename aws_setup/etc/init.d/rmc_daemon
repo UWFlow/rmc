@@ -17,6 +17,7 @@ start_rmc() {
 
 stop_rmc() {
   uwsgi --stop $PIDFILE
+  rm -f $PIDFILE
 }
 
 reload_rmc() {
