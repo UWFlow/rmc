@@ -15,7 +15,7 @@ trap clean_up SIGTERM SIGINT
 # First, make the necessary directory if it doesn't exist
 mkdir -p mongodb
 echo "Starting mongodb"
-mongod --config config/mongodb.conf &
+mongod --config config/mongodb_local.conf &
 
 echo "Starting redis-server"
 redis-server config/redis_local.conf &
