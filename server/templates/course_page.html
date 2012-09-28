@@ -4,14 +4,14 @@
   <link rel="stylesheet" href="{{ '/static/css/course_page.css'|version }}">
 {% endblock %}
 
-{% block page_title %}{{ course['code'] }}{% endblock %}
+{% block page_title %}{{ course_obj['code'] }}{% endblock %}
 
 {% block header %}
   <div class="container-fluid course-header">
     <div class="row-fluid">
       <div class="span10">
-        <h1 class="page-title">{{ course['code'] }}</h1>
-        <p class="lead">{{ course['name'] }}</p>
+        <h1 class="page-title">{{ course_obj['code'] }}</h1>
+        <p class="lead">{{ course_obj['name'] }}</p>
       </div>
       <div class="span2" id="rating-box-container"></div>
     </div>
@@ -26,7 +26,7 @@
       {# TODO(david): Replace text with spinner #}
       <div id="course-inner-placeholder">[course inner]</div>
       <div id="tips-collection-placeholder">[course tips]</div>
-      <h2>{{ course['professors']|length }} Professors</h2>
+      <h2>{{ course_obj['professors']|length }} Professors</h2>
       <div id="professor-review-container">[professor reviews]</div>
     </div>
     </div>
@@ -35,8 +35,10 @@
 
 {% block scripts %}
 <script>
-  window.pageData.data = {{ page_data|safe }};
-  window.pageData.tips = {{ tips_data|safe }};
+  window.pageData.courseObj = {{ course_obj|tojson|safe }};
+  window.pageData.tipObjs = {{ tip_objs|tojson|safe }};
+  window.pageData.userCourseObjs = {{ user_course_objs|tojson|safe }};
+  window.pageData.userObjs = {{ user_objs|tojson|safe }};
 </script>
 {% endblock %}
 

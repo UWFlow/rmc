@@ -1,34 +1,35 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'friend', 'util', 'user'],
-function($, _, _s, transcript, term, course, friend, util, user) {
+'term', 'course', 'friend', 'util', 'user', 'user_course'],
+function($, _, _s, transcript, term, course, friend, util, user, uc) {
+
+  user.UserCollection.addToCache(pageData.userObjs);
+  course.CourseCollection.addToCache(pageData.courseObjs);
+  uc.UserCourses.addToCache(pageData.userCourseObjs);
+  var profileUser = user.UserCollection.getFromCache(pageData.profileUserId);
 
   // Render friend sidebar
 
   (function() {
-    var userCollection = new user.UserCollection(
-      window.pageData.profileObj.friends);
-    userCollection.each(function(userModel) {
-      userModel.set('coursesTook',
-        new course.CourseCollection(userModel.get('coursesTook')));
-      userModel.set('mutual_courses',
-        new course.CourseCollection(userModel.get('mutual_courses')));
+    var friendIds = profileUser.get('friend_ids');
+    var friendObjs = [];
+    _.each(friendIds, function(friendId) {
+      var friendObj = user.UserCollection.getFromCache(friendId);
+      friendObjs.push(friendObj);
     });
+    var userCollection = new user.UserCollection(friendObjs);
     var friendSidebarView = new friend.FriendSidebarView({
-      friendCollection: userCollection
+      friendCollection: userCollection,
+      profileUser: profileUser
     });
     $('#friend-sidebar-container').html(friendSidebarView.render().el);
   })();
 
-  var renderTranscript = function(transcriptData) {
+  var renderTranscript = function(transcriptObj) {
     var termCollection = new term.TermCollection();
 
-    _.each(transcriptData, function(termData) {
-      var termModel = new term.TermModel({
-        name: termData.term_name,
-        program_year_id: termData.program_year_id,
-        courseCollection: new course.CourseCollection(termData.course_models)
-      });
+    _.each(transcriptObj, function(termObj) {
+      var termModel = new term.TermModel(termObj);
       termCollection.add(termModel);
     });
 
@@ -61,9 +62,9 @@ function($, _, _s, transcript, term, course, friend, util, user) {
   }
 
   // Render the transcript, if available
-  transcriptData = window.pageData.transcriptData
-  if (transcriptData && transcriptData.length != 0) {
-    renderTranscript(transcriptData)
+  var transcriptObj = window.pageData.transcriptObj;
+  if (transcriptObj && transcriptObj.length != 0) {
+    renderTranscript(transcriptObj);
   }
 
   var $transcript = $('#transcript-text');

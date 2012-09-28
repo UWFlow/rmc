@@ -88,38 +88,41 @@ def login_required(f):
     return wrapper
 
 
-# TODO(Sandy): Move this somewhere more appropraite. It is currently being called by api/transcript and /profile
-def get_sorted_transcript_for_user(user):
+# TODO(Sandy): Move this somewhere more appropriate. It is currently being
+# called by api/transcript and /profile
+def get_sorted_transcript_for_user(profile_user):
 
-    course_history = user.course_history
+    course_history = profile_user.course_history
     if not course_history:
         return []
 
     transcript = {}
     cid_to_tid = {}
-    cids = []
 
-    ucs = m.UserCourse.objects(id__in=course_history).only(
-            'course_id', 'term_id', 'program_year_id')
+    # TODO(mack): optimize
+    all_course_ids = [uc.course_id for uc in
+            m.UserCourse.objects(id__in=course_history).only('course_id')]
+    course_ids = [c.id for c in
+            m.Course.objects(id__in=all_course_ids).only('id')]
+    ucs = m.UserCourse.objects(
+            id__in=course_history, course_id__in=course_ids).only(
+                    'id', 'term_id', 'program_year_id')
+
     for uc in ucs:
-        cids.append(uc.course_id)
-        cid_to_tid[uc.course_id] = (uc.term_id, uc.program_year_id)
+        cid_to_tid[uc.id] = (uc.term_id, uc.program_year_id)
 
-    courses = m.Course.objects(id__in=cids)
-    cleaned_courses = map(clean_course, courses)
-
-    for course in cleaned_courses:
-        transcript.setdefault(cid_to_tid[course['id']], []).append(course)
+    for uc in ucs:
+        transcript.setdefault(cid_to_tid[uc.id], []).append(uc.id)
 
     # TODO(Sandy): Do this more cleanly?
     sorted_transcript = []
-    for (term_id, program_year_id), course_models in sorted(transcript.items(), reverse=True):
-        cur_term = m.Term(id=term_id)
-        term_name = cur_term.name
+    for (term_id, program_year_id), user_course_ids in sorted(
+            transcript.items(), reverse=True):
+        curr_term = m.Term(id=term_id)
         term_data = {
-            'term_name': term_name,
+            'name': curr_term.name,
             'program_year_id': program_year_id,
-            'course_models': course_models,
+            'user_course_ids': user_course_ids,
         }
 
         sorted_transcript.append(term_data)
@@ -128,61 +131,65 @@ def get_sorted_transcript_for_user(user):
 
 
 # TODO(mack): move this somewhere more appropriate
-def get_js_profile_friends_obj(viewer_user, profile_user):
+def get_js_profile_friends_obj(profile_user):
+
+    profile_dict = clean_user(profile_user)
+
     # fetch mutual friends from redis
     pipe = r.pipeline()
 
     # Show mutual courses between the viewing user and the friends of the profile user
+    viewer_user = get_current_user()
     for friend_id in profile_user.friend_ids:
         pipe.smembers(viewer_user.mutual_courses_redis_key(friend_id))
-    results = pipe.execute()
+    mutual_course_ids_per_user = pipe.execute()
 
-    zipped = itertools.izip(profile_user.friend_ids, results)
+    zipped = itertools.izip(profile_user.friend_ids, mutual_course_ids_per_user)
     zipped = sorted(
         zipped,
         key=lambda (friend_id, mutual_course_ids): len(mutual_course_ids),
         reverse=True,
     )
 
-    # TODO(mack): fetching and returning so much data!!!
+    # TODO(mack): reduce amount of data we fetch for each friend
+    friend_dicts = {}
+    for friend in m.User.objects(id__in=profile_user.friend_ids):
+        friend_dicts[friend.id] = clean_user(friend)
 
     # find all courses we need to pass to frontend; combo of
     # your courses and friends' courses
+    # TODO(mack): control how much data we fetch based on what the course
+    # is needed for
     all_course_ids = set()
-    for _, mutual_course_ids in zipped:
-        all_course_ids = all_course_ids.union(set(mutual_course_ids))
+    all_user_course_ids = set()
+    for user_dict in friend_dicts.values() + [profile_dict]:
+        all_course_ids = all_course_ids.union(user_dict['course_ids'])
+        all_user_course_ids = all_user_course_ids.union(
+                user_dict['course_history'])
 
-    courses_map = {}
-    for course in m.Course.objects(id__in=list(all_course_ids)).only(
-            'department_id', 'number', 'name'):
-        courses_map[course.id] = {
-            'code': course.code,
-            'name': course.name,
-            'id': str(course.id),
-        }
+    course_dicts = {}
+    fetched_course_ids = set()
+    for course in m.Course.objects(id__in=list(all_course_ids)):
+        course_dicts[course.id] = clean_course(course)
+        fetched_course_ids.add(course.id)
 
-    # TODO(Sandy): So hacky, shouldn't need to pass in courses_map every time...
-    user_obj = clean_user(profile_user, courses_map)
+    user_course_dicts = {}
+    # TODO(mack): rather than fetching all friend user course ids,
+    # should just be fetching those that are for courses you have
+    # also taken
+    for user_course in m.UserCourse.objects(id__in=list(all_user_course_ids)):
+        user_course_dict = clean_user_course(user_course)
+        user_course_dicts[user_course.id] = user_course_dict
 
-    friend_map = {}
-    for friend in m.User.objects(id__in=profile_user.friend_ids):
-        friend_map[friend.id] = clean_user(friend, courses_map)
-
-    # get friend data for user
-    user_obj['friends'] = []
     for friend_id, mutual_course_ids in zipped:
-        friend_obj = friend_map[friend_id]
-        friend_obj['mutual_courses'] = []
+        if friend_id not in friend_dicts:
+            continue
 
-        # Get the list of mutual courses the user took with the friend
-        for course_id in mutual_course_ids:
-            if course_id in courses_map:
-                friend_obj['mutual_courses'].append(
-                    courses_map[course_id])
+        friend_dict = friend_dicts[friend_id]
+        friend_dict['mutual_course_ids'] = mutual_course_ids.intersection(
+                fetched_course_ids)
 
-        user_obj['friends'].append(friend_obj)
-
-    return user_obj
+    return profile_dict, friend_dicts, user_course_dicts, course_dicts
 
 
 @app.route('/')
@@ -198,42 +205,65 @@ def index():
 
 
 # TODO(mack): maybe support fbid in addition to user_id
-@app.route('/profile', defaults={'user_id': None})
-@app.route('/profile/<string:user_id>')
+@app.route('/profile', defaults={'profile_user_id': None})
+@app.route('/profile/<string:profile_user_id>')
 @login_required
-def profile(user_id):
+def profile(profile_user_id):
 
-    user = get_current_user()
+    current_user = get_current_user()
 
-    if user_id:
-        user_id = bson.ObjectId(user_id)
+    if profile_user_id:
+        profile_user_id = bson.ObjectId(profile_user_id)
 
     # XXX(Sandy)[uw]: Run permission check on this user to show restricted profile view if not friends. simple fbid
     # lookup should do
-    if not user_id or user_id == user.id:
-        sorted_transcript = get_sorted_transcript_for_user(user)
-        profile_obj = get_js_profile_friends_obj(user, user)
-        profile_obj['own_profile'] = True
+    if not profile_user_id or profile_user_id == current_user.id:
+        profile_user = get_current_user()
+        profile_dict, friend_dicts, user_course_dicts, course_dicts \
+                = get_js_profile_friends_obj(profile_user)
+        profile_dict['own_profile'] = True
+
     else:
-        other_user = m.User.objects(id=user_id).first()
-        if other_user is None:
+        profile_user = m.User.objects(id=profile_user_id).first()
+        if profile_user is None:
             print 'other-use is None'
             return flask.redirect('/profile', 302)
 
-        profile_obj = get_js_profile_friends_obj(user, other_user)
-        profile_obj['own_profile'] = False
-        sorted_transcript = get_sorted_transcript_for_user(other_user)
+        profile_dict, friend_dicts, user_course_dicts, course_dicts \
+                = get_js_profile_friends_obj(profile_user)
+        profile_dict['own_profile'] = False
+
         # TODO(Sandy): Figure out what should and shouldn't be displayed when viewing someone else's profile
 
-    if sorted_transcript:
-        profile_obj['last_term_name'] = sorted_transcript[0]['term_name']
+    sorted_transcript = get_sorted_transcript_for_user(profile_user)
+
+    unfetched_user_course_ids = set()
+    for term in sorted_transcript:
+        unfetched_user_course_ids = unfetched_user_course_ids.union(
+                set(term['user_course_ids']) - set(user_course_dicts.keys()))
+    for uc in m.UserCourse.objects(id__in=unfetched_user_course_ids):
+        # TODO(mack): optimize
+        course = m.Course.objects(id=uc.course_id).first()
+        if course:
+            user_course_dicts[uc.id] = clean_user_course(uc)
+            course_dicts[course.id] = clean_course(course)
 
     # TODO(Sandy): Merge profile_obj and sorted_transcript into one object...? And/Or rename them appropriately
     # (profile_obj sounds like it should include the transcript data, which is part of the profile)
+
+    # TODO(mack): rename friend_dicts to user_dicts
+    friend_dicts[profile_dict['id']] = profile_dict
+
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
-        transcript_data=json_util.dumps(sorted_transcript),
-        profile_obj=profile_obj,
+        transcript_obj=sorted_transcript,
+        user_objs=friend_dicts.values(),
+        user_course_objs=user_course_dicts.values(),
+        course_objs=course_dicts.values(),
+        # TODO(mack): currently needed by jinja to do server-side rendering
+        # figure out a cleaner way to do this w/o passing another param
+        profile_obj=profile_dict,
+        profile_user_id=str(profile_user.id),
     )
 
 
@@ -276,18 +306,43 @@ def course_page(course_id):
         # TODO(david): 404 page
         flask.abort(404)
 
-    course_cleaned = clean_course(course, expanded=True)
-    # TODO(david): Use a projection
+    course_obj = clean_course(course, expanded=True)
+
+    user = get_current_user()
+    user_course = m.UserCourse.objects(
+            course_id=course_id, user_id=user.id).first()
+    user_course_obj = clean_user_course(user_course)
+
+    # TODO(mack): optimize this
+    friend_user_courses = m.UserCourse.objects(id__in=
+            user_course_obj['friend_user_course_ids'])
+
+    user_course_objs = [user_course_obj] \
+            + map(clean_user_course, friend_user_courses)
+
+    friend_ids = [uc.user_id for uc in friend_user_courses]
+    friends = m.User.objects(id__in=friend_ids)
+    user_objs = map(clean_user, [user] + list(friends))
+
     ucs = m.UserCourse.objects(course_id=course_id)
-    tips = [tip_from_uc(tip) for tip in ucs if
-            len(tip.course_review.comment) > MIN_REVIEW_LENGTH]
+
+    ## TODO(mack): refactor tips similar to other models
+    #tip_objs = map(tip_from_uc, filter(course_review_exists, ucs))
+
+    # TODO(david): Use a projection
+    #ucs = m.UserCourse.objects(course_id=course_id)
+    tip_objs = [tip_from_uc(uc) for uc in ucs if
+            len(uc.course_review.comment) > MIN_REVIEW_LENGTH]
+
 
     # TODO(david): Protect against the </script> injection XSS hack
     return flask.render_template('course_page.html',
-            page_script='course_page.js',
-            course=course_cleaned,
-            page_data=json_util.dumps(course_cleaned),
-            tips_data=json_util.dumps(tips))
+        page_script='course_page.js',
+        course_obj=course_obj,
+        tip_objs=tip_objs,
+        user_course_objs=user_course_objs,
+        user_objs=user_objs,
+    )
 
 
 @app.route('/login', methods=['POST'])
@@ -464,11 +519,24 @@ def search_courses():
     sorted_courses = unsorted_courses.order_by(sort_instr)
     limited_courses = sorted_courses.skip(offset).limit(count)
 
-    courses = map(clean_course, limited_courses)
-    has_more = len(courses) == count
+    course_objs = map(clean_course, limited_courses)
+
+    course_ids = [c.id for c in limited_courses]
+    user = get_current_user()
+    user_courses = m.UserCourse.objects(
+            user_id__in=[user.id] + user.friend_ids, course_id__in=course_ids)
+    user_course_objs = map(clean_user_course, list(user_courses))
+
+    users = m.User.objects(id__in=[uc.user_id for uc in user_courses])
+
+    user_objs = map(clean_user, users)
+
+    has_more = len(course_objs) == count
 
     return json_util.dumps({
-        'courses': courses,
+        'user_objs': user_objs,
+        'course_objs': course_objs,
+        'user_course_objs': user_course_objs,
         'has_more': has_more,
     })
 
@@ -609,6 +677,13 @@ def clean_user_course(user_course):
     course_review = user_course.course_review
     professor_review = user_course.professor_review
 
+    def get_friend_user_course_ids(user_course):
+        # TODO(mack): optimize this line
+        user = m.User.objects.with_id(user_course.user_id)
+        ucs = m.UserCourse.objects(
+            course_id=user_course.course_id, user_id__in=user.friend_ids).only('id')
+        return [uc.id for uc in ucs]
+
     return {
         'id': user_course.id,
         'user_id': user_course.user_id,
@@ -630,6 +705,7 @@ def clean_user_course(user_course):
             'comment': professor_review.comment,
             'comment_date': professor_review.comment_date,
         },
+        'friend_user_course_ids': get_friend_user_course_ids(user_course),
     }
 
 
@@ -695,8 +771,6 @@ def clean_course(course, expanded=False):
         expanded: Whether to fetch more information, such as professor reviews.
     """
 
-    user = get_current_user()
-
     def get_professors(course):
         professors = m.Professor.objects(id__in=course.professor_ids)
 
@@ -706,38 +780,14 @@ def clean_course(course, expanded=False):
             professors = professors.only('id', 'first_name', 'last_name')
             return [{'id': p.id, 'name': p.name} for p in professors]
 
-    def get_user_course(course):
-        user_course = m.UserCourse.objects(
-                course_id=course.id, user_id=user.id).first()
-
-        if not user_course:
-            return None
-
-        return clean_user_course(user_course)
-
-    def get_friend_user_courses(course):
-        ucs = m.UserCourse.objects(
-            course_id=course.id, user_id__in=user.friend_ids).only('user_id', 'term_id')
-        friend_map = {}
-        for uc in ucs:
-            friend_map[uc.user_id] = {
-                # FIXME(mack): should use json to convert id to objectid
-                'id': str(uc.id),
-                'user_id': uc.user_id,
-                # TODO(mack): send term_id or term_name?
-                'term_name': m.Term(id=uc.term_id).name,
-            }
-        for friend in m.User.objects(id__in=friend_map.keys()).only(
-                'fbid', 'first_name', 'last_name'):
-            # TODO(mack): should be storing in user objects
-            friend_map[friend.id].update({
-                'user_name': friend.name,
-                'user_fbid': friend.fbid,
-                'user_fb_pic_url': friend.fb_pic_url,
-                'user_profile_url': friend.profile_url,
-            })
-
-        return friend_map.values()
+    # TODO(mack): this should somehow be responsible for fetching the
+    # user_course id since it is settings on course
+    user_course_id = None
+    user = get_current_user()
+    user_course = m.UserCourse.objects(
+            course_id=course.id, user_id=user.id).only('id').first()
+    if user_course:
+        user_course_id = user_course.id
 
     return {
         'id': course.id,
@@ -755,12 +805,11 @@ def clean_course(course, expanded=False):
         },
         'overall': course.overall.to_dict(),
         'professors': get_professors(course),
-        'userCourse': get_user_course(course) if user else None,
-        'friend_user_courses': get_friend_user_courses(course) if user else [],
+        'user_course_id': user_course_id,
     }
 
 
-def clean_user(user, courses_map):
+def clean_user(user):
     program_name = None
     if user.program_name:
         program_name = user.program_name.split(',')[0]
@@ -769,12 +818,15 @@ def clean_user(user, courses_map):
     if user.last_term_id:
         last_term_name = m.Term(id=user.last_term_id).name
 
-    courses_took = []
+    course_ids = []
+    last_term_course_ids = []
     for uc in m.UserCourse.objects(id__in=user.course_history).only('course_id', 'term_id'):
+        course_ids.append(uc.course_id)
         # TODO(Sandy): Handle courses that we have from UserCourse, but not in Course
         # TODO(Sandy): Don't hardcore this. REMEMBER TO DO THIS BEFORE 2013_01
-        if courses_map.has_key(uc.course_id) and uc.term_id == '2012_09':
-            courses_took.append(courses_map[uc.course_id])
+        if uc.term_id == '2012_09':
+            if m.Course.objects.only('id').with_id(uc.course_id):
+                last_term_course_ids.append(uc.course_id)
 
     return {
         'id': user.id,
@@ -782,11 +834,14 @@ def clean_user(user, courses_map):
         'first_name': user.first_name,
         'last_name': user.last_name,
         'name': user.name,
+        'friend_ids': user.friend_ids,
         'fb_pic_url': user.fb_pic_url,
         'program_name': program_name,
         'last_program_year_id': user.last_program_year_id,
-        'lastTermName': last_term_name,
-        'coursesTook': courses_took,
+        'last_term_name': last_term_name,
+        'last_term_course_ids': last_term_course_ids,
+        'course_history': user.course_history,
+        'course_ids': course_ids,
     }
 
 def tip_from_uc(uc):

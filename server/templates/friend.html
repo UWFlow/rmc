@@ -2,10 +2,10 @@
 
 {% call macros.us_template('friend-sidebar-tpl') %}
 <div class="num-friends">
-  <%- numFriends %> <%- pluralize(numFriends, 'friend', 'friends') %>
+  <%- num_friends %> <%- pluralize(num_friends, 'friend', 'friends') %>
 </div>
 <div class="friend-collection-placeholder"></div>
-<% if (pageData.profileObj.own_profile) { %>
+<% if (own_profile) { %>
   <button class="invite-friends-btn btn btn-primary">
     <i class="icon-plus"></i> Invite more friends!
   </button>
@@ -13,12 +13,13 @@
 {% endcall %}
 
 {% call macros.us_template('friend-tpl') %}
-<a class="friend-pic" href=<%- profileUrl %>>
-  <img class="img-rounded" src="<%- fbPicUrl %>">
+<% friend = friend.toJSON(); %>
+<a class="friend-pic" href="<%- friend.profile_url %>">
+  <img class="img-rounded" src="<%- friend.fb_pic_url %>">
 </a>
 <div class="friend-info">
-  <a class="friend-name" href=<%- profileUrl %>>
-    <%- name %>
+  <a class="friend-name" href=<%- friend.profile_url %>>
+    <%- friend.name %>
   </a>
   <a href="#" class="mutual-courses">
     <%- mutual_courses.length %>
@@ -29,8 +30,9 @@
 
 {% call macros.us_template('friend-hovercard-tpl') %}
 <!-- TODO(mack): move course-mini into own backbone view -->
+<% friend = friend.toJSON(); %>
 <ul class="mini-courses unstyled">
-<% coursesTook.each(function(course) { %>
+<% last_term_courses.each(function(course) { %>
   <% course = course.toJSON(); %>
   <li class="mini-course">
     <a href="<%- '/course/' + course.id %>" class="course-code"><%- course.code %></a>
@@ -39,7 +41,7 @@
   </li>
 <% }); %>
 </ul>
-<a class="view-profile" href=<%- '/profile/' + id %>>View all terms &raquo;</a>
+<a class="view-profile" href="<%- '/profile/' + friend.id %>">View all terms &raquo;</a>
 {% endcall %}
 
 {# TODO(mack): remove duplication with friend-hovercard-tpl #}

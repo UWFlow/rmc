@@ -8,9 +8,15 @@ function(RmcBackbone, $, _, _s, bootstrap) {
   var TookThisView = RmcBackbone.View.extend({
     className: 'took-this',
 
+    initialize: function(attributes) {
+      this.userCourse = attributes.userCourse;
+    },
+
     render: function() {
-      this.$el.html(_.template($('#took-this-tpl').html(),
-          this.model.toJSON()));
+      this.$el.html(_.template($('#took-this-tpl').html(), {
+        user_course: this.userCourse.toJSON(),
+        friend: this.userCourse.get('user').toJSON()
+      }));
       return this;
     }
   });
@@ -18,8 +24,8 @@ function(RmcBackbone, $, _, _s, bootstrap) {
   var UserCollectionView = RmcBackbone.CollectionView.extend({
     className: 'took-this-collection',
 
-    createItemView: function(model) {
-      return new TookThisView({ model: model });
+    createItemView: function(userCourse) {
+      return new TookThisView({ userCourse: userCourse });
     }
   });
 
@@ -27,17 +33,17 @@ function(RmcBackbone, $, _, _s, bootstrap) {
     className: 'took-this-sidebar',
 
     initialize: function(attributes) {
-      this.courseCode = attributes.courseCode;
-      this.collection = attributes.collection;
+      this.collection = attributes.courseCode;
+      this.userCourses = attributes.userCourses;
     },
 
     render: function() {
       this.$el.html(_.template($('#took-this-sidebar-tpl').html(), {
-        numFriends: this.collection.length,
-        courseCode: this.courseCode
+        num_friends: this.userCourses.length,
+        course_code: this.courseCode
       }));
       var collectionView = new UserCollectionView({
-        collection: this.collection
+        collection: this.userCourses
       });
       this.$('.took-this-collection-placeholder').replaceWith(
         collectionView.render().$el);

@@ -27,9 +27,10 @@
 {% endcall %}
 
 {% call macros.us_template('course-inner-tpl') %}
+<% course = course.toJSON(); %>
 <div class="row-fluid">
   <div class="span6">
-    <p class="description"><%- description %></p>
+    <p class="description"><%- course.description %></p>
     <!-- TODO(david): Put this in when we get data for this. -->
     <!--<div class="terms-offered">-->
       <!--<span class="label fall">F</span>-->
@@ -42,7 +43,7 @@
   </div>
 </div>
 
-<% if (userCourse.has('term_name')) { %>
+<% if (user_course.has('term_name')) { %>
   <div class="row-fluid">
     <div class="span12">
       <div class="alert alert-info user-review-box">
@@ -55,9 +56,9 @@
 <% if (more_details) { %>
   <div class="row-fluid">
     <div class="span12 more-info">
-      <a href="/course/<%- id %>">
-        <%- professors.length %>
-        <%- pluralize(professors.length, "professor") %>
+      <a href="/course/<%- course.id %>">
+        <%- course.professors.length %>
+        <%- pluralize(course.professors.length, "professor") %>
         teaching this course &raquo;
       </a>
     </div>
@@ -71,8 +72,8 @@
 {% call macros.us_template('course-friend-tpl') %}
 {# TODO(mack): remove harcode by storing attributes in User rather than
   stashing in UserCourse #}
-<a href="<%- user_profile_url %>">
+<a href="<%- friend.profile_url %>">
   <img class="friend-pic-img img-rounded"
-    src="<%- user_fb_pic_url %>">
+    src="<%- friend.fb_pic_url %>">
 </a>
 {% endcall %}

@@ -17,11 +17,16 @@ function(Backbone, $, _) {
     toJSON: function(resolveOids) {
       var obj = this._super('toJSON');
       if (resolveOids) {
-        _.each(obj, function(value, key) {
-          if (key in this._oidFields) {
-            obj[key] = { $oid: value };
+        _.each(this._oidFields, function(__, key) {
+          var value = obj[key];
+          if (typeof value === 'string') {
+            value = { $oid: value };
+          } else if (_.isArray(value)) {
+            value = _.map(value, function(v) {
+              return { $oid: v };
+            });
           }
-        }, this);
+        });
       }
       return obj;
     },
@@ -44,11 +49,22 @@ function(Backbone, $, _) {
       // Extract attributes and options.
       if (!attrs) return this;
       if (attrs instanceof Model) attrs = attrs.attributes;
+      //if (this.idAttribute in attrs && this.constructor._cacheName) {
+      //  collectionCaches[this.constructor._cacheName].add(this);
+      //}
 
       for (attr in attrs) {
         val = attrs[attr];
         if (val && typeof val.$oid === 'string') {
           attrs[attr] = val.$oid;
+          this._oidFields[attr] = true;
+        } else if (_.isArray(val) && val.length &&
+            typeof val[0].$oid === 'string') {
+          // Just gonna assume for now that if first item in array is an
+          // ObjectId, entire array contains ObjectIds
+          attrs[attr] = _.map(val, function(v) {
+            return v.$oid;
+          });
           this._oidFields[attr] = true;
         }
       }
@@ -58,6 +74,66 @@ function(Backbone, $, _) {
   });
 
   var Collection = Backbone.Collection.extend({});
+
+  var collectionCaches = {};
+
+  Collection.registerCache = function(name) {
+    if (!name) {
+      console.warn('Cannot create cache because name is empty');
+      return;
+    }
+    this._cacheName = name;
+    var collection = new this();
+    // TODO(mack): might wanna consider auto-caching Models when they
+    // are created, hover this might be too magical.
+    // collection.model._cacheName = name;
+    collectionCaches[name] = collection;
+  };
+
+  Collection.addToCache = function(objs) {
+    // TODO(mack): enforce obj.id is set?
+
+    if (!_.isArray(objs)) {
+      objs = [objs];
+    }
+
+    var collection = collectionCaches[this._cacheName];
+    // Prevent validation of models on initial add
+    collection.add(objs, {silent: true});
+  };
+
+  Collection.getFromCache = function(ids) {
+    if (!this._cacheName) {
+      console.warn('A cache does not exist for this collection type');
+      return undefined;
+    }
+
+    if (!ids) {
+      console.warn('No ids were passed');
+      console.trace();
+      return undefined;
+    }
+
+    var coll = collectionCaches[this._cacheName];
+    if (!coll) {
+      console.warn('Trying to fetch from non-existent cache ' + name);
+      return undefined;
+    }
+
+    if (_.isArray(ids)) {
+      return new this(_.map(ids, function(id) {
+        var model =  coll.get(id);
+        if (!model) {
+          console.warn('Did not find ' + id + ' in ' + this._cacheName);
+          console.trace();
+        }
+        return model;
+      }, this));
+    } else {
+      return coll.get(ids);
+    }
+  };
+
 
   var View = Backbone.View.extend({});
 

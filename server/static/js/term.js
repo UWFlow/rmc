@@ -1,12 +1,29 @@
 define(
-['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide'],
-function(RmcBackbone, _, course, jqSlide) {
+['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course'],
+function(RmcBackbone, _, _course, jqSlide, _user_course) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {
       'name': 'Fall 2012',
       'program_year_id': '3A',
-      'courses': new course.CourseCollection()
+      'user_course_ids': []
+    },
+
+    initialize: function() { },
+
+    get: function(attr) {
+      if (attr in this.attributes) {
+        return this._super('get', arguments);
+      }
+
+      var val;
+      if (attr === 'user_courses') {
+        val = _user_course.UserCourses.getFromCache(
+            this.get('user_course_ids'));
+        this.set(attr, val);
+      }
+
+      return val;
     },
 
     idAttribute: 'name'
@@ -18,16 +35,26 @@ function(RmcBackbone, _, course, jqSlide) {
 
     initialize: function(options) {
       this.termModel = options.termModel;
+
+      // TODO(mack): clean up how we do this, whether we should be
+      // getting courses directly or through this convoluted process
+      var courseIds = this.termModel.get('user_courses').map(function(uc) {
+        return uc.get('course_id');
+      });
+      this.courses = _course.CourseCollection.getFromCache(courseIds);
+
       this.expand = options.expand;
     },
 
     render: function(options) {
       var attributes = this.termModel.toJSON();
       attributes.expand = this.expand;
+
       this.$el.html(
         _.template($('#term-tpl').html(), attributes));
-      this.courseCollectionView = new course.CourseCollectionView({
-        courseCollection: this.termModel.get('courseCollection')
+
+      this.courseCollectionView = new _course.CourseCollectionView({
+        courses: this.courses
       });
       this.$el.find('.course-collection-placeholder').replaceWith(
         this.courseCollectionView.render().el);
@@ -78,8 +105,8 @@ function(RmcBackbone, _, course, jqSlide) {
     tagName: 'ol',
     className: 'term-collection',
 
-    initialize: function(options) {
-      this.termCollection = options.termCollection;
+    initialize: function(attributes) {
+      this.termCollection = attributes.termCollection;
       this.termViews = [];
     },
 

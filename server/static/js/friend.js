@@ -1,23 +1,27 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'ext/slimScroll'],
-function(RmcBackbone, $, _, _s, bootstrap, __) {
+'ext/bootstrap', 'ext/slimScroll', 'course'],
+function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
 
   var FriendView = RmcBackbone.View.extend({
     className: 'friend',
 
-    initialize: function(options) {
-      this.friendModel = options.friendModel;
+    initialize: function(attributes) {
+      this.friendModel = attributes.friendModel;
+      this.mutualCourses = this.friendModel.get('mutual_courses');
     },
 
     render: function() {
       this.$el.html(
-        _.template($('#friend-tpl').html(), this.friendModel.toJSON()));
+        _.template($('#friend-tpl').html(), {
+          friend: this.friendModel,
+          mutual_courses: this.mutualCourses
+        }));
 
       this.$('.friend-pic, .friend-name')
         .popover({
           html: true,
-          title: this.friendModel.get('lastTermName'),
+          title: this.friendModel.get('last_term_name'),
           content: _.bind(this.getFriendPopoverContent, this),
           trigger: 'hover',
           placement: 'in right'
@@ -57,7 +61,8 @@ function(RmcBackbone, $, _, _s, bootstrap, __) {
     getMutualCoursesPopoverContent: function() {
       if (!this.mutualCoursesPopoverView) {
         this.mutualCoursesHovercardView = new MutualCoursesHovercardView({
-          friendModel: this.friendModel
+          friendModel: this.friendModel,
+          mutualCourses: this.mutualCourses
         });
       }
       var $el = this.mutualCoursesHovercardView.render().$el;
@@ -80,14 +85,18 @@ function(RmcBackbone, $, _, _s, bootstrap, __) {
   var FriendHovercardView = RmcBackbone.View.extend({
     className: 'friend-hovercard',
 
-    initialize: function(options) {
-      this.friendModel = options.friendModel;
+    initialize: function(attributes) {
+      this.friendModel = attributes.friendModel;
+      this.lastTermCourses = this.friendModel.get('last_term_courses');
     },
 
     render: function() {
       this.$el.html(
-        _.template($('#friend-hovercard-tpl').html(),
-          this.friendModel.toJSON()));
+        _.template($('#friend-hovercard-tpl').html(), {
+          friend: this.friendModel,
+          last_term_courses: this.lastTermCourses
+        }
+      ));
 
       return this;
     }
@@ -99,12 +108,15 @@ function(RmcBackbone, $, _, _s, bootstrap, __) {
 
     initialize: function(options) {
       this.friendModel = options.friendModel;
+      this.mutualCourses = options.mutualCourses;
     },
 
     render: function() {
       this.$el.html(
-        _.template($('#mutual-courses-hovercard-tpl').html(),
-          this.friendModel.toJSON()));
+        _.template($('#mutual-courses-hovercard-tpl').html(), {
+          friend: this.friendModel,
+          mutual_courses: this.mutualCourses
+        }));
 
       return this;
     }
@@ -125,11 +137,13 @@ function(RmcBackbone, $, _, _s, bootstrap, __) {
 
     initialize: function(attributes) {
       this.friendCollection = attributes.friendCollection;
+      this.profileUser = attributes.profileUser;
     },
 
     render: function() {
       this.$el.html(_.template($('#friend-sidebar-tpl').html(), {
-        numFriends: this.friendCollection.length
+        num_friends: this.friendCollection.length,
+        own_profile: this.profileUser.get('own_profile')
       }));
       var collectionView = new FriendCollectionView({
         collection: this.friendCollection

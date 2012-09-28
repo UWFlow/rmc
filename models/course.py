@@ -1,4 +1,5 @@
 import mongoengine as me
+import re
 
 import rating
 
@@ -41,7 +42,10 @@ class Course(me.Document):
 
     @property
     def code(self):
-        return '%s %s' % (self.department_id.upper(), self.number.upper())
+        matches = re.findall(r'^([a-z]+)(.*)$', self.id)[0]
+        department = matches[0]
+        number = matches[1]
+        return '%s %s' % (department.upper(), number.upper())
 
     def save(self, *args, **kwargs):
         if not self.id:

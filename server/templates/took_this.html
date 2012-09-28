@@ -2,19 +2,19 @@
 
 {% call macros.us_template('took-this-sidebar-tpl') %}
 <h3 class="num-friends">
-  Taken by <%- numFriends %> <%- pluralize(numFriends, 'friend', 'friends') %>
+  Taken by <%- num_friends %> <%- pluralize(num_friends, 'friend', 'friends') %>
 </h3>
 <div class="took-this-collection-placeholder"></div>
 {% endcall %}
 
 {% call macros.us_template('took-this-tpl') %}
-<a class="person-pic" href="<%- user_profile_url %>">
-  <img class="img-rounded" src="<%- user_fb_pic_url %>">
+<a class="person-pic" href="<%- friend.profile_url %>">
+  <img class="img-rounded" src="<%- friend.fb_pic_url %>">
 </a>
 <div class="person-info">
-  <a class="person-name" href="<%- user_profile_url %>">
-    <%- user_name %>
+  <a class="person-name" href="<%- friend.profile_url %>">
+    <%- friend.name %>
   </a>
-  <div class="mutual-courses">in <%- term_name %></div>
+  <div class="mutual-courses">in <%- user_course.term_name %></div>
 </div>
 {% endcall %}

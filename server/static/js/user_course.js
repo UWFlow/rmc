@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/select2', 'ext/autosize'],
-function(RmcBackbone, $, _, _s, ratings, select2, __) {
+'ratings', 'ext/select2', 'ext/autosize', 'course', 'user'],
+function(RmcBackbone, $, _, _s, ratings, __, __, _course, _user) {
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
@@ -22,7 +22,8 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
         easiness: null,
         interest: null,
         comment: ''
-      }
+      },
+      friend_user_course_ids: []
     },
 
     url: function() {
@@ -36,6 +37,28 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
       if (!attributes || !attributes.course_review) {
         this.set('course_review', _.clone(this.defaults.course_review));
       }
+    },
+
+    get: function(attr) {
+      if (attr in this.attributes) {
+        return this._super('get', arguments);
+      }
+
+      var val;
+      if (attr === 'user') {
+        val = _user.UserCollection.getFromCache(this.get('user_id'));
+        this.set(attr, val);
+      } else if (attr === 'course') {
+        val = _course.CourseCollection.getFromCache(
+            this.get('course_id'));
+        this.set(attr, val);
+      } else if (attr === 'friend_user_courses') {
+        val = UserCourses.getFromCache(
+            this.get('friend_user_course_ids'));
+        this.set(attr, val);
+      }
+
+      return val;
     },
 
     // TODO(david): If I designed this better, all this code below might not be
@@ -76,6 +99,7 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
   var UserCourses = RmcBackbone.Collection.extend({
     model: UserCourse
   });
+  UserCourses.registerCache('user_course');
 
   var UserCourseView = RmcBackbone.View.extend({
     events: {
@@ -262,6 +286,7 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
         .html('<i class="icon-save"></i> Save!');
     }
   });
+
 
   return {
     UserCourse: UserCourse,

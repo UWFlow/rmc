@@ -79,13 +79,14 @@
   {% include 'term.html' %}
   {% include 'ratings.html' %}
   {% include 'user_course.html' %}
-  <script>
-    window.pageData.transcriptData = {{ transcript_data|safe }};
-  </script>
 {% endblock %}
 
 {% block scripts %}
 <script>
-  window.pageData.profileObj = {{ profile_obj|tojson|safe }};
+  window.pageData.transcriptObj = {{ transcript_obj|tojson|safe }};
+  window.pageData.userObjs = {{ user_objs|tojson|safe }};
+  window.pageData.userCourseObjs = {{ user_course_objs|tojson|safe }};
+  window.pageData.courseObjs = {{ course_objs|tojson|safe }};
+  window.pageData.profileUserId = {{ profile_user_id|tojson|safe }};
 </script>
 {% endblock %}

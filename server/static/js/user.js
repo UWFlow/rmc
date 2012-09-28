@@ -1,22 +1,38 @@
 define(
-['rmc_backbone', 'ext/underscore', 'ext/underscore.string', 'util'],
-function(RmcBackbone, _, _s, util) {
+['rmc_backbone', 'ext/underscore', 'ext/underscore.string', 'util', 'course'],
+function(RmcBackbone, _, _s, util, _course) {
 
-  var UserModel = RmcBackbone.Model.extend({
+  window.UserModel = RmcBackbone.Model.extend({
     defaults: {
       id: '0000000001',
       fbid: 1647810326,
       name: 'Mack Duan',
-      lastTermName: 'Spring 2012',
-      // if this model if on a course, it indicates when this user took
-      // the course
-      term_took: 'Spring 2012',
-      // TODO(mack): should be CourseCollection rather than array
-      coursesTook: [],
+      last_term_name: 'Spring 2012',
+      last_term_course_ids: [],
       // If this user is a friend, mutual_courses will be stored
       // TODO(mack): maybe should have FriendModel as subclass of UserModel
-      // TODO(mack): should be CourseCollection rather than array
-      mutual_courses: []
+      mutual_course_ids: undefined
+    },
+
+    initialize: function(attributes) { },
+
+    get: function(attr) {
+      if (attr in this.attributes) {
+        return this._super('get', arguments);
+      }
+
+      var val;
+      if (attr === 'mutual_courses') {
+        val = _course.CourseCollection.getFromCache(
+            this.get('mutual_course_ids'));
+        this.set(attr, val);
+      } else if (attr === 'last_term_courses') {
+        val = _course.CourseCollection.getFromCache(
+            this.get('last_term_course_ids'));
+        this.set(attr, val);
+      }
+
+      return val;
     },
 
     getFbPicUrl: function() {
@@ -30,10 +46,10 @@ function(RmcBackbone, _, _s, util) {
     },
 
     toJSON: function() {
-      var json = this._super('toJSON');
+      var json = this._super('toJSON', arguments);
       return _.extend(json, {
-        profileUrl: this.getProfileUrl(),
-        fbPicUrl: this.getFbPicUrl()
+        profile_url: this.getProfileUrl(),
+        fb_pic_url: this.getFbPicUrl()
       });
     }
   });
@@ -41,6 +57,7 @@ function(RmcBackbone, _, _s, util) {
   var UserCollection = RmcBackbone.Collection.extend({
     model: UserModel
   });
+  UserCollection.registerCache('user');
 
   // TODO(mack): remove stub data
   UserCollection.getSampleCollection = function() {
@@ -49,71 +66,61 @@ function(RmcBackbone, _, _s, util) {
         id: '001',
         fbid: 541400376,
         name: 'David Hu',
-        lastTermName: 'Spring 2012',
-        coursesTook: []
+        last_term_name: 'Spring 2012'
       },
       {
         id: '002',
         fbid: 1647810326,
         name: 'Mack Duan',
-        lastTermName: 'Fall 2012',
-        coursesTook: []
+        last_term_name: 'Fall 2012'
       },
       {
         id: '003',
         fbid: 518430508,
         name: 'Sandy Wu',
-        lastTermName: 'Fall 2012',
-        coursesTook: []
+        last_term_name: 'Fall 2012'
       },
       {
         id: '004',
         fbid: 709180245,
         name: 'Wen-Hao Lue',
-        lastTermName: 'Spring 2012',
-        coursesTook: []
+        last_term_name: 'Spring 2012'
       },
       {
         id: '005',
         fbid: 730676205,
         name: 'Zameer Manji',
-        lastTermName: 'Fall 2012',
-        coursesTook: []
+        last_term_name: 'Fall 2012'
       },
       {
         id: '006',
         fbid: 646460492,
         name: 'Joseph Hong',
-        lastTermName: 'Fall 2012',
-        coursesTook: []
+        last_term_name: 'Fall 2012'
       },
       {
         id: '007',
         fbid: 511515597,
         name: 'Andy Pincombe',
-        lastTermName: 'Winter 2012',
-        coursesTook: []
+        last_term_name: 'Winter 2012'
       },
       {
         id: '008',
         fbid: 784910429,
         name: 'Anthony Wong',
-        lastTermName: 'Winter 2012',
-        coursesTook: []
+        last_term_name: 'Winter 2012'
       },
       {
         id: '009',
         fbid: 1286400131,
         name: 'Vladmir Li',
-        lastTermName: 'Winter 2012',
-        coursesTook: []
+        last_term_name: 'Winter 2012'
       },
       {
         id: '010',
         fbid: 1652790284,
         name: 'Jamie Wong',
-        lastTermName: 'Fall 2012',
-        coursesTook: []
+        last_term_name: 'Fall 2012'
       }
     ];
 

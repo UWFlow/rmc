@@ -1,6 +1,6 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user'],
-function($, _, _s, course, __, RmcBackbone, user) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course'],
+function($, _, _s, course, __, RmcBackbone, user, _user_course, _course) {
 
   var FETCH_DELAY_MS = 300;
 
@@ -12,13 +12,13 @@ function($, _, _s, course, __, RmcBackbone, user) {
     direction: undefined,
     count: 10,
     offset: 0,
-    courseCollection: undefined,
+    courses: undefined,
     hasMore: true,
 
     initialize: function(options) {
       this.sortMode = window.pageData.sortModes[0];
       this.setDirection(this.sortMode.direction);
-      this.courseCollection = new course.CourseCollection();
+      this.courses = new _course.CourseCollection();
       $(window).scroll(_.bind(this.scrollWindow, this));
     },
 
@@ -40,10 +40,11 @@ function($, _, _s, course, __, RmcBackbone, user) {
       }));
 
       $('.dropdown-toggle').dropdown();
-      var courseCollectionView = new course.CourseCollectionView({
-        courseCollection: this.courseCollection
+      var courseCollectionView = new _course.CourseCollectionView({
+        courses: this.courses
       });
-      this.$('.course-collection-placeholder').replaceWith(courseCollectionView.render().$el);
+      this.$('.course-collection-placeholder').replaceWith(
+          courseCollectionView.render().$el);
       this.updateCourses();
 
       window.setTimeout(_.bind(function() {
@@ -113,7 +114,7 @@ function($, _, _s, course, __, RmcBackbone, user) {
     },
 
     resetCourses: function() {
-      this.courseCollection.reset();
+      this.courses.reset();
       this.hasMore = true;
       this.offset = 0;
     },
@@ -156,12 +157,26 @@ function($, _, _s, course, __, RmcBackbone, user) {
         '/api/course-search?' + args.join('&'),
         _.bind(function(data) {
           if (reset) {
-            this.courseCollection.reset();
+            this.courses.reset();
           }
-          var courses = data.courses;
+          var userCourseObjs = data.user_course_objs;
+          var courseObjs = data.course_objs;
+          var userObjs = data.user_objs;
+
+          user.UserCollection.addToCache(userObjs);
+          _user_course.UserCourses.addToCache(userCourseObjs);
+          _course.CourseCollection.addToCache(courseObjs);
+
           this.hasMore = data.has_more;
-          this.offset += courses.length;
-          this.courseCollection.add(courses);
+          this.offset += courseObjs.length;
+
+          // TODO(mack): investigate less akward way of doing this
+          _.each(courseObjs, function(courseObj) {
+            var id = courseObj.id;
+            var course = _course.CourseCollection.getFromCache(id);
+            this.courses.add(course);
+          }, this);
+
           this.updatingCourses = false;
           this.$('.loader').addClass('hide');
           this.$('.course-collection').css('opacity', 1);

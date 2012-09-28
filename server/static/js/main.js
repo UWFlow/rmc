@@ -82,14 +82,14 @@ function($, _, _s, Backbone, util, moment) {
 
     _.template = function(templateString, data, settings) {
       if (data) {
-        var data = _.extend({}, templateHelpers, data);
+        data = _.extend({}, templateHelpers, data);
         return template(templateString, data, settings);
       } else {
         var compiled = template(templateString);
         return function(data, settings) {
-          var data = _.extend({}, templateHelpers, data);
+          data = _.extend({}, templateHelpers, data);
           return compiled(data, settings);
-        }
+        };
       }
     };
   })();

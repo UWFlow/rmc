@@ -1,14 +1,12 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'user_course', 'ext/bootstrap', 'user', 'util', 'jquery.slide'],
-function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
+'ratings', 'ext/bootstrap', 'util', 'jquery.slide'],
+function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
   var CourseModel = RmcBackbone.Model.extend({
     defaults: {
       id: 'SCI 238',
       name: 'Introduction to Astronomy omg omg omg',
-      friend_user_courses: new u_c.UserCourses(),
-      userCourse: undefined,
       professors: [],
       description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
@@ -22,7 +20,8 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
         name: 'easiness',
         count: 7,
         total: 2
-      }]
+      }],
+      user_course_id: undefined
     },
 
     initialize: function(attributes) {
@@ -32,14 +31,25 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
         });
         this.set('ratings', new ratings.RatingCollection(ratingsArray));
       }
+    },
 
-      if (attributes.friend_user_courses) {
-        var friend_user_courses = new u_c.UserCourses(
-            attributes.friend_user_courses);
-        this.set('friend_user_courses', friend_user_courses);
+    get: function(attr) {
+      if (attr in this.attributes) {
+        return this._super('get', arguments);
       }
 
-      this.set('userCourse', new u_c.UserCourse(attributes.userCourse));
+      var val;
+      if (attr === 'user_course') {
+        // TODO(mack): should not call require w/o including it in dependency
+        // list
+        var userCourseId = this.get('user_course_id');
+        if (userCourseId) {
+          var _user_course = require('user_course');
+          val = _user_course.UserCourses.getFromCache(userCourseId);
+        }
+        this.set(attr, val);
+      }
+      return val;
     },
 
     getProf: function(id) {
@@ -53,17 +63,20 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     template: _.template($('#course-tpl').html()),
     className: 'course well',
 
-    initialize: function(options) {
-      this.courseModel = options.courseModel;
+    initialize: function(attributes) {
+      this.courseModel = attributes.courseModel;
       this.ratingBoxView = new ratings.RatingBoxView({
         model: new ratings.RatingModel(this.courseModel.get('overall'))
       });
       this.courseInnerView = new CourseInnerView({
         courseModel: this.courseModel
       });
-      if (this.courseModel.get('friend_user_courses').length) {
+
+      var userCourse = this.courseModel.get('user_course');
+      if (userCourse && userCourse.get('friend_user_course_ids').length) {
         this.sampleFriendsView = new SampleFriendsView({
-          courseModel: this.courseModel
+          courseModel: this.courseModel,
+          userCourse: userCourse
         });
       }
     },
@@ -117,7 +130,6 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     expandNewReview: function(evt) {
       this.$('.new-review').addClass('new-review-expanded');
     }
-
   });
 
   // TODO(david): Refactor things to use implicit "model" on views
@@ -125,25 +137,38 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     template: _.template($('#course-inner-tpl').html()),
     className: 'course-inner',
 
-    initialize: function(options) {
-      this.courseModel = options.courseModel;
-      var userCourse = this.courseModel.get('userCourse');
+    initialize: function(attributes) {
+      var _user_course = require('user_course');
+      this.courseModel = attributes.courseModel;
+      this.userCourse = this.courseModel.get('user_course');
+
+      if (!this.userCourse) {
+        // TODO(mack): remove require()
+        this.userCourse = new _user_course.UserCourse({
+          user_course_id: this.courseModel.get('id')
+        });
+        this.courseModel.set('user_course', this.userCourse);
+      }
+
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
-        userCourse: userCourse
+        userCourse: this.userCourse
       });
       // TODO(david): Get user review data, and don't show or show altered if no
       //     user or user didn't take course.
-      this.userCourseView = new u_c.UserCourseView({
-        userCourse: userCourse,
+      // TODO(mack): remove circular dependency
+      this.userCourseView = new _user_course.UserCourseView({
+        userCourse: this.userCourse,
         courseModel: this.courseModel
       });
     },
 
     render: function(moreDetails) {
-      var context = this.courseModel.toJSON();
-      _.extend(context, { more_details: moreDetails });
-      this.$el.html(this.template(context));
+      this.$el.html(this.template({
+        more_details: moreDetails,
+        course: this.courseModel,
+        user_course: this.userCourse
+      }));
 
       this.$('.review-placeholder').replaceWith(
         this.userCourseView.render().el);
@@ -169,11 +194,12 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
 
     initialize: function(attributes) {
       this.courseModel = attributes.courseModel;
+      this.userCourse = attributes.userCourse;
       this.friendViews = [];
     },
 
     render: function() {
-      var friendUserCourses = this.courseModel.get('friend_user_courses');
+      var friendUserCourses = this.userCourse.get('friend_user_courses');
 
       this.$el.html(
         _.template($('#sample-friends-tpl').html(), {
@@ -182,7 +208,10 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
         })
       );
 
-      var sampleFriendCollection = new user.UserCollection(
+      // TODO(mack): circular dependency here, maybe should have single
+      // module that has all models like the backend
+      var _user = require('user');
+      var sampleFriendCollection = new _user.UserCollection(
         friendUserCourses.first(this.MAX_SAMPLE_FRIENDS)
       );
       var friendCollectionView = new FriendCollectionView({
@@ -268,8 +297,10 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
 
     render: function() {
       this.$el.html(
-        _.template($('#course-friend-tpl').html(), this.userCourse.toJSON())
-      );
+        _.template($('#course-friend-tpl').html(), {
+          friend: this.userCourse.get('user').toJSON()
+        }
+      ));
 
       window.setTimeout(_.bind(this.postRender, this));
 
@@ -291,23 +322,24 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
   var CourseCollection = RmcBackbone.Collection.extend({
     model: CourseModel
   });
+  CourseCollection.registerCache('course');
 
 
-  // TODO(mack): make generic CollectionView
+  // TODO(mack): it's really UserCourseCollectionView now
   var CourseCollectionView = RmcBackbone.View.extend({
     tagName: 'ol',
     className: 'course-collection',
 
-    initialize: function(options) {
-      this.courseCollection = options.courseCollection;
-      this.courseCollection.bind('add', _.bind(this.addCourse, this));
-      this.courseCollection.bind('reset', _.bind(this.render, this));
+    initialize: function(attributes) {
+      this.courses = attributes.courses;
+      this.courses.bind('add', _.bind(this.addCourse, this));
+      this.courses.bind('reset', _.bind(this.render, this));
       this.courseViews = [];
     },
 
-    addCourse: function(courseModel) {
+    addCourse: function(course) {
       var courseView = new CourseView({
-        courseModel: courseModel,
+        courseModel: course,
         tagName: 'li'
       });
       this.$el.append(courseView.render().el);
@@ -316,8 +348,8 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
 
     render: function() {
       this.$el.empty();
-      this.courseCollection.each(function(courseModel) {
-        this.addCourse(courseModel);
+      this.courses.each(function(course) {
+        this.addCourse(course);
       }, this);
 
       return this;

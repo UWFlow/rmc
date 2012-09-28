@@ -2,14 +2,17 @@ require(
 ['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'ratings',
 'user_course'],
 function($, course, tookThis, user, tips, prof, ratings, user_course) {
-  // TODO(david): Customize with people who took this course.
-  courseIds = ['CS137', 'SCI238', 'CS241'];
 
-  var courseData = window.pageData.data;
-  var courseModel = new course.CourseModel(courseData);
+  course.CourseCollection.addToCache(pageData.courseObj);
+  user.UserCollection.addToCache(pageData.userObjs);
+  user_course.UserCourses.addToCache(pageData.userCourseObjs);
+
+  var courseObj = pageData.courseObj;
+  var courseModel = course.CourseCollection.getFromCache(courseObj.id);
+  var userCourse = courseModel.get('user_course');
 
   var ratingBoxView = new ratings.RatingBoxView({
-    model: new ratings.RatingModel(courseData.overall)
+    model: new ratings.RatingModel(courseModel.get('overall'))
   });
   $('#rating-box-container').html(ratingBoxView.render().el);
 
@@ -20,20 +23,20 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
   courseInnerView.animateBars();
 
   var tookThisSidebarView = new tookThis.TookThisSidebarView({
-    collection: new user_course.UserCourses(pageData.data.friend_user_courses),
+    userCourses: userCourse.get('friend_user_courses'),
     courseCode: courseModel.get('code')
   });
   $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
 
   // TODO(Sandy): Use the comment_date field
-  tipsData = window.pageData.tips;
-  var tipsCollection = new tips.TipsCollection(tipsData);
+  var tipObjs = window.pageData.tipObjs;
+  var tipsCollection = new tips.TipsCollection(tipObjs);
 
   var tipsView = new tips.ExpandableTipsView({ tips: tipsCollection });
   $('#tips-collection-placeholder').replaceWith(tipsView.render().el);
 
   // TODO(david): Handle no professors for course
-  var profsCollection = new prof.ProfCollection(courseData.professors);
+  var profsCollection = new prof.ProfCollection(courseModel.get('professors'));
   var profsView = new prof.ProfCollectionView({ collection: profsCollection });
   $('#professor-review-container').html(profsView.render().el);
 
