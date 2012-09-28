@@ -1,7 +1,7 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'base_views'],
-function(Backbone, $, _, _s, bootstrap, baseViews) {
+'ext/bootstrap', 'rmc_backbone'],
+function(Backbone, $, _, _s, bootstrap, RmcBackbone) {
 
   // TODO(david): Sorry about the terrible name of everything... I'm tired
 
@@ -15,7 +15,7 @@ function(Backbone, $, _, _s, bootstrap, baseViews) {
     }
   });
 
-  var UserCollectionView = baseViews.CollectionView.extend({
+  var UserCollectionView = RmcBackbone.CollectionView.extend({
     className: 'took-this-collection',
 
     createItemView: function(model) {
@@ -27,8 +27,8 @@ function(Backbone, $, _, _s, bootstrap, baseViews) {
     className: 'took-this-sidebar',
 
     initialize: function(attributes) {
-      this.courseCode = attributes.courseCode,
-      this.collection = attributes.collection
+      this.courseCode = attributes.courseCode;
+      this.collection = attributes.collection;
     },
 
     render: function() {

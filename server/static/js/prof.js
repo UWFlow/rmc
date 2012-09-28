@@ -1,7 +1,7 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'ext/backbone', 'jquery.slide', 'base_views', 'ratings', 'util', 'comment', 'review'],
-function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
+'ext/backbone', 'jquery.slide', 'rmc_backbone', 'ratings', 'util', 'comment', 'review'],
+function($, _, _s, bootstrap, Backbone, jqSlide, RmcBackbone, ratings, util,
     comment, review) {
 
   var Prof = Backbone.Model.extend({
@@ -146,7 +146,7 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
     }
   });
 
-  var ProfCollectionView = baseViews.CollectionView.extend({
+  var ProfCollectionView = RmcBackbone.CollectionView.extend({
     className: 'prof-collection',
 
     createItemView: function(model) {

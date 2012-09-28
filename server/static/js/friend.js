@@ -1,7 +1,7 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'base_views', 'ext/slimScroll'],
-function(Backbone, $, _, _s, bootstrap, baseViews, __) {
+'ext/bootstrap', 'rmc_backbone', 'ext/slimScroll'],
+function(Backbone, $, _, _s, bootstrap, RmcBackbone, __) {
 
   var FriendView = Backbone.View.extend({
     className: 'friend',
@@ -111,7 +111,7 @@ function(Backbone, $, _, _s, bootstrap, baseViews, __) {
   });
 
 
-  var FriendCollectionView = baseViews.CollectionView.extend({
+  var FriendCollectionView = RmcBackbone.CollectionView.extend({
     tagName: 'ol',
     className: 'friend-collection',
 

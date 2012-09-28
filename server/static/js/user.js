@@ -1,8 +1,8 @@
 define(
-['ext/backbone', 'ext/underscore', 'ext/underscore.string', 'util'],
-function(Backbone, _, _s, util) {
+['rmc_backbone', 'ext/underscore', 'ext/underscore.string', 'util'],
+function(RmcBackbone, _, _s, util) {
 
-  var UserModel = Backbone.Model.extend({
+  var UserModel = RmcBackbone.Model.extend({
     defaults: {
       id: '0000000001',
       fbid: 1647810326,
@@ -17,11 +17,6 @@ function(Backbone, _, _s, util) {
       // TODO(mack): maybe should have FriendModel as subclass of UserModel
       // TODO(mack): should be CourseCollection rather than array
       mutual_courses: []
-    },
-
-    initialize: function(attributes) {
-      // FIXME(mack): need to convert backend to return strings for objectids
-      this.set('id', attributes.id.$oid);
     },
 
     getFbPicUrl: function() {
@@ -43,7 +38,7 @@ function(Backbone, _, _s, util) {
     }
   });
 
-  var UserCollection = Backbone.Collection.extend({
+  var UserCollection = RmcBackbone.Collection.extend({
     model: UserModel
   });
 
@@ -55,7 +50,7 @@ function(Backbone, _, _s, util) {
         fbid: 541400376,
         name: 'David Hu',
         lastTermName: 'Spring 2012',
-        coursesTook: [],
+        coursesTook: []
       },
       {
         id: '002',
@@ -76,7 +71,7 @@ function(Backbone, _, _s, util) {
         fbid: 709180245,
         name: 'Wen-Hao Lue',
         lastTermName: 'Spring 2012',
-        coursesTook: [],
+        coursesTook: []
       },
       {
         id: '005',
@@ -124,7 +119,7 @@ function(Backbone, _, _s, util) {
 
     var num = util.random(0, usersData.length);
     return new UserCollection(util.randomItems(usersData, num));
-  }
+  };
 
   return {
     UserModel: UserModel,

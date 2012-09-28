@@ -1,7 +1,7 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'ext/backbone', 'base_views', 'user', 'jquery.slide'],
-function($, _, _s, bootstrap, Backbone, baseViews, user, jqSlide) {
+'ext/backbone', 'rmc_backbone', 'user', 'jquery.slide'],
+function($, _, _s, bootstrap, Backbone, RmcBackbone, user, jqSlide) {
 
   var Tip = Backbone.Model.extend({
     defaults: {
@@ -22,7 +22,7 @@ function($, _, _s, bootstrap, Backbone, baseViews, user, jqSlide) {
     model: Tip
   });
 
-  var TipsCollectionView = baseViews.CollectionView.extend({
+  var TipsCollectionView = RmcBackbone.CollectionView.extend({
     className: 'tips-collection',
 
     createItemView: function(model) {

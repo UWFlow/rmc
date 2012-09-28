@@ -1,6 +1,6 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'comment', 'ratings', 'base_views'],
-function(Backbone, $, _, comment, ratings, base_views) {
+['ext/backbone', 'ext/jquery', 'ext/underscore', 'comment', 'ratings', 'rmc_backbone'],
+function(Backbone, $, _, comment, ratings, RmcBackbone) {
 
   // TODO(david): Remove "Model" suffixes from other Backbone models
   // TODO(david): Remove the comment being nested
@@ -51,7 +51,7 @@ function(Backbone, $, _, comment, ratings, base_views) {
     }
   });
 
-  var ReviewCollectionView = base_views.CollectionView.extend({
+  var ReviewCollectionView = RmcBackbone.CollectionView.extend({
     className: 'review-collection',
 
     createItemView: function(model) {

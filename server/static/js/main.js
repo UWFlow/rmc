@@ -94,12 +94,6 @@ function($, _, _s, Backbone, util, moment) {
     };
   })();
 
-  // Extend backbone model
-  // TODO(mack): test in ie
-  Backbone.Model.prototype._super = function(funcName) {
-    return this.constructor.__super__[funcName].apply(this, _.rest(arguments));
-  };
-
   if (window.pageData.pageScript) {
     // TODO(mack): investigate if there's a faster/better way of doing this
     // than after DOMReady

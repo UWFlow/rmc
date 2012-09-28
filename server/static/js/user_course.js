@@ -1,11 +1,11 @@
 define(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/select2', 'ext/autosize'],
-function(Backbone, $, _, _s, ratings, select2) {
+'ratings', 'ext/select2', 'ext/autosize', 'rmc_backbone'],
+function(Backbone, $, _, _s, ratings, select2, __, RmcBackbone) {
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
-  var UserCourse = Backbone.Model.extend({
+  var UserCourse = RmcBackbone.Model.extend({
     // TODO(mack): use undefined rather than null
     defaults: {
       id: null,
