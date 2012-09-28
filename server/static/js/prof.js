@@ -136,7 +136,8 @@ function($, _, _s, bootstrap, Backbone, jqSlide, baseViews, ratings, util,
       if (this.expanded) {
         this.$('.expanded-reviews').fancySlide('up');
         this.$('.toggle-reviews')
-          .html('See ' + this.numHidden() + ' more reviews &raquo;');
+          .html('See ' + this.numHidden() + ' more ' +
+              util.pluralize(this.numHidden(), 'review') + ' &raquo;');
       } else {
         this.$('.expanded-reviews').fancySlide('down');
         this.$('.toggle-reviews').html('&laquo; Hide reviews');
