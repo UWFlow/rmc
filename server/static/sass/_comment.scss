@@ -4,31 +4,14 @@
 }
 
 .comment-text {
-  $border-color: #DDD;
-  $inner-color: #FCFCFC;
+  $inner-color: rgba(0, 0, 0, 0.06);
   $triangle-size: 7px;
   $inner-padding: 12px;
 
   position: relative;
   @include border-radius(7px);
-  @include box-shadow(0 0 3px rgba(0, 0, 0, 0.1));
-  border: 1px solid rgba(0, 0, 0, 0.2);
   background-color: $inner-color;
   padding: $inner-padding;
-
-
-  // Speech bubble triangle outline
-  &:before {
-    position: absolute;
-    left: -14px;  // TODO(david): WTF why calculate this
-    top: 10px;
-    content: ' ';
-    width: 0;
-    height: 0;
-    border: $triangle-size solid;
-    border-color: darken($border-color, 10%) darken($border-color, 10%) transparent transparent;
-    @include border-radius(2px 0 0 0);
-  }
 
   // Speech bubble triangle inner
   &:after {
