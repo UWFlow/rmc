@@ -71,8 +71,7 @@ function($, _, _s, course, __, RmcBackbone, user) {
       this.setDirection(this.sortMode.direction);
       this.$('.selected-direction').text(this.direction.name);
 
-      this.resetCourses();
-      this.updateCourses();
+      this.resetAndUpdate();
     },
 
     changeDirection: function(evt) {
@@ -81,8 +80,7 @@ function($, _, _s, course, __, RmcBackbone, user) {
       var directionValue = window.parseInt($target.attr('data-value'), 10);
       this.setDirection(directionValue);
 
-      this.resetCourses();
-      this.updateCourses();
+      this.resetAndUpdate();
     },
 
     changeKeywords: function(evt) {
@@ -97,8 +95,7 @@ function($, _, _s, course, __, RmcBackbone, user) {
       }
 
       this.timer = window.setTimeout(_.bind(function() {
-        this.resetCourses();
-        this.updateCourses();
+        this.resetAndUpdate();
       }, this), FETCH_DELAY_MS);
     },
 
@@ -121,7 +118,20 @@ function($, _, _s, course, __, RmcBackbone, user) {
       this.offset = 0;
     },
 
-    updateCourses: function() {
+    /**
+     * Doesn't clear existing courses (just fades them) until new data arrives
+     */
+    resetAndUpdate: function() {
+      this.offset = 0;
+      this.hasMore = true;
+      this.$('.course-collection').css('opacity', 0.5);
+      this.updateCourses(/* reset */ true);
+    },
+
+    /**
+     * @param {boolean} reset Whether to clear courses before appending new ones
+     */
+    updateCourses: function(reset) {
       if (!this.hasMore || this.updatingCourses) {
         // TODO(mack): handle case of very short interval between changing
         // search options
@@ -145,6 +155,9 @@ function($, _, _s, course, __, RmcBackbone, user) {
       $.getJSON(
         '/api/course-search?' + args.join('&'),
         _.bind(function(data) {
+          if (reset) {
+            this.courseCollection.reset();
+          }
           var courses = data.courses;
           this.hasMore = data.has_more;
           this.offset += courses.length;

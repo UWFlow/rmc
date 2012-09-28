@@ -32,6 +32,7 @@
   .loader-container {
     text-align: center;
     .loader {
+      position: absolute;
       // TODO(mack): use sass so we can set image directory
       display: inline-block;
       background: url('/static/img/bar-loader.gif') no-repeat;
