@@ -23,7 +23,7 @@ function($, _, _s, course, __, RmcBackbone, user) {
     },
 
     scrollWindow: function(evt) {
-      var loaderOffset = this.$('.loader-container').offset().top;
+      var loaderOffset = this.$('.loader-bottom').offset().top;
       var $window = $(window);
       var bottomOffset = $window.scrollTop() + $window.height();
       if (bottomOffset > loaderOffset) {
