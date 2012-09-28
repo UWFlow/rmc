@@ -722,8 +722,8 @@ def clean_course(course, expanded=False):
         },
         'overall': course.overall.to_dict(),
         'professors': get_professors(course),
-        'userCourse': get_user_course(course),
-        'friend_user_courses': get_friend_user_courses(course),
+        'userCourse': get_user_course(course) if user else None,
+        'friend_user_courses': get_friend_user_courses(course) if user else [],
     }
 
 
