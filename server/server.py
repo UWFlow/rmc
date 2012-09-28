@@ -20,6 +20,11 @@ import hmac
 
 VERSION = int(time.time())
 
+# Minimum number of characters for a review to pass
+# TODO(david): Have a function to do this. First, we need consistent review
+#     interface
+MIN_REVIEW_LENGTH = 15
+
 app = flask.Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
@@ -272,8 +277,10 @@ def course_page(course_id):
         flask.abort(404)
 
     course_cleaned = clean_course(course, expanded=True)
+    # TODO(david): Use a projection
     ucs = m.UserCourse.objects(course_id=course_id)
-    tips = map(tip_from_uc, filter(course_review_exists, ucs))
+    tips = [tip_from_uc(tip) for tip in ucs if
+            len(tip.course_review.comment) > MIN_REVIEW_LENGTH]
 
     # TODO(david): Protect against the </script> injection XSS hack
     return flask.render_template('course_page.html',
@@ -649,6 +656,11 @@ def clean_professor(professor, course_id=None):
 
         course_reviews = m.user_course.get_reviews_for_course_prof(course_id,
                 professor.id)
+        # TODO(david): Eventually do this in mongo query or enforce quality
+        #     metrics on front-end
+        course_reviews = filter(
+                lambda r: len(r.professor_review.comment) >= MIN_REVIEW_LENGTH,
+                course_reviews)
         prof['course_reviews'] = map(clean_prof_review, course_reviews)
 
     return prof
@@ -755,11 +767,6 @@ def clean_user(user, courses_map):
         'lastTermName': last_term_name,
         'coursesTook': courses_took,
     }
-
-def course_review_exists(uc):
-    if uc.course_review.comment is None or uc.course_review.comment == '':
-        return False
-    return True
 
 def tip_from_uc(uc):
     user_id = uc.user_id
