@@ -2,6 +2,8 @@ require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user'],
 function($, _, _s, course, __, RmcBackbone, user) {
 
+  var FETCH_DELAY_MS = 300;
+
   var CourseSearchView = RmcBackbone.View.extend({
     className: 'course-search',
     timer: undefined,
@@ -86,14 +88,18 @@ function($, _, _s, course, __, RmcBackbone, user) {
     changeKeywords: function(evt) {
       var $target = $(evt.currentTarget);
       this.keywords = $target.val();
+      this.$('.course-collection').css('opacity', 0.5);
 
+      // TODO(david): Could use jQuery deferreds for this sort of thing
       if (this.timer) {
         // Prevent multiple API searches if entering multiple characters
         window.clearTimeout(this.timer);
       }
 
-      this.resetCourses();
-      this.timer = window.setTimeout(_.bind(this.updateCourses, this), 500);
+      this.timer = window.setTimeout(_.bind(function() {
+        this.resetCourses();
+        this.updateCourses();
+      }, this), FETCH_DELAY_MS);
     },
 
     setDirection: function(direction) {
@@ -145,19 +151,15 @@ function($, _, _s, course, __, RmcBackbone, user) {
           this.courseCollection.add(courses);
           this.updatingCourses = false;
           this.$('.loader').addClass('hide');
+          this.$('.course-collection').css('opacity', 1);
         }, this)
       );
     }
   });
 
   var init = function() {
-    (function() {
-      var courseSearchView = new CourseSearchView({});
-      $('#course-page-container').append(courseSearchView.render().$el);
-    })();
-
-    (function() {
-    })();
+    var courseSearchView = new CourseSearchView({});
+    $('#course-page-container').append(courseSearchView.render().$el);
   };
 
   init();
