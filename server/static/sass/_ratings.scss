@@ -21,6 +21,7 @@ $cell-height: 28px;
     margin-left: 0px;
 
     .rating-progress.progress {
+      opacity: 0.7;
       @include border-radius(0 4px 4px 0);
       @include background-image(linear-gradient(top, #e2e2e2, #f3f3f3));
       @include force-height($bar-height);

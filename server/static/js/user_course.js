@@ -64,6 +64,12 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
       this.set(objName, attrs);
       this.trigger('change');
       return this;
+    },
+
+    validate: function(attrs) {
+      if (!attrs.professor_id) {
+        return "Which professor did you take the course with?";
+      }
     }
   });
 
@@ -152,7 +158,7 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
       this.saving = true;
       var self = this;
 
-      this.userCourse.save({
+      var saveXhr = this.userCourse.save({
         //id: this.userCourse.get('id'),
         //term_id: this.userCourse.get('term_id'),
         professor_id: this.$('.prof-select').select2('val'),
@@ -163,17 +169,38 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
         professor_review: _.extend({}, this.userCourse.get('professor_review'), {
           comment: this.$('.prof-comments').val()
         })
-      }).done(function() {
-        self.saveButtonSuccess();
-      }).error(function() {
+      }, {
+        error: function(model, error) {
+          //self.$('.text-error').text(error);
+          // TODO(david): Actually throw an error subclass and test which error
+          //self.$('.prof-select').effect('highlight', {}, 3000);
+          self.$('.prof-select-row')
+            .hide()
+            .appendTo(self.$('.user-course'))
+            .css('margin-top', '10px')
+            .fadeIn('slow');
+        }
+      });
+
+      var onError = function() {
         button
           .removeClass('btn-warning')
           .addClass('btn-danger')
           .prop('disabled', false)
-          .html('<i class="icon-exclamation-sign"></i> Error! :( Try again.');
-      }).always(function() {
+          .html('<i class="icon-exclamation-sign"></i> ' +
+              'Oh noes, that didn\'t work :( Try again');
+      };
+
+      if (saveXhr) {
+        saveXhr.done(function() {
+          self.saveButtonSuccess();
+        }).error(onError).always(function() {
+          self.saving = false;
+        });
+      } else {
+        onError();
         self.saving = false;
-      });
+      }
     },
 
     saveButtonSuccess: function() {
@@ -190,7 +217,7 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
       }
 
       this.$('.save-review')
-        .removeClass('btn-success')
+        .removeClass('btn-success btn-warning btn-danger')
         .addClass('btn-primary')
         .prop('disabled', false)
         .html('<i class="icon-save"></i> Save!');
