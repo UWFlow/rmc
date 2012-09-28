@@ -1,11 +1,11 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'rmc_backbone'],
-function(Backbone, $, _, _s, bootstrap, RmcBackbone) {
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+'ext/bootstrap'],
+function(RmcBackbone, $, _, _s, bootstrap) {
 
   // TODO(david): Sorry about the terrible name of everything... I'm tired
 
-  var TookThisView = Backbone.View.extend({
+  var TookThisView = RmcBackbone.View.extend({
     className: 'took-this',
 
     render: function() {
@@ -23,7 +23,7 @@ function(Backbone, $, _, _s, bootstrap, RmcBackbone) {
     }
   });
 
-  TookThisSidebarView = Backbone.View.extend({
+  TookThisSidebarView = RmcBackbone.View.extend({
     className: 'took-this-sidebar',
 
     initialize: function(attributes) {

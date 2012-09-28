@@ -1,10 +1,10 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'ext/backbone', 'jquery.slide', 'rmc_backbone', 'ratings', 'util', 'comment', 'review'],
-function($, _, _s, bootstrap, Backbone, jqSlide, RmcBackbone, ratings, util,
+'jquery.slide', 'rmc_backbone', 'ratings', 'util', 'comment', 'review'],
+function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util,
     comment, review) {
 
-  var Prof = Backbone.Model.extend({
+  var Prof = RmcBackbone.Model.extend({
     defaults: {
       name: 'Charles L.A. Clarke',
       email: 'charles.clarke@uwaterloo.ca',
@@ -48,7 +48,7 @@ function($, _, _s, bootstrap, Backbone, jqSlide, RmcBackbone, ratings, util,
   });
 
   // TODO(david): Convert other backbone views to pre-compile templates
-  var ProfCardView = Backbone.View.extend({
+  var ProfCardView = RmcBackbone.View.extend({
     className: 'prof-card',
     template: _.template($('#prof-card-tpl').html()),
 
@@ -58,7 +58,7 @@ function($, _, _s, bootstrap, Backbone, jqSlide, RmcBackbone, ratings, util,
     }
   });
 
-  var ProfCollection = Backbone.Collection.extend({
+  var ProfCollection = RmcBackbone.Collection.extend({
     model: Prof,
 
     // TODO(david): Allow changing sort/filter options
@@ -68,7 +68,7 @@ function($, _, _s, bootstrap, Backbone, jqSlide, RmcBackbone, ratings, util,
   });
 
   // TODO(david): Need base expandable collection view
-  var ExpandableProfView = Backbone.View.extend({
+  var ExpandableProfView = RmcBackbone.View.extend({
     template: _.template($('#prof-expandable-reviews-tpl').html()),
     expanded: false,
     numShown: 1,

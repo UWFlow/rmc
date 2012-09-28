@@ -1,7 +1,7 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/select2', 'ext/autosize', 'rmc_backbone'],
-function(Backbone, $, _, _s, ratings, select2, __, RmcBackbone) {
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+'ratings', 'ext/select2', 'ext/autosize'],
+function(RmcBackbone, $, _, _s, ratings, select2, __) {
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
@@ -67,11 +67,11 @@ function(Backbone, $, _, _s, ratings, select2, __, RmcBackbone) {
     }
   });
 
-  var UserCourses = Backbone.Collection.extend({
+  var UserCourses = RmcBackbone.Collection.extend({
     model: UserCourse
   });
 
-  var UserCourseView = Backbone.View.extend({
+  var UserCourseView = RmcBackbone.View.extend({
     events: {
       'change .prof-select': 'showReview',
       'click .add-review': 'showReview',

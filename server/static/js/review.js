@@ -1,10 +1,10 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'comment', 'ratings', 'rmc_backbone'],
-function(Backbone, $, _, comment, ratings, RmcBackbone) {
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'comment', 'ratings'],
+function(RmcBackbone, $, _, comment, ratings) {
 
   // TODO(david): Remove "Model" suffixes from other Backbone models
   // TODO(david): Remove the comment being nested
-  var Review = Backbone.Model.extend({
+  var Review = RmcBackbone.Model.extend({
     defaults: {
       comment: new comment.Comment(),
       ratings: new ratings.RatingCollection()
@@ -21,7 +21,7 @@ function(Backbone, $, _, comment, ratings, RmcBackbone) {
     }
   });
 
-  var ReviewView = Backbone.View.extend({
+  var ReviewView = RmcBackbone.View.extend({
     template: _.template($('#review-tpl').html()),
     className: 'review-post',
 
@@ -43,7 +43,7 @@ function(Backbone, $, _, comment, ratings, RmcBackbone) {
     }
   });
 
-  var ReviewCollection = Backbone.Collection.extend({
+  var ReviewCollection = RmcBackbone.Collection.extend({
     model: Review,
 
     comparator: function(model) {

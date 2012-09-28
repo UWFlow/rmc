@@ -1,9 +1,9 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'util'],
-function(Backbone, $, _, util) {
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'util'],
+function(RmcBackbone, $, _, util) {
 
   // TODO(david): Remove "Model" suffixes from other Backbone models
-  var Comment = Backbone.Model.extend({
+  var Comment = RmcBackbone.Model.extend({
     defaults: {
       comment: '',
       comment_date: new Date(0),
@@ -34,7 +34,7 @@ function(Backbone, $, _, util) {
     }
   });
 
-  var CommentView = Backbone.View.extend({
+  var CommentView = RmcBackbone.View.extend({
     template: _.template($('#comment-tpl').html()),
     className: 'comment',
 

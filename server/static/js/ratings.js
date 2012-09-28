@@ -1,14 +1,14 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
 'util'],
-function(Backbone, $, _, _s, util) {
+function(RmcBackbone, $, _, _s, util) {
 
   var NUM_SEGMENTS = 5;
   // TODO(david): Refactor all the row-fluid to use an actual class name
 
   // A rating of a single metric
   // TODO(david): Fix this to just be count + rating (instead of total)
-  var RatingModel = Backbone.Model.extend({
+  var RatingModel = RmcBackbone.Model.extend({
     defaults: {
       name: 'interest',
       rating: 0.66,
@@ -42,7 +42,7 @@ function(Backbone, $, _, _s, util) {
     }
   });
 
-  var RatingCollection = Backbone.Collection.extend({
+  var RatingCollection = RmcBackbone.Collection.extend({
     model: RatingModel,
 
     getNameAt: function(index) {
@@ -51,7 +51,7 @@ function(Backbone, $, _, _s, util) {
 
   });
 
-  var RatingsView = Backbone.View.extend({
+  var RatingsView = RmcBackbone.View.extend({
 
     events: {
       'mouseenter .rating-progress': 'onRatingHover',
@@ -143,7 +143,7 @@ function(Backbone, $, _, _s, util) {
 
   });
 
-  var RatingBoxView = Backbone.View.extend({
+  var RatingBoxView = RmcBackbone.View.extend({
     template: _.template($('#rating-box-tpl').html()),
 
     render: function() {

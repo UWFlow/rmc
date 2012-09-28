@@ -1,8 +1,8 @@
 define(
-['ext/backbone', 'ext/underscore', 'course', 'jquery.slide'],
-function(Backbone, _, course, jqSlide) {
+['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide'],
+function(RmcBackbone, _, course, jqSlide) {
 
-  var TermModel = Backbone.Model.extend({
+  var TermModel = RmcBackbone.Model.extend({
     defaults: {
       'name': 'Fall 2012',
       'program_year_id': '3A',
@@ -13,7 +13,7 @@ function(Backbone, _, course, jqSlide) {
   });
 
 
-  var TermView = Backbone.View.extend({
+  var TermView = RmcBackbone.View.extend({
     className: 'term',
 
     initialize: function(options) {
@@ -69,12 +69,12 @@ function(Backbone, _, course, jqSlide) {
   });
 
 
-  var TermCollection = Backbone.Collection.extend({
+  var TermCollection = RmcBackbone.Collection.extend({
     model: TermModel
   });
 
 
-  var TermCollectionView = Backbone.View.extend({
+  var TermCollectionView = RmcBackbone.View.extend({
     tagName: 'ol',
     className: 'term-collection',
 

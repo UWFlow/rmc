@@ -1,9 +1,9 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
 'ratings', 'user_course', 'ext/bootstrap', 'user', 'util', 'jquery.slide'],
-function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
+function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
 
-  var CourseModel = Backbone.Model.extend({
+  var CourseModel = RmcBackbone.Model.extend({
     defaults: {
       id: 'SCI 238',
       name: 'Introduction to Astronomy omg omg omg',
@@ -43,7 +43,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     }
   });
 
-  var CourseView = Backbone.View.extend({
+  var CourseView = RmcBackbone.View.extend({
     template: _.template($('#course-tpl').html()),
     className: 'course well',
 
@@ -115,7 +115,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
   });
 
   // TODO(david): Refactor things to use implicit "model" on views
-  var CourseInnerView = Backbone.View.extend({
+  var CourseInnerView = RmcBackbone.View.extend({
     template: _.template($('#course-inner-tpl').html()),
     className: 'course-inner',
 
@@ -156,7 +156,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
     }
   });
 
-  var SampleFriendsView = Backbone.View.extend({
+  var SampleFriendsView = RmcBackbone.View.extend({
     MAX_SAMPLE_FRIENDS: 3,
 
     className: 'sample-friends',
@@ -222,7 +222,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
   });
 
   // Rename since it no longer holds FriendCollectionView
-  var FriendCollectionView = Backbone.View.extend({
+  var FriendCollectionView = RmcBackbone.View.extend({
     tagName: 'ul',
     className: 'friend-collection clearfix',
 
@@ -253,7 +253,7 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
 
   });
 
-  var CourseFriendView = Backbone.View.extend({
+  var CourseFriendView = RmcBackbone.View.extend({
     className: 'friend-pic',
 
     initialize: function(attributes) {
@@ -282,13 +282,13 @@ function(Backbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
   });
 
 
-  var CourseCollection = Backbone.Collection.extend({
+  var CourseCollection = RmcBackbone.Collection.extend({
     model: CourseModel
   });
 
 
   // TODO(mack): make generic CollectionView
-  var CourseCollectionView = Backbone.View.extend({
+  var CourseCollectionView = RmcBackbone.View.extend({
     tagName: 'ol',
     className: 'course-collection',
 

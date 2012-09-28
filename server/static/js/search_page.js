@@ -1,8 +1,8 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'ext/backbone', 'user'],
-function($, _, _s, course, __, Backbone, user) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user'],
+function($, _, _s, course, __, RmcBackbone, user) {
 
-  var CourseSearchView = Backbone.View.extend({
+  var CourseSearchView = RmcBackbone.View.extend({
     className: 'course-search',
     timer: undefined,
     keywords: undefined,
@@ -97,7 +97,7 @@ function($, _, _s, course, __, Backbone, user) {
     },
 
     setDirection: function(direction) {
-      var directionName = undefined;
+      var directionName;
       if (direction > 0) {
         directionName = 'ascending';
       } else {
@@ -106,7 +106,7 @@ function($, _, _s, course, __, Backbone, user) {
       this.direction = {
         'value': direction,
         'name': directionName
-      }
+      };
     },
 
     resetCourses: function() {

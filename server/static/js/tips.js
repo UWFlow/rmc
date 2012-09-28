@@ -1,9 +1,9 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'ext/backbone', 'rmc_backbone', 'user', 'jquery.slide'],
-function($, _, _s, bootstrap, Backbone, RmcBackbone, user, jqSlide) {
+'rmc_backbone', 'user', 'jquery.slide'],
+function($, _, _s, bootstrap, RmcBackbone, user, jqSlide) {
 
-  var Tip = Backbone.Model.extend({
+  var Tip = RmcBackbone.Model.extend({
     defaults: {
       userId: '1234',
       name: 'Mack Duan',
@@ -11,14 +11,14 @@ function($, _, _s, bootstrap, Backbone, RmcBackbone, user, jqSlide) {
     }
   });
 
-  var TipView = Backbone.View.extend({
+  var TipView = RmcBackbone.View.extend({
     render: function() {
       this.$el.html(_.template($('#tip-tpl').html(), this.model.toJSON()));
       return this;
     }
   });
 
-  var TipsCollection = Backbone.Collection.extend({
+  var TipsCollection = RmcBackbone.Collection.extend({
     model: Tip
   });
 
@@ -31,7 +31,7 @@ function($, _, _s, bootstrap, Backbone, RmcBackbone, user, jqSlide) {
   });
 
   // TODO(david): Make this fancier. Show more about tip person or something.
-  var ExpandableTipsView = Backbone.View.extend({
+  var ExpandableTipsView = RmcBackbone.View.extend({
     className: 'all-tips',
     expanded: false,
     numShown: 3,

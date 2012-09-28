@@ -1,9 +1,9 @@
 define(
-['ext/backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'rmc_backbone', 'ext/slimScroll'],
-function(Backbone, $, _, _s, bootstrap, RmcBackbone, __) {
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+'ext/bootstrap', 'ext/slimScroll'],
+function(RmcBackbone, $, _, _s, bootstrap, __) {
 
-  var FriendView = Backbone.View.extend({
+  var FriendView = RmcBackbone.View.extend({
     className: 'friend',
 
     initialize: function(options) {
@@ -77,7 +77,7 @@ function(Backbone, $, _, _s, bootstrap, RmcBackbone, __) {
   });
 
 
-  var FriendHovercardView = Backbone.View.extend({
+  var FriendHovercardView = RmcBackbone.View.extend({
     className: 'friend-hovercard',
 
     initialize: function(options) {
@@ -94,7 +94,7 @@ function(Backbone, $, _, _s, bootstrap, RmcBackbone, __) {
   });
 
 
-  var MutualCoursesHovercardView = Backbone.View.extend({
+  var MutualCoursesHovercardView = RmcBackbone.View.extend({
     className: 'mutual-courses-hovercard',
 
     initialize: function(options) {
@@ -120,7 +120,7 @@ function(Backbone, $, _, _s, bootstrap, RmcBackbone, __) {
     }
   });
 
-  FriendSidebarView = Backbone.View.extend({
+  FriendSidebarView = RmcBackbone.View.extend({
     className: 'friend-sidebar',
 
     initialize: function(attributes) {
