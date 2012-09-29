@@ -724,16 +724,27 @@ def clean_prof_review(entity):
     # TODO(david): Maybe just pass down the entire user object
     # TODO(david) FIXME[uw](david): Should not nest comment
     if hasattr(entity, 'user_id') and not entity.anonymous:
-        author = m.User.objects.only('first_name', 'last_name', 'fbid'
-                ).with_id(entity.user_id)
-        review['comment']['author'] = {
+        author = m.User.objects.only('first_name', 'last_name', 'fbid',
+                'program_name').with_id(entity.user_id)
+        review['comment']['author'] = clean_review_author(author)
+
+    return review
+
+
+def clean_review_author(author):
+    user = get_current_user()
+
+    if user and author.id in user.friend_ids:
+        return {
             'id': author.id,
             'name': author.name,
             'fbid': author.fbid,
             'fb_pic_url': author.fb_pic_url,
         }
-
-    return review
+    else:
+        return {
+            'program_name': author.short_program_name
+        }
 
 
 def clean_professor(professor, course_id=None):
@@ -810,9 +821,7 @@ def clean_course(course, expanded=False):
 
 
 def clean_user(user):
-    program_name = None
-    if user.program_name:
-        program_name = user.program_name.split(',')[0]
+    program_name = user.short_program_name
 
     last_term_name = None
     if user.last_term_id:

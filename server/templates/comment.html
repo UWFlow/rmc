@@ -8,10 +8,14 @@
     <div>
       <small class="comment-date">
         <% if (!anonymous) { %>
-        <div>
-          <a href="/profile/<%- author.id.$oid %>"><%- author.name %></a>
+          <% if (author.id) { %>
+            <a href="/profile/<%- author.id.$oid %>"><%- author.name %></a>
+          <% } else if (author.program_name) { %>
+            <span class="muted">A</span>
+            <%- author.program_name %>
+            <span class="muted">student</span>
+          <% } %>
           <span class="muted">on</span>
-        </div>
         <% } %>
         <span class="muted">
           <%- moment(comment_date).format('MMM D, YYYY') %>

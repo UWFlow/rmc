@@ -142,3 +142,8 @@ class User(me.Document):
     def profile_url(self):
         return '/profile/%s' % self.id
 
+    @property
+    def short_program_name(self):
+        if self.program_name:
+            return self.program_name.split(',')[0]
+        return ''
