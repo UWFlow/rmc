@@ -38,10 +38,19 @@ class Professor(me.Document):
     passion = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
     @classmethod
-    def get_id_from_name(cls, first_name, last_name):
+    def get_id_from_name(cls, first_name, last_name=None):
+        if last_name is None:
+            return first_name.lower().replace(' ', '_')
+
         first_name = first_name.lower()
         last_name = last_name.lower()
         return ('%s %s' % (first_name, last_name)).replace(' ', '_')
+
+    @staticmethod
+    def guess_names(combined_name):
+        """Returns first, last name given a string."""
+        names = combined_name.split(' ')
+        return (' '.join(names[:-1]), names[-1])
 
     @property
     def name(self):

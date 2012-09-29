@@ -1,11 +1,44 @@
 .user-course {
 
+  .select2-result-css {
+    color: red;
+  }
+
+  .select2-container .select2-choice {
+    background: none;
+    border: 1px solid rgba(0, 0, 0, 0);
+    color: #3a87ad;  // TODO(david): Use Bootstrap's $infoText var somehow
+    text-decoration: underline;
+    padding-left: 3px;
+    box-shadow: none;
+    @include transition(all 0.2s ease-out);
+
+    div {
+      opacity: 0;
+      @include transition(all 0.2s ease-out);
+    }
+  }
+
+  .select2-container:hover .select2-choice,
+  .select2-container.select2-dropdown-open .select2-choice {
+    border: 1px solid #AAA;
+    @include box-shadow(0 1px 0 #FFF inset);
+    background-color: rgba(255, 255, 255, 0.5);
+    @include transition(all 0.2s ease-out);
+
+    div {
+      opacity: 1.0;
+      @include transition(all 0.2s ease-out);
+    }
+  }
+
   .term {
     font-weight: bold;
   }
 
   .prof-select {
-    width: 180px;
+    width: 300px;
+    margin-left: -3px;
   }
 
   .add-review {

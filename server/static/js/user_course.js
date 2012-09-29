@@ -105,23 +105,57 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
             [{ name: 'clarity' }, { name: 'passion' }])
       });
 
+      this.profNames = _.pluck(this.courseModel.get('professors'), 'name');
+      this.profIds = _.pluck(this.courseModel.get('professors'), 'id');
+      // TODO(david): Find a way to get select2 to not create search choice
+      //     until a non-match for us (instead of manually doing this).
+      this.matchesProf = _.bind(function(term) {
+        return _.find(this.profNames, _.bind(
+              $.fn.select2.defaults.matcher, null, term));
+      }, this);
+
       this.userCourse.on('change', this.allowSave, this);
     },
 
     render: function() {
+      var self = this;
       var context = _.extend(this.userCourse.toJSON(), {
         courseModel: this.courseModel.toJSON()
       });
       this.$el.html(_.template($('#add-review-tpl').html(), context));
 
       // TODO(david): Make this prettier and conform to our styles
-      // TODO(david): Allow adding a prof
-      this.$('.prof-select').select2({
+      // TODO(david): Show "Add..." option
+      var $profSelect = this.$('.prof-select');
+      $profSelect.select2({
+        createSearchChoice: function(term) {
+          // Only create search items if no prefix match
+          if (self.matchesProf(term)) return null;
+          return {
+            id: term,
+            text: 'new course prof ' + term
+          };
+        },
+        initSelection : function (element, callback) {
+          // TODO(david): Figure out if this is needed
+          //var data = [];
+          //$(element.val().split(",")).each(function() {
+            //data.push({ id: this, text: this });
+          //});
+          //callback(data);
+        },
+        data: this.courseModel.get('professors').map(function(prof) {
+          return { id: prof.id, text: prof.name };
+        })
       });
 
       if (this.userCourse.has('professor_id')) {
-        this.$('.prof-select')
-          .select2('val', this.userCourse.get('professor_id'));
+        var profId = this.userCourse.get('professor_id');
+        var prof = this.courseModel.getProf(profId);
+        if (prof) {
+          this.$('.prof-select')
+            .select2('data', { data: profId, text: prof.name });
+        }
         this.$('.add-review')
           .html('<i class="icon-edit"></i> Edit review');
         this.saveButtonSuccess();
@@ -158,10 +192,14 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
       this.saving = true;
       var self = this;
 
+      var profId = this.$('.prof-select').select2('val');
+      var newProfAdded = _.contains(this.profIds, profId) ? false : profId;
+
       var saveXhr = this.userCourse.save({
         //id: this.userCourse.get('id'),
         //term_id: this.userCourse.get('term_id'),
-        professor_id: this.$('.prof-select').select2('val'),
+        professor_id: profId,
+        new_prof_added: newProfAdded,
         course_id: this.courseModel.get('id'),
         course_review: _.extend({}, this.userCourse.get('course_review'), {
           comment: this.$('.course-comments').val()
@@ -171,14 +209,15 @@ function(RmcBackbone, $, _, _s, ratings, select2, __) {
         })
       }, {
         error: function(model, error) {
-          //self.$('.text-error').text(error);
+          // Bring down the choose professor box if no prof chosen
           // TODO(david): Actually throw an error subclass and test which error
-          //self.$('.prof-select').effect('highlight', {}, 3000);
-          self.$('.prof-select-row')
-            .hide()
-            .appendTo(self.$('.user-course'))
-            .css('margin-top', '10px')
-            .fadeIn('slow');
+          if (_.isString(error) && error.indexOf('hich professor')) {
+            self.$('.prof-select-row')
+              .hide()
+              .appendTo(self.$('.user-course'))
+              .css('margin-top', '10px')
+              .fadeIn('slow');
+          }
         }
       });
 

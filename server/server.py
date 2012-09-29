@@ -547,6 +547,27 @@ def user_course():
     # FIXME[uw](david): This should also update aggregate ratings table, etc.
     uc = json_util.loads(flask.request.data)
 
+    # Maybe create professor if newly added
+    if uc.get('new_prof_added'):
+
+        new_prof_name = uc['new_prof_added']
+        del uc['new_prof_added']
+
+        prof_id = m.Professor.get_id_from_name(new_prof_name)
+        uc['professor_id'] = prof_id
+
+        if m.Professor.objects(id=prof_id).count() == 0:
+            first_name, last_name = m.Professor.guess_names(new_prof_name)
+            m.Professor(
+                id=prof_id,
+                first_name=first_name,
+                last_name=last_name,
+            ).save()
+
+        course = m.Course.objects.with_id(uc['course_id'])
+        course.professor_ids = list(set(course.professor_ids) | {prof_id})
+        course.save()
+
     now = datetime.now()
     def set_comment_date_if_necessary(review):
         if not review:

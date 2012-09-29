@@ -9,7 +9,7 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
       name: 'Introduction to Astronomy omg omg omg',
       friend_user_courses: new u_c.UserCourses(),
       userCourse: undefined,
-      professorNames: ['Eddie Dupont', 'Charlie Clarke', 'Mark Smucker', 'Larry Smith'],
+      professors: [],
       description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
         ' everything in between. Become enthralled in the wonderful' +
@@ -40,6 +40,12 @@ function(RmcBackbone, $, _, _s, ratings, u_c, __, user, util, jqSlide) {
       }
 
       this.set('userCourse', new u_c.UserCourse(attributes.userCourse));
+    },
+
+    getProf: function(id) {
+      return _.find(this.get('professors'), function(prof) {
+        return prof.id === id;
+      });
     }
   });
 
