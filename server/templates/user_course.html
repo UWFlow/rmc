@@ -8,16 +8,7 @@
         You took this course in
         <span class="term"><%- term_name %></span>
         with
-        {#<input type="text" autocomplete="off" data-placeholder="which professor?" class="prof-select">#}
         <input type="hidden" data-placeholder="which professor?" class="prof-select">
-        {#
-        <select data-placeholder="which professor?" class="prof-select">
-          <option></option>
-          <% _.each(courseModel.professors, function(prof) { %>
-            <option value="<%- prof.id %>"><%- prof.name %></option>
-          <% }); %>
-        </select>
-        #}
         <button class="add-review btn btn-info">
           <i class="icon-plus"></i> Add review!
         </button>
