@@ -636,6 +636,9 @@ def user_course():
         course.professor_ids = list(set(course.professor_ids) | {prof_id})
         course.save()
 
+        print "Added new course professor %s (name: %s)" % (prof_id,
+                new_prof_name)
+
     now = datetime.now()
     def set_comment_date_if_necessary(review):
         if not review:
