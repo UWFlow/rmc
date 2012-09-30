@@ -37,6 +37,7 @@ function(Backbone, $, _) {
     /**
      * TODO(mack): add field to each referenceField item to
      * specify if the reference is optional.
+     * TODO(mack): support passing {$oid: "XXX...."} attr
      *
      * Override get to resolve id references to other models.
      * Models should define a referenceFields attribute that
@@ -69,6 +70,11 @@ function(Backbone, $, _) {
         } else {
           referenceFields = this.referenceFields;
         }
+
+        if (!(attr in referenceFields)) {
+          return;
+        }
+
         var arr = referenceFields[attr];
         var id = this.get(arr[0]);
         if (id) {

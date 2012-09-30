@@ -288,7 +288,8 @@ def profile(profile_user_id):
         # TODO(mack): currently needed by jinja to do server-side rendering
         # figure out a cleaner way to do this w/o passing another param
         profile_obj=profile_dict,
-        profile_user_id=str(profile_user.id),
+        profile_user_id=profile_user.id,
+        current_user_id=current_user.id,
     )
 
 
@@ -311,11 +312,15 @@ def courses():
         { 'value': pymongo.ASCENDING, 'name': 'increasing' },
         { 'value': pymongo.DESCENDING, 'name': 'decreasing' },
     ]
+
+    current_user = get_current_user()
+
     return flask.render_template(
         'search_page.html',
         page_script='search_page.js',
         sort_modes=sort_modes,
         directions=directions,
+        current_user_id=current_user.id,
     )
 
 
@@ -333,9 +338,9 @@ def course_page(course_id):
 
     course_obj = clean_course(course, expanded=True)
 
-    user = get_current_user()
+    current_user = get_current_user()
     user_course = m.UserCourse.objects(
-            course_id=course_id, user_id=user.id).first()
+            course_id=course_id, user_id=current_user.id).first()
     user_course_obj = clean_user_course(user_course)
 
     # TODO(mack): optimize this
@@ -347,7 +352,7 @@ def course_page(course_id):
 
     friend_ids = [uc.user_id for uc in friend_user_courses]
     friends = m.User.objects(id__in=friend_ids)
-    user_objs = map(clean_user, [user] + list(friends))
+    user_objs = map(clean_user, [current_user] + list(friends))
 
     ucs = m.UserCourse.objects(course_id=course_id)
 
@@ -358,7 +363,6 @@ def course_page(course_id):
     #ucs = m.UserCourse.objects(course_id=course_id)
     tip_objs = [tip_from_uc(uc) for uc in ucs if
             len(uc.course_review.comment) > MIN_REVIEW_LENGTH]
-
 
     # TODO(david): Protect against the </script> injection XSS hack
     return flask.render_template('course_page.html',

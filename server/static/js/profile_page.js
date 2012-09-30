@@ -6,7 +6,8 @@ function($, _, _s, transcript, term, course, friend, util, user, uc) {
   user.UserCollection.addToCache(pageData.userObjs);
   course.CourseCollection.addToCache(pageData.courseObjs);
   uc.UserCourses.addToCache(pageData.userCourseObjs);
-  var profileUser = user.UserCollection.getFromCache(pageData.profileUserId);
+  var profileUser = user.UserCollection.getFromCache(
+    pageData.profileUserId.$oid);
 
   // Render friend sidebar
 

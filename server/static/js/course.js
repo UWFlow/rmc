@@ -134,7 +134,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       if (!this.userCourse) {
         // TODO(mack): remove require()
         this.userCourse = new _user_course.UserCourse({
-          user_course_id: this.courseModel.get('id')
+          course_id: this.courseModel.get('id'),
+          user_id: pageData.currentUserId.$oid
         });
         this.courseModel.set('user_course', this.userCourse);
       }

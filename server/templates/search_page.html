@@ -31,10 +31,6 @@
   {% include 'user_course.html' %}
   {% include 'course.html' %}
 
-  <script>
-    window.pageData.sortModes = {{ sort_modes|tojson|safe }};
-  </script>
-
   <!-- TODO(mack): add to own file? -->
   <script type="text/html" id="search-form-tpl">
     <div class="row-fluid">
@@ -82,4 +78,11 @@
       <div class="loader hide" style="margin-top: 20px;"></div>
     </div>
   </script>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.pageData.sortModes = {{ sort_modes|tojson|safe }};
+  window.pageData.currentUserId = {{ current_user_id|tojson|safe }};
+</script>
 {% endblock %}
