@@ -78,7 +78,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
     },
 
     validate: function(attrs) {
-      if (!attrs.professor_id) {
+      if (!attrs.professor_id && !this.get('professor_id')) {
         return "Which professor did you take the course with?";
       }
     }
@@ -167,7 +167,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         var prof = this.courseModel.getProf(profId);
         if (prof) {
           this.$('.prof-select')
-            .select2('data', { data: profId, text: prof.name });
+            .select2('data', { id: profId, text: prof.name });
         }
         this.$('.add-review')
           .html('<i class="icon-edit"></i> Edit review');
@@ -207,7 +207,8 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       this.saving = true;
       var self = this;
 
-      var profId = this.$('.prof-select').select2('val');
+      var profData = this.$('.prof-select').select2('data');
+      var profId = profData && profData.id;
       var newProfAdded = _.contains(this.profIds, profId) ? false : profId;
 
       var saveXhr = this.userCourse.save({
