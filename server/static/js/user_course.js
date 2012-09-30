@@ -1,7 +1,8 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/select2', 'ext/autosize', 'course', 'user'],
-function(RmcBackbone, $, _, _s, ratings, __, __, _course, _user) {
+'ratings', 'ext/select2', 'ext/autosize', 'course', 'user', 'ext/bootstrap'],
+function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
+  _bootstrap) {
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
@@ -144,8 +145,10 @@ function(RmcBackbone, $, _, _s, ratings, __, __, _course, _user) {
     render: function() {
       var self = this;
       var context = _.extend(this.userCourse.toJSON(), {
-        courseModel: this.courseModel.toJSON()
+        courseModel: this.courseModel.toJSON(),
+        program_name: this.userCourse.get('user').get('program_name')
       });
+      console.log(context);
       this.$el.html(_.template($('#add-review-tpl').html(), context));
 
       // TODO(david): Make this prettier and conform to our styles
@@ -194,6 +197,8 @@ function(RmcBackbone, $, _, _s, ratings, __, __, _course, _user) {
           this.courseRatingsView.render().el);
       this.$('.prof-ratings-placeholder').replaceWith(
           this.profRatingsView.render().el);
+
+      this.$('.privacy-tip-more-info').tooltip();
 
       return this;
     },
