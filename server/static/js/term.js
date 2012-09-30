@@ -9,21 +9,8 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
       'user_course_ids': []
     },
 
-    initialize: function() { },
-
-    get: function(attr) {
-      if (attr in this.attributes) {
-        return this._super('get', arguments);
-      }
-
-      var val;
-      if (attr === 'user_courses') {
-        val = _user_course.UserCourses.getFromCache(
-            this.get('user_course_ids'));
-        this.set(attr, val);
-      }
-
-      return val;
+    referenceFields: {
+      'user_courses': ['user_course_ids', _user_course.UserCourses]
     },
 
     idAttribute: 'name'

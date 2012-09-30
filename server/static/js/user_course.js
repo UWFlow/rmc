@@ -27,6 +27,15 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       friend_user_course_ids: []
     },
 
+    // Function needed since UserCourses in defined later in file.
+    referenceFields: function() {
+      return {
+        'user': [ 'user_id', _user.UserCollection ],
+        'course': [ 'course_id', _course.CourseCollection ],
+        'friend_user_courses': [ 'friend_user_course_ids', UserCourses ]
+      };
+    },
+
     url: function() {
       return '/api/user/course';
     },
@@ -38,28 +47,6 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       if (!attributes || !attributes.course_review) {
         this.set('course_review', _.clone(this.defaults.course_review));
       }
-    },
-
-    get: function(attr) {
-      if (attr in this.attributes) {
-        return this._super('get', arguments);
-      }
-
-      var val;
-      if (attr === 'user') {
-        val = _user.UserCollection.getFromCache(this.get('user_id'));
-        this.set(attr, val);
-      } else if (attr === 'course') {
-        val = _course.CourseCollection.getFromCache(
-            this.get('course_id'));
-        this.set(attr, val);
-      } else if (attr === 'friend_user_courses') {
-        val = UserCourses.getFromCache(
-            this.get('friend_user_course_ids'));
-        this.set(attr, val);
-      }
-
-      return val;
     },
 
     // TODO(david): If I designed this better, all this code below might not be
@@ -148,7 +135,6 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         courseModel: this.courseModel.toJSON(),
         program_name: this.userCourse.get('user').get('program_name')
       });
-      console.log(context);
       this.$el.html(_.template($('#add-review-tpl').html(), context));
 
       // TODO(david): Make this prettier and conform to our styles

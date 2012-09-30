@@ -9,6 +9,7 @@ function(Backbone, $, _) {
   */
   var Model = Backbone.Model.extend({
     _oidFields: {},
+    _cachedReferences: {},
 
     /**
      * Override toJSON to convert appropriate string fields to { $oid: string }
@@ -30,6 +31,47 @@ function(Backbone, $, _) {
       }
       return obj;
     },
+
+    /**
+     * TODO(mack): add field to each referenceField item to
+     * specify if the reference is optional.
+     *
+     * Override get to resolve id references to other models.
+     * Models should define a referenceFields attribute that
+     * that is a map (or a function that returns a map) with
+     * the desired reference as the key * and the id field and
+     * the collection that it's cached in as the value. For example:
+     * referenceFields: function() {
+     *   return {
+     *    'user': ['user_id', _user.Users]
+     *   };
+     * }
+     */
+    get: function(attr) {
+      if (attr in this.attributes) {
+        return this._super('get', arguments);
+      }
+
+      var val;
+      if (attr in this._cachedReferences) {
+        val = this._cachedReferences[attr];
+      } else if (_.isObject(this.referenceFields)) {
+        var referenceFields;
+        if (_.isFunction(this.referenceFields)) {
+          referenceFields = this.referenceFields();
+        } else {
+          referenceFields = this.referenceFields;
+        }
+        var arr = referenceFields[attr];
+        var id = this.get(arr[0]);
+        if (id) {
+          val = arr[1].getFromCache(this.get(arr[0]));
+          this._cachedReferences[attr] = val;
+        }
+      }
+      return val;
+    },
+
 
     /**
     * Override set to convert ObjectId fields { $oid: string } to string fields
@@ -84,8 +126,8 @@ function(Backbone, $, _) {
     }
 
     if (name in collectionCaches) {
-      console.warn('Cannot create cache because a cache with name '
-          + name + ' already exists');
+      console.warn('Cannot create cache because a cache with name ' +
+          name + ' already exists');
       return;
     }
 

@@ -24,6 +24,14 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       user_course_id: undefined
     },
 
+    referenceFields: function() {
+      // TODO(mack): remove require() call
+      var _user_course = require('user_course');
+      return {
+        'user_course': ['user_course_id', _user_course.UserCourses]
+      };
+    },
+
     initialize: function(attributes) {
       if (attributes.ratings) {
         var ratingsArray = _.map(attributes.ratings, function(rating, name) {
@@ -31,25 +39,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         });
         this.set('ratings', new ratings.RatingCollection(ratingsArray));
       }
-    },
-
-    get: function(attr) {
-      if (attr in this.attributes) {
-        return this._super('get', arguments);
-      }
-
-      var val;
-      if (attr === 'user_course') {
-        // TODO(mack): should not call require w/o including it in dependency
-        // list
-        var userCourseId = this.get('user_course_id');
-        if (userCourseId) {
-          var _user_course = require('user_course');
-          val = _user_course.UserCourses.getFromCache(userCourseId);
-        }
-        this.set(attr, val);
-      }
-      return val;
     },
 
     getProf: function(id) {

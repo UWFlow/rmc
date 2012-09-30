@@ -14,26 +14,12 @@ function(RmcBackbone, _, _s, util, _course) {
       mutual_course_ids: undefined
     },
 
-    initialize: function(attributes) { },
-
-    get: function(attr) {
-      if (attr in this.attributes) {
-        return this._super('get', arguments);
-      }
-
-      var val;
-      if (attr === 'mutual_courses') {
-        val = _course.CourseCollection.getFromCache(
-            this.get('mutual_course_ids'));
-        this.set(attr, val);
-      } else if (attr === 'last_term_courses') {
-        val = _course.CourseCollection.getFromCache(
-            this.get('last_term_course_ids'));
-        this.set(attr, val);
-      }
-
-      return val;
+    referenceFields: {
+      'mutual_courses': ['mutual_course_ids', _course.CourseCollection],
+      'last_term_courses': ['last_term_course_ids', _course.CourseCollection]
     },
+
+    initialize: function(attributes) { },
 
     getFbPicUrl: function() {
       // TODO(mack): add support for custom width and height
