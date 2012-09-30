@@ -232,6 +232,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
               .hide()
               .appendTo(self.$('.user-course'))
               .css('margin-top', '10px')
+              .addClass('text-error')
               .fadeIn('slow');
           }
         }
@@ -263,7 +264,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         .removeClass('btn-warning btn-danger')
         .addClass('btn-success')
         .prop('disabled', true)
-        .html('<i class="icon-ok"></i> Saved.');
+        .html('<i class="icon-ok"></i> Review saved.');
     },
 
     allowSave: function() {
@@ -275,7 +276,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         .removeClass('btn-success btn-warning btn-danger')
         .addClass('btn-primary')
         .prop('disabled', false)
-        .html('<i class="icon-save"></i> Save!');
+        .html('<i class="icon-save"></i> Update review!');
     }
   });
 
