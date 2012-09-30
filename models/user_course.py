@@ -4,6 +4,8 @@ import mongoengine as me
 
 import rating
 import review
+import term
+import user
 
 class CritiqueCourse(me.Document):
     meta = {
@@ -93,6 +95,37 @@ class UserCourse(me.Document):
 
     # TODO(mack): should we have update_time?
     # update_date = me.DateTimeField()
+
+    @property
+    def term_name(self):
+        return term.Term(self.term_id).name
+
+    def to_dict(self):
+        course_review = self.course_review
+        professor_review = self.professor_review
+
+        return {
+            'id': self.id,
+            'user_id': self.user_id,
+            # TODO(Sandy): We probably don't need to pass down term_id
+            'term_id': self.term_id,
+            'term_name': term.Term(id=self.term_id).name,
+            'course_id': self.course_id,
+            'professor_id': self.professor_id,
+            'anonymous': self.anonymous,
+            'course_review': {
+                'easiness': course_review.easiness,
+                'interest': course_review.interest,
+                'comment': course_review.comment,
+                'comment_date': course_review.comment_date,
+            },
+            'professor_review': {
+                'clarity': professor_review.clarity,
+                'passion': professor_review.passion,
+                'comment': professor_review.comment,
+                'comment_date': professor_review.comment_date,
+            },
+        }
 
 
 # TODO(david): Should be static method of ProfCourse

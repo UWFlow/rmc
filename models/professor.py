@@ -5,10 +5,16 @@ import redis
 import rating
 import rmc.shared.constants as c
 
+# TODO(mack): remove this from here?
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
+
+import user_course
 
 
 class Professor(me.Document):
+
+    MIN_REVIEW_LENGTH = 15
+
     meta = {
         'indexes': [
             'clarity.rating',

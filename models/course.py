@@ -1,6 +1,7 @@
 import mongoengine as me
 import re
 
+import professor
 import rating
 
 class Course(me.Document):
@@ -54,3 +55,41 @@ class Course(me.Document):
 
         super(Course, self).save(*args, **kwargs)
 
+
+    def to_dict(self, expanded=False):
+        """Returns information about a course to be sent down an API.
+
+        Args:
+            course: The course object.
+            expanded: Whether to fetch more information, such as professor reviews.
+        """
+
+        # TODO(mack): to not nest Professor in Course
+        def get_professors(course):
+            professors = professor.Professor.objects(
+                    id__in=course.professor_ids)
+
+            if expanded:
+                # TODO(mack): this doesn't work yet
+                return [p.to_dict() for p in professors]
+            else:
+                professors = professors.only('id', 'first_name', 'last_name')
+                return [{'id': p.id, 'name': p.name} for p in professors]
+
+        return {
+            'id': self.id,
+            'code': self.code,
+            'name': self.name,
+            'description': self.description,
+            #'availFall': bool(int(course['availFall'])),
+            #'availSpring': bool(int(course['availSpring'])),
+            #'availWinter': bool(int(course['availWinter'])),
+            # TODO(mack): create user models for friends
+            #'friends': [1647810326, 518430508, 541400376],
+            'ratings': {
+                'easiness': self.easiness.to_dict(),
+                'interest': self.interest.to_dict(),
+            },
+            'overall': self.overall.to_dict(),
+            'professors': get_professors(self),
+        }

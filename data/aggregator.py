@@ -193,7 +193,7 @@ def import_redis_course_professor_rating():
 
 
 # TODO(mack): test it when we get data to test with
-# TODO(mack): currently sort of duplicate logic in User.cache_mutual_courses()
+# TODO(mack): currently sort of duplicate logic in User.cache_mutual_course_ids()
 def import_redis_friend_mutual_courses():
 
     courses_by_user = {}

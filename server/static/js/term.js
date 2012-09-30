@@ -4,16 +4,15 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {
+      'id': '2012_09]',
       'name': 'Fall 2012',
       'program_year_id': '3A',
-      'user_course_ids': []
+      'course_ids': []
     },
 
     referenceFields: {
-      'user_courses': ['user_course_ids', _user_course.UserCourses]
-    },
-
-    idAttribute: 'name'
+      'courses': ['course_ids', _course.CourseCollection]
+    }
   });
 
 
@@ -22,13 +21,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
 
     initialize: function(options) {
       this.termModel = options.termModel;
-
-      // TODO(mack): clean up how we do this, whether we should be
-      // getting courses directly or through this convoluted process
-      var courseIds = this.termModel.get('user_courses').map(function(uc) {
-        return uc.get('course_id');
-      });
-      this.courses = _course.CourseCollection.getFromCache(courseIds);
+      this.courses = this.termModel.get('courses');
 
       this.expand = options.expand;
     },
