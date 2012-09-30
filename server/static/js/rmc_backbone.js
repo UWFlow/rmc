@@ -8,7 +8,9 @@ function(Backbone, $, _) {
   * A base backbone model that has been extended to our needs.
   */
   var Model = Backbone.Model.extend({
+    // TODO(mack): fix _oidFields so that it is scoped per model
     _oidFields: {},
+
     _cachedReferences: {},
 
     /**
@@ -52,9 +54,14 @@ function(Backbone, $, _) {
         return this._super('get', arguments);
       }
 
+      // Since there is only one _cachedReferences per Model type,
+      // we gotta key the cache on the model's cid...until we think
+      // of a better way to do this.
+      var key = this.cid + ':' + attr;
+
       var val;
-      if (attr in this._cachedReferences) {
-        val = this._cachedReferences[attr];
+      if (key in this._cachedReferences) {
+        val = this._cachedReferences[key];
       } else if (_.isObject(this.referenceFields)) {
         var referenceFields;
         if (_.isFunction(this.referenceFields)) {
@@ -65,8 +72,8 @@ function(Backbone, $, _) {
         var arr = referenceFields[attr];
         var id = this.get(arr[0]);
         if (id) {
-          val = arr[1].getFromCache(this.get(arr[0]));
-          this._cachedReferences[attr] = val;
+          val = arr[1].getFromCache(id);
+          this._cachedReferences[key] = val;
         }
       }
       return val;

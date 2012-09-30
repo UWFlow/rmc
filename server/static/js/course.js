@@ -192,8 +192,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
       this.$el.html(
         _.template($('#sample-friends-tpl').html(), {
-          friend_user_courses: friendUserCourses,
-          maxSampleFriends: this.MAX_SAMPLE_FRIENDS
+          num_friends: friendUserCourses.length,
+          max_sample_friends: this.MAX_SAMPLE_FRIENDS
         })
       );
 
@@ -211,7 +211,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
       var $target = this.$('.remaining-friends');
 
-      var numFriends = friendUserCourses.length;
       // TODO(mack): investigate if offset attribute works for popover, need to
       // move popover slightly higher
       $target.popover({

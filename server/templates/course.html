@@ -16,8 +16,7 @@
 
 {% call macros.us_template('sample-friends-tpl') %}
 <div class="friend-collection-placeholder"></div>
-<% var numFriends = friend_user_courses.length; %>
-<% var remaining = Math.max(numFriends - maxSampleFriends, 0); %>
+<% var remaining = Math.max(num_friends - max_sample_friends, 0); %>
 <% if (remaining > 0) { %>
   <a href="#" rel="popover" class="remaining-friends">
     + <%- remaining %> other <%- pluralize(remaining, 'friend', 'friends') %>
