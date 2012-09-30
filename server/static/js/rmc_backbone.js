@@ -82,6 +82,13 @@ function(Backbone, $, _) {
       console.warn('Cannot create cache because name is empty');
       return;
     }
+
+    if (name in collectionCaches) {
+      console.warn('Cannot create cache because a cache with name '
+          + name + ' already exists');
+      return;
+    }
+
     this._cacheName = name;
     var collection = new this();
     // TODO(mack): might wanna consider auto-caching Models when they

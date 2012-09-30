@@ -242,8 +242,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
     getFriendsPopoverContent: function() {
       if (!this.friendsHovercardView) {
-        var friendUserCourses = this.courseModel.get('friend_user_courses');
-        var remainingUserCourses = new u_c.UserCourses(
+        var friendUserCourses = this.userCourse.get('friend_user_courses');
+        // TODO(mack): remove require()
+        var _user_course = require('user_course');
+        var remainingUserCourses = new _user_course.UserCourses(
           friendUserCourses.rest(this.MAX_SAMPLE_FRIENDS)
         );
         this.friendsHovercardView = new FriendCollectionView({
@@ -309,8 +311,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
     // Put logic here that should be run after this.$el is added to the DOM
     postRender: function() {
+      var user = this.userCourse.get('user');
       var title = _s.sprintf('%s (%s)',
-        this.userCourse.get('user_name'), this.userCourse.get('term_name'));
+        user.get('name'), this.userCourse.get('term_name'));
       this.$el.tooltip({
         trigger: 'hover',
         title: title
