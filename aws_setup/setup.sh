@@ -126,6 +126,7 @@ sudo gem install rdoc-data; sudo rdoc-data --install
 ( cd rmc && sudo pip install -r requirements.txt )
 # Import data from various text files
 ( cd rmc && make init_data )
+mkdir -p /home/rmc/logs/server
 
 echo "Setting up rmc web server a daemon"
 sudo update-rc.d -f rmc_daemon remove

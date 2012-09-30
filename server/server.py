@@ -4,6 +4,7 @@ import bson
 import flask
 import functools
 import itertools
+import logging
 import mongoengine as me
 import pymongo
 import re
@@ -34,6 +35,23 @@ flask.render_template = functools.partial(flask.render_template,
         env=app.config['ENV'],
         version=VERSION,
         js_dir=app.config['JS_DIR'])
+
+if not app.debug:
+    from logging.handlers import TimedRotatingFileHandler
+    logging.basicConfig(level=logging.INFO)
+
+    file_handler = TimedRotatingFileHandler(filename=app.config['LOG_PATH'],
+            when='D')
+    file_handler.setLevel(logging.INFO)
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s in'
+            ' %(module)s:%(lineno)d %(message)s')
+    file_handler.setFormatter(formatter)
+
+    # TODO(david): Add email handler for critical level
+    app.logger.addHandler(file_handler)
+    logging.getLogger('').addHandler(file_handler)  # Root handler
+else:
+    logging.basicConfig(level=logging.DEBUG)
 
 
 # Jinja filters
@@ -204,6 +222,13 @@ def index():
             page_script='index_page.js')
 
 
+@app.route('/crash')
+def crash():
+    """For testing error logging"""
+    logging.warn("Crashing because you want me to (hit /crash)")
+    raise Exception("OH NOES we've crashed!!!!!!!!!! /crash was hit")
+
+
 # TODO(mack): maybe support fbid in addition to user_id
 @app.route('/profile', defaults={'profile_user_id': None})
 @app.route('/profile/<string:profile_user_id>')
@@ -226,7 +251,7 @@ def profile(profile_user_id):
     else:
         profile_user = m.User.objects(id=profile_user_id).first()
         if profile_user is None:
-            print 'other-use is None'
+            logging.warn('other-use is None')
             return flask.redirect('/profile', 302)
 
         profile_dict, friend_dicts, user_course_dicts, course_dicts \
@@ -363,7 +388,7 @@ def login():
         data = json_util.loads(base64_url_decode(payload))
 
         if data.get('algorithm').upper() != 'HMAC-SHA256':
-            print 'Unknown algorithm during fbsr decode'
+            logging.error('Unknown algorithm during fbsr decode')
             return None
 
         expected_sig = hmac.new(secret, msg=payload, digestmod=hashlib.sha256).digest()
@@ -392,7 +417,7 @@ def login():
         fbsr is None):
             # TODO(Sandy): redirect to landing page, or nothing
             # Shouldn't happen normally, user probably manually requested this page
-            #print 'No fbid/access_token specified'
+            logging.warn('No fbid/access_token specified')
             return 'Error'
 
     # Validate against Facebook's signed request
@@ -441,7 +466,7 @@ def login():
     except KeyError as ex:
         # Invalid key (shouldn't be happening)
 # TODO(Sandy): redirect to landing page, or nothing
-        print 'Exception while saving user: %s' % ex
+        logging.error('Exception while saving user: %s' % ex)
         return 'Error'
     return ''
 
@@ -636,8 +661,8 @@ def user_course():
         course.professor_ids = list(set(course.professor_ids) | {prof_id})
         course.save()
 
-        print "Added new course professor %s (name: %s)" % (prof_id,
-                new_prof_name)
+        logging.info("Added new course professor %s (name: %s)" % (prof_id,
+                new_prof_name))
 
     now = datetime.now()
     def set_comment_date_if_necessary(review):
