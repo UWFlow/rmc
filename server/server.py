@@ -1,4 +1,3 @@
-from bson import json_util
 from datetime import datetime
 import bson
 import flask
@@ -14,6 +13,7 @@ import time
 import rmc.shared.constants as c
 import rmc.shared.secrets as s
 import rmc.models as m
+import rmc.shared.util as util
 
 import base64
 import hashlib
@@ -57,7 +57,7 @@ else:
 # Jinja filters
 @app.template_filter()
 def tojson(obj):
-    return json_util.dumps(obj)
+    return util.json_dumps(obj)
 
 @app.template_filter()
 def version(file_name):
@@ -505,7 +505,7 @@ def login():
         payload = l[1]
 
         sig = base64_url_decode(encoded_sig)
-        data = json_util.loads(base64_url_decode(payload))
+        data = util.json_loads(base64_url_decode(payload))
 
         if data.get('algorithm').upper() != 'HMAC-SHA256':
             logging.error('Unknown algorithm during fbsr decode')
@@ -611,7 +611,7 @@ def get_courses(course_ids):
     for course in courses:
         course_map[course['id']] = course
 
-    return json_util.dumps({ 'courses': course_map })
+    return util.json_dumps({ 'courses': course_map })
 
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
@@ -680,7 +680,7 @@ def search_courses():
 
     has_more = len(course_objs) == count
 
-    return json_util.dumps({
+    return util.json_dumps({
         'user_objs': user_objs,
         'course_objs': course_objs,
         'user_course_objs': user_course_objs,
@@ -704,7 +704,7 @@ def upload_transcript():
         season, year = term_name.split()
         return m.Term.get_id_from_year_season(year, season)
 
-    transcript_data = json_util.loads(req.form['transcriptData'])
+    transcript_data = util.json_loads(req.form['transcriptData'])
     courses_by_term = transcript_data['coursesByTerm']
 
     for term in courses_by_term:
@@ -769,7 +769,7 @@ def remove_transcript():
 @app.route('/api/user/course', methods=['POST', 'PUT'])
 def user_course():
     # FIXME[uw](david): This should also update aggregate ratings table, etc.
-    uc = json_util.loads(flask.request.data)
+    uc = util.json_loads(flask.request.data)
 
     # TODO(david): Handle professor not set
 
@@ -827,7 +827,7 @@ def user_course():
     uc = m.UserCourse(**uc)
     uc.save()
 
-    return json_util.dumps({
+    return util.json_dumps({
         'professor_review.comment_date': uc['professor_review'][
             'comment_date'],
         'course_review.comment_date': uc['course_review'][ 'comment_date'],
