@@ -23,7 +23,7 @@ function($, _, _s) {
     data = data.substring(beginIndex, endIndex);
 
     // TODO(mack): utilize studentId and program information
-    var matches = data.match(/Student ID: (\d+)/)
+    var matches = data.match(/Student ID: (\d+)/);
     var studentId = parseInt(matches[1], 10);
     matches = data.match(/Program: (.*?)[\n]/);
     var programName = _s.trim(matches[1]);
@@ -36,7 +36,8 @@ function($, _, _s) {
     // Split the transcript by terms
     while (match) {
       if (lastIndex !== -1) {
-        termsRaw.push(data.substring(lastIndex, match.index));
+        var termRaw = data.substring(lastIndex, match.index);
+        termsRaw.push(termRaw);
       }
       lastIndex = match.index;
       match = termRe.exec(data);
@@ -47,8 +48,13 @@ function($, _, _s) {
 
     var coursesByTerm = [];
     // Parse out the term and courses taken in that term
-    _.each(termsRaw, function(termRaw) {
-      matches = termRaw.match(/^((?:Spring|Fall|Winter) \d{4})\s+(\d[A-B])/);
+    _.each(termsRaw, function(termRaw, i) {
+      var matches = termRaw.match(/^((?:Spring|Fall|Winter) \d{4})\s+(\d[A-B])/);
+      if (!matches) {
+        // This could happen for a term that is a transfer from another school
+        return;
+      }
+
       var termName = matches[1];
       var programYearId = matches[2];
       termRaw = termRaw.substring(termName.length);
@@ -72,7 +78,7 @@ function($, _, _s) {
       coursesByTerm: coursesByTerm,
       studentId: studentId,
       programName: programName
-    }
+    };
   }
 
   return {

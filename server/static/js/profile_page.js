@@ -89,14 +89,16 @@ function($, _, _s, transcript, term, course, friend, util, user, uc) {
   var addTranscriptData = function(data) {
     // Try/catch around parsing logic so that we show error message
     // should anything go wrong
+    var transcriptData;
+    var coursesByTerm;
     try {
-
-      var transcriptData = transcript.parseTranscript(data);
-      var coursesByTerm = transcriptData.coursesByTerm;
+      transcriptData = transcript.parseTranscript(data);
+      coursesByTerm = transcriptData.coursesByTerm;
     } catch (ex) {
+      console.warn('Could not parse transcript', ex);
       $('#transcript-error').text(
-          'Could not extract course information. ' +
-          'Please check that you\'ve pasted the transcript correctly.');
+          'Uh oh. Could not parse your transcript :( ' +
+          'Please check that you\'ve pasted your transcript correctly.');
       return;
     }
 
