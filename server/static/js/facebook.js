@@ -1,6 +1,6 @@
 define(
 ['ext/jquery', 'ext/cookie', 'ext/facebook'],
-function($, _cookie, FB) {
+function($, __, FB) {
 
   if (window.pageData.env === 'dev') {
     var appId = '289196947861602';
@@ -84,9 +84,17 @@ function($, _cookie, FB) {
     });
   };
 
+  var logout = function(cb) {
+    $.removeCookie('fbid');
+    $.removeCookie('fb_access_token');
+    $.removeCookie('fb_access_token_expires_in');
+    FB.logout(cb);
+  };
+
   return {
     firstLogin: firstLogin,
-    loginIfPossible: loginIfPossible
+    loginIfPossible: loginIfPossible,
+    logout: logout
   };
 
 });

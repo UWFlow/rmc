@@ -18,6 +18,7 @@
     <script>
       window.pageData = {};
       window.pageData.env = '{{ env }}';
+      window.pageData.currentUserId = '{{ current_user_id }}';
       {% if page_script %}
         window.pageData.pageScript = '{{ ('/static/%s/%s' % (js_dir, page_script))|version }}';
       {% endif %}
@@ -56,6 +57,11 @@
             <li class="{{ 'active' if nav_item == 'profile' else '' }}">
               <a href="/profile"><i class="icon-user"></i> Profile</a>
             </li>
+            {% if current_user_id %}
+              <li>
+                <a href="#"><i class="icon-signout"></i></a>
+              </li>
+            {% endif %}
           </ul>
         </div>
       </div>
@@ -78,7 +84,8 @@
     {% block templates %}
     {% endblock %}
 
-    {# Put json data passed from backend here under window.pageData.
+    {# TODO(mack): rename js_vars?
+        Put json data passed from backend here under window.pageData.
         Since the script for specific to this page does not run until
         domready, it should be safe to init data here #}
     {% block scripts %}

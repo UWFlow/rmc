@@ -62,8 +62,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       });
 
       var userCourse = this.courseModel.get('user_course');
-      console.log('cm', this.courseModel.toJSON());
-      console.log('userCourse', userCourse);
       if (userCourse && userCourse.get('friend_user_course_ids').length) {
         this.sampleFriendsView = new SampleFriendsView({
           courseModel: this.courseModel,

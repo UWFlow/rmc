@@ -65,8 +65,9 @@ require.config({
 });
 
 require(['ext/jquery', 'ext/underscore', 'ext/underscore.string',
-    'ext/backbone', 'util', 'ext/moment'],
-function($, _, _s, Backbone, util, moment) {
+    'ext/backbone', 'util', 'ext/moment', 'ext/bootstrap', 'ext/cookie',
+    'facebook'],
+function($, _, _s, Backbone, util, moment, __, __, _facebook) {
   // Add helpers functions to all templates
   (function() {
     var template = _.template;
@@ -94,18 +95,32 @@ function($, _, _s, Backbone, util, moment) {
     };
   })();
 
+  $(function() {
+    $('.navbar .icon-signout').tooltip({
+      title: 'Sign out',
+      placement: 'bottom'
+    }).click(function(evt) {
+      // TODO(mack): Alternatively we would immediately go to home page with
+      // query param indicating logout. Should consider that if this is too
+      // slow.
+      _facebook.logout(function() {
+        window.location.href = '/';
+      });
+    });
+
+    // Async-load footer background image
+    var $footer = $('footer');
+    if ($footer.length) {
+      // TODO(david): Use jpg and have it fade out into bg color
+      $footer.css('background',
+        'url(/static/img/footer_background_2000_min.png) center center no-repeat');
+    }
+  });
+
   if (window.pageData.pageScript) {
     // TODO(mack): investigate if there's a faster/better way of doing this
     // than after DOMReady
     $(function() {
-
-      // Async-load footer background image
-      var $footer = $('footer');
-      if ($footer.length) {
-        // TODO(david): Use jpg and have it fade out into bg color
-        $footer.css('background',
-          'url(/static/img/footer_background_2000_min.png) center center no-repeat');
-      }
       require([window.pageData.pageScript]);
     });
   }

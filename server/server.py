@@ -428,7 +428,7 @@ def courses():
         page_script='search_page.js',
         sort_modes=sort_modes,
         directions=directions,
-        current_user_id=current_user.id,
+        current_user_id=current_user.id if current_user else None,
     )
 
 
@@ -479,6 +479,7 @@ def course_page(course_id):
         tip_objs=tip_objs,
         user_course_objs=user_course_objs,
         user_objs=user_objs,
+        current_user_id=current_user.id if current_user else None,
     )
 
 
