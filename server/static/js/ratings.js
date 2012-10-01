@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'util'],
-function(RmcBackbone, $, _, _s, util) {
+'util', 'ext/bootstrap'],
+function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
   var NUM_SEGMENTS = 5;
   // TODO(david): Refactor all the row-fluid to use an actual class name
@@ -54,9 +54,9 @@ function(RmcBackbone, $, _, _s, util) {
   var RatingsView = RmcBackbone.View.extend({
 
     events: {
-      'mouseenter .rating-progress': 'onRatingHover',
-      'mouseleave .input-rating': 'setUserRatings',
-      'click .rating-progress': 'onRatingClick'
+      //'mouseenter .rating-progress': 'onRatingHover',
+      //'mouseleave .input-rating': 'setUserRatings',
+      //'click .rating-progress': 'onRatingClick'
     },
 
     initialize: function(options) {
@@ -83,7 +83,7 @@ function(RmcBackbone, $, _, _s, util) {
         $(elem).css('width', ratings.at(i).getPercent() + '%');
       });
 
-      this.setUserRatings();
+      //this.setUserRatings();
 
       return this;
     },
@@ -152,11 +152,75 @@ function(RmcBackbone, $, _, _s, util) {
     }
   });
 
+  var RatingChoice = RmcBackbone.Model.extend({
+    defaults: {
+      name: '',
+      rating: null
+    }
+  });
+
+  var RatingChoiceView = RmcBackbone.View.extend({
+    template: _.template($('#binary-rating-tpl').html()),
+    className: 'rating-choice',
+
+    initialize: function() {
+      this.model.on('change:rating', _.bind(this.setStateFromRating, this));
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      this.setStateFromRating();
+      return this;
+    },
+
+    events: {
+      'click .btn': 'onClick'
+    },
+
+    onClick: function(evt) {
+      var $btn = $(evt.currentTarget);
+      var rating = this.model.get('rating');
+      var chosen = $btn.hasClass('yes-btn') ? 1 : 0;
+      if (rating === chosen) {
+        this.model.set('rating', null);
+      } else {
+        this.model.set('rating', chosen);
+      }
+    },
+
+    setStateFromRating: function() {
+      var rating = this.model.get('rating');
+      var $yesButton = this.$('.yes-btn');
+      var $noButton = this.$('.no-btn');
+      $yesButton.removeClass('active btn-success');
+      $noButton.removeClass('active btn-danger');
+      if (rating === 1) {
+        $yesButton.addClass('active btn-success');
+      } else if (rating === 0) {
+        $noButton.addClass('active btn-danger');
+      }
+    }
+  });
+
+  var RatingChoiceCollection = RmcBackbone.Collection.extend({
+    model: RatingChoice
+  });
+
+  var RatingChoiceCollectionView = RmcBackbone.CollectionView.extend({
+    createItemView: function(model) {
+      return new RatingChoiceView({ model: model });
+    }
+  });
+
   return {
     RatingModel: RatingModel,
     RatingCollection: RatingCollection,
     RatingsView: RatingsView,
-    RatingBoxView: RatingBoxView
+    RatingBoxView: RatingBoxView,
+    RatingChoice: RatingChoice,
+    RatingChoiceView: RatingChoiceView,
+    RatingChoiceCollection: RatingChoiceCollection,
+    RatingChoiceCollectionView: RatingChoiceCollectionView
   };
 
 });

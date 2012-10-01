@@ -123,3 +123,37 @@ $cell-height: 28px;
     position: relative;
   }
 }
+
+$rating-button-height: 27px;
+.rating-choices {
+  .btn {
+    opacity: 0.5;
+    line-height: $rating-button-height;
+    height: $rating-button-height;
+    font-size: 16px;
+    padding: 0 8px;
+
+    &:hover {
+      opacity: 0.7;
+    }
+
+    &.active {
+      opacity: 0.7;
+    }
+
+    .thumb-icon {
+      width: 18px;
+      text-align: center;
+    }
+
+    &:hover .thumb-icon,
+    &.active .thumb-icon, {
+      font-size: 20px;
+    }
+  }
+}
+
+.rating-choice {
+  margin-bottom: 2px;
+  line-height: $rating-button-height;
+}

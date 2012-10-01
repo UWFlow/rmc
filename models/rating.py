@@ -31,6 +31,7 @@ class AggregateRating(me.EmbeddedDocument):
         obj = json.loads(json_str)
         return cls(**obj)
 
+    # TODO(david): Does not make sense to make aggregate rating from one rating
     @classmethod
     def from_single_rating(cls, value):
         return cls(rating=value, count=1)

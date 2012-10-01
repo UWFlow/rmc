@@ -752,6 +752,8 @@ def user_course():
     # FIXME[uw](david): This should also update aggregate ratings table, etc.
     uc = json_util.loads(flask.request.data)
 
+    # TODO(david): Handle professor not set
+
     # Maybe create professor if newly added
     if uc.get('new_prof_added'):
 
@@ -783,6 +785,7 @@ def user_course():
 
         # TODO(mack): add more stringent checking against user manually
         # setting time on the frontend
+        # TODO(david): Should only set date if comment differed
         if 'comment' in review:
             review['comment_date'] = now
 
@@ -801,7 +804,11 @@ def user_course():
     uc = m.UserCourse(**uc)
     uc.save()
 
-    return json_util.dumps(clean_user_course(uc))
+    return json_util.dumps({
+        'professor_review.comment_date': uc['professor_review'][
+            'comment_date'],
+        'course_review.comment_date': uc['course_review'][ 'comment_date'],
+    })
 
 
 ###############################################################################
@@ -834,14 +841,12 @@ def clean_user_course(user_course):
         'professor_id': user_course.professor_id,
         'anonymous': user_course.anonymous,
         'course_review': {
-            'easiness': course_review.easiness,
-            'interest': course_review.interest,
+            'ratings': course_review.to_array(),
             'comment': course_review.comment,
             'comment_date': course_review.comment_date,
         },
         'professor_review': {
-            'clarity': professor_review.clarity,
-            'passion': professor_review.passion,
+            'ratings': professor_review.to_array(),
             'comment': professor_review.comment,
             'comment_date': professor_review.comment_date,
         },
@@ -858,7 +863,7 @@ def clean_prof_review(entity):
             'comment': entity.professor_review.comment,
             'comment_date': entity.professor_review.comment_date,
         },
-        'ratings': clean_ratings(prof_ratings)
+        'ratings': prof_ratings.to_array(),
     }
 
     # TODO(david): Maybe just pass down the entire user object

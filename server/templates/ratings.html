@@ -48,3 +48,19 @@
   </div>
 </div>
 {% endcall %}
+
+{% call macros.us_template('binary-rating-tpl') %}
+<div class="row-fluid">
+  <span class="span5 choice-name"><%- name %>?</span>
+  <span class="span7 btn-group rating-choices">
+    <button type="button" class="btn yes-btn">
+      <i class="thumb-icon icon-thumbs-up"></i>
+      Yes
+    </button>
+    <button type="button" class="btn no-btn">
+      <i class="thumb-icon icon-thumbs-down"></i>
+      No
+    </button>
+  </span>
+</div>
+{% endcall %}

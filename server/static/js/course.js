@@ -144,7 +144,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
-        userCourse: this.userCourse
+        userCourse: this.userCourse,
+        readOnly: true
       });
       // TODO(david): Get user review data, and don't show or show altered if no
       //     user or user didn't take course.
