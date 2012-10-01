@@ -111,6 +111,8 @@ $cell-height: 28px;
   text-align: center;
   line-height: $rating-size + $num-size;
   width: 52px;
+  background-color: #666;
+
   .rating {
     font-size: $rating-size;
     line-height: $rating-size;

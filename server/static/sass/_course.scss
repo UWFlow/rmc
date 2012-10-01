@@ -27,17 +27,20 @@
   .course-code {
     font-size: 50px;
     float: left;
-    margin-right: 10px;
+    margin-right: 8px;
+    letter-spacing: -1px;
+    font-weight: lighter;
   }
 
   .course-name {
     float: left;
     font-weight: lighter;
-    width: 300px;
+    width: 200px;
     position: relative;
     top: $top;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 20px;
+    color: #555;
   }
 
   .rating-box {
