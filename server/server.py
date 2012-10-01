@@ -452,20 +452,23 @@ def course_page(course_id):
 
     course_obj = clean_course(course, expanded=True)
 
-    user_course = m.UserCourse.objects(
-            course_id=course_id, user_id=current_user.id).first()
-    user_course_obj = clean_user_course(user_course)
+    user_course_objs = []
+    user_objs = []
+    if current_user:
+        user_course = m.UserCourse.objects(
+                course_id=course_id, user_id=current_user.id).first()
+        user_course_obj = clean_user_course(user_course)
 
-    # TODO(mack): optimize this
-    friend_user_courses = m.UserCourse.objects(id__in=
-            course_obj['friend_user_course_ids'])
+        # TODO(mack): optimize this
+        friend_user_courses = m.UserCourse.objects(id__in=
+                course_obj['friend_user_course_ids'])
 
-    user_course_objs = ([user_course_obj] +
-            map(clean_user_course, friend_user_courses))
+        user_course_objs = ([user_course_obj] +
+                map(clean_user_course, friend_user_courses))
 
-    friend_ids = [uc.user_id for uc in friend_user_courses]
-    friends = m.User.objects(id__in=friend_ids)
-    user_objs = map(clean_user, [current_user] + list(friends))
+        friend_ids = [uc.user_id for uc in friend_user_courses]
+        friends = m.User.objects(id__in=friend_ids)
+        user_objs = map(clean_user, [current_user] + list(friends))
 
     ucs = m.UserCourse.objects(course_id=course_id)
 
@@ -473,7 +476,6 @@ def course_page(course_id):
     #tip_objs = map(tip_from_uc, filter(course_review_exists, ucs))
 
     # TODO(david): Use a projection
-    #ucs = m.UserCourse.objects(course_id=course_id)
     tip_objs = [tip_from_uc(uc) for uc in ucs if
             len(uc.course_review.comment) > MIN_REVIEW_LENGTH]
 

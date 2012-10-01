@@ -22,11 +22,15 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
   $('#course-inner-placeholder').html(courseInnerView.render().el);
   courseInnerView.animateBars();
 
-  var tookThisSidebarView = new tookThis.TookThisSidebarView({
-    userCourses: courseModel.get('friend_user_courses'),
-    courseCode: courseModel.get('code')
-  });
-  $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
+  // TODO(mack): add prompt encouraging user to sign in to see friends
+  // who've taken this course
+  if (pageData.currentUserId) {
+    var tookThisSidebarView = new tookThis.TookThisSidebarView({
+      userCourses: courseModel.get('friend_user_courses'),
+      courseCode: courseModel.get('code')
+    });
+    $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
+  }
 
   // TODO(Sandy): Use the comment_date field
   var tipObjs = window.pageData.tipObjs;

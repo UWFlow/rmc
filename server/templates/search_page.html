@@ -83,6 +83,5 @@
 {% block scripts %}
 <script>
   window.pageData.sortModes = {{ sort_modes|tojson|safe }};
-  window.pageData.currentUserId = {{ current_user_id|tojson|safe }};
 </script>
 {% endblock %}

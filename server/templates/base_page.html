@@ -18,7 +18,9 @@
     <script>
       window.pageData = {};
       window.pageData.env = '{{ env }}';
-      window.pageData.currentUserId = '{{ current_user_id }}';
+      {% if current_user_id %}
+        window.pageData.currentUserId = '{{ current_user_id|tojson|safe }}';
+      {% endif %}
       {% if page_script %}
         window.pageData.pageScript = '{{ ('/static/%s/%s' % (js_dir, page_script))|version }}';
       {% endif %}
