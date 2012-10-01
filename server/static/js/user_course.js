@@ -151,6 +151,8 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         // TODO(david): Set button to say edit if there's any userCourse content
         this.$('.add-review')
           .html('<i class="icon-edit"></i> Edit review');
+        window.setTimeout(_.bind(this.showReview, this), 300);
+        //this.showReview();
       }
 
       if (this.userCourse.hasComments()) {
@@ -269,7 +271,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
     },
 
     allowSave: function() {
-      if (this.saving) {
+      if (this.saving || !this.userCourse.hasComments()) {
         return;
       }
 

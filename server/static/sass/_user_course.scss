@@ -59,9 +59,14 @@
     }
   }
 
-  .privacy-tip {
-    padding-left: 10px;
+  .submit-bar {
+    text-align: right;
+
+    .privacy-tip {
+      padding-right: 10px;
+    }
   }
+
 
   .save-error-msg {
     padding-left: 10px;
