@@ -100,6 +100,16 @@ class UserCourse(me.Document):
     def term_name(self):
         return term.Term(self.term_id).name
 
+    @property
+    def has_reviewed(self):
+        return (self.course_review.comment_date is not None
+            or self.course_review.interest is not None
+            or self.course_review.easiness is not None
+            or self.professor_review.comment_date is not None
+            or self.professor_review.clarity is not None
+            or self.professor_review.passion is not None
+        )
+
     def to_dict(self):
         course_review = self.course_review
         professor_review = self.professor_review
@@ -123,6 +133,7 @@ class UserCourse(me.Document):
                 'comment': professor_review.comment,
                 'comment_date': professor_review.comment_date,
             },
+            'has_reviewed': self.has_reviewed,
         }
 
 

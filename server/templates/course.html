@@ -3,8 +3,16 @@
 {% call macros.us_template('course-tpl') %}
 <!-- TODO(david) FIXME[uw]: Hotspot needs to be bigger -->
 <div class="visible-section">
-  <div class="course-code"><%- code %></div>
-  <div class="course-name"><%- name %></div>
+  <div class="course-code"><%- course.code %></div>
+  <div class="course-name"><%- course.name %></div>
+  <div class="ribbons">
+    <% if (user_course.term_id) { %>
+      <div class="taken-ribbon"><i class="icon-ok"></i></div>
+      <% if (user_course.has_reviewed) { %>
+        <div class="reviewed-ribbon"><i class="icon-pencil"></i></div>
+      <% } %>
+    <% } %>
+  </div>
   <div class="rating-box-placeholder"></div>
   {# TODO(david): This is really dumb. Fix in a better way. #}
   <div style="clear: both; margin-bottom: -25px;"></div>

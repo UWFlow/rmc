@@ -824,6 +824,9 @@ def user_course():
     if 'term_name' in uc:
         del uc['term_name']
 
+    if 'has_reviewed' in uc:
+        del uc['has_reviewed']
+
     uc = m.UserCourse(**uc)
     uc.save()
 

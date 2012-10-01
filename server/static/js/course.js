@@ -56,11 +56,25 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
     initialize: function(attributes) {
       this.courseModel = attributes.courseModel;
+      this.userCourse = this.courseModel.get('user_course');
+
+      if (!this.userCourse && pageData.currentUserId) {
+        // TODO(mack): remove require()
+        // TODO(mack): should we really be creating a user_course if
+        // the user has no taken the course?
+        this.userCourse = new _user_course.UserCourse({
+          course_id: this.courseModel.get('id'),
+          user_id: pageData.currentUserId.$oid
+        });
+        this.courseModel.set('user_course', this.userCourse);
+      }
+
       this.ratingBoxView = new ratings.RatingBoxView({
         model: new ratings.RatingModel(this.courseModel.get('overall'))
       });
       this.courseInnerView = new CourseInnerView({
-        courseModel: this.courseModel
+        courseModel: this.courseModel,
+        userCourse: this.userCourse
       });
 
       var friendUserCourses = this.courseModel.get('friend_user_courses');
@@ -72,7 +86,27 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     },
 
     render: function() {
-      this.$el.html(this.template(this.courseModel.toJSON()));
+      this.$el.html(this.template({
+        course: this.courseModel.toJSON(),
+        user_course: this.userCourse.toJSON()
+      }));
+
+      var termTookName = this.userCourse.get('term_name');
+      if (termTookName) {
+        this.$('.taken-ribbon').tooltip({
+          title: _s.sprintf('You took this course in %s', termTookName),
+          placement: 'top'
+        });
+
+        if (this.userCourse.get('has_reviewed')) {
+          // TODO(mack): differentiate what to show based on what fields
+          // have been reviewed
+          this.$('.reviewed-ribbon').tooltip({
+            title: 'You have reviewed this course',
+            placement: 'top'
+          });
+        }
+      }
 
       this.$('.rating-box-placeholder').replaceWith(
           this.ratingBoxView.render().$el);
@@ -82,20 +116,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
           this.sampleFriendsView.render().$el);
       }
 
-      if (!this.resizeBounded) {
-        $(window).on('resize', _.bind(this.onResize, this));
-        this.resizeBounded = true;
-      }
-      _.defer(_.bind(this.onResize, this));
-
       return this;
-    },
-
-    onResize: function() {
-      // TODO(david): Try to do this in CSS
-      var codeWidth = this.$('.course-code').width();
-      var barWidth = this.$('.visible-section').width();
-      this.$('.course-name').width(Math.min(300, barWidth - 270 - codeWidth));
     },
 
     events: {
@@ -143,16 +164,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     initialize: function(attributes) {
       var _user_course = require('user_course');
       this.courseModel = attributes.courseModel;
-      this.userCourse = this.courseModel.get('user_course');
-
-      if (!this.userCourse && pageData.currentUserId) {
-        // TODO(mack): remove require()
-        this.userCourse = new _user_course.UserCourse({
-          course_id: this.courseModel.get('id'),
-          user_id: pageData.currentUserId.$oid
-        });
-        this.courseModel.set('user_course', this.userCourse);
-      }
+      this.userCourse = attributes.userCourse;
 
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
@@ -160,7 +172,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         readOnly: true
       });
 
-      if (pageData.currentUserId && this.userCourse.get('user')) {
+      if (pageData.currentUserId) {
+        // TODO(david): Get user review data, and don't show or show altered if no
+        //     user or user didn't take course.
         // TODO(mack): remove circular dependency
         this.userCourseView = new _user_course.UserCourseView({
           userCourse: this.userCourse,
@@ -178,8 +192,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
       if (this.userCourseView) {
         this.$('.review-placeholder').replaceWith(
-          this.userCourseView.render(/* animationDelay */ 300).el);
+          this.userCourseView.render().el);
       }
+
       this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
 
       return this;

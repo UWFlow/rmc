@@ -2,6 +2,8 @@
 @import 'user_course';
 
 .course.well {
+  position: relative;
+
   margin-bottom: 10px;
   @include box-shadow(0 0 0 rgba(0, 0, 0, 0.0));
   @include transition(all 0.2s ease-out);
@@ -41,6 +43,41 @@
     font-size: 18px;
     line-height: 20px;
     color: #555;
+  }
+
+  .ribbons {
+    $ribbon-width: 30px;
+    $margin-width: 5px;
+
+    @extend .clearfix;
+    position: absolute;
+    right: 200px;
+    top: 0;
+    width: 2*$ribbon-width + $margin-width;
+    height: 40px;
+
+    .taken-ribbon {
+      @include background(image-url('/static/img/ribbon_blue.png'));
+      margin-right: $margin-width;
+    }
+
+    .reviewed-ribbon {
+      @include background(image-url('/static/img/ribbon_green.png'));
+    }
+
+    .reviewed-ribbon, .taken-ribbon {
+      float: left;
+      display: inline-block;
+      color: #FFF;
+      background-position: 0 -10px;
+      background-repeat: no-repeat;
+      width: $ribbon-width;
+      height: 40px;
+
+      i {
+        padding: 5px 5px;
+      }
+    }
   }
 
   .rating-box {

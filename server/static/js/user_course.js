@@ -23,7 +23,8 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         ratings: [],
         comment: '',
         comment_date: null
-      }
+      },
+      has_reviewed: null
     },
 
     // Function needed since UserCourses in defined later in file.
