@@ -25,10 +25,10 @@
       </div>
     </div>
     <div class="row-fluid">
-      <div class="span5">
+      <div class="span4">
         <div class="course-ratings-placeholder"></div>
       </div>
-      <div class="span7">
+      <div class="span8">
         <textarea rows="3" placeholder="Any tips or comments?"
           class="comments course-comments"><%- course_review.comment %></textarea>
       </div>
@@ -42,10 +42,10 @@
       </div>
     </div>
     <div class="row-fluid">
-      <div class="span5">
+      <div class="span4">
         <div class="prof-ratings-placeholder"></div>
       </div>
-      <div class="span7">
+      <div class="span8">
         <textarea placeholder="Comment about the professor..."
           class="comments prof-comments"><%- professor_review.comment %></textarea>
       </div>
@@ -53,15 +53,37 @@
 
     <div class="row-fluid">
       {# This is to have consistent column widths for better resizing #}
-      <div class="span5"></div>
-      <div class="span7 submit-bar">
-        <span class="privacy-tip privacy-tip-more-info"
-            title='Others will see you as "A <%- program_name %> student"'>
-          <i class="icon-group"></i> Friends
-        </span>
+      <div class="span4"></div>
+      <div class="span8 submit-bar">
         <button type="submit" class="save-review btn btn-primary">
           <i class="icon-comment"></i> Post comments!
         </button>
+        <span class="privacy-msg nav nav-pills">
+          &nbsp;&nbsp;Let
+          <li class="dropdown privacy-tip">
+            <a class="dropdown-toggle privacy-tip-more-info"
+              role="button"
+              data-toggle="dropdown"
+              href="#">
+              <span class="current-privacy">
+                <i class="icon-group"></i> friends
+              </span>
+              <b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu" role="menu">
+              <li data-value="everyone">
+                <a><i class="icon-globe"></i> everyone</a>
+              </li>
+              <li data-value="friends">
+                <a><i class="icon-group"></i> friends</a>
+              </li>
+              <li data-value="me">
+                <a><i class="icon-lock"></i> only me</a>
+              </li>
+            </ul>
+          </li>
+          see who posted this
+        </span>
         <span class="save-error-msg text-error"></span>
       </div>
     </div>

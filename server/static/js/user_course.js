@@ -72,6 +72,10 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       // TODO(david): Use date when we fix that on the server
       return this.get('professor_review').comment ||
           this.get('course_review').comment;
+    },
+
+    getProgramName: function() {
+      return this.get('user').get('program_name');
     }
   });
 
@@ -108,11 +112,13 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       }, this);
     },
 
-    render: function() {
+    // TODO(david): Don't pass in delay here; use deferreds for animation
+    //     chaining
+    render: function(animationDelay) {
       var self = this;
       var context = _.extend(this.userCourse.toJSON(), {
         courseModel: this.courseModel.toJSON(),
-        program_name: this.userCourse.get('user').get('program_name')
+        program_name: this.userCourse.getProgramName()
       });
       this.$el.html(_.template($('#add-review-tpl').html(), context));
 
@@ -129,12 +135,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
           };
         },
         initSelection : function (element, callback) {
-          // TODO(david): Figure out if this is needed
-          //var data = [];
-          //$(element.val().split(",")).each(function() {
-            //data.push({ id: this, text: this });
-          //});
-          //callback(data);
+          // Select2 is weird
         },
         data: this.courseModel.get('professors').map(function(prof) {
           return { id: prof.id, text: prof.name };
@@ -148,11 +149,11 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
           this.$('.prof-select')
             .select2('data', { id: profId, text: prof.name });
         }
-        // TODO(david): Set button to say edit if there's any userCourse content
-        this.$('.add-review')
-          .html('<i class="icon-edit"></i> Edit review');
-        window.setTimeout(_.bind(this.showReview, this), 300);
-        //this.showReview();
+
+        this.$('.add-review').hide();
+        var duration = typeof animationDelay === 'undefined' ? 0 :
+            animationDelay;
+        window.setTimeout(_.bind(this.showReview, this), duration);
       }
 
       if (this.userCourse.hasComments()) {
@@ -169,7 +170,10 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       this.$('.prof-ratings-placeholder').replaceWith(
           this.profRatingsView.render().el);
 
-      this.$('.privacy-tip-more-info').tooltip();
+      this.$('.dropdown-toggle').dropdown();
+
+      // TODO(david): Get from model
+      this.setPrivacy('friends');
 
       return this;
     },
@@ -178,7 +182,8 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       'change .prof-select': 'onProfSelect',
       'click .add-review': 'showReview',
       'click .save-review': 'saveComments',
-      'keyup .comments': 'allowSave'
+      'keyup .comments': 'allowSave',
+      'click .privacy-tip .dropdown-menu li': 'onPrivacySelect'
     },
 
     onProfSelect: function() {
@@ -267,7 +272,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         .removeClass('btn-warning btn-danger btn-primary')
         .addClass('btn-success')
         .prop('disabled', true)
-        .html('<i class="icon-ok"></i> Comments saved.');
+        .html('<i class="icon-ok"></i> Comments posted.');
     },
 
     allowSave: function() {
@@ -280,6 +285,30 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         .addClass('btn-primary')
         .prop('disabled', false)
         .html('<i class="icon-save"></i> Update comments!');
+    },
+
+    onPrivacySelect: function(evt) {
+      $target = $(evt.currentTarget);
+      this.setPrivacy($target.data('value'));
+      // TODO(david): Actually persist to the server
+    },
+
+    setPrivacy: function(setting) {
+      var html = this.$(
+          '.privacy-tip .dropdown-menu [data-value="' + setting + '"] a')
+        .html();
+      this.$('.current-privacy').html(html);
+
+      var tooltip = {
+        everyone: 'Your comments will be public',
+        friends: 'Others see "A ' + this.userCourse.getProgramName() +
+            ' student"',
+        me: 'Post anonymously'
+      }[setting];
+
+      this.$('.privacy-tip-more-info')
+        .tooltip('destroy')  // Bootstrap is stupid
+        .tooltip({ title: tooltip });
     }
   });
 

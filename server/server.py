@@ -873,10 +873,10 @@ def clean_prof_review(entity):
 def clean_review_author(author):
     user = get_current_user()
 
-    if user and author.id in user.friend_ids:
+    if user and (author.id in user.friend_ids or user.id == author.id):
         return {
             'id': author.id,
-            'name': author.name,
+            'name': 'You' if user.id == author.id else author.name,
             'fbid': author.fbid,
             'fb_pic_url': author.fb_pic_url,
         }

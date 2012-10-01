@@ -60,10 +60,29 @@
   }
 
   .submit-bar {
-    text-align: right;
+    margin-top: 5px;
 
-    .privacy-tip {
-      padding-right: 10px;
+    .privacy-msg {
+      opacity: 0.8;
+      //@include transition(all 0.2s ease-out);
+
+      &:hover {
+        //@include transition(all 0.2s ease-out);
+        opacity: 1.0;
+      }
+
+      .dropdown {
+        text-shadow: none;
+        .dropdown-toggle {
+          padding-left: 4px;
+          padding-right: 4px;
+        }
+      }
+
+      .privacy-tip {
+        float: none;
+        display: inline-block;
+      }
     }
   }
 

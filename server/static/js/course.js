@@ -165,9 +165,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
       if (this.userCourseView) {
         this.$('.review-placeholder').replaceWith(
-          this.userCourseView.render().el);
+          this.userCourseView.render(/* animationDelay */ 300).el);
       }
-
       this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
 
       return this;
