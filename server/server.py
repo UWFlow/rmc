@@ -455,8 +455,8 @@ def course_page(course_id):
     friend_user_courses = m.UserCourse.objects(id__in=
             user_course_obj['friend_user_course_ids'])
 
-    user_course_objs = [user_course_obj] \
-            + map(clean_user_course, friend_user_courses)
+    user_course_objs = ([user_course_obj] +
+            map(clean_user_course, friend_user_courses))
 
     friend_ids = [uc.user_id for uc in friend_user_courses]
     friends = m.User.objects(id__in=friend_ids)
@@ -802,6 +802,10 @@ def user_course():
     if 'professor_review' in uc:
         uc['professor_review'] = m.ProfessorReview(**uc['professor_review'])
 
+    # TODO(david): Selectively save instead of deleting bad properties
+    if 'term_name' in uc:
+        del uc['term_name']
+
     uc = m.UserCourse(**uc)
     uc.save()
 
@@ -856,15 +860,12 @@ def clean_user_course(user_course):
 
 
 def clean_prof_review(entity):
-    prof_ratings = entity.professor_review.get_ratings()
-    prof_ratings.update(entity.course_review.get_ratings())
-
     review = {
         'comment': {
             'comment': entity.professor_review.comment,
             'comment_date': entity.professor_review.comment_date,
         },
-        'ratings': prof_ratings.to_array(),
+        'ratings': entity.professor_review.to_array(),
     }
 
     # TODO(david): Maybe just pass down the entire user object

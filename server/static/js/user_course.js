@@ -83,13 +83,6 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
   UserCourses.registerCache('user_course');
 
   var UserCourseView = RmcBackbone.View.extend({
-    events: {
-      'change .prof-select': 'showReview',
-      'click .add-review': 'showReview',
-      'click .save-review': 'saveComments',
-      'keyup .comments': 'allowSave'
-    },
-
     initialize: function(options) {
       this.userCourse = options.userCourse;
       this.courseModel = options.courseModel;
@@ -179,6 +172,18 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       this.$('.privacy-tip-more-info').tooltip();
 
       return this;
+    },
+
+    events: {
+      'change .prof-select': 'onProfSelect',
+      'click .add-review': 'showReview',
+      'click .save-review': 'saveComments',
+      'keyup .comments': 'allowSave'
+    },
+
+    onProfSelect: function() {
+      this.showReview();
+      this.save();
     },
 
     showReview: function() {

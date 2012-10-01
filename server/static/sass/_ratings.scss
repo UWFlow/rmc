@@ -133,15 +133,12 @@ $rating-button-height: 27px;
     font-size: 16px;
     padding: 0 8px;
 
-    &:hover {
-      opacity: 0.7;
-    }
-
-    &.active {
+    &:hover, &.active {
       opacity: 0.7;
     }
 
     .thumb-icon {
+      display: inline-block;
       width: 18px;
       text-align: center;
     }
