@@ -78,7 +78,8 @@ function($, _, _s, Backbone, util, moment, __, __, _facebook) {
       _s: _s,
       pluralize: util.pluralize,
       getDisplayRating: util.getDisplayRating,
-      moment: moment
+      moment: moment,
+      capitalize: util.capitalize
     };
 
     _.template = function(templateString, data, settings) {

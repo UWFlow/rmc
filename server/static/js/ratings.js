@@ -156,6 +156,15 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     defaults: {
       name: '',
       rating: null
+    },
+
+    getAdjective: function() {
+      return {
+        'interest': 'interesting',
+        'easiness': 'easy',
+        'clarity': 'clear',
+        'passion': 'engaging'
+      }[this.get('name')];
     }
   });
 
@@ -168,7 +177,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     },
 
     render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
+      this.$el.html(this.template({ 'name': this.model.getAdjective() }));
       this.setStateFromRating();
       return this;
     },
