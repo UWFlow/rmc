@@ -132,7 +132,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       this.courseModel = attributes.courseModel;
       this.userCourse = this.courseModel.get('user_course');
 
-      if (!this.userCourse) {
+      if (!this.userCourse && pageData.currentUserId) {
         // TODO(mack): remove require()
         this.userCourse = new _user_course.UserCourse({
           course_id: this.courseModel.get('id'),
@@ -146,13 +146,16 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         userCourse: this.userCourse,
         readOnly: true
       });
-      // TODO(david): Get user review data, and don't show or show altered if no
-      //     user or user didn't take course.
-      // TODO(mack): remove circular dependency
-      this.userCourseView = new _user_course.UserCourseView({
-        userCourse: this.userCourse,
-        courseModel: this.courseModel
-      });
+
+      if (pageData.currentUserId) {
+        // TODO(david): Get user review data, and don't show or show altered if no
+        //     user or user didn't take course.
+        // TODO(mack): remove circular dependency
+        this.userCourseView = new _user_course.UserCourseView({
+          userCourse: this.userCourse,
+          courseModel: this.courseModel
+        });
+      }
     },
 
     render: function(moreDetails) {
@@ -162,8 +165,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         user_course: this.userCourse
       }));
 
-      this.$('.review-placeholder').replaceWith(
-        this.userCourseView.render().el);
+      if (this.userCourseView) {
+        this.$('.review-placeholder').replaceWith(
+          this.userCourseView.render().el);
+      }
+
       this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
 
       return this;
@@ -172,9 +178,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     animateBars: function(pause) {
       pause = pause === undefined ? 0 : pause;
       this.ratingsView.removeBars();
+
       window.setTimeout(_.bind(function() {
         this.ratingsView.render();
       }, this), pause);
+
       return this;
     }
   });

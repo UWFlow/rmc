@@ -661,20 +661,20 @@ def search_courses():
 
     sorted_courses = unsorted_courses.order_by(sort_instr)
     limited_courses = sorted_courses.skip(offset).limit(count)
-
-    current_user = get_current_user()
-
     course_objs = map(clean_course, limited_courses)
 
-    course_ids = [c.id for c in limited_courses]
-    user_courses = m.UserCourse.objects(
-            user_id__in=[current_user.id] + current_user.friend_ids,
-            course_id__in=course_ids)
-    user_course_objs = map(clean_user_course, list(user_courses))
+    user_objs = []
+    user_course_objs = []
+    current_user = get_current_user()
+    if current_user:
+        course_ids = [c.id for c in limited_courses]
+        user_courses = m.UserCourse.objects(
+                user_id__in=[current_user.id] + current_user.friend_ids,
+                course_id__in=course_ids)
+        user_course_objs = map(clean_user_course, list(user_courses))
 
-    users = m.User.objects(id__in=[uc.user_id for uc in user_courses])
-
-    user_objs = map(clean_user, users)
+        users = m.User.objects(id__in=[uc.user_id for uc in user_courses])
+        user_objs = map(clean_user, users)
 
     has_more = len(course_objs) == count
 
@@ -926,18 +926,20 @@ def clean_course(course, expanded=False):
             professors = professors.only('id', 'first_name', 'last_name')
             return [{'id': p.id, 'name': p.name} for p in professors]
 
-    # TODO(mack): this should somehow be responsible for fetching the
-    # user_course id since it is settings on course
-    user_course_id = None
     current_user = get_current_user()
-    user_course = m.UserCourse.objects(
-            course_id=course.id, user_id=current_user.id).only('id').first()
-    if user_course:
-        user_course_id = user_course.id
 
-    # TODO(mack): make sure this is fast or do somewhere else more appropriate
-    friend_user_courses = m.UserCourse.objects(
-        course_id=course.id, user_id__in=current_user.friend_ids).only('id')
+    user_course_id = None
+    friend_user_courses = []
+    if current_user:
+        user_course = m.UserCourse.objects(
+                course_id=course.id, user_id=current_user.id).only('id').first()
+        if user_course:
+            user_course_id = user_course.id
+
+        # TODO(mack): make sure this is fast or do somewhere else more
+        # appropriate
+        friend_user_courses = m.UserCourse.objects(
+            course_id=course.id, user_id__in=current_user.friend_ids).only('id')
 
     return {
         'id': course.id,
