@@ -147,9 +147,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         readOnly: true
       });
 
-      if (pageData.currentUserId) {
-        // TODO(david): Get user review data, and don't show or show altered if no
-        //     user or user didn't take course.
+      if (pageData.currentUserId && this.userCourse.get('user')) {
         // TODO(mack): remove circular dependency
         this.userCourseView = new _user_course.UserCourseView({
           userCourse: this.userCourse,

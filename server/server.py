@@ -845,7 +845,9 @@ def clean_ratings(rating_dict):
 
 def clean_user_course(user_course):
 
-    user_course_dict = user_course.to_dict()
+    user_course_dict = {}
+    if user_course:
+        user_course_dict = user_course.to_dict()
     return user_course_dict
 
 
