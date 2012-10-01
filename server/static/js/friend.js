@@ -18,7 +18,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
           mutual_courses: this.mutualCourses
         }));
 
-      this.$('.friend-pic, .friend-name')
+      this.$('.friend-name')
         .popover({
           html: true,
           title: this.friendModel.get('last_term_name'),
