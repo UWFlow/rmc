@@ -21,14 +21,16 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         count: 7,
         total: 2
       }],
-      user_course_id: undefined
+      user_course_id: undefined,
+      friend_user_course_ids: []
     },
 
     referenceFields: function() {
       // TODO(mack): remove require() call
       var _user_course = require('user_course');
       return {
-        'user_course': ['user_course_id', _user_course.UserCourses]
+        'user_course': ['user_course_id', _user_course.UserCourses],
+        'friend_user_courses': [ 'friend_user_course_ids', _user_course.UserCourses ]
       };
     },
 
@@ -61,11 +63,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         courseModel: this.courseModel
       });
 
-      var userCourse = this.courseModel.get('user_course');
-      if (userCourse && userCourse.get('friend_user_course_ids').length) {
+      var friendUserCourses = this.courseModel.get('friend_user_courses');
+      if (friendUserCourses) {
         this.sampleFriendsView = new SampleFriendsView({
-          courseModel: this.courseModel,
-          userCourse: userCourse
+          friendUserCourses: friendUserCourses
         });
       }
     },
@@ -184,17 +185,14 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     className: 'sample-friends',
 
     initialize: function(attributes) {
-      this.courseModel = attributes.courseModel;
-      this.userCourse = attributes.userCourse;
+      this.friendUserCourses = attributes.friendUserCourses;
       this.friendViews = [];
     },
 
     render: function() {
-      var friendUserCourses = this.userCourse.get('friend_user_courses');
-
       this.$el.html(
         _.template($('#sample-friends-tpl').html(), {
-          num_friends: friendUserCourses.length,
+          num_friends: this.friendUserCourses.length,
           max_sample_friends: this.MAX_SAMPLE_FRIENDS
         })
       );
@@ -203,7 +201,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       // module that has all models like the backend
       var _user = require('user');
       var sampleFriendCollection = new _user.UserCollection(
-        friendUserCourses.first(this.MAX_SAMPLE_FRIENDS)
+        this.friendUserCourses.first(this.MAX_SAMPLE_FRIENDS)
       );
       var friendCollectionView = new FriendCollectionView({
         friendUserCourses: sampleFriendCollection
@@ -232,11 +230,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
     getFriendsPopoverContent: function() {
       if (!this.friendsHovercardView) {
-        var friendUserCourses = this.userCourse.get('friend_user_courses');
         // TODO(mack): remove require()
         var _user_course = require('user_course');
         var remainingUserCourses = new _user_course.UserCourses(
-          friendUserCourses.rest(this.MAX_SAMPLE_FRIENDS)
+          this.friendUserCourses.rest(this.MAX_SAMPLE_FRIENDS)
         );
         this.friendsHovercardView = new FriendCollectionView({
           friendUserCourses: remainingUserCourses

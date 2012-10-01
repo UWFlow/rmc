@@ -23,16 +23,14 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         ratings: [],
         comment: '',
         comment_date: null
-      },
-      friend_user_course_ids: []
+      }
     },
 
     // Function needed since UserCourses in defined later in file.
     referenceFields: function() {
       return {
         'user': [ 'user_id', _user.UserCollection ],
-        'course': [ 'course_id', _course.CourseCollection ],
-        'friend_user_courses': [ 'friend_user_course_ids', UserCourses ]
+        'course': [ 'course_id', _course.CourseCollection ]
       };
     },
 

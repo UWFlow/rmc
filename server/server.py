@@ -251,7 +251,7 @@ def profile(profile_user_id):
 
     if not own_profile:
         # Get the user courses of current user
-        current_user_courses = profile_user.get_user_courses()
+        current_user_courses = current_user.get_user_courses()
         # Get a mapping from course id to user_course for current user
         current_course_to_user_course = {}
         for uc in current_user_courses:
@@ -271,6 +271,8 @@ def profile(profile_user_id):
     # Fetch courses for transcript, which need more detailed information
     # than other courses (such as mutual and last term courses for friends)
     transcript_courses = m.Course.objects(id__in=profile_course_ids)
+    transcript_course_ids = set([c.id for c in transcript_courses])
+
 
     # Fetch remainining courses that need less data. This will be mutual
     # and last term courses for profile user's friends
@@ -302,6 +304,17 @@ def profile(profile_user_id):
         course_dicts[course.id] = course_dict
     for course in friend_courses:
         course_dicts[course.id] = course.to_dict()
+
+    # Store friend usercourse ids in your own usercourses of the same
+    # course id for friends of current user
+    friend_user_courses_by_course = {}
+    for fuc in friend_user_courses:
+        if fuc.course_id in transcript_course_ids:
+            friend_user_courses_by_course.setdefault(
+                    fuc.course_id, []).append(fuc)
+    for course_id, fucs in friend_user_courses_by_course.items():
+        course_dict = course_dicts[course_id]
+        course_dict['friend_user_course_ids'] = [fuc.id for fuc in fucs]
 
 
     def filter_course_ids(course_ids):
@@ -341,27 +354,18 @@ def profile(profile_user_id):
     # Convert users courses to dicts
     user_course_dicts = {}
     for user_course in profile_user_courses:
-        if user_course.course_id not in course_dicts:
+        if user_course.course_id not in transcript_course_ids:
             continue
         user_course_dicts[user_course.id] = user_course.to_dict()
+    if not own_profile:
+        for user_course in current_user_courses:
+            if user_course.course_id not in transcript_course_ids:
+                continue
+            user_course_dicts[user_course.id] = user_course.to_dict()
     for user_course in friend_user_courses:
         if user_course.course_id not in course_dicts:
             continue
         user_course_dicts[user_course.id] = user_course.to_dict()
-
-    # Store friend usercourse ids in your own usercourses of the same
-    # course id for friends of current user
-    friend_user_courses_by_course = {}
-    for fuc in friend_user_courses:
-        if fuc.course_id in profile_course_ids:
-            friend_user_courses_by_course.setdefault(
-                    fuc.course_id, []).append(fuc)
-    for user_course in current_user_courses:
-        if user_course.id not in user_course_dicts:
-            continue
-        user_course_dict = user_course_dicts[user_course.id]
-        fucs = friend_user_courses_by_course.get(user_course.course_id, [])
-        user_course_dict['friend_user_course_ids'] = [fuc.id for fuc in fucs]
 
 
     def get_ordered_transcript(profile_user_courses):
