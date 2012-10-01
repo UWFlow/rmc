@@ -21,10 +21,12 @@
   <a class="friend-name" href=<%- friend.profile_url %>>
     <%- friend.name %>
   </a>
-  <a href="#" class="mutual-courses">
-    <%- mutual_courses.length %>
-    mutual <%- pluralize(mutual_courses.length, 'course', 'courses') %>
-  </a>
+  <% if (mutual_courses.length > 0) { %>
+    <a href="#" class="mutual-courses">
+      <%- mutual_courses.length %>
+      mutual <%- pluralize(mutual_courses.length, 'course', 'courses') %>
+    </a>
+  <% } %>
 </div>
 {% endcall %}
 
