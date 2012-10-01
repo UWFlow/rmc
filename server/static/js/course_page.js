@@ -23,7 +23,7 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
   courseInnerView.animateBars();
 
   var tookThisSidebarView = new tookThis.TookThisSidebarView({
-    userCourses: userCourse.get('friend_user_courses'),
+    userCourses: courseModel.get('friend_user_courses'),
     courseCode: courseModel.get('code')
   });
   $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);

@@ -448,16 +448,17 @@ def course_page(course_id):
         # TODO(david): 404 page
         flask.abort(404)
 
+    current_user = get_current_user()
+
     course_obj = clean_course(course, expanded=True)
 
-    current_user = get_current_user()
     user_course = m.UserCourse.objects(
             course_id=course_id, user_id=current_user.id).first()
     user_course_obj = clean_user_course(user_course)
 
     # TODO(mack): optimize this
     friend_user_courses = m.UserCourse.objects(id__in=
-            user_course_obj['friend_user_course_ids'])
+            course_obj['friend_user_course_ids'])
 
     user_course_objs = ([user_course_obj] +
             map(clean_user_course, friend_user_courses))
@@ -661,12 +662,14 @@ def search_courses():
     sorted_courses = unsorted_courses.order_by(sort_instr)
     limited_courses = sorted_courses.skip(offset).limit(count)
 
+    current_user = get_current_user()
+
     course_objs = map(clean_course, limited_courses)
 
     course_ids = [c.id for c in limited_courses]
-    user = get_current_user()
     user_courses = m.UserCourse.objects(
-            user_id__in=[user.id] + user.friend_ids, course_id__in=course_ids)
+            user_id__in=[current_user.id] + current_user.friend_ids,
+            course_id__in=course_ids)
     user_course_objs = map(clean_user_course, list(user_courses))
 
     users = m.User.objects(id__in=[uc.user_id for uc in user_courses])
@@ -830,19 +833,8 @@ def clean_ratings(rating_dict):
 
 
 def clean_user_course(user_course):
-    # TODO(david): Either make this really fast or don't do this here
-    def get_friend_user_course_ids(user_course):
-        # TODO(mack): optimize this line
-        user = m.User.objects.with_id(user_course.user_id)
-        ucs = m.UserCourse.objects(
-            course_id=user_course.course_id, user_id__in=user.friend_ids).only('id')
-        return [uc.id for uc in ucs]
 
     user_course_dict = user_course.to_dict()
-    user_course_dict.update({
-        'friend_user_course_ids': get_friend_user_course_ids(user_course),
-    })
-
     return user_course_dict
 
 
@@ -928,11 +920,15 @@ def clean_course(course, expanded=False):
     # TODO(mack): this should somehow be responsible for fetching the
     # user_course id since it is settings on course
     user_course_id = None
-    user = get_current_user()
+    current_user = get_current_user()
     user_course = m.UserCourse.objects(
-            course_id=course.id, user_id=user.id).only('id').first()
+            course_id=course.id, user_id=current_user.id).only('id').first()
     if user_course:
         user_course_id = user_course.id
+
+    # TODO(mack): make sure this is fast or do somewhere else more appropriate
+    friend_user_courses = m.UserCourse.objects(
+        course_id=course.id, user_id__in=current_user.friend_ids).only('id')
 
     return {
         'id': course.id,
@@ -951,6 +947,7 @@ def clean_course(course, expanded=False):
         'overall': course.overall.to_dict(),
         'professors': get_professors(course),
         'user_course_id': user_course_id,
+        'friend_user_course_ids': [fuc.id for fuc in friend_user_courses],
     }
 
 
