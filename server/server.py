@@ -826,9 +826,7 @@ def clean_ratings(rating_dict):
 
 
 def clean_user_course(user_course):
-    course_review = user_course.course_review
-    professor_review = user_course.professor_review
-
+    # TODO(david): Either make this really fast or don't do this here
     def get_friend_user_course_ids(user_course):
         # TODO(mack): optimize this line
         user = m.User.objects.with_id(user_course.user_id)
@@ -836,27 +834,12 @@ def clean_user_course(user_course):
             course_id=user_course.course_id, user_id__in=user.friend_ids).only('id')
         return [uc.id for uc in ucs]
 
-    return {
-        'id': user_course.id,
-        'user_id': user_course.user_id,
-        # TODO(Sandy): We probably don't need to pass down term_id
-        'term_id': user_course.term_id,
-        'term_name': m.Term(id=user_course.term_id).name,
-        'course_id': user_course.course_id,
-        'professor_id': user_course.professor_id,
-        'anonymous': user_course.anonymous,
-        'course_review': {
-            'ratings': course_review.to_array(),
-            'comment': course_review.comment,
-            'comment_date': course_review.comment_date,
-        },
-        'professor_review': {
-            'ratings': professor_review.to_array(),
-            'comment': professor_review.comment,
-            'comment_date': professor_review.comment_date,
-        },
+    user_course_dict = user_course.to_dict()
+    user_course_dict.update({
         'friend_user_course_ids': get_friend_user_course_ids(user_course),
-    }
+    })
+
+    return user_course_dict
 
 
 def clean_prof_review(entity):

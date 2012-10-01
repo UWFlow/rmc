@@ -114,14 +114,12 @@ class UserCourse(me.Document):
             'professor_id': self.professor_id,
             'anonymous': self.anonymous,
             'course_review': {
-                'easiness': course_review.easiness,
-                'interest': course_review.interest,
+                'ratings': course_review.to_array(),
                 'comment': course_review.comment,
                 'comment_date': course_review.comment_date,
             },
             'professor_review': {
-                'clarity': professor_review.clarity,
-                'passion': professor_review.passion,
+                'ratings': professor_review.to_array(),
                 'comment': professor_review.comment,
                 'comment_date': professor_review.comment_date,
             },
