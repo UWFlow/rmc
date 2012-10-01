@@ -745,9 +745,18 @@ def upload_transcript():
 @app.route('/api/remove_transcript', methods=['POST'])
 @login_required
 def remove_transcript():
-    user = get_current_user()
-    user.course_history = []
-    user.save()
+    current_user = get_current_user()
+    current_user.course_history = []
+    current_user.save()
+
+    # Remove cached mutual courses
+    current_user.remove_mutual_course_ids(r)
+
+    # Remove term_id from user_courses
+    # TODO(mack): Display message notifying users how many reviews they will
+    # lose by removing their transcript.
+    m.UserCourse.objects(user_id=current_user.id).delete()
+
     return ''
 
 

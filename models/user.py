@@ -173,6 +173,13 @@ class User(me.Document):
                 redis_key = self.mutual_courses_redis_key(friend.id)
                 redis.sadd(redis_key, *list(mutual_course_ids))
 
+    def remove_mutual_course_ids(self, redis):
+        pipe = redis.pipeline()
+
+        for friend_id in self.friend_ids:
+            pipe.delete(self.mutual_courses_redis_key(friend_id))
+
+        return pipe.execute()
 
     def to_dict(self):
         program_name = self.short_program_name
