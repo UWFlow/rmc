@@ -132,14 +132,14 @@ $cell-height: 28px;
 $rating-button-height: 27px;
 .rating-choices {
   .btn {
-    opacity: 0.5;
+    opacity: 1.0;
     line-height: $rating-button-height;
     height: $rating-button-height;
     font-size: 16px;
     padding: 0 8px;
 
     &:hover, &.active {
-      opacity: 0.7;
+      opacity: 1.0;
     }
 
     .thumb-icon {
