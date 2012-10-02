@@ -42,7 +42,9 @@
 
 {% call macros.us_template('rating-box-tpl') %}
 <div class="rating-box badge badge-inverse">
-  <div class="rating"><%- getDisplayRating(rating, count) %></div>
+  <div class="rating">
+    <%- getDisplayRating(rating, count) %><sup class="percent">%</sup>
+  </div>
   <div class="num-ratings">
     <%- count %> <%- pluralize(count, 'rating', 'ratings') %>
   </div>

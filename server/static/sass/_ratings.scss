@@ -116,6 +116,9 @@ $cell-height: 28px;
   .rating {
     font-size: $rating-size;
     line-height: $rating-size;
+    .percent {
+      font-size: 56%;
+    }
   }
   .num-ratings {
     font-size: $num-size;

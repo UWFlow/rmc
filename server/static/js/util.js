@@ -78,7 +78,7 @@ function(_, _s) {
     if (count !== undefined && count === 0) {
       return '-';
     }
-    return _s.sprintf("%.1f", skewRating(rating) * NUM_RATINGS_SEGMENTS);
+    return Math.round(rating * 100);
   };
 
   /**
