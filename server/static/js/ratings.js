@@ -160,7 +160,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
     getAdjective: function() {
       return {
-        'interest': 'interesting',
+        'interest': 'Liked it',
         'easiness': 'easy',
         'usefulness': 'useful',
         'clarity': 'clear',
