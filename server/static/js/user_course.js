@@ -40,6 +40,9 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
     },
 
     initialize: function(attrs) {
+      // TODO(mack): fix potential bug here, since professor_review
+      // and course_review are are objects that are potentially shared
+      // among all UserCourse models
       this.get('professor_review').ratings = new ratings.RatingChoiceCollection(
           attrs.professor_review.ratings);
       this.get('course_review').ratings = new ratings.RatingChoiceCollection(
