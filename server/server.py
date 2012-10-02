@@ -774,19 +774,41 @@ def remove_transcript():
 @login_required
 @app.route('/api/user/course', methods=['POST', 'PUT'])
 def user_course():
-    # FIXME[uw](david): This should also update aggregate ratings table, etc.
-    uc = util.json_loads(flask.request.data)
+    uc_data = util.json_loads(flask.request.data)
+    user = get_current_user()
 
-    # TODO(david): Handle professor not set
+    # Validate request object
+    course_id = uc_data.get('course_id')
+    term_id = uc_data.get('term_id')
+    if course_id is None or term_id is None:
+        logging.error("/api/user/course got course_id (%s) and term_id (%s)" %
+            (course_id, term_id))
+        raise ApiError('No course_id or term_id set')
+
+    # Fetch existing UserCourse
+    uc = m.UserCourse.objects(
+        user_id=user.id,
+        course_id=uc_data['course_id'],
+        term_id=uc_data['term_id']
+    ).first()
+
+    if uc is None:
+        logging.error("/api/user/course User course not found for " +
+            "user_id=%s course_id=%s term_id=%s" %
+            (user.id, course_id, term_id))
+        raise ApiError('No user course found')
+
+    # Update privacy settings
+    # TODO(Sandy): Move this when we revamp privacy
+    uc.anonymous = uc_data['anonymous']
 
     # Maybe create professor if newly added
-    if uc.get('new_prof_added'):
+    if uc_data.get('new_prof_added'):
 
-        new_prof_name = uc['new_prof_added']
-        del uc['new_prof_added']
+        new_prof_name = uc_data['new_prof_added']
 
         prof_id = m.Professor.get_id_from_name(new_prof_name)
-        uc['professor_id'] = prof_id
+        uc.professor_id = prof_id
 
         if m.Professor.objects(id=prof_id).count() == 0:
             first_name, last_name = m.Professor.guess_names(new_prof_name)
@@ -796,44 +818,30 @@ def user_course():
                 last_name=last_name,
             ).save()
 
-        course = m.Course.objects.with_id(uc['course_id'])
+        course = m.Course.objects.with_id(uc.course_id)
         course.professor_ids = list(set(course.professor_ids) | {prof_id})
         course.save()
 
         logging.info("Added new course professor %s (name: %s)" % (prof_id,
                 new_prof_name))
+    elif uc_data.get('professor_id'):
+        uc.professor_id = uc_data['professor_id']
+    else:
+        # TODO(Sandy): Handle professor not set
+        pass
 
     now = datetime.now()
-    def set_comment_date_if_necessary(review):
-        if not review:
-            return None
 
-        # TODO(mack): add more stringent checking against user manually
-        # setting time on the frontend
-        # TODO(david): Should only set date if comment differed
-        if 'comment' in review:
-            review['comment_date'] = now
+    if uc_data.get('course_review'):
+        # New course review data
+        uc.course_review.update_review_with_date_and_dict(
+            now, **uc_data['course_review'])
 
-    set_comment_date_if_necessary(uc.get('professor_review'))
-    set_comment_date_if_necessary(uc.get('course_review'))
+    if uc_data.get('professor_review'):
+        # New prof review data
+        uc.professor_review.update_review_with_date_and_dict(
+            now, **uc_data['professor_review'])
 
-    user = get_current_user()
-    uc['user_id'] = user.id
-
-    if 'course_review' in uc:
-        uc['course_review'] = m.CourseReview(**uc['course_review'])
-
-    if 'professor_review' in uc:
-        uc['professor_review'] = m.ProfessorReview(**uc['professor_review'])
-
-    # TODO(david): Selectively save instead of deleting bad properties
-    if 'term_name' in uc:
-        del uc['term_name']
-
-    if 'has_reviewed' in uc:
-        del uc['has_reviewed']
-
-    uc = m.UserCourse(**uc)
     uc.save()
 
     return util.json_dumps({
