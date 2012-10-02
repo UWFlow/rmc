@@ -6,7 +6,7 @@
   <div class="course-code"><%- course.code %></div>
   <div class="course-name"><%- course.name %></div>
   <div class="ribbons">
-    <% if (user_course.term_id) { %>
+    <% if (user_course && user_course.term_id) { %>
       <div class="taken-ribbon"><i class="icon-ok"></i></div>
       <% if (user_course.has_reviewed) { %>
         <div class="reviewed-ribbon"><i class="icon-pencil"></i></div>

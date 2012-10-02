@@ -62,18 +62,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       this.courseModel = attributes.courseModel;
       this.userCourse = this.courseModel.get('user_course');
 
-      if (!this.userCourse && pageData.currentUserId) {
-        // TODO(mack): remove require()
-        // TODO(mack): should we really be creating a user_course if
-        // the user has no taken the course?
-        var _user_course = require('user_course');
-        this.userCourse = new _user_course.UserCourse({
-          course_id: this.courseModel.get('id'),
-          user_id: pageData.currentUserId.$oid
-        });
-        this.courseModel.set('user_course', this.userCourse);
-      }
-
       // TODO(mack): do this in a cleaner way
       var interest = this.courseModel.get('ratings').find(function(rating) {
         return rating.get('name') === 'interest';
@@ -106,26 +94,28 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     render: function() {
       this.$el.html(this.template({
         course: this.courseModel.toJSON(),
-        user_course: this.userCourse.toJSON()
+        user_course: this.userCourse && this.userCourse.toJSON()
       }));
 
-      var termTookName = this.userCourse.get('term_name');
-      if (termTookName) {
-        this.$('.taken-ribbon').tooltip({
-          title: _s.sprintf('You took this course in %s', termTookName),
-          placement: 'top'
-        });
-
-        if (this.userCourse.get('has_reviewed')) {
-          // TODO(mack): differentiate what to show based on what fields
-          // have been reviewed
-          this.$('.reviewed-ribbon').tooltip({
-            title: 'You have reviewed this course',
+      if (this.userCourse) {
+        var termTookName = this.userCourse.get('term_name');
+        if (termTookName) {
+          this.$('.taken-ribbon').tooltip({
+            title: _s.sprintf('You took this course in %s', termTookName),
             placement: 'top'
           });
-        }
 
-        this.$('.voting-placeholder').replaceWith(this.votingView.render().el);
+          if (this.userCourse.get('has_reviewed')) {
+            // TODO(mack): differentiate what to show based on what fields
+            // have been reviewed
+            this.$('.reviewed-ribbon').tooltip({
+              title: 'You have reviewed this course',
+              placement: 'top'
+            });
+          }
+
+          this.$('.voting-placeholder').replaceWith(this.votingView.render().el);
+        }
       }
 
       this.$('.rating-box-placeholder').replaceWith(
@@ -191,7 +181,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         readOnly: true
       });
 
-      if (pageData.currentUserId) {
+      if (this.userCourse && pageData.currentUserId) {
         // TODO(david): Get user review data, and don't show or show altered if no
         //     user or user didn't take course.
         // TODO(mack): remove circular dependency
