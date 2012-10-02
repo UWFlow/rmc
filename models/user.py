@@ -66,7 +66,9 @@ class User(me.Document):
 
     # List of UserCourse.id's
     course_history = me.ListField(me.ObjectIdField())
-    #last_term_id = me.StringField()
+    # TODO(mack): figure out why last_term_id was commented out in
+    # a prior diff: #260f174
+    last_term_id = me.StringField()
     last_program_year_id = me.StringField()
 
     @property
