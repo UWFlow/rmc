@@ -57,12 +57,12 @@
     height: 40px;
 
     .taken-ribbon {
-      @include background(image-url('/static/img/ribbon_blue.png'));
+      @include background(image-url('/static/img/ribbon_green.png'));
       margin-right: $margin-width;
     }
 
     .reviewed-ribbon {
-      @include background(image-url('/static/img/ribbon_green.png'));
+      @include background(image-url('/static/img/ribbon_blue.png'));
     }
 
     .reviewed-ribbon, .taken-ribbon {
