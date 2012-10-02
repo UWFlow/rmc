@@ -51,10 +51,11 @@
 
     @extend .clearfix;
     position: absolute;
-    right: 200px;
+    right: 240px;
     top: 0;
     width: 2*$ribbon-width + $margin-width;
     height: 40px;
+    opacity: 0.8;
 
     .taken-ribbon {
       @include background(image-url('/static/img/ribbon_green.png'));
@@ -83,6 +84,12 @@
   .rating-box {
     float: right;
     top: $top;
+  }
+  .voting {
+    float: right;
+    top: $top;
+    position: relative;
+    margin-right: 5px;
   }
 
   .sample-friends {

@@ -77,6 +77,15 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       this.ratingBoxView = new ratings.RatingBoxView({
         model: interest
       });
+
+      if (this.userCourse) {
+        this.votingView = new ratings.RatingChoiceView({
+          model: this.userCourse.getInterestRating(),
+          voting: true,
+          className: 'voting'
+        });
+      }
+
       this.courseInnerView = new CourseInnerView({
         courseModel: this.courseModel,
         userCourse: this.userCourse
@@ -111,6 +120,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
             placement: 'top'
           });
         }
+
+        this.$('.voting-placeholder').replaceWith(this.votingView.render().el);
       }
 
       this.$('.rating-box-placeholder').replaceWith(

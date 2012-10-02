@@ -66,3 +66,18 @@
   </span>
 </div>
 {% endcall %}
+
+{% call macros.us_template('voting-tpl') %}
+{# TODO(david): Remove hardcode #}
+<div>
+  <button type="button" class="btn yes-btn" title="I liked this course">
+    <i class="thumb-icon icon-thumbs-up"></i>
+  </button>
+</div>
+<div>
+  <button type="button" class="btn no-btn" data-placement="bottom"
+      title="I disliked this course">
+    <i class="thumb-icon icon-thumbs-down"></i>
+  </button>
+</div>
+{% endcall %}

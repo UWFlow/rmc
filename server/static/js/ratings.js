@@ -163,7 +163,8 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
         'interest': 'interesting',
         'easiness': 'easy',
         'clarity': 'clear',
-        'passion': 'engaging'
+        'passion': 'engaging',
+        '': ''
       }[this.get('name')];
     }
   });
@@ -172,13 +173,19 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     template: _.template($('#binary-rating-tpl').html()),
     className: 'rating-choice',
 
-    initialize: function() {
+    initialize: function(options) {
       this.model.on('change:rating', _.bind(this.setStateFromRating, this));
+      if (options.voting) {
+        this.template = _.template($('#voting-tpl').html());
+      }
     },
 
     render: function() {
       this.$el.html(this.template({ 'name': this.model.getAdjective() }));
       this.setStateFromRating();
+      if (this.options.voting) {
+        this.$('.btn').tooltip();
+      }
       return this;
     },
 
@@ -195,6 +202,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
       } else {
         this.model.set('rating', chosen);
       }
+      evt.stopPropagation();
     },
 
     setStateFromRating: function() {

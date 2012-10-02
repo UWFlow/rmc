@@ -159,3 +159,31 @@ $rating-button-height: 27px;
   margin-bottom: 2px;
   line-height: $rating-button-height;
 }
+
+
+$vote-button-height: 22px;
+.voting {
+  .btn {
+    opacity: 0.5;
+    line-height: 10px;
+    height: $vote-button-height;
+    font-size: 16px;
+    padding: 0 2px;
+    margin-bottom: 2px;
+
+    &:hover, &.active {
+      opacity: 0.7;
+    }
+
+    .thumb-icon {
+      display: inline-block;
+      width: 18px;
+      text-align: center;
+    }
+
+    &:hover .thumb-icon,
+    &.active .thumb-icon, {
+      font-size: 18px;
+    }
+  }
+}

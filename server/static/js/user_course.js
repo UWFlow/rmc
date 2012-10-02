@@ -77,6 +77,12 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
 
     getProgramName: function() {
       return this.get('user').get('program_name');
+    },
+
+    getInterestRating: function() {
+      return this.get('course_review').ratings.find(function(rating) {
+        return rating.get('name') === 'interest';
+      });
     }
   });
 
@@ -100,6 +106,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         collection: profRatings
       });
 
+      // TODO(david): Should be a change on model triggers save
       courseRatings.on('change', _.bind(this.save, this, {}, {}));
       profRatings.on('change', _.bind(this.save, this, {}, {}));
 
