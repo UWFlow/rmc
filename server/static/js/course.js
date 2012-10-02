@@ -70,8 +70,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         this.courseModel.set('user_course', this.userCourse);
       }
 
+      // TODO(mack): do this in a cleaner way
+      var interest = this.courseModel.get('ratings').find(function(rating) {
+        return rating.get('name') === 'interest';
+      });
       this.ratingBoxView = new ratings.RatingBoxView({
-        model: new ratings.RatingModel(this.courseModel.get('overall'))
+        model: interest
       });
       this.courseInnerView = new CourseInnerView({
         courseModel: this.courseModel,

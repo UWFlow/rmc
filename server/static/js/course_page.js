@@ -11,13 +11,29 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
   var courseModel = course.CourseCollection.getFromCache(courseObj.id);
   var userCourse = courseModel.get('user_course');
 
+  // TODO(mack): do this in a cleaner way
+  var interest = courseModel.get('ratings').find(function(rating) {
+    return rating.get('name') === 'interest';
+  });
   var ratingBoxView = new ratings.RatingBoxView({
-    model: new ratings.RatingModel(courseModel.get('overall'))
+    model: interest
   });
   $('#rating-box-container').html(ratingBoxView.render().el);
 
+  // TODO(mack): remove duplication with logic in course.js
+  if (!userCourse && pageData.currentUserId) {
+    // TODO(mack): remove require()
+    // TODO(mack): should we really be creating a user_course if
+    // the user has no taken the course?
+    userCourse = new user_course.UserCourse({
+      course_id: this.courseModel.get('id'),
+      user_id: pageData.currentUserId.$oid
+    });
+    this.courseModel.set('user_course', this.userCourse);
+  }
   var courseInnerView = new course.CourseInnerView({
-    courseModel: courseModel
+    courseModel: courseModel,
+    userCourse: userCourse
   });
   $('#course-inner-placeholder').html(courseInnerView.render().el);
   courseInnerView.animateBars();

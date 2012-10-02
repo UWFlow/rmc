@@ -10,9 +10,9 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
   // TODO(david): Fix this to just be count + rating (instead of total)
   var RatingModel = RmcBackbone.Model.extend({
     defaults: {
-      name: 'interest',
-      rating: 0.66,
-      count: 7
+      name: null,
+      rating: null,
+      count: null
     },
 
     getDisplayName: function() {
