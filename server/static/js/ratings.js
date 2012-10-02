@@ -162,6 +162,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
       return {
         'interest': 'interesting',
         'easiness': 'easy',
+        'usefulness': 'useful',
         'clarity': 'clear',
         'passion': 'engaging',
         '': ''

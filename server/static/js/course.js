@@ -17,6 +17,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         count: 10,
         total: 7
       }, {
+        name: 'usefulness',
+        count: 0,
+        total: 0
+      }, {
         name: 'easiness',
         count: 7,
         total: 2

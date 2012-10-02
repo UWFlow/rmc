@@ -173,6 +173,8 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         .height(60)  // Because autosize doesn't respect CSS class height
         .css('resize', 'none');
 
+      this.$('.course-comments').height(84);
+
       this.$('.course-ratings-placeholder').replaceWith(
           this.courseRatingsView.render().el);
       this.$('.prof-ratings-placeholder').replaceWith(

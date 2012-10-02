@@ -10,6 +10,7 @@ def update_kwargs_from_ratings(kwargs):
 class CourseReview(me.EmbeddedDocument):
     interest = me.FloatField(min_value=0.0, max_value=1.0, default=None)
     easiness = me.FloatField(min_value=0.0, max_value=1.0, default=None)
+    usefulness = me.FloatField(min_value=0.0, max_value=1.0, default=None)
     comment = me.StringField(default='', max_length=4096)
     comment_date = me.DateTimeField()
 
@@ -20,11 +21,14 @@ class CourseReview(me.EmbeddedDocument):
     # TODO(david): This should be renamed to get_ratings() and return a dict
     def to_array(self):
         return [{
-            'name': 'interest',
-            'rating': self.interest,
+            'name': 'usefulness',
+            'rating': self.usefulness,
         }, {
             'name': 'easiness',
             'rating': self.easiness,
+        }, {
+            'name': 'interest',
+            'rating': self.interest,
         }]
 
 

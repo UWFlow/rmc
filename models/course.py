@@ -12,6 +12,8 @@ class Course(me.Document):
             'interest.count',
             'easiness.rating',
             'easiness.count',
+            'usefulness.rating',
+            'usefulness.count',
             'overall.rating',
             'overall.count',
         ],
@@ -34,6 +36,7 @@ class Course(me.Document):
 
     easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
     interest = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    usefulness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
     overall = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
     professor_ids = me.ListField(me.StringField())

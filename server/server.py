@@ -615,6 +615,7 @@ def get_courses(course_ids):
 
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
+    # TODO(david): Usefulness
     { 'value': 'num_ratings', 'name': 'by popularity', 'direction': pymongo.DESCENDING, 'field': 'overall.count' },
     { 'value': 'alphabetical', 'name': 'alphabetically', 'direction': pymongo.ASCENDING, 'field': 'id' },
     { 'value': 'overall', 'name': 'by overall rating', 'direction': pymongo.DESCENDING, 'field': 'overall.rating' },
@@ -960,6 +961,7 @@ def clean_course(course, expanded=False):
         #'friends': [1647810326, 518430508, 541400376],
         'ratings': {
             'easiness': course.easiness.to_dict(),
+            'usefulness': course.usefulness.to_dict(),
             'interest': course.interest.to_dict(),
         },
         'overall': course.overall.to_dict(),

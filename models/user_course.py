@@ -103,8 +103,8 @@ class UserCourse(me.Document):
     @property
     def has_reviewed(self):
         return (self.course_review.comment_date is not None
-            or self.course_review.interest is not None
             or self.course_review.easiness is not None
+            or self.course_review.usefulness is not None
             or self.professor_review.comment_date is not None
             or self.professor_review.clarity is not None
             or self.professor_review.passion is not None
