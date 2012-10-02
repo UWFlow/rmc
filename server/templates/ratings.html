@@ -41,13 +41,12 @@
 {% endcall %}
 
 {% call macros.us_template('rating-box-tpl') %}
-<div class="rating-box badge badge-inverse">
-  <div class="rating">
-    <%- getDisplayRating(rating, count) %><sup class="percent">%</sup>
-  </div>
-  <div class="num-ratings">
-    <%- count %> <%- pluralize(count, 'rating', 'ratings') %>
-  </div>
+<div class="rating">
+  <%- getDisplayRating(rating, count) %><!--
+  --><% if (count > 0) { %><sup class="percent">%</sup><% } %>
+</div>
+<div class="num-ratings">
+  <%- count %> <%- pluralize(count, 'rating', 'ratings') %>
 </div>
 {% endcall %}
 
@@ -70,12 +69,13 @@
 {% call macros.us_template('voting-tpl') %}
 {# TODO(david): Remove hardcode #}
 <div>
-  <button type="button" class="btn yes-btn" title="I liked this course">
+  <button type="button" class="btn yes-btn" data-placement="left"
+      title="I liked this course">
     <i class="thumb-icon icon-thumbs-up"></i>
   </button>
 </div>
 <div>
-  <button type="button" class="btn no-btn" data-placement="bottom"
+  <button type="button" class="btn no-btn" data-placement="left"
       title="I disliked this course">
     <i class="thumb-icon icon-thumbs-down"></i>
   </button>

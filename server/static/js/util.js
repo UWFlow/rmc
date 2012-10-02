@@ -65,15 +65,6 @@ function(_, _s) {
     return _.first(randItems, num);
   };
 
-  // Skews a rating to use our [1.0, 5.0] scale, because that's the range that
-  // the user can rate (like ratings with stars)
-  var skewRating = function(rating, count) {
-    if (count !== undefined && count === 0) {
-      return 0;
-    }
-    return rating * 0.8 + 0.2;
-  };
-
   var getDisplayRating = function(rating, count) {
     if (count !== undefined && count === 0) {
       return '-';
@@ -111,7 +102,6 @@ function(_, _s) {
     pluralize: pluralize,
     random: random,
     randomItems: randomItems,
-    skewRating: skewRating,
     getDisplayRating: getDisplayRating,
     getHashCode: getHashCode,
     toDate: toDate

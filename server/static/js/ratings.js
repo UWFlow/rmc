@@ -20,7 +20,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     },
 
     getAverage: function() {
-      return util.skewRating(this.get('rating'), this.get('count'));
+      return this.get('count') ? this.get('rating') : 0;
     },
 
     getPercent: function() {
@@ -39,6 +39,14 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
         'passion': 'progress-danger',
         'clarity': 'progress-success'
       }[this.get('name')];
+    },
+
+    getLikes: function() {
+      return Math.round(this.get('rating') * this.get('count'));
+    },
+
+    getDislikes: function() {
+      return this.get('count') - this.getLikes();
     }
   });
 
@@ -145,9 +153,15 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
   var RatingBoxView = RmcBackbone.View.extend({
     template: _.template($('#rating-box-tpl').html()),
+    className: 'rating-box badge badge-inverse',
 
     render: function() {
-      this.$el.html(this.template(this.model.toJSON()));
+      this.$el
+        .html(this.template(this.model.toJSON()))
+        .tooltip({
+          title: this.model.getLikes() + ' likes, ' + this.model.getDislikes() +
+              ' dislikes'
+        });
       return this;
     }
   });
