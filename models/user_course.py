@@ -2,6 +2,8 @@ import itertools
 
 import mongoengine as me
 
+import course
+import professor
 import rating
 import review
 import term
@@ -135,6 +137,23 @@ class UserCourse(me.Document):
             },
             'has_reviewed': self.has_reviewed,
         }
+
+    def save(self, *args, **kwargs):
+        # TODO(Sandy): Use transactions
+        # http://docs.mongodb.org/manual/tutorial/perform-two-phase-commits/
+        # or run nightly ratings aggregation script to fix race condtions
+        cur_course = course.Course.objects.with_id(self.course_id)
+        self.course_review.update_course_aggregate_ratings(cur_course)
+        cur_course.save()
+
+        if self.professor_id:
+            cur_professor = professor.Professor.objects.with_id(
+                self.professor_id)
+            self.professor_review.update_professor_aggregate_ratings(
+                cur_professor)
+            cur_professor.save()
+
+        super(UserCourse, self).save(*args, **kwargs)
 
 
 # TODO(david): Should be static method of ProfCourse

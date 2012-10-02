@@ -1,3 +1,4 @@
+import logging
 import mongoengine as me
 # TODO(mack): use ujson
 import json
@@ -9,6 +10,19 @@ class AggregateRating(me.EmbeddedDocument):
     def add_rating(self, rating):
         self.rating = ((self.rating * self.count) + rating) / (self.count + 1)
         self.count += 1
+
+    def remove_rating(self, rating):
+        if self.count == 0:
+            logging.warn("AggregateRating: called remove_rating with count = 0")
+            return
+
+        if self.count == 1:
+            self.rating = 0
+        else:
+            self.rating = (((self.rating * self.count) - rating) /
+                (self.count - 1))
+
+        self.count -= 1
 
     def add_aggregate_rating(self, ar):
         if ar.count == 0:
@@ -25,6 +39,22 @@ class AggregateRating(me.EmbeddedDocument):
 
     def to_json(self):
         return json.dumps(self.to_dict())
+
+    def update_aggregate_after_replacement(self, old_value, new_value):
+        if old_value is None and new_value is None:
+            # Rating not changed
+            pass
+        elif old_value is None:
+            # New rating, add new_value to the aggregate
+            self.add_rating(new_value)
+        elif new_value is None:
+            # Removed a rating, remove old_value from the aggregate
+            self.remove_rating(old_value)
+        elif old_value != new_value:
+            # Modified a rating, removing old_value and add new_value to the
+            # aggregate
+            self.remove_rating(old_value)
+            self.add_rating(new_value)
 
     @classmethod
     def from_json(cls, json_str):

@@ -802,6 +802,9 @@ def user_course():
     # TODO(Sandy): Move this when we revamp privacy
     uc.anonymous = uc_data['anonymous']
 
+    # TODO(Sandy): Consider the case where the user picked a professor and rates
+    # them, but then changes the professor. We need to remove the ratings from
+    # the old prof's aggregated ratings and add them to the new prof's
     # Maybe create professor if newly added
     if uc_data.get('new_prof_added'):
 
@@ -810,6 +813,8 @@ def user_course():
         prof_id = m.Professor.get_id_from_name(new_prof_name)
         uc.professor_id = prof_id
 
+        # TODO(Sandy): Have some kind of sanity check for professor names.
+        # Don't allow ridiculousness like "Santa Claus", "aksnlf", "swear words"
         if m.Professor.objects(id=prof_id).count() == 0:
             first_name, last_name = m.Professor.guess_names(new_prof_name)
             m.Professor(

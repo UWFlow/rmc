@@ -40,17 +40,35 @@ class CourseReview(me.EmbeddedDocument):
     def update_ratings_with_dict(self, **kwargs):
         if 'ratings' in kwargs:
             new_values = { d['name']: d['rating'] for d in kwargs['ratings'] }
+            self.old_interest = self.interest
+            self.old_easiness = self.easiness
+            self.old_usefulness = self.usefulness
 
             self.easiness = new_values.get(c.COURSE_REVIEW_FIELD_EASINESS)
             self.interest = new_values.get(c.COURSE_REVIEW_FIELD_INTEREST)
             self.usefulness = new_values.get(c.COURSE_REVIEW_FIELD_USEFULNESS)
         else:
-            logging.warn("Trying to update CourseReview rating with empty dict")
+            logging.warn("CourseReview: update_ratings_with_dict without " +
+                "ratings in dict");
 
     # TODO(Sandy): Remove duplicate code with ProfessorReview?
     def update_review_with_date_and_dict(self, date, **kwargs):
         self.update_ratings_with_dict(**kwargs)
         update_comment_and_date(self, kwargs.get('comment'), date)
+
+    def update_course_aggregate_ratings(self, cur_course):
+        # Update associated aggregate ratings
+        if hasattr(self, 'old_easiness'):
+            cur_course.easiness.update_aggregate_after_replacement(
+                self.old_easiness, self.easiness)
+        if hasattr(self, 'old_interest'):
+            cur_course.interest.update_aggregate_after_replacement(
+                self.old_interest, self.interest)
+        if hasattr(self, 'old_usefulness'):
+            cur_course.usefulness.update_aggregate_after_replacement(
+                self.old_usefulness, self.usefulness)
+
+
 
 class ProfessorReview(me.EmbeddedDocument):
     clarity = me.FloatField(min_value=0.0, max_value=1.0, default=None)
@@ -74,12 +92,24 @@ class ProfessorReview(me.EmbeddedDocument):
     def update_ratings_with_dict(self, **kwargs):
         if 'ratings' in kwargs:
             new_values = { d['name']: d['rating'] for d in kwargs['ratings'] }
+            self.old_clarity = self.clarity
+            self.old_passion = self.passion
 
             self.clarity = new_values.get(c.PROFESSOR_REVIEW_FIELD_CLARITY)
             self.passion = new_values.get(c.PROFESSOR_REVIEW_FIELD_PASSION)
         else:
-            logging.warn("Trying to update CourseReview rating with empty dict")
+            logging.warn("ProfessorReview: update_ratings_with_dict without " +
+                "ratings in dict");
 
     def update_review_with_date_and_dict(self, date, **kwargs):
         self.update_ratings_with_dict(**kwargs)
         update_comment_and_date(self, kwargs.get('comment'), date)
+
+    def update_professor_aggregate_ratings(self, cur_professor):
+        # Update associated aggregate ratings
+        if hasattr(self, 'old_clarity'):
+            cur_professor.clarity.update_aggregate_after_replacement(
+                self.old_clarity, self.clarity)
+        if hasattr(self, 'old_passion'):
+            cur_professor.passion.update_aggregate_after_replacement(
+                self.old_passion, self.passion)
