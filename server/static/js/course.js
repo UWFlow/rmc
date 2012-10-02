@@ -109,7 +109,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
             // TODO(mack): differentiate what to show based on what fields
             // have been reviewed
             this.$('.reviewed-ribbon').tooltip({
-              title: 'You have reviewed this course',
+              title: 'You reviewed this course. Thanks! :)',
               placement: 'top'
             });
           }
