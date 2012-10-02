@@ -62,6 +62,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         // TODO(mack): remove require()
         // TODO(mack): should we really be creating a user_course if
         // the user has no taken the course?
+        var _user_course = require('user_course');
         this.userCourse = new _user_course.UserCourse({
           course_id: this.courseModel.get('id'),
           user_id: pageData.currentUserId.$oid
@@ -162,7 +163,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     className: 'course-inner',
 
     initialize: function(attributes) {
-      var _user_course = require('user_course');
       this.courseModel = attributes.courseModel;
       this.userCourse = attributes.userCourse;
 
@@ -176,6 +176,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         // TODO(david): Get user review data, and don't show or show altered if no
         //     user or user didn't take course.
         // TODO(mack): remove circular dependency
+        var _user_course = require('user_course');
         this.userCourseView = new _user_course.UserCourseView({
           userCourse: this.userCourse,
           courseModel: this.courseModel
