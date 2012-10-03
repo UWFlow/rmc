@@ -29,7 +29,9 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
         .on('click', '.popover', function(evt) {
           // Prevent clicking in the hovercard from going to triggering the
           // link the hovercard is attached to
-          return false;
+          if (!$(evt.target).is('a')) {
+            return false;
+          }
         });
 
       this.$('.mutual-courses')
@@ -43,7 +45,9 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
         .click(function(evt) {
           // Prevent clicking in the hovercard from going to triggering the
           // link the hovercard is attached to
-          return false;
+          if (!$(evt.target).is('a')) {
+            return false;
+          }
         });
 
       return this;
