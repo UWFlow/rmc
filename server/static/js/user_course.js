@@ -129,7 +129,8 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       var self = this;
       var context = _.extend(this.userCourse.toJSON(), {
         courseModel: this.courseModel.toJSON(),
-        program_name: this.userCourse.getProgramName()
+        program_name: this.userCourse.getProgramName(),
+        user_name: this.userCourse.get('user').get('name')
       });
       this.$el.html(_.template($('#add-review-tpl').html(), context));
 
@@ -285,7 +286,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         .removeClass('btn-warning btn-danger btn-primary')
         .addClass('btn-success')
         .prop('disabled', true)
-        .html('<i class="icon-ok"></i> Comments posted.');
+        .html('<i class="icon-ok"></i> Posted.');
     },
 
     allowSave: function() {
@@ -297,7 +298,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         .removeClass('btn-success btn-warning btn-danger')
         .addClass('btn-primary')
         .prop('disabled', false)
-        .html('<i class="icon-save"></i> Update comments!');
+        .html('<i class="icon-save"></i> Update!');
     },
 
     onPrivacySelect: function(evt) {
@@ -316,7 +317,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         everyone: 'Your comments will be public',
         friends: 'Others see "A ' + this.userCourse.getProgramName() +
             ' student"',
-        me: 'Post anonymously'
+        me: 'Post anonymously; no one will know who wrote this.'
       }[setting];
 
       this.$('.privacy-tip-more-info')
