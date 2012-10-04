@@ -916,15 +916,6 @@ def clean_course(course, expanded=False):
         expanded: Whether to fetch more information, such as professor reviews.
     """
 
-    def get_professors(course):
-        professors = m.Professor.objects(id__in=course.professor_ids)
-
-        if expanded:
-            return [clean_professor(p, course.id) for p in professors]
-        else:
-            professors = professors.only('id', 'first_name', 'last_name')
-            return [{'id': p.id, 'name': p.name} for p in professors]
-
     current_user = get_current_user()
 
     user_course_id = None
@@ -940,29 +931,18 @@ def clean_course(course, expanded=False):
         friend_user_courses = m.UserCourse.objects(
             course_id=course.id, user_id__in=current_user.friend_ids).only('id')
 
-    ret = {
-        'id': course.id,
-        'code': course.code,
-        'name': course.name,
-        'description': course.description,
-        #'availFall': bool(int(course['availFall'])),
-        #'availSpring': bool(int(course['availSpring'])),
-        #'availWinter': bool(int(course['availWinter'])),
-        # TODO(mack): create user models for friends
-        #'friends': [1647810326, 518430508, 541400376],
-        'ratings': {
-            'easiness': course.easiness.to_dict(),
-            'usefulness': course.usefulness.to_dict(),
-            'interest': course.interest.to_dict(),
-        },
-        'overall': course.overall.to_dict(),
-        'professors': get_professors(course),
+    course_dict = course.to_dict()
+    course_dict.update({
         'user_course_id': user_course_id,
         'friend_user_course_ids': [fuc.id for fuc in friend_user_courses],
-    }
+    })
 
-    print ret
-    return ret
+    # TODO(david): Caller should expand its own professors
+    if expanded:
+        course_dict['professors'] = [clean_professor(p, course.id) for p in
+                course.get_professors()]
+
+    return course_dict
 
 
 def clean_user(user):

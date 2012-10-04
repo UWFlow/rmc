@@ -9,8 +9,6 @@ from rmc.shared import util
 # TODO(mack): remove this from here?
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
-import user_course
-
 
 class Professor(me.Document):
 
@@ -71,12 +69,12 @@ class Professor(me.Document):
 
     def get_ratings(self):
         ratings_dict = {
-            'clarity': self.clarity,
-            'easiness': self.easiness,
-            'passion': self.passion,
+            'clarity': self.clarity.to_dict(),
+            'easiness': self.easiness.to_dict(),
+            'passion': self.passion.to_dict(),
         }
         ratings_dict['overall'] = rating.get_overall_rating(
-                ratings_dict.values())
+                ratings_dict.values()).to_dict()
         return util.dict_to_list(ratings_dict)
 
     # TODO(david): This should go on ProfCourse
@@ -89,9 +87,9 @@ class Professor(me.Document):
                 rating_dict[name] = rating.AggregateRating(
                     rating=rating_loaded['rating'],
                     count=rating_loaded['count'],
-                )
+                ).to_dict()
 
         rating_dict['overall'] = rating.get_overall_rating(
-                rating_dict.values())
+                rating_dict.values()).to_dict()
 
         return util.dict_to_list(rating_dict)

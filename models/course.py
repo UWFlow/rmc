@@ -66,25 +66,26 @@ class Course(me.Document):
             'easiness': self.easiness.to_dict(),
         }
 
-    def to_dict(self, expanded=False):
+    # TODO(david): Cache function result
+    def get_professors(course, expanded=False):
+        professors = professor.Professor.objects(
+                id__in=course.professor_ids)
+
+        if expanded:
+            return professors.all()
+        else:
+            return professors.only('id', 'first_name', 'last_name')
+
+    def to_dict(self):
         """Returns information about a course to be sent down an API.
 
         Args:
             course: The course object.
-            expanded: Whether to fetch more information, such as professor reviews.
         """
 
         # TODO(mack): to not nest Professor in Course
-        def get_professors(course):
-            professors = professor.Professor.objects(
-                    id__in=course.professor_ids)
-
-            if expanded:
-                # TODO(mack): this doesn't work yet
-                return [p.to_dict() for p in professors]
-            else:
-                professors = professors.only('id', 'first_name', 'last_name')
-                return [{'id': p.id, 'name': p.name} for p in professors]
+        professors = [{'id': p.id, 'name': p.name} for p in
+                self.get_professors()]
 
         return {
             'id': self.id,
@@ -98,5 +99,5 @@ class Course(me.Document):
             #'friends': [1647810326, 518430508, 541400376],
             'ratings': util.dict_to_list(self.get_ratings()),
             'overall': self.overall.to_dict(),
-            'professors': get_professors(self),
+            'professors': professors,
         }
