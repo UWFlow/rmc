@@ -24,6 +24,11 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
       this.ownProfile = options.ownProfile;
       this.courses = this.termModel.get('courses');
 
+      this.courseCollectionView = new _course.CourseCollectionView({
+        courses: this.courses,
+        canShowAddReview: this.ownProfile
+      });
+
       this.expand = options.expand;
     },
 
@@ -34,10 +39,6 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
       this.$el.html(
         _.template($('#term-tpl').html(), attributes));
 
-      this.courseCollectionView = new _course.CourseCollectionView({
-        courses: this.courses,
-        canShowAddReview: this.ownProfile
-      });
       this.$el.find('.course-collection-placeholder').replaceWith(
         this.courseCollectionView.render().el);
 
@@ -66,6 +67,8 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
         .end().find('.term-name .arrow')
           .removeClass('icon-caret-right')
           .addClass('icon-caret-down');
+      // TODO(david): Make this fn automatically called on show of courses
+      this.courseCollectionView.onShow();
     },
 
     collapseTerm: function(evt) {

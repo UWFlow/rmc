@@ -175,7 +175,20 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
           this.sampleFriendsView.render().$el);
       }
 
+      if (!this.resizeBounded) {
+        $(window).on('resize', _.bind(this.onResize, this));
+        this.resizeBounded = true;
+      }
+      _.defer(_.bind(this.onResize, this));
+
       return this;
+    },
+
+    onResize: function() {
+      // TODO(david): Try to do this in CSS
+      var codeWidth = this.$('.course-code').width();
+      var barWidth = this.$('.visible-section').width();
+      this.$('.course-name').width(Math.min(300, barWidth - 270 - codeWidth));
     },
 
     events: {
@@ -442,6 +455,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       }, this);
 
       return this;
+    },
+
+    onShow: function() {
+      _.each(this.courseViews, function(courseView) {
+        courseView.onResize();
+      });
     }
   });
 
