@@ -196,6 +196,8 @@ def crash():
 @app.route('/profile/<string:profile_user_id>')
 @login_required
 def profile(profile_user_id):
+    # TODO(mack): for dict maps, use .update() rather than overwriting to
+    # avoid subtle overwrites by data that has fields filled out
 
     # TODO(mack): remove hardcode of LAST_TERM_ID
     LAST_TERM_ID = '2012_09'
@@ -301,8 +303,10 @@ def profile(profile_user_id):
     for course in transcript_courses:
         course_dict = course.to_dict()
         # The user course context that should be that of the current user
-        uc = current_course_to_user_course.get(course.id)
-        course_dict['user_course_id'] = uc.id if uc else None
+        current_uc = current_course_to_user_course.get(course.id)
+        course_dict['user_course_id'] = current_uc.id if current_uc else None
+        profile_uc = profile_course_to_user_course.get(course.id)
+        course_dict['profile_user_course_id'] = profile_uc.id
         course_dicts[course.id] = course_dict
     for course in friend_courses:
         course_dicts[course.id] = course.to_dict()
@@ -318,7 +322,6 @@ def profile(profile_user_id):
         for course_id, fucs in friend_user_courses_by_course.items():
             course_dict = course_dicts[course_id]
             course_dict['friend_user_course_ids'] = [fuc.id for fuc in fucs]
-
 
     def filter_course_ids(course_ids):
         return [course_id for course_id in course_ids
@@ -362,6 +365,7 @@ def profile(profile_user_id):
     for user_course in profile_user_courses:
         if user_course.course_id not in transcript_course_ids:
             continue
+
         user_course_dicts[user_course.id] = user_course.to_dict()
     if not own_profile:
         for user_course in current_user_courses:
@@ -369,10 +373,10 @@ def profile(profile_user_id):
                 continue
             user_course_dicts[user_course.id] = user_course.to_dict()
     for user_course in friend_user_courses:
-        if user_course.course_id not in course_dicts:
+        if (user_course.course_id not in course_dicts
+                or user_course.id in user_course_dicts):
             continue
         user_course_dicts[user_course.id] = user_course.to_dict()
-
 
     def get_ordered_transcript(profile_user_courses):
         transcript_by_term = {}

@@ -51,30 +51,39 @@
     position: absolute;
     right: 240px;
     top: 0;
-    width: 2*$ribbon-width + $margin-width;
     height: 40px;
-    opacity: 0.8;
 
-    .taken-ribbon {
+    .current-user-ribbon {
       @include background(image-url('/static/img/ribbon_green.png'));
       margin-right: $margin-width;
     }
 
-    .reviewed-ribbon {
+    .profile-user-ribbon {
       @include background(image-url('/static/img/ribbon_blue.png'));
     }
 
-    .reviewed-ribbon, .taken-ribbon {
-      float: left;
+    .current-user-ribbon, .profile-user-ribbon {
       display: inline-block;
-      color: #FFF;
-      background-position: 0 -10px;
       background-repeat: no-repeat;
+      background-position: 0 -15px;
       width: $ribbon-width;
       height: 40px;
+      opacity: 0.5;
+      &:hover {
+        opacity: 0.7;
+      }
 
       i {
-        padding: 5px 5px;
+        font-size: 16px;
+        color: #000;
+        margin: 5px;
+      }
+
+      &.reviewed {
+        opacity: 1.0;
+        i {
+          color: #fff;
+        }
       }
     }
   }

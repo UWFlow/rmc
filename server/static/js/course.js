@@ -22,6 +22,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         total: 2
       }],
       user_course_id: undefined,
+      profile_user_course_id: undefined,
       friend_user_course_ids: []
     },
 
@@ -30,6 +31,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       var _user_course = require('user_course');
       return {
         'user_course': ['user_course_id', _user_course.UserCourses],
+        'profile_user_course': ['profile_user_course_id', _user_course.UserCourses],
         'friend_user_courses': [ 'friend_user_course_ids', _user_course.UserCourses ]
       };
     },
@@ -69,6 +71,14 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     initialize: function(attributes) {
       this.courseModel = attributes.courseModel;
       this.userCourse = this.courseModel.get('user_course');
+      // TODO(mack): Might not always be appropriate to just fetch
+      // profileUserCourse like this since it's only gettable from
+      // profile page
+      this.profileUserCourse = this.courseModel.get('profile_user_course');
+
+      this.otherProfile = this.userCourse && this.profileUserCourse &&
+        this.userCourse.id !== this.profileUserCourse.id;
+
       this.canShowAddReview =
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
 
@@ -100,28 +110,50 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     render: function() {
       this.$el.html(this.template({
         course: this.courseModel.toJSON(),
-        user_course: this.userCourse && this.userCourse.toJSON()
+        user_course: this.userCourse && this.userCourse.toJSON(),
+        profile_user_course: this.profileUserCourse && this.profileUserCourse.toJSON(),
+        other_profile: this.otherProfile
       }));
 
-      if (this.canShowAddReview && this.userCourse) {
-        var termTookName = this.userCourse.get('term_name');
-        if (termTookName) {
-          this.$('.taken-ribbon').tooltip({
-            title: _s.sprintf('You took this course in %s', termTookName),
-            placement: 'top'
-          });
+      var title = '';
+      var termTookName = '';
 
-          if (this.userCourse.get('has_reviewed')) {
-            // TODO(mack): differentiate what to show based on what fields
-            // have been reviewed
-            this.$('.reviewed-ribbon').tooltip({
-              title: 'You reviewed this course. Thanks! :)',
-              placement: 'top'
-            });
-          }
+      if (this.userCourse) {
+        termTookName = this.userCourse.get('term_name');
+        if (this.userCourse.get('has_reviewed')) {
+          title = _s.sprintf('Taken in %s. Thanks for reviewing it :)',
+              termTookName);
+        } else {
+          title = _s.sprintf('Taken %s. Please review it?', termTookName);
+        }
+        this.$('.current-user-ribbon').tooltip({
+          title: title,
+          placement: 'top'
+        });
 
+        if (this.canShowAddReview) {
           this.$('.voting-placeholder').replaceWith(this.votingView.render().el);
         }
+      }
+
+      if (this.otherProfile) {
+
+        var user = this.profileUserCourse.get('user');
+        termTookName = this.profileUserCourse.get('term_name');
+
+        if (this.profileUserCourse.get('has_reviewed')) {
+          // TODO(mack): fix terrible wording
+          title = _s.sprintf('Taken by %s in %s. Has been reviewed.',
+              user.get('first_name'), termTookName);
+        } else {
+          title = _s.sprintf('Taken by %s in %s',
+              user.get('first_name'), termTookName);
+        }
+
+        this.$('.profile-user-ribbon').tooltip({
+          title: title,
+          placement: 'top'
+        });
       }
 
       this.$('.rating-box-placeholder').replaceWith(
