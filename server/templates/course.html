@@ -9,10 +9,7 @@
     {# TODO(mack): clean up the following line #}
     <%
       var reviewed = function(uc) {
-        if (uc && uc.has_reviewed) {
-          return 'reviewed';
-        }
-        return '';
+        return uc && uc.has_reviewed ? 'reviewed' : 'not-reviewed';
       };
     %>
     <% if (user_course && user_course.term_id) { %>
