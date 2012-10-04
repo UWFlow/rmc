@@ -132,7 +132,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       if (this.userCourse) {
         termTookName = this.userCourse.get('term_name');
         if (this.userCourse.get('has_reviewed')) {
-          title = _s.sprintf('Taken in %s. Thanks for reviewing :)',
+          title = _s.sprintf('Taken in %s. Thanks for reviewing!',
               termTookName);
         } else {
           title = _s.sprintf('Taken in %s. Please review?', termTookName);
