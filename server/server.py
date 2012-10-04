@@ -630,6 +630,7 @@ COURSES_SORT_MODES = [
     { 'value': 'overall', 'name': 'by overall rating', 'direction': pymongo.DESCENDING, 'field': 'overall.rating' },
     { 'value': 'interest', 'name': 'by interest', 'direction': pymongo.DESCENDING, 'field': 'interest.rating' },
     { 'value': 'easiness', 'name': 'by easiness' , 'direction': pymongo.DESCENDING, 'field': 'easiness.rating' },
+    { 'value': 'friends', 'name': 'friends taking' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
 ]
 COURSES_SORT_MODES_BY_VALUE = {}
 for sort_mode in COURSES_SORT_MODES:
@@ -638,6 +639,9 @@ for sort_mode in COURSES_SORT_MODES:
 
 @app.route('/api/course-search', methods=['GET'])
 # TODO(mack): find a better name for function
+# TODO(mack): a potential problem with a bunch of the sort modes is if the
+# value they are sorting by changes in the objects. this can lead to missing
+# or duplicate contests being passed to front end
 def search_courses():
     # TODO(mack): create enum of sort options
     # num_friends, num_ratings, overall, interest, easiness
@@ -645,9 +649,12 @@ def search_courses():
     request = flask.request
     keywords = request.values.get('keywords')
     sort_mode = request.values.get('sort_mode', 'num_ratings')
-    direction = int(request.values.get('direction', pymongo.DESCENDING))
+    default_direction = COURSES_SORT_MODES_BY_VALUE[sort_mode]['direction']
+    direction = int(request.values.get('direction', default_direction))
     count = int(request.values.get('count', 10))
     offset = int(request.values.get('offset', 0))
+
+    current_user = get_current_user()
 
     if keywords:
         keywords = re.sub('\s+', ' ', keywords)
@@ -656,7 +663,6 @@ def search_courses():
         def regexify_keywords(keyword):
             keyword = keyword.lower()
             return re.compile('^%s' % keyword)
-            #return '^%s' % keyword
 
         keywords = map(regexify_keywords, keywords)
 
@@ -665,19 +671,61 @@ def search_courses():
     else:
         unsorted_courses = m.Course.objects()
 
-    sort_options = COURSES_SORT_MODES_BY_VALUE[sort_mode]
-    sort_instr = ''
-    if direction < 0:
-        sort_instr = '-'
-    sort_instr += sort_options['field']
+    if sort_mode == 'friends':
 
-    sorted_courses = unsorted_courses.order_by(sort_instr)
-    limited_courses = sorted_courses.skip(offset).limit(count)
+        # TODO(mack): should only do if user is logged in
+        friends = m.User.objects(id__in=current_user.friend_ids).only(
+                'course_history')
+        # TODO(mack): need to majorly optimize this
+        num_friends_by_course = {}
+        for friend in friends:
+            for course_id in friend.course_ids:
+                if not course_id in num_friends_by_course:
+                    num_friends_by_course[course_id] = 0
+                num_friends_by_course[course_id] += 1
+
+        existing_courses = m.Course.objects(
+                id__in=num_friends_by_course.keys()).only('id')
+        existing_course_ids = set(c.id for c in existing_courses)
+        for course_id in num_friends_by_course.keys():
+            if course_id not in existing_course_ids:
+                del num_friends_by_course[course_id]
+
+        sorted_course_count_tuples = sorted(
+            num_friends_by_course.items(),
+            key=lambda (_, total): total,
+            reverse=direction < 0,
+        )[offset:offset+count]
+
+        sorted_course_ids = [course_id for (course_id, total)
+                in sorted_course_count_tuples]
+
+        unsorted_limited_courses = m.Course.objects(id__in=sorted_course_ids)
+
+        limited_courses_by_id = {}
+        for course in unsorted_limited_courses:
+            limited_courses_by_id[course.id] = course
+
+        limited_courses = []
+        for course_id in sorted_course_ids:
+            limited_courses.append(limited_courses_by_id[course_id])
+
+    else:
+        sort_options = COURSES_SORT_MODES_BY_VALUE[sort_mode]
+        sort_instr = ''
+        if direction < 0:
+            sort_instr = '-'
+        sort_instr += sort_options['field']
+
+        sorted_courses = unsorted_courses.order_by(sort_instr)
+        limited_courses = sorted_courses.skip(offset).limit(count)
+
+    has_more = len(limited_courses) == count
     course_objs = map(clean_course, limited_courses)
 
     user_objs = []
     user_course_objs = []
-    current_user = get_current_user()
+
     if current_user:
         course_ids = [c.id for c in limited_courses]
         user_courses = m.UserCourse.objects(
@@ -687,8 +735,6 @@ def search_courses():
 
         users = m.User.objects(id__in=[uc.user_id for uc in user_courses])
         user_objs = map(clean_user, users)
-
-    has_more = len(course_objs) == count
 
     return util.json_dumps({
         'user_objs': user_objs,
