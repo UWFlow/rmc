@@ -55,6 +55,10 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
     getNameAt: function(index) {
       return this.at(index).get('name');
+    },
+
+    getRating: function(name) {
+      return this.where({ name: name })[0];
     }
 
   });

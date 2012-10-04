@@ -3,6 +3,7 @@ import re
 
 import professor
 import rating
+from rmc.shared import util
 
 class Course(me.Document):
     meta = {
@@ -58,6 +59,12 @@ class Course(me.Document):
 
         super(Course, self).save(*args, **kwargs)
 
+    def get_ratings(self):
+        return {
+            'interest': self.interest.to_dict(),
+            'usefulness': self.usefulness.to_dict(),
+            'easiness': self.easiness.to_dict(),
+        }
 
     def to_dict(self, expanded=False):
         """Returns information about a course to be sent down an API.
@@ -89,10 +96,7 @@ class Course(me.Document):
             #'availWinter': bool(int(course['availWinter'])),
             # TODO(mack): create user models for friends
             #'friends': [1647810326, 518430508, 541400376],
-            'ratings': {
-                'easiness': self.easiness.to_dict(),
-                'interest': self.interest.to_dict(),
-            },
+            'ratings': util.dict_to_list(self.get_ratings()),
             'overall': self.overall.to_dict(),
             'professors': get_professors(self),
         }

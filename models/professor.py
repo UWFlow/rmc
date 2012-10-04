@@ -4,6 +4,7 @@ import redis
 
 import rating
 import rmc.shared.constants as c
+from rmc.shared import util
 
 # TODO(mack): remove this from here?
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
@@ -76,7 +77,7 @@ class Professor(me.Document):
         }
         ratings_dict['overall'] = rating.get_overall_rating(
                 ratings_dict.values())
-        return ratings_dict
+        return util.dict_to_list(ratings_dict)
 
     # TODO(david): This should go on ProfCourse
     def get_ratings_for_course(self, course_id):
@@ -93,4 +94,4 @@ class Professor(me.Document):
         rating_dict['overall'] = rating.get_overall_rating(
                 rating_dict.values())
 
-        return rating_dict
+        return util.dict_to_list(rating_dict)

@@ -13,10 +13,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         ' everything in between. Become enthralled in the wonderful' +
         ' world of astronomy.',
       ratings: [{
-        name: 'interest',
-        count: 10,
-        total: 7
-      }, {
         name: 'usefulness',
         count: 0,
         total: 0
@@ -39,11 +35,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     },
 
     initialize: function(attributes) {
+      // TODO(david): Be consistent in the way we return ratings from the server
       if (attributes.ratings) {
-        var ratingsArray = _.map(attributes.ratings, function(rating, name) {
-          return _.extend(rating, { name: name });
-        });
-        this.set('ratings', new ratings.RatingCollection(ratingsArray));
+        this.set('ratings', new ratings.RatingCollection(attributes.ratings));
       }
     },
 
@@ -62,13 +56,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       this.courseModel = attributes.courseModel;
       this.userCourse = this.courseModel.get('user_course');
 
-      // TODO(mack): do this in a cleaner way
-      var interest = this.courseModel.get('ratings').find(function(rating) {
-        return rating.get('name') === 'interest';
-      });
-      this.ratingBoxView = new ratings.RatingBoxView({
-        model: interest
-      });
+      var interest = this.courseModel.get('ratings').getRating('interest');
+      this.ratingBoxView = new ratings.RatingBoxView({ model: interest });
 
       if (this.userCourse) {
         this.votingView = new ratings.RatingChoiceView({

@@ -479,7 +479,6 @@ def course_page(course_id):
     tip_objs = [tip_from_uc(uc) for uc in ucs if
             len(uc.course_review.comment) > MIN_REVIEW_LENGTH]
 
-    # TODO(david): Protect against the </script> injection XSS hack
     return flask.render_template('course_page.html',
         page_script='course_page.js',
         course_obj=course_obj,
@@ -841,12 +840,6 @@ def user_course():
 ###############################################################################
 # Helper functions
 
-# TODO(david): This fn has a weird signature
-def clean_ratings(rating_dict):
-    update_with_name = lambda ar, name: dict(ar.to_dict(), **{ 'name': name})
-    return [update_with_name(v, k) for k, v in rating_dict.iteritems()]
-
-
 def clean_user_course(user_course):
 
     user_course_dict = {}
@@ -892,18 +885,16 @@ def clean_review_author(author):
 
 def clean_professor(professor, course_id=None):
     # TODO(david): Get department, contact info
-    ratings_cleaned = clean_ratings(professor.get_ratings())
 
     # TODO(david): Generic reviews for prof? Don't need that yet
     prof = {
         'id': professor.id,
         'name': professor.name,
-        'ratings': ratings_cleaned
+        'ratings': professor.get_ratings(),
     }
 
     if course_id:
-        course_ratings = professor.get_ratings_for_course(course_id)
-        prof['course_ratings'] = clean_ratings(course_ratings)
+        prof['course_ratings'] = professor.get_ratings_for_course(course_id)
 
         course_reviews = m.user_course.get_reviews_for_course_prof(course_id,
                 professor.id)
@@ -949,7 +940,7 @@ def clean_course(course, expanded=False):
         friend_user_courses = m.UserCourse.objects(
             course_id=course.id, user_id__in=current_user.friend_ids).only('id')
 
-    return {
+    ret = {
         'id': course.id,
         'code': course.code,
         'name': course.name,
@@ -969,6 +960,9 @@ def clean_course(course, expanded=False):
         'user_course_id': user_course_id,
         'friend_user_course_ids': [fuc.id for fuc in friend_user_courses],
     }
+
+    print ret
+    return ret
 
 
 def clean_user(user):
