@@ -5,9 +5,9 @@
   <% ratings.each(function(rating) { %>
     <div class="row-fluid">
       <div class="rating-name span3">
-        <%- rating.getDisplayName() %>
+        <%- capitalize(rating.getDisplayName()) %>
       </div>
-      <div class="rating-bar-span span8">
+      <div class="rating-bar-span span8" title="<%- rating.getLikes() %> of <%- rating.get('count') %> think this was <%- rating.getDisplayName() %>">
         <% if (!editOnly) { %>
           <div class="shown-rating">
             <div class="rating-progress progress <%- rating.getClass() %>">

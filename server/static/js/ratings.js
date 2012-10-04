@@ -3,6 +3,16 @@ define(
 'util', 'ext/bootstrap'],
 function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
+  // TODO(david): Maybe this should be in util
+  var adjectiveMap = {
+    'interest': 'Liked it',
+    'easiness': 'easy',
+    'usefulness': 'useful',
+    'clarity': 'clear',
+    'passion': 'engaging',
+    '': ''
+  };
+
   var NUM_SEGMENTS = 5;
   // TODO(david): Refactor all the row-fluid to use an actual class name
 
@@ -16,7 +26,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     },
 
     getDisplayName: function() {
-      return util.capitalize(this.get('name'));
+      return adjectiveMap[this.get('name')];
     },
 
     getAverage: function() {
@@ -28,7 +38,8 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     },
 
     getDisplayRating: function() {
-      return util.getDisplayRating(this.get('rating'), this.get('count'));
+      return util.getDisplayRating(this.get('rating'), this.get('count')) +
+          (this.get('count') ? '%' : '');
     },
 
     // TODO(david): This shouldn't be here. Refactor this away.
@@ -89,6 +100,8 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
         editOnly: this.editOnly,
         readOnly: this.readOnly
       }));
+
+      this.$('[title]').tooltip();
 
       // Set the width here instead of in the template for animations
       this.$('.shown-rating .bar').each(function(i, elem) {
@@ -175,14 +188,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     },
 
     getAdjective: function() {
-      return {
-        'interest': 'Liked it',
-        'easiness': 'easy',
-        'usefulness': 'useful',
-        'clarity': 'clear',
-        'passion': 'engaging',
-        '': ''
-      }[this.get('name')];
+      return adjectiveMap[this.get('name')];
     }
   });
 
