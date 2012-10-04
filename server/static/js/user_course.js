@@ -82,7 +82,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
       return this.get('user').get('program_name');
     },
 
-    getInterestRating: function() {
+    getOverallRating: function() {
       return this.get('course_review').ratings.find(function(rating) {
         return rating.get('name') === 'interest';
       });

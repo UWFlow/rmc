@@ -37,7 +37,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     initialize: function(attributes) {
       // TODO(david): Be consistent in the way we return ratings from the server
       if (attributes.ratings) {
-        this.set('ratings', new ratings.RatingCollection(attributes.ratings));
+        var isOverall = function(rating) { return rating.name === 'interest'; };
+        var filteredRatings = _.reject(attributes.ratings, isOverall);
+        var overallRating = _.find(attributes.ratings, isOverall);
+
+        this.set('ratings', new ratings.RatingCollection(filteredRatings));
+        this.set('overall', new ratings.RatingModel(overallRating));
       }
     },
 
@@ -45,6 +50,15 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       return _.find(this.get('professors'), function(prof) {
         return prof.id === id;
       });
+    },
+
+    getOverallRating: function() {
+      if (this.has('overall')) {
+        return this.get('overall');
+      } else {
+        var isOverall = function(rating) { return rating.name === 'interest'; };
+        return _.find(attributes.ratings, isOverall);
+      }
     }
   });
 
@@ -58,12 +72,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       this.canShowAddReview =
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
 
-      var interest = this.courseModel.get('ratings').getRating('interest');
-      this.ratingBoxView = new ratings.RatingBoxView({ model: interest });
+      var overallRating = this.courseModel.getOverallRating();
+      this.ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
 
       if (this.canShowAddReview && this.userCourse) {
         this.votingView = new ratings.RatingChoiceView({
-          model: this.userCourse.getInterestRating(),
+          model: this.userCourse.getOverallRating(),
           voting: true,
           className: 'voting'
         });

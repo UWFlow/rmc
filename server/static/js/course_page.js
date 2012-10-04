@@ -11,13 +11,8 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
   var courseModel = course.CourseCollection.getFromCache(courseObj.id);
   var userCourse = courseModel.get('user_course');
 
-  // TODO(mack): do this in a cleaner way
-  var interest = courseModel.get('ratings').find(function(rating) {
-    return rating.get('name') === 'interest';
-  });
-  var ratingBoxView = new ratings.RatingBoxView({
-    model: interest
-  });
+  var overallRating = courseModel.getOverallRating();
+  var ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
   $('#rating-box-container').html(ratingBoxView.render().el);
 
   var courseInnerView = new course.CourseInnerView({

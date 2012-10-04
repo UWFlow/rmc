@@ -95,8 +95,6 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
         $(elem).css('width', ratings.at(i).getPercent() + '%');
       });
 
-      //this.setUserRatings();
-
       return this;
     },
 
