@@ -6,14 +6,12 @@
 
   margin-bottom: 10px;
   @include box-shadow(0 0 0 rgba(0, 0, 0, 0.0));
-  @include transition(all 0.2s ease-out);
 
   &:hover {
     // TODO(david): More crap on hover
     @include box-shadow(0 0 10px rgba(0, 0, 0, 0.1));
     // TODO(david): Should not hardcode #F7F7F7
     @include background(linear-gradient(top, #FCFCFC, #F6F6F6));
-    @include transition(all 0.2s ease-out);
     border-color: darken($wellBorderColor, 10%);
   }
 
@@ -94,11 +92,9 @@
 
   .sample-friends {
     opacity: 0.7;
-    @include transition(all 0.2s ease-out);
   }
 
   &:hover .sample-friends {
-    @include transition(all 0.2s ease-out);
     opacity: 1.0;
   }
 
