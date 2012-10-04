@@ -76,6 +76,13 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       // profile page
       this.profileUserCourse = this.courseModel.get('profile_user_course');
 
+      if (this.userCourse) {
+        // TODO(mack): ensure that save actually is save of review
+        this.userCourse.bind('sync', _.bind(function(model, response, options) {
+          this.onSaveUserReview();
+        }, this));
+      }
+
       this.otherProfile = this.userCourse && this.profileUserCourse &&
         this.userCourse.id !== this.profileUserCourse.id;
 
@@ -105,6 +112,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
           friendUserCourses: friendUserCourses
         });
       }
+    },
+
+    onSaveUserReview: function() {
+      this.$('.current-user-ribbon').addClass('reviewed');
     },
 
     render: function() {

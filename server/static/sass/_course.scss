@@ -64,6 +64,7 @@
 
     .current-user-ribbon, .profile-user-ribbon {
       display: inline-block;
+      margin-top: -1px;
       background-repeat: no-repeat;
       background-position: 0 -15px;
       width: $ribbon-width;
