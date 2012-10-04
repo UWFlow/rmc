@@ -223,21 +223,23 @@ def profile(profile_user_id):
     # PART TWO - DATA FETCHING
 
     # Get the mutual course ids of friends of profile user
-    mutual_course_ids_by_friend = profile_user.get_mutual_course_ids(r)
+    mutual_course_ids_by_friend = {}
+    if own_profile:
+        mutual_course_ids_by_friend = profile_user.get_mutual_course_ids(r)
 
     def get_friend_course_ids_in_term(friend_ids, term_id):
         user_courses = m.UserCourse.objects(
                 term_id=term_id, user_id__in=friend_ids).only(
                     'user_id', 'course_id')
 
-        course_ids_by_friend = {}
+        last_term_course_ids_by_friend = {}
         for uc in user_courses:
-            course_ids_by_friend.setdefault(
+            last_term_course_ids_by_friend.setdefault(
                     uc.user_id, []).append(uc.course_id)
-        return course_ids_by_friend
+        return last_term_course_ids_by_friend
 
     # Get the course ids of last term courses of friends of profile user
-    course_ids_by_friend = get_friend_course_ids_in_term(
+    last_term_course_ids_by_friend = get_friend_course_ids_in_term(
             profile_user.friend_ids, LAST_TERM_ID)
 
     # Get the user courses of profile user
@@ -277,19 +279,19 @@ def profile(profile_user_id):
     # Fetch remainining courses that need less data. This will be mutual
     # and last term courses for profile user's friends
     friend_course_ids = set()
-    for course_ids in mutual_course_ids_by_friend.values():
-        friend_course_ids = friend_course_ids.union(course_ids)
-    for course_ids in course_ids_by_friend.values():
-        friend_course_ids = friend_course_ids.union(course_ids)
-    friend_course_ids = friend_course_ids - profile_course_ids
-    friend_courses = m.Course.objects(
-            id__in=friend_course_ids).only('id', 'name')
+    friend_courses = []
+    if own_profile:
+        for course_ids in mutual_course_ids_by_friend.values():
+            friend_course_ids = friend_course_ids.union(course_ids)
+        for course_ids in last_term_course_ids_by_friend.values():
+            friend_course_ids = friend_course_ids.union(course_ids)
+        friend_course_ids = friend_course_ids - profile_course_ids
+        friend_courses = m.Course.objects(
+                id__in=friend_course_ids).only('id', 'name')
 
-    # Fetch simplified information for friends of both the profile user
-    # (for mutual courses and last term courses on friend sidebar) as
-    # well as current (for display friend's who've taken same course)
-    all_friend_ids = set(profile_user.friend_ids + current_user.friend_ids)
-    friends = m.User.objects(id__in=all_friend_ids).only(
+    # Fetch simplified information for friends of profile user
+    # (for friend sidebar)
+    friends = m.User.objects(id__in=profile_user.friend_ids).only(
             'id', 'fbid', 'first_name', 'last_name')
 
     # PART THREE - TRANSFORM DATA TO DICTS
@@ -312,9 +314,10 @@ def profile(profile_user_id):
         if fuc.course_id in transcript_course_ids:
             friend_user_courses_by_course.setdefault(
                     fuc.course_id, []).append(fuc)
-    for course_id, fucs in friend_user_courses_by_course.items():
-        course_dict = course_dicts[course_id]
-        course_dict['friend_user_course_ids'] = [fuc.id for fuc in fucs]
+    if own_profile:
+        for course_id, fucs in friend_user_courses_by_course.items():
+            course_dict = course_dicts[course_id]
+            course_dict['friend_user_course_ids'] = [fuc.id for fuc in fucs]
 
 
     def filter_course_ids(course_ids):
@@ -326,13 +329,16 @@ def profile(profile_user_id):
     last_term = m.Term(id=LAST_TERM_ID)
     for friend in friends:
         user_dict = friend.to_dict()
-        user_dict.update({
-            'last_term_name': last_term.name,
-            'last_term_course_ids': filter_course_ids(
-                course_ids_by_friend.get(friend.id, [])),
-            'mutual_course_ids': filter_course_ids(
-                mutual_course_ids_by_friend.get(friend.id, [])),
-        })
+
+        if own_profile:
+            user_dict.update({
+                'last_term_name': last_term.name,
+                'last_term_course_ids': filter_course_ids(
+                    last_term_course_ids_by_friend.get(friend.id, [])),
+                'mutual_course_ids': filter_course_ids(
+                    mutual_course_ids_by_friend.get(friend.id, [])),
+            })
+
         user_dicts[friend.id] = user_dict
 
     # Convert profile user to dict

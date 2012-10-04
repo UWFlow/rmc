@@ -55,11 +55,13 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     initialize: function(attributes) {
       this.courseModel = attributes.courseModel;
       this.userCourse = this.courseModel.get('user_course');
+      this.canShowAddReview =
+        'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
 
       var interest = this.courseModel.get('ratings').getRating('interest');
       this.ratingBoxView = new ratings.RatingBoxView({ model: interest });
 
-      if (this.userCourse) {
+      if (this.canShowAddReview && this.userCourse) {
         this.votingView = new ratings.RatingChoiceView({
           model: this.userCourse.getInterestRating(),
           voting: true,
@@ -69,7 +71,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
       this.courseInnerView = new CourseInnerView({
         courseModel: this.courseModel,
-        userCourse: this.userCourse
+        userCourse: this.userCourse,
+        canShowAddReview: this.canShowAddReview
       });
 
       var friendUserCourses = this.courseModel.get('friend_user_courses');
@@ -86,7 +89,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         user_course: this.userCourse && this.userCourse.toJSON()
       }));
 
-      if (this.userCourse) {
+      if (this.canShowAddReview && this.userCourse) {
         var termTookName = this.userCourse.get('term_name');
         if (termTookName) {
           this.$('.taken-ribbon').tooltip({
@@ -163,6 +166,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     initialize: function(attributes) {
       this.courseModel = attributes.courseModel;
       this.userCourse = attributes.userCourse;
+      this.canShowAddReview =
+        'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
 
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
@@ -170,7 +175,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
         readOnly: true
       });
 
-      if (this.userCourse && pageData.currentUserId) {
+      if (this.canShowAddReview && this.userCourse) {
         // TODO(david): Get user review data, and don't show or show altered if no
         //     user or user didn't take course.
         // TODO(mack): remove circular dependency
@@ -186,7 +191,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       this.$el.html(this.template({
         more_details: moreDetails,
         course: this.courseModel,
-        user_course: this.userCourse
+        user_course: this.userCourse,
+        can_show_add_review: this.canShowAddReview
       }));
 
       if (this.userCourseView) {
@@ -357,10 +363,14 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       this.courses.bind('add', _.bind(this.addCourse, this));
       this.courses.bind('reset', _.bind(this.render, this));
       this.courseViews = [];
+
+      this.canShowAddReview =
+        'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
     },
 
     addCourse: function(course) {
       var courseView = new CourseView({
+        canShowAddReview: this.canShowAddReview,
         courseModel: course,
         tagName: 'li'
       });

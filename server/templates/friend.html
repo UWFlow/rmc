@@ -21,7 +21,7 @@
   <a class="friend-name" href=<%- friend.profile_url %>>
     <%- friend.name %>
   </a>
-  <% if (mutual_courses.length > 0) { %>
+  <% if (own_profile && mutual_courses.length > 0) { %>
     <a href="#" class="mutual-courses">
       <%- mutual_courses.length %>
       mutual <%- pluralize(mutual_courses.length, 'course', 'courses') %>

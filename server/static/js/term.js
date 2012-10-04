@@ -21,6 +21,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
 
     initialize: function(options) {
       this.termModel = options.termModel;
+      this.ownProfile = options.ownProfile;
       this.courses = this.termModel.get('courses');
 
       this.expand = options.expand;
@@ -34,7 +35,8 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
         _.template($('#term-tpl').html(), attributes));
 
       this.courseCollectionView = new _course.CourseCollectionView({
-        courses: this.courses
+        courses: this.courses,
+        canShowAddReview: this.ownProfile
       });
       this.$el.find('.course-collection-placeholder').replaceWith(
         this.courseCollectionView.render().el);
@@ -87,6 +89,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
 
     initialize: function(attributes) {
       this.termCollection = attributes.termCollection;
+      this.ownProfile = attributes.ownProfile;
       this.termViews = [];
     },
 
@@ -97,6 +100,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
         var termView = new TermView({
           tagName: 'li',
           termModel: termModel,
+          ownProfile: this.ownProfile,
           expand: expand
         });
         this.$el.append(termView.render().el);

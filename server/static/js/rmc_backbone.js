@@ -213,9 +213,14 @@ function(Backbone, $, _) {
 
     initialize: function(options) {
       this.viewCallback = options.viewCallback;
+      this.itemAttributes = options.itemAttributes;
     },
 
-    createItemView: function(model) {
+    /**
+     * Along with the model, an additional map of attributes may be passed
+     * to the individual items
+     */
+    createItemView: function(model, itemAttributes) {
       throw "Not implemented";
     },
 
@@ -225,7 +230,7 @@ function(Backbone, $, _) {
     render: function() {
       this.$el.empty();
       this.collection.each(function(model) {
-        var view = this.createItemView(model);
+        var view = this.createItemView(model, this.itemAttributes);
         view.tagName = 'section';
         // TODO(david): Append all at once for faster DOM rendering
         this.$el.append(view.render().el);

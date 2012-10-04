@@ -36,7 +36,8 @@ function($, _, _s, transcript, term, course, friend, util, user, uc) {
 
     // Add the parsed term and course info to the page for live preview
     var termCollectionView = new term.TermCollectionView({
-      termCollection: termCollection
+      termCollection: termCollection,
+      ownProfile: profileUser.get('own_profile')
     });
     $('#term-collection-container').html(termCollectionView.render().el).show();
 

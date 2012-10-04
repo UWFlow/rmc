@@ -8,6 +8,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
 
     initialize: function(attributes) {
       this.friendModel = attributes.friendModel;
+      this.profileUser = attributes.profileUser;
       this.mutualCourses = this.friendModel.get('mutual_courses');
     },
 
@@ -15,7 +16,8 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
       this.$el.html(
         _.template($('#friend-tpl').html(), {
           friend: this.friendModel,
-          mutual_courses: this.mutualCourses
+          mutual_courses: this.mutualCourses,
+          own_profile: this.profileUser.get('own_profile')
         }));
 
       this.$('.friend-name')
@@ -131,8 +133,11 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
     tagName: 'ol',
     className: 'friend-collection',
 
-    createItemView: function(model) {
-      return new FriendView({ friendModel: model });
+    createItemView: function(model, itemAttributes) {
+      return new FriendView({
+        friendModel: model,
+        profileUser: itemAttributes.profileUser
+      });
     }
   });
 
@@ -150,7 +155,8 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
         own_profile: this.profileUser.get('own_profile')
       }));
       var collectionView = new FriendCollectionView({
-        collection: this.friendCollection
+        collection: this.friendCollection,
+        itemAttributes: { profileUser: this.profileUser }
       });
       this.$('.friend-collection-placeholder').replaceWith(
         collectionView.render().$el);
