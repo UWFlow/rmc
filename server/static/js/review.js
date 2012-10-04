@@ -29,8 +29,8 @@ function(RmcBackbone, $, _, comment, ratings) {
       this.commentView = new comment.CommentView({
         model: this.model.get('comment')
       });
-      this.ratingsView = new ratings.RatingsView({
-        ratings: this.model.get('ratings'),
+      this.ratingsView = new ratings.RatingChoiceCollectionView({
+        collection: this.model.get('ratings'),
         readOnly: true
       });
     },

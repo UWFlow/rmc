@@ -201,10 +201,20 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
       if (options.voting) {
         this.template = _.template($('#voting-tpl').html());
       }
+      if (options.readOnly) {
+        this.readOnly = true;
+      }
     },
 
     render: function() {
-      this.$el.html(this.template({ 'name': this.model.getAdjective() }));
+      this.$el.html(this.template({
+        'name': adjectiveMap[this.model.get('name')],
+        'read_only': this.readOnly
+      }));
+      if (this.readOnly) {
+        this.$('.btn').prop('disabled', true);
+      }
+
       this.setStateFromRating();
       if (this.options.voting) {
         this.$('.btn').tooltip();
@@ -217,6 +227,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     },
 
     onClick: function(evt) {
+      if (this.readOnly) return;
       var $btn = $(evt.currentTarget);
       var rating = this.model.get('rating');
       var chosen = $btn.hasClass('yes-btn') ? 1 : 0;
@@ -248,7 +259,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
   var RatingChoiceCollectionView = RmcBackbone.CollectionView.extend({
     createItemView: function(model) {
-      return new RatingChoiceView({ model: model });
+      return new RatingChoiceView(_.extend({ model: model }, this.options));
     }
   });
 

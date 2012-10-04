@@ -51,7 +51,7 @@
 {% endcall %}
 
 {% call macros.us_template('binary-rating-tpl') %}
-<div class="row-fluid">
+<div class="row-fluid <%- read_only ? 'read-only' : 'editable' %>">
   <span class="span5 choice-name"><%- capitalize(name) %>?</span>
   <span class="span7 btn-group rating-choices">
     <button type="button" class="btn yes-btn">
