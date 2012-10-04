@@ -1,39 +1,21 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('ratings-tpl') %}
-<div class="ratings <%- editOnly ? 'edit-only' : '' %> <%- readOnly ? 'read-only' : '' %>">
+<div class="ratings">
   <% ratings.each(function(rating) { %>
     <div class="row-fluid">
       <div class="rating-name span3">
         <%- capitalize(rating.getDisplayName()) %>
       </div>
       <div class="rating-bar-span span8" title="<%- rating.getLikes() %> of <%- rating.get('count') %> think this was <%- rating.getDisplayName() %>">
-        <% if (!editOnly) { %>
-          <div class="shown-rating">
-            <div class="rating-progress progress <%- rating.getClass() %>">
-              <div class="rating-bar bar active" style="width: 0%;"></div>
-            </div>
+        <div class="shown-rating">
+          <div class="rating-progress progress <%- rating.getClass() %>">
+            <div class="rating-bar bar active" style="width: 0%;"></div>
           </div>
-        <% } %>
-
-        <% if (!readOnly) { %>
-          <div class="input-rating <%- editOnly ? '' : 'hide-initial' %>">
-            {# TODO(david): 5 should not be hardcoded #}
-            <% for (var i = 0; i < 5; ++i) { %>
-              <div class="rating-progress progress <%- rating.getClass() %>">
-                <div class="rating-bar active"></div>
-              </div>
-            <% } %>
-          </div>
-        <% } %>
-
-      </div>
-      <% if (!editOnly) { %>
-        <div class="shown-rating-num rating-num-span span1">
-          <%- rating.getDisplayRating() %>
         </div>
-      <% } %>
-      <div class="hide-initial input-rating-num rating-num-span span1">
+      </div>
+      <div class="shown-rating-num rating-num-span span1">
+        <%- rating.getDisplayRating() %>
       </div>
     </div>
     <% }); %>

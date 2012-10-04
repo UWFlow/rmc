@@ -34,67 +34,6 @@ $cell-height: 28px;
     }
   }
 
-  // TODO(david): Make it so only hovering over bar shows input
-  &:hover .input-rating {
-    display: block;
-  }
-
-  &:hover .shown-rating {
-    display: none;
-  }
-
-  &.read-only:hover .shown-rating {
-    display: block;
-  }
-
-  &:hover .shown-rating-num {
-    display: none;
-  }
-
-  &.read-only:hover .shown-rating-num {
-    display: block;
-  }
-
-  .input-rating-num{
-    display: none;
-  }
-  &:hover .input-rating-num {
-    display: block;
-  }
-  &.read-only:hover .input-rating-num {
-    display: none;
-  }
-
-  // TODO(david): Needs refactoring to be closer to other declarations
-  // TODO(david): needs to be made the same length as normal bar
-  .row-fluid .input-rating {
-    .rating-progress.progress {
-      display: inline-block;
-      width: 18%;
-      -webkit-border-radius: none !important;
-      @include border-radius(0);
-      // TODO(david): Transitions on mouse-over
-      .rating-bar.bar {
-        width: 100%;
-        @include transition(none);
-        @include transition(opacity 0.3s ease-out);
-        @include border-radius(0);
-      }
-    }
-    .rating-progress:last-child {
-      @include border-radius(0 4px 4px 0);
-      .rating-bar.bar {
-        @include border-radius(0 4px 4px 0);
-      }
-    }
-  }
-
-  // TODO(david): REFACTORRRRRR
-  .row-fluid .input-rating:hover .rating-progress .rating-bar.bar {
-    opacity: 0.4;
-    cursor: pointer;
-  }
-
   .row-fluid .rating-num-span {
     @include force-height($cell-height);
     font-weight: lighter;
