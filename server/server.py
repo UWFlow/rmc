@@ -833,6 +833,8 @@ def user_course():
     if course_id is None or term_id is None:
         logging.error("/api/user/course got course_id (%s) and term_id (%s)" %
             (course_id, term_id))
+        # TODO(david): Perhaps we should have a request error function that
+        # returns a 400
         raise ApiError('No course_id or term_id set')
 
     # Fetch existing UserCourse
@@ -843,9 +845,11 @@ def user_course():
     ).first()
 
     if uc is None:
-        logging.error("/api/user/course User course not found for " +
+        logging.error("/api/user/course User course not found for "
             "user_id=%s course_id=%s term_id=%s" %
             (user.id, course_id, term_id))
+        # TODO(david): Perhaps we should have a request error function that
+        # returns a 400
         raise ApiError('No user course found')
 
     # Update privacy settings
@@ -889,13 +893,15 @@ def user_course():
 
     if uc_data.get('course_review'):
         # New course review data
-        uc.course_review.update_review_with_date_and_dict(
-            now, **uc_data['course_review'])
+        uc_data['course_review']['comment_date'] = now
+        uc.course_review.update_review(
+            **uc_data['course_review'])
 
     if uc_data.get('professor_review'):
         # New prof review data
-        uc.professor_review.update_review_with_date_and_dict(
-            now, **uc_data['professor_review'])
+        uc_data['professor_review']['comment_date'] = now
+        uc.professor_review.update_review(
+            **uc_data['professor_review'])
 
     uc.save()
 

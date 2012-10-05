@@ -1,3 +1,4 @@
+from datetime import datetime
 import mongoengine as me
 import logging
 
@@ -8,9 +9,16 @@ def update_kwargs_from_ratings(kwargs):
         kwargs.update({ d['name']: d['rating'] for d in kwargs['ratings'] })
         del kwargs['ratings']
 
-def update_comment_and_date(review_obj, comment, date):
+def update_comment_and_date(review_obj, **kwargs):
+    comment = kwargs.get('comment')
     if comment is not None and comment != review_obj.comment:
         review_obj.comment = comment
+
+        date = kwargs.get('comment_date')
+        if date is None:
+            logging.warn("CourseReview: update_comment_and_date comment_date"
+                "not set. Defaulting to current time")
+            date = datetime.now()
         review_obj.comment_date = date
 
 class CourseReview(me.EmbeddedDocument):
@@ -37,7 +45,7 @@ class CourseReview(me.EmbeddedDocument):
             'rating': self.interest,
         }]
 
-    def update_ratings_with_dict(self, **kwargs):
+    def update_ratings(self, **kwargs):
         if 'ratings' in kwargs:
             new_values = { d['name']: d['rating'] for d in kwargs['ratings'] }
             self.old_interest = self.interest
@@ -48,13 +56,13 @@ class CourseReview(me.EmbeddedDocument):
             self.interest = new_values.get(c.COURSE_REVIEW_FIELD_INTEREST)
             self.usefulness = new_values.get(c.COURSE_REVIEW_FIELD_USEFULNESS)
         else:
-            logging.warn("CourseReview: update_ratings_with_dict without " +
-                "ratings in dict");
+            logging.warn("CourseReview: update_ratings without ratings in "
+                "dict");
 
     # TODO(Sandy): Remove duplicate code with ProfessorReview?
-    def update_review_with_date_and_dict(self, date, **kwargs):
-        self.update_ratings_with_dict(**kwargs)
-        update_comment_and_date(self, kwargs.get('comment'), date)
+    def update_review(self, **kwargs):
+        self.update_ratings(**kwargs)
+        update_comment_and_date(self, **kwargs)
 
     def update_course_aggregate_ratings(self, cur_course):
         # Update associated aggregate ratings
@@ -89,7 +97,7 @@ class ProfessorReview(me.EmbeddedDocument):
             'rating': self.passion,
         }]
 
-    def update_ratings_with_dict(self, **kwargs):
+    def update_ratings(self, **kwargs):
         if 'ratings' in kwargs:
             new_values = { d['name']: d['rating'] for d in kwargs['ratings'] }
             self.old_clarity = self.clarity
@@ -98,12 +106,12 @@ class ProfessorReview(me.EmbeddedDocument):
             self.clarity = new_values.get(c.PROFESSOR_REVIEW_FIELD_CLARITY)
             self.passion = new_values.get(c.PROFESSOR_REVIEW_FIELD_PASSION)
         else:
-            logging.warn("ProfessorReview: update_ratings_with_dict without " +
-                "ratings in dict");
+            logging.warn("ProfessorReview: update_ratings without ratings in"
+                "dict");
 
-    def update_review_with_date_and_dict(self, date, **kwargs):
-        self.update_ratings_with_dict(**kwargs)
-        update_comment_and_date(self, kwargs.get('comment'), date)
+    def update_review(self, **kwargs):
+        self.update_ratings(**kwargs)
+        update_comment_and_date(self, **kwargs)
 
     def update_professor_aggregate_ratings(self, cur_professor):
         # Update associated aggregate ratings
