@@ -199,8 +199,7 @@ def profile(profile_user_id):
     # TODO(mack): for dict maps, use .update() rather than overwriting to
     # avoid subtle overwrites by data that has fields filled out
 
-    # TODO(mack): remove hardcode of LAST_TERM_ID
-    LAST_TERM_ID = '2012_09'
+    LAST_TERM_ID = util.get_current_term_id()
 
     # PART ONE - VALIDATION
 
@@ -1032,8 +1031,7 @@ def clean_user(user):
     for uc in m.UserCourse.objects(id__in=user.course_history).only('course_id', 'term_id'):
         course_ids.append(uc.course_id)
         # TODO(Sandy): Handle courses that we have from UserCourse, but not in Course
-        # TODO(Sandy): Don't hardcore this. REMEMBER TO DO THIS BEFORE 2013_01
-        if uc.term_id == '2012_09':
+        if uc.term_id == util.get_current_term_id():
             if m.Course.objects.only('id').with_id(uc.course_id):
                 last_term_course_ids.append(uc.course_id)
 
