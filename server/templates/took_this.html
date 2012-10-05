@@ -1,10 +1,28 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('took-this-sidebar-tpl') %}
-<h3 class="num-friends">
-  Taken by <%- num_friends %> <%- pluralize(num_friends, 'friend', 'friends') %>
-</h3>
-<div class="took-this-collection-placeholder"></div>
+<!-- TODO(sandy): wording for past present future -->
+<% if (num_friends_current > 0) { %>
+  <h3 class="num-friends">
+    <%- num_friends_current %>
+    <%- pluralize(num_friends_current, 'friend', 'friends') %> taking this
+  </h3>
+  <div class="took-this-current-term-collection-placeholder"></div>
+<% } %>
+<% if (num_friends_future > 0) { %>
+  <h3 class="num-friends">
+    <%- num_friends_future %>
+    <%- pluralize(num_friends_future, 'friend', 'friends') %> plan to take this
+  </h3>
+  <div class="took-this-future-term-collection-placeholder"></div>
+<% } %>
+<% if (num_friends_past > 0) { %>
+  <h3 class="num-friends">
+    <%- num_friends_past %>
+    <%- pluralize(num_friends_past, 'friend', 'friends') %> took this
+  </h3>
+  <div class="took-this-past-term-collection-placeholder"></div>
+<% } %>
 {% endcall %}
 
 {% call macros.us_template('took-this-tpl') %}

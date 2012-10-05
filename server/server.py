@@ -495,6 +495,7 @@ def course_page(course_id):
         user_course_objs=user_course_objs,
         user_objs=user_objs,
         current_user_id=current_user.id if current_user else None,
+        current_term_id=util.get_current_term_id(),
     )
 
 

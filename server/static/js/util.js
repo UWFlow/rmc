@@ -96,6 +96,24 @@ function(_, _s) {
     return obj.$date ? new Date(obj.$date) : obj;
   };
 
+  /**
+   * Sorts UserCourse objects by term_id ascendingly
+   * @param {UserCourse} UserCourse model object
+   * @param {UserCourse} UserCourse model object
+   * @return {number}
+   */
+  var userCourseTermIdComparator = function(uc1, uc2) {
+    var retVal;
+    if (uc1.get('term_id') > uc2.get('term_id')) {
+      retVal = 1;
+    } else if (uc1.get('term_id') < uc2.get('term_id')) {
+      retVal = -1;
+    } else {
+      retVal = 0;
+    }
+    return retVal;
+  };
+
   return {
     getQueryParam: getQueryParam,
     capitalize: capitalize,
@@ -104,6 +122,7 @@ function(_, _s) {
     randomItems: randomItems,
     getDisplayRating: getDisplayRating,
     getHashCode: getHashCode,
-    toDate: toDate
+    toDate: toDate,
+    userCourseTermIdComparator: userCourseTermIdComparator
   };
 });

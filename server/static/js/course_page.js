@@ -25,24 +25,10 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
   // TODO(mack): add prompt encouraging user to sign in to see friends
   // who've taken this course
   if (pageData.currentUserId) {
-    // Sort friends who've taken this by term
-    sorted_friend_user_courses = courseModel.get('friend_user_courses');
-    sorted_friend_user_courses.comparator = function(uc1, uc2) {
-      var retVal;
-      if (uc1.get('term_id') > uc2.get('term_id')) {
-        retVal = -1;
-      } else if (uc1.get('term_id') < uc2.get('term_id')) {
-        retVal = 1;
-      } else {
-        retVal = 0;
-      }
-      return retVal;
-    };
-    sorted_friend_user_courses.sort();
-
     var tookThisSidebarView = new tookThis.TookThisSidebarView({
-      userCourses: sorted_friend_user_courses,
-      courseCode: courseModel.get('code')
+      userCourses: courseModel.get('friend_user_courses'),
+      courseCode: courseModel.get('code'),
+      currentTermId: window.pageData.currentTermId
     });
     $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
   }
