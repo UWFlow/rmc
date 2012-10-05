@@ -3,8 +3,10 @@ import mongoengine as me
 import redis
 
 import rating
+import review as _review
 import rmc.shared.constants as c
 from rmc.shared import util
+import user_course
 
 # TODO(mack): remove this from here?
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
@@ -93,3 +95,58 @@ class Professor(me.Document):
                 rating_dict.values()).to_dict()
 
         return util.dict_to_list(rating_dict)
+
+
+    @classmethod
+    def get_reduced_professors_for_courses(cls, courses):
+        professor_ids = set()
+        for course in courses:
+            professor_ids = professor_ids.union(course.professor_ids)
+
+        professors = cls.objects(id__in=professor_ids).only(
+                'first_name', 'last_name')
+
+        return [p.to_dict() for p in professors]
+
+    @classmethod
+    def get_full_professors_for_course(cls, course, current_user):
+
+        professors = cls.objects(id__in=course.professor_ids)
+        return [p.to_dict(course_id=course.id, current_user=current_user)
+                for p in professors]
+
+
+    def to_dict(self, course_id=None, current_user=None):
+        dict_ = {
+            'id': self.id,
+            #'first_name': self.first_name,
+            #'last_name': self.last_name,
+            'ratings': self.get_ratings(),
+            'name': self.name,
+        }
+
+        if course_id:
+
+            ucs = user_course.get_reviews_for_course_prof(
+                    course_id, self.id)
+
+            # TODO(david): Eventually do this in mongo query or enforce quality
+            #     metrics on front-end
+            ucs = filter(
+                    lambda uc: len(uc.professor_review.comment)
+                        >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
+                    ucs)
+
+            course_review_dicts = []
+            for uc in ucs:
+
+                course_review_dict = uc.professor_review.to_dict(
+                        current_user, uc)
+                course_review_dicts.append(course_review_dict)
+
+            dict_.update({
+                'course_ratings': self.get_ratings_for_course(course_id),
+                'course_reviews': course_review_dicts,
+            })
+
+        return dict_

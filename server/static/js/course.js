@@ -1,13 +1,12 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/bootstrap', 'util', 'jquery.slide'],
-function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
+'ratings', 'ext/bootstrap', 'util', 'jquery.slide', 'prof'],
+function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
 
   var CourseModel = RmcBackbone.Model.extend({
     defaults: {
       id: 'SCI 238',
       name: 'Introduction to Astronomy omg omg omg',
-      professors: [],
       description: 'This couse will introduce you to the wonderful world' +
         ' of astronomy. Learn about the Milky Way, the Big Bang, and' +
         ' everything in between. Become enthralled in the wonderful' +
@@ -23,7 +22,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       }],
       user_course_id: undefined,
       profile_user_course_id: undefined,
-      friend_user_course_ids: []
+      friend_user_course_ids: [],
+      professor_ids: []
     },
 
     referenceFields: function() {
@@ -32,7 +32,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       return {
         'user_course': ['user_course_id', _user_course.UserCourses],
         'profile_user_course': ['profile_user_course_id', _user_course.UserCourses],
-        'friend_user_courses': [ 'friend_user_course_ids', _user_course.UserCourses ]
+        'friend_user_courses': [ 'friend_user_course_ids', _user_course.UserCourses ],
+        'professors': [ 'professor_ids', _prof.ProfCollection ]
       };
     },
 
@@ -49,7 +50,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     },
 
     getProf: function(id) {
-      return _.find(this.get('professors'), function(prof) {
+      return this.get('professors').find(function(prof) {
         return prof.id === id;
       });
     },
@@ -260,7 +261,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
     render: function(moreDetails) {
       this.$el.html(this.template({
         more_details: moreDetails,
-        course: this.courseModel,
+        course: this.courseModel.toJSON(),
         user_course: this.userCourse,
         can_show_add_review: this.canShowAddReview
       }));

@@ -83,6 +83,7 @@ function($, _, _s, Backbone, util, moment, __, __, _facebook) {
     };
 
     _.template = function(templateString, data, settings) {
+      templateString = templateString || '';
       if (data) {
         data = _.extend({}, templateHelpers, data);
         return template(templateString, data, settings);

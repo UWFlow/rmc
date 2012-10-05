@@ -1,16 +1,17 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'friend', 'util', 'user', 'user_course'],
-function($, _, _s, transcript, term, course, friend, util, user, uc) {
+'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof'],
+function($, _, _s, transcript, term, course, friend, util, user, uc, _prof) {
 
   user.UserCollection.addToCache(pageData.userObjs);
   course.CourseCollection.addToCache(pageData.courseObjs);
   uc.UserCourses.addToCache(pageData.userCourseObjs);
+  _prof.ProfCollection.addToCache(pageData.professorObjs);
+
   var profileUser = user.UserCollection.getFromCache(
     pageData.profileUserId.$oid);
 
   // Render friend sidebar
-
   (function() {
     var friendIds = profileUser.get('friend_ids');
     var friendObjs = [];

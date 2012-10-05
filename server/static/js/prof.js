@@ -6,6 +6,7 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util,
 
   var Prof = RmcBackbone.Model.extend({
     defaults: {
+      id: 'charles_l.a._clarke',
       name: 'Charles L.A. Clarke',
       email: 'charles.clarke@uwaterloo.ca',
       phone: '519-888-4567 x35241',
@@ -63,9 +64,14 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util,
 
     // TODO(david): Allow changing sort/filter options
     comparator: function(prof) {
+      // The professors need not be sorted for the collection cache
+      if (!prof.get('overall')) {
+        return 0;
+      }
       return -prof.get('overall').get('count');
     }
   });
+  ProfCollection.registerCache('prof');
 
   // TODO(david): Need base expandable collection view
   var ExpandableProfView = RmcBackbone.View.extend({

@@ -28,6 +28,11 @@ class CourseReview(me.EmbeddedDocument):
     comment = me.StringField(default='', max_length=4096)
     comment_date = me.DateTimeField()
 
+    # Minimum number of characters for a review to pass
+    # TODO(david): Have a function to do this. First, we need consistent review
+    #     interface
+    MIN_REVIEW_LENGTH = 15
+
     def __init__(self, **kwargs):
         update_kwargs_from_ratings(kwargs)
         super(CourseReview, self).__init__(**kwargs)
@@ -84,6 +89,11 @@ class ProfessorReview(me.EmbeddedDocument):
     comment = me.StringField(default='', max_length=4096)
     comment_date = me.DateTimeField()
 
+    # Minimum number of characters for a review to pass
+    # TODO(david): Have a function to do this. First, we need consistent review
+    #     interface
+    MIN_REVIEW_LENGTH = 15
+
     def __init__(self, **kwargs):
         update_kwargs_from_ratings(kwargs)
         super(ProfessorReview, self).__init__(**kwargs)
@@ -121,3 +131,28 @@ class ProfessorReview(me.EmbeddedDocument):
         if hasattr(self, 'old_passion'):
             cur_professor.passion.update_aggregate_after_replacement(
                 self.old_passion, self.passion)
+
+    def to_dict(self, current_user, user_course):
+        # TODO(mack): this should somehow be done from UserCourse rather than
+        # here since it currently requires passing through user_course which is
+        # stupid
+
+        dict_ = {
+            'comment': {
+                'comment': self.comment,
+                'comment_date': self.comment_date,
+            },
+            'ratings': self.to_array(),
+        }
+
+        # TODO(david): Maybe just pass down the entire user object
+        # TODO(david) FIXME[uw](david): Should not nest comment
+        if hasattr(user_course, 'user_id') and not user_course.anonymous:
+            # TODO(mack): fix circular dependency
+            import user as _user
+            author = _user.User.objects.only('first_name', 'last_name', 'fbid',
+                    'program_name').with_id(user_course.user_id)
+            dict_['comment']['author'] = author.to_review_author_dict(
+                    current_user)
+
+        return dict_

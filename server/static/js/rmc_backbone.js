@@ -18,6 +18,8 @@ function(Backbone, $, _) {
      * if the field represents an ObjectId
      */
     toJSON: function(resolveOids) {
+      // TODO(mack): consider resolving referenceFields in here
+
       var obj = this._super('toJSON');
       if (resolveOids) {
         _.each(this._oidFields, function(__, key) {
@@ -172,7 +174,6 @@ function(Backbone, $, _) {
 
     if (!ids) {
       console.warn('No ids were passed');
-      console.trace();
       return undefined;
     }
 
@@ -187,7 +188,6 @@ function(Backbone, $, _) {
         var model =  coll.get(id);
         if (!model) {
           console.warn('Did not find ' + id + ' in ' + this._cacheName);
-          console.trace();
         }
         return model;
       }, this));

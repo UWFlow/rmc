@@ -44,7 +44,6 @@
 {% endcall %}
 
 {% call macros.us_template('course-inner-tpl') %}
-<% course = course.toJSON(); %>
 <div class="row-fluid">
   <div class="span6">
     <p class="description"><%- course.description %></p>
@@ -74,8 +73,8 @@
   <div class="row-fluid">
     <div class="span12 more-info">
       <a href="/course/<%- course.id %>">
-        <%- course.professors.length %>
-        <%- pluralize(course.professors.length, "professor") %>
+        <%- course.professor_ids.length %>
+        <%- pluralize(course.professor_ids.length, "professor") %>
         teaching this course &raquo;
       </a>
     </div>

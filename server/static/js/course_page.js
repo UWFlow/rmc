@@ -6,6 +6,7 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
   course.CourseCollection.addToCache(pageData.courseObj);
   user.UserCollection.addToCache(pageData.userObjs);
   user_course.UserCourses.addToCache(pageData.userCourseObjs);
+  prof.ProfCollection.addToCache(pageData.professorObjs);
 
   var courseObj = pageData.courseObj;
   var courseModel = course.CourseCollection.getFromCache(courseObj.id);
@@ -41,7 +42,7 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
   $('#tips-collection-placeholder').replaceWith(tipsView.render().el);
 
   // TODO(david): Handle no professors for course
-  var profsCollection = new prof.ProfCollection(courseModel.get('professors'));
+  var profsCollection = courseModel.get('professors');
   var profsView = new prof.ProfCollectionView({ collection: profsCollection });
   $('#professor-review-container').html(profsView.render().el);
 

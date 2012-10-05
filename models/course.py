@@ -67,6 +67,7 @@ class Course(me.Document):
         }
 
     # TODO(david): Cache function result
+    # TODO(mack): deprecated
     def get_professors(course, expanded=False):
         professors = professor.Professor.objects(
                 id__in=course.professor_ids)
@@ -83,10 +84,6 @@ class Course(me.Document):
             course: The course object.
         """
 
-        # TODO(mack): to not nest Professor in Course
-        professors = [{'id': p.id, 'name': p.name} for p in
-                self.get_professors()]
-
         return {
             'id': self.id,
             'code': self.code,
@@ -99,5 +96,5 @@ class Course(me.Document):
             #'friends': [1647810326, 518430508, 541400376],
             'ratings': util.dict_to_list(self.get_ratings()),
             'overall': self.overall.to_dict(),
-            'professors': professors,
+            'professor_ids': self.professor_ids,
         }

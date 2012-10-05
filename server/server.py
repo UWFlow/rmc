@@ -106,71 +106,6 @@ def login_required(f):
     return wrapper
 
 
-# TODO(Sandy): Move this somewhere more appropriate. It is currently being
-# called by api/transcript and /profile
-
-# TODO(mack): move this somewhere more appropriate
-def get_js_profile_friends_obj(profile_user):
-
-    profile_dict = clean_user(profile_user)
-
-    # fetch mutual friends from redis
-    pipe = r.pipeline()
-
-    # Show mutual courses between the viewing user and the friends of the profile user
-    viewer_user = get_current_user()
-    for friend_id in profile_user.friend_ids:
-        pipe.smembers(viewer_user.mutual_courses_redis_key(friend_id))
-    mutual_course_ids_per_user = pipe.execute()
-
-    zipped = itertools.izip(profile_user.friend_ids, mutual_course_ids_per_user)
-    zipped = sorted(
-        zipped,
-        key=lambda (friend_id, mutual_course_ids): len(mutual_course_ids),
-        reverse=True,
-    )
-
-    # TODO(mack): reduce amount of data we fetch for each friend
-    friend_dicts = {}
-    for friend in m.User.objects(id__in=profile_user.friend_ids):
-        friend_dicts[friend.id] = clean_user(friend)
-
-    # find all courses we need to pass to frontend; combo of
-    # your courses and friends' courses
-    # TODO(mack): control how much data we fetch based on what the course
-    # is needed for
-    all_course_ids = set()
-    all_user_course_ids = set()
-    for user_dict in friend_dicts.values() + [profile_dict]:
-        all_course_ids = all_course_ids.union(user_dict['course_ids'])
-        all_user_course_ids = all_user_course_ids.union(
-                user_dict['course_history'])
-
-    course_dicts = {}
-    fetched_course_ids = set()
-    for course in m.Course.objects(id__in=list(all_course_ids)):
-        course_dicts[course.id] = clean_course(course)
-        fetched_course_ids.add(course.id)
-
-    user_course_dicts = {}
-    # TODO(mack): rather than fetching all friend user course ids,
-    # should just be fetching those that are for courses you have
-    # also taken
-    for user_course in m.UserCourse.objects(id__in=list(all_user_course_ids)):
-        user_course_dict = clean_user_course(user_course)
-        user_course_dicts[user_course.id] = user_course_dict
-
-    for friend_id, mutual_course_ids in zipped:
-        if friend_id not in friend_dicts:
-            continue
-
-        friend_dict = friend_dicts[friend_id]
-        friend_dict['mutual_course_ids'] = mutual_course_ids.intersection(
-                fetched_course_ids)
-
-    return profile_dict, friend_dicts, user_course_dicts, course_dicts
-
-
 @app.route('/')
 def index():
     # Redirect logged-in users to profile
@@ -295,7 +230,16 @@ def profile(profile_user_id):
     friends = m.User.objects(id__in=profile_user.friend_ids).only(
             'id', 'fbid', 'first_name', 'last_name')
 
+    # Fetch all professors for all courses
+    professor_objs = m.Professor.get_reduced_professors_for_courses(
+            transcript_courses)
+
     # PART THREE - TRANSFORM DATA TO DICTS
+
+    # Convert professors to dicts
+    professor_dicts = {}
+    for professor_obj in professor_objs:
+        professor_dicts[professor_obj['id']] = professor_obj
 
     # Convert courses to dicts
     course_dicts = {}
@@ -406,6 +350,7 @@ def profile(profile_user_id):
         user_objs=user_dicts.values(),
         user_course_objs=user_course_dicts.values(),
         course_objs=course_dicts.values(),
+        professor_objs=professor_dicts.values(),
         # TODO(mack): currently needed by jinja to do server-side rendering
         # figure out a cleaner way to do this w/o passing another param
         profile_obj=profile_dict,
@@ -459,7 +404,9 @@ def course_page(course_id):
 
     current_user = get_current_user()
 
-    course_obj = clean_course(course, expanded=True)
+    course_obj = clean_course(course)
+    professor_objs = m.Professor.get_full_professors_for_course(
+            course, current_user)
 
     user_course_objs = []
     user_objs = []
@@ -491,6 +438,7 @@ def course_page(course_id):
     return flask.render_template('course_page.html',
         page_script='course_page.js',
         course_obj=course_obj,
+        professor_objs=professor_objs,
         tip_objs=tip_objs,
         user_course_objs=user_course_objs,
         user_objs=user_objs,
@@ -615,12 +563,13 @@ def get_courses(course_ids):
     )
 
     # TODO(mack): do this more cleanly
-    courses = map(clean_course, courses)
-    course_map = {}
-    for course in courses:
-        course_map[course['id']] = course
+    course_objs = map(clean_course, courses)
+    professor_objs = m.Professor.get_reduced_professor_for_courses(courses)
 
-    return util.json_dumps({ 'courses': course_map })
+    return util.json_dumps({
+        'course_objs': course_objs,
+        'professor_objs': professor_objs,
+    })
 
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
@@ -722,6 +671,8 @@ def search_courses():
 
     has_more = len(limited_courses) == count
     course_objs = map(clean_course, limited_courses)
+    professor_objs = m.Professor.get_reduced_professors_for_courses(
+            limited_courses)
 
     user_objs = []
     user_course_objs = []
@@ -739,6 +690,7 @@ def search_courses():
     return util.json_dumps({
         'user_objs': user_objs,
         'course_objs': course_objs,
+        'professor_objs': professor_objs,
         'user_course_objs': user_course_objs,
         'has_more': has_more,
     })
@@ -923,67 +875,7 @@ def clean_user_course(user_course):
     return user_course_dict
 
 
-def clean_prof_review(entity):
-    review = {
-        'comment': {
-            'comment': entity.professor_review.comment,
-            'comment_date': entity.professor_review.comment_date,
-        },
-        'ratings': entity.professor_review.to_array(),
-    }
-
-    # TODO(david): Maybe just pass down the entire user object
-    # TODO(david) FIXME[uw](david): Should not nest comment
-    if hasattr(entity, 'user_id') and not entity.anonymous:
-        author = m.User.objects.only('first_name', 'last_name', 'fbid',
-                'program_name').with_id(entity.user_id)
-        review['comment']['author'] = clean_review_author(author)
-
-    return review
-
-
-def clean_review_author(author):
-    user = get_current_user()
-
-    if user and (author.id in user.friend_ids or user.id == author.id):
-        return {
-            'id': author.id,
-            'name': 'You' if user.id == author.id else author.name,
-            'fbid': author.fbid,
-            'fb_pic_url': author.fb_pic_url,
-        }
-    else:
-        return {
-            'program_name': author.short_program_name
-        }
-
-
-def clean_professor(professor, course_id=None):
-    # TODO(david): Get department, contact info
-
-    # TODO(david): Generic reviews for prof? Don't need that yet
-    prof = {
-        'id': professor.id,
-        'name': professor.name,
-        'ratings': professor.get_ratings(),
-    }
-
-    if course_id:
-        prof['course_ratings'] = professor.get_ratings_for_course(course_id)
-
-        course_reviews = m.user_course.get_reviews_for_course_prof(course_id,
-                professor.id)
-        # TODO(david): Eventually do this in mongo query or enforce quality
-        #     metrics on front-end
-        course_reviews = filter(
-                lambda r: len(r.professor_review.comment) >= MIN_REVIEW_LENGTH,
-                course_reviews)
-        prof['course_reviews'] = map(clean_prof_review, course_reviews)
-
-    return prof
-
-
-def clean_course(course, expanded=False):
+def clean_course(course):
     """Returns information about a course to be sent down an API.
 
     Args:
@@ -1011,11 +903,6 @@ def clean_course(course, expanded=False):
         'user_course_id': user_course_id,
         'friend_user_course_ids': [fuc.id for fuc in friend_user_courses],
     })
-
-    # TODO(david): Caller should expand its own professors
-    if expanded:
-        course_dict['professors'] = [clean_professor(p, course.id) for p in
-                course.get_professors()]
 
     return course_dict
 

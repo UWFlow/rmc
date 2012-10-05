@@ -26,7 +26,7 @@
       {# TODO(david): Replace text with spinner #}
       <div id="course-inner-placeholder">[course inner]</div>
       <div id="tips-collection-placeholder">[course tips]</div>
-      <h2>{{ course_obj['professors']|length }} Professors</h2>
+      <h2>{{ course_obj['professor_ids']|length }} Professors</h2>
       <div id="professor-review-container">[professor reviews]</div>
     </div>
     </div>
@@ -40,6 +40,7 @@
   window.pageData.userCourseObjs = {{ user_course_objs|tojson|safe }};
   window.pageData.userObjs = {{ user_objs|tojson|safe }};
   window.pageData.currentTermId = {{ current_term_id|tojson|safe }};
+  window.pageData.professorObjs = {{ professor_objs|tojson|safe }};
 </script>
 {% endblock %}
 

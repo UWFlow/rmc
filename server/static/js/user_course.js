@@ -1,8 +1,8 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/jqueryui', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/select2', 'ext/autosize', 'course', 'user', 'ext/bootstrap'],
+'ratings', 'ext/select2', 'ext/autosize', 'course', 'user', 'ext/bootstrap', 'prof'],
 function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course, _user,
-  _bootstrap) {
+  _bootstrap, _prof) {
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
@@ -150,16 +150,18 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
           // Select2 is weird
         },
         data: this.courseModel.get('professors').map(function(prof) {
-          return { id: prof.id, text: prof.name };
+          return { id: prof.id, text: prof.get('name') };
         })
       });
 
       if (this.userCourse.has('professor_id')) {
         var profId = this.userCourse.get('professor_id');
+        // TODO(mack): should be looking up prof from prof cache once all pages
+        // are refactored to work with prof cache
         var prof = this.courseModel.getProf(profId);
         if (prof) {
           this.$('.prof-select')
-            .select2('data', { id: profId, text: prof.name });
+            .select2('data', { id: profId, text: prof.get('name') });
         }
 
         this.$('.add-review').hide();

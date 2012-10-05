@@ -2,7 +2,7 @@ define(
 ['rmc_backbone', 'ext/underscore', 'ext/underscore.string', 'util', 'course'],
 function(RmcBackbone, _, _s, util, _course) {
 
-  window.UserModel = RmcBackbone.Model.extend({
+  var UserModel = RmcBackbone.Model.extend({
     defaults: {
       id: '0000000001',
       fbid: 1647810326,

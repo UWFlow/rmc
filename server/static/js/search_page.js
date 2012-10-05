@@ -1,6 +1,6 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course'],
-function($, _, _s, course, __, RmcBackbone, user, _user_course, _course) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course', 'prof'],
+function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof) {
 
   var FETCH_DELAY_MS = 300;
 
@@ -162,10 +162,12 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course) {
           var userCourseObjs = data.user_course_objs;
           var courseObjs = data.course_objs;
           var userObjs = data.user_objs;
+          var professorObjs = data.professor_objs;
 
           user.UserCollection.addToCache(userObjs);
           _user_course.UserCourses.addToCache(userCourseObjs);
           _course.CourseCollection.addToCache(courseObjs);
+          _prof.ProfCollection.addToCache(professorObjs);
 
           this.hasMore = data.has_more;
           this.offset += courseObjs.length;
