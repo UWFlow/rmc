@@ -1,5 +1,5 @@
-define(['ext/jquery'],
-function($) {
+define(['ext/jquery', 'ext/jqueryui'],
+function($, _jqueryui) {
 
   /**
    * A simple jQuery plugin to be a tiny bit fancier when sliding down (fade in
@@ -14,12 +14,13 @@ function($) {
           opacity: 1.0
         }, {
           duration: duration,
-          queue: false
+          queue: false,
+          easing: 'easeOutCubic'
         })
-        .slideDown(duration);
+        .slideDown(duration, 'easeOutCubic');
     } else if (dir === 'up') {
       return this.stop(/* clearQueue */ true)
-        .slideUp(duration);
+        .slideUp(duration, 'easeOutCubic');
     }
 
     return this;

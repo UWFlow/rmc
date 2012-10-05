@@ -216,7 +216,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
       }
 
       this.courseInnerView.$el.fancySlide('down', 300);
-      this.courseInnerView.animateBars(300 / 4);
+      this.courseInnerView.animateBars(0);
     },
 
     collapseCourse: function(evt) {
@@ -267,7 +267,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide) {
 
       if (this.userCourseView) {
         this.$('.review-placeholder').replaceWith(
-          this.userCourseView.render(/* animationDelay */ 300).el);
+          this.userCourseView.render().el);
       }
 
       this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);

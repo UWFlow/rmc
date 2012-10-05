@@ -1,7 +1,7 @@
 define(
-['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+['rmc_backbone', 'ext/jquery', 'ext/jqueryui', 'ext/underscore', 'ext/underscore.string',
 'ratings', 'ext/select2', 'ext/autosize', 'course', 'user', 'ext/bootstrap'],
-function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
+function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course, _user,
   _bootstrap) {
 
   // TODO(david): Refactor to use sub-models for reviews
@@ -125,7 +125,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
 
     // TODO(david): Don't pass in delay here; use deferreds for animation
     //     chaining
-    render: function(animationDelay) {
+    render: function() {
       var self = this;
       var context = _.extend(this.userCourse.toJSON(), {
         courseModel: this.courseModel.toJSON(),
@@ -163,9 +163,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
         }
 
         this.$('.add-review').hide();
-        var duration = typeof animationDelay === 'undefined' ? 0 :
-            animationDelay;
-        window.setTimeout(_.bind(this.showReview, this), duration);
+        this.showReview();
       }
 
       if (this.userCourse.hasComments()) {
@@ -206,7 +204,7 @@ function(RmcBackbone, $, _, _s, ratings, _select2, _autosize, _course, _user,
     },
 
     showReview: function() {
-      this.$('.review-details').slideDown();
+      this.$('.review-details').show();
       this.$('.add-review').fadeOut('fast');
     },
 
