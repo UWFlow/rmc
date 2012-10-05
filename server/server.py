@@ -413,14 +413,17 @@ def course_page(course_id):
     if current_user:
         user_course = m.UserCourse.objects(
                 course_id=course_id, user_id=current_user.id).first()
-        user_course_obj = clean_user_course(user_course)
+
+        user_course_objs = []
+        if user_course:
+            user_course_objs.append(user_course.to_dict())
 
         # TODO(mack): optimize this
         friend_user_courses = m.UserCourse.objects(id__in=
                 course_obj['friend_user_course_ids'])
 
-        user_course_objs = ([user_course_obj] +
-                map(clean_user_course, friend_user_courses))
+        for user_course in friend_user_courses:
+            user_course_objs.append(user_course.to_dict())
 
         friend_ids = [uc.user_id for uc in friend_user_courses]
         friends = m.User.objects(id__in=friend_ids)
@@ -682,7 +685,10 @@ def search_courses():
         user_courses = m.UserCourse.objects(
                 user_id__in=[current_user.id] + current_user.friend_ids,
                 course_id__in=course_ids)
-        user_course_objs = map(clean_user_course, list(user_courses))
+
+        user_course_objs = []
+        for user_course in user_courses:
+            user_course_objs.append(user_course.to_dict())
 
         users = m.User.objects(id__in=[uc.user_id for uc in user_courses])
         user_objs = map(clean_user, users)
@@ -866,14 +872,6 @@ def user_course():
 
 ###############################################################################
 # Helper functions
-
-def clean_user_course(user_course):
-
-    user_course_dict = {}
-    if user_course:
-        user_course_dict = user_course.to_dict()
-    return user_course_dict
-
 
 def clean_course(course):
     """Returns information about a course to be sent down an API.
