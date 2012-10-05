@@ -673,6 +673,7 @@ def search_courses():
         limited_courses = sorted_courses.skip(offset).limit(count)
 
     has_more = len(limited_courses) == count
+
     course_objs = map(clean_course, limited_courses)
     professor_objs = m.Professor.get_reduced_professors_for_courses(
             limited_courses)
