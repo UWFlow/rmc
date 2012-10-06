@@ -714,7 +714,7 @@ def upload_transcript():
 
     user = get_current_user()
     user_id = user.id
-    course_history_list = []
+    course_history_list = user.course_history
 
     def get_term_id(term_name):
         season, year = term_name.split()
@@ -734,16 +734,16 @@ def upload_transcript():
             user_course = m.UserCourse.objects(
                 user_id=user_id, course_id=course_id, term_id=term_id).first()
 
-            if m.Course.objects.with_id(course_id) is None:
-                # Non-existant course according to our data
-                rmclogger.log_event(
-                    rmclogger.LOG_CATEGORY_DATA_MODEL,
-                    rmclogger.LOG_EVENT_UNKNOWN_COURSE_ID,
-                    course_id
-                )
-                continue
-
             if user_course is None:
+                if m.Course.objects.with_id(course_id) is None:
+                    # Non-existant course according to our data
+                    rmclogger.log_event(
+                        rmclogger.LOG_CATEGORY_DATA_MODEL,
+                        rmclogger.LOG_EVENT_UNKNOWN_COURSE_ID,
+                        course_id
+                    )
+                    continue
+
                 user_course = m.UserCourse(
                     user_id=user_id,
                     course_id=course_id,
@@ -752,7 +752,9 @@ def upload_transcript():
                 )
                 user_course.save()
 
-            course_history_list.append(user_course.id)
+            # We don't _need_ this check, but it's more robust if we mess up
+            if user_course.id not in course_history_list:
+                course_history_list.append(user_course.id)
 
     if courses_by_term:
         last_term = courses_by_term[0]
