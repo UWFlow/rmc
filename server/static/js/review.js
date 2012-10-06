@@ -10,7 +10,7 @@ function(RmcBackbone, $, _, ratings, util) {
       anonymous: false,  // TODO(david): Get rid of this, replace with privacy
       author: null,
       author_pic_url: '',
-      ratings: new ratings.RatingCollection()
+      ratings: null
     },
 
     initialize: function(attrs) {
@@ -29,6 +29,11 @@ function(RmcBackbone, $, _, ratings, util) {
 
       if (attrs.ratings) {
         this.set('ratings', new ratings.RatingCollection(attrs.ratings));
+      } else {
+        this.set('ratings', new ratings.RatingCollection([{
+          name: 'usefulness',
+          rating: 1
+        }]));
       }
     },
 

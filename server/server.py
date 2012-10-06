@@ -400,23 +400,13 @@ def course_page(course_id):
             user_dicts[friend.id] = friend.to_dict()
         user_dicts[current_user.id] = current_user.to_dict()
 
-
     def tip_from_uc(uc_dict):
-        user_id = uc_dict['user_id']
-        user_dict = user_dicts[user_id]
-
-        full_name = '%s %s' % (user_dict['first_name'], user_dict['last_name'])
-
-        return {
-            'userId': user_id,
-            'name': full_name,
-            'comment': uc_dict['course_review']['comment'],
-            'comment_date': uc_dict['course_review']['comment_date'],
-        }
+        # TODO(david): Don't instantiate a class just to call a method on it
+        return m.CourseReview(**uc_dict['course_review']).to_dict(current_user,
+                uc_dict['user_id'])
 
     tip_dict_list = [tip_from_uc(uc_dict) for uc_dict in user_course_dict_list
-            if len(uc_dict['course_review']['comment']) > MIN_REVIEW_LENGTH]
-
+            if len(uc_dict['course_review']['comment']) >= MIN_REVIEW_LENGTH]
 
     return flask.render_template('course_page.html',
         page_script='course_page.js',

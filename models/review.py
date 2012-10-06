@@ -44,6 +44,10 @@ class BaseReview(me.EmbeddedDocument):
         if 'ratings' in kwargs:
             kwargs.update({d['name']: d['rating'] for d in kwargs['ratings']})
             del kwargs['ratings']
+
+        if isinstance(kwargs.get('privacy'), basestring):
+            kwargs['privacy'] = Privacy.to_int(kwargs['privacy'])
+
         super(BaseReview, self).__init__(**kwargs)
 
     def rating_fields(self):
@@ -104,6 +108,9 @@ class BaseReview(me.EmbeddedDocument):
                     current_user.id == author_id)
         elif self.privacy == Privacy.EVERYONE:
             return True
+        else:
+            logging.error('Unrecognized privacy setting %s' % self.privacy)
+            return False
 
 
 class CourseReview(BaseReview):

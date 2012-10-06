@@ -1,7 +1,7 @@
 require(
 ['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'ratings',
-'user_course'],
-function($, course, tookThis, user, tips, prof, ratings, user_course) {
+'user_course', 'review'],
+function($, course, tookThis, user, tips, prof, ratings, user_course, _review) {
 
   course.CourseCollection.addToCache(pageData.courseObj);
   user.UserCollection.addToCache(pageData.userObjs);
@@ -34,11 +34,8 @@ function($, course, tookThis, user, tips, prof, ratings, user_course) {
     $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
   }
 
-  // TODO(Sandy): Use the comment_date field
-  var tipObjs = window.pageData.tipObjs;
-  var tipsCollection = new tips.TipsCollection(tipObjs);
-
-  var tipsView = new tips.ExpandableTipsView({ tips: tipsCollection });
+  var tipsCollection = new _review.ReviewCollection(window.pageData.tipObjs);
+  var tipsView = new tips.ExpandableTipsView({ reviews: tipsCollection });
   $('#tips-collection-placeholder').replaceWith(tipsView.render().el);
 
   // TODO(david): Handle no professors for course

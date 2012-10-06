@@ -1,37 +1,22 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'rmc_backbone', 'user', 'jquery.slide'],
-function($, _, _s, bootstrap, RmcBackbone, user, jqSlide) {
+'rmc_backbone', 'user', 'jquery.slide', 'review'],
+function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review) {
 
-  var Tip = RmcBackbone.Model.extend({
-    defaults: {
-      userId: '1234',
-      name: 'Mack Duan',
-      comment: ''
-    }
-  });
-
-  var TipView = RmcBackbone.View.extend({
-    render: function() {
-      this.$el.html(_.template($('#tip-tpl').html(), this.model.toJSON()));
-      return this;
-    }
-  });
-
-  var TipsCollection = RmcBackbone.Collection.extend({
-    model: Tip
-  });
+  // TODO(david): This entire file could probably be merged into review.js once
+  //     we have base expandable view class
 
   var TipsCollectionView = RmcBackbone.CollectionView.extend({
     className: 'tips-collection',
 
     createItemView: function(model) {
-      return new TipView({ model: model });
+      return new _review.ReviewView({ model: model });
     }
   });
 
   // TODO(david): Make this fancier. Show more about tip person or something.
   var ExpandableTipsView = RmcBackbone.View.extend({
+    template: _.template($('#expandable-tips-tpl').html()),
     className: 'all-tips',
     expanded: false,
     numShown: 3,
@@ -41,16 +26,14 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide) {
     },
 
     initialize: function(options) {
-      this.tips = options.tips;
+      this.reviews = options.reviews;
       this.tipsCollectionView = new TipsCollectionView({
-        collection: this.tips
+        collection: this.reviews
       });
     },
 
     render: function() {
-      this.$el.html(_.template($('#expandable-tips-tpl').html(), {
-        numHidden: this.numHidden()
-      }));
+      this.$el.html(this.template({ numHidden: this.numHidden() }));
       this.$('.tips-collection-placeholder').replaceWith(
         this.tipsCollectionView.render().$el);
 
@@ -61,7 +44,7 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide) {
     },
 
     numTips: function() {
-      return this.tips.length;
+      return this.reviews.length;
     },
 
     numHidden: function() {
@@ -82,9 +65,6 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide) {
   });
 
   return {
-    Tip: Tip,
-    TipView: TipView,
-    TipsCollection: TipsCollection,
     TipsCollectionView: TipsCollectionView,
     ExpandableTipsView: ExpandableTipsView
   };

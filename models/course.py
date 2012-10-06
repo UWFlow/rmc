@@ -90,7 +90,6 @@ class Course(me.Document):
         if not current_user:
             return course_dicts, []
 
-
         friend_ids = []
         if include_friends:
             friend_ids = current_user.friend_ids
