@@ -14,20 +14,13 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       term_name: null,
       course_id: null,
       professor_id: null,
-      professor_review: {
-        ratings: [],
-        comment: '',
-        comment_date: null
-      },
-      course_review: {
-        ratings: [],
-        comment: '',
-        comment_date: null
-      },
+      professor_review: null,
+      course_review: null,
       has_reviewed: null
     },
 
     // Function needed since UserCourses in defined later in file.
+    // TODO(david): Use strings for reference field to avoid this fn
     referenceFields: function() {
       return {
         'user': [ 'user_id', _user.UserCollection ],
@@ -43,10 +36,18 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       // TODO(mack): fix potential bug here, since professor_review
       // and course_review are are objects that are potentially shared
       // among all UserCourse models
-      this.get('professor_review').ratings = new ratings.RatingChoiceCollection(
-          attrs.professor_review.ratings);
-      this.get('course_review').ratings = new ratings.RatingChoiceCollection(
-          attrs.course_review.ratings);
+      this.set('professor_review', new UserComment(attrs ?
+            attrs.professor_review : undefined));
+      this.set('course_review', new UserComment(attrs ?
+            attrs.course_review : undefined));
+
+      // TODO(david): This feels a little weird...
+      this.get('professor_review').set('ratings',
+        new ratings.RatingChoiceCollection(
+          this.get('professor_review').get('ratings')));
+      this.get('course_review').set('ratings',
+        new ratings.RatingChoiceCollection(
+          this.get('course_review').get('ratings')));
     },
 
     parse: function(attrs) {
@@ -61,15 +62,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
 
     getReviewJson: function(reviewType) {
       var review = this.get(reviewType);
-      return _.extend({}, review, { 'ratings': review.ratings.toJSON() });
-    },
-
-    validate: function(attrs) {
-      // TODO(david): Make this make more sense
-      if (attrs.professor_review.comments && !attrs.professor_id &&
-          !this.get('professor_id')) {
-        return "Which professor did you take the course with?";
-      }
+      return _.extend({}, review, { 'ratings': review.get('ratings').toJSON() });
     },
 
     hasComments: function() {
@@ -83,7 +76,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
     },
 
     getOverallRating: function() {
-      return this.get('course_review').ratings.find(function(rating) {
+      return this.get('course_review').get('ratings').find(function(rating) {
         return rating.get('name') === 'interest';
       });
     }
@@ -99,8 +92,29 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       this.userCourse = options.userCourse;
       this.courseModel = options.courseModel;
 
-      var courseRatings = this.userCourse.get('course_review').ratings;
-      var profRatings = this.userCourse.get('professor_review').ratings;
+      var courseReview = this.userCourse.get('course_review');
+      var profReview = this.userCourse.get('professor_review');
+
+      this.courseCommentView = new UserCommentView({
+        review: courseReview,
+        userCourse: this.userCourse,
+        className: 'user-comment course-comment',
+        placeholder: 'Any tips or comments?'
+      });
+      this.profCommentView = new UserCommentView({
+        review: profReview,
+        userCourse: this.userCourse,
+        className: 'user-comment prof-comment',
+        placeholder: 'Comment about the professor...'
+      });
+
+      courseReview.on('change', _.bind(this.saveComments, this,
+            this.courseCommentView));
+      profReview.on('change', _.bind(this.saveComments, this,
+            this.profCommentView));
+
+      var courseRatings = this.userCourse.get('course_review').get('ratings');
+      var profRatings = this.userCourse.get('professor_review').get('ratings');
 
       this.courseRatingsView = new ratings.RatingChoiceCollectionView({
         collection: courseRatings
@@ -123,8 +137,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       }, this);
     },
 
-    // TODO(david): Don't pass in delay here; use deferreds for animation
-    //     chaining
     render: function() {
       var self = this;
       var context = _.extend(this.userCourse.toJSON(), {
@@ -133,6 +145,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         user_name: this.userCourse.get('user').get('name')
       });
       this.$el.html(_.template($('#add-review-tpl').html(), context));
+
+      this.$('.course-comment-placeholder').replaceWith(
+          this.courseCommentView.render().el);
+      this.$('.prof-comment-placeholder').replaceWith(
+          this.profCommentView.render().el);
 
       // TODO(david): Make this prettier and conform to our styles
       // TODO(david): Show "Add..." option
@@ -149,6 +166,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         initSelection : function (element, callback) {
           // Select2 is weird
         },
+        allowClear: true,
         data: this.courseModel.get('professors').map(function(prof) {
           return { id: prof.id, text: prof.get('name') };
         })
@@ -163,21 +181,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
           this.$('.prof-select')
             .select2('data', { id: profId, text: prof.get('name') });
         }
-
-        this.$('.add-review').hide();
-        this.showReview();
+        this.$('.prof-review').show();
       }
-
-      if (this.userCourse.hasComments()) {
-        this.saveButtonSuccess();
-      }
-
-      this.$('.comments')
-        .autosize()
-        .height(60)  // Because autosize doesn't respect CSS class height
-        .css('resize', 'none');
-
-      this.$('.course-comments').height(84);
 
       this.$('.course-ratings-placeholder').replaceWith(
           this.courseRatingsView.render().el);
@@ -186,87 +191,27 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
 
       this.$('.dropdown-toggle').dropdown();
 
-      // TODO(david): Get from model
-      this.setPrivacy('friends');
-
       return this;
     },
 
     events: {
-      'change .prof-select': 'onProfSelect',
-      'click .add-review': 'showReview',
-      'click .save-review': 'saveComments',
-      'keyup .comments': 'allowSave',
-      'click .privacy-tip .dropdown-menu li': 'onPrivacySelect'
+      'change .prof-select': 'onProfSelect'
     },
 
     onProfSelect: function() {
-      this.showReview();
+      var profData = this.$('.prof-select').select2('data');
+      if (profData) {
+        this.$('.prof-review').slideDown(300, 'easeOutCubic');
+      } else {
+        this.$('.prof-review').slideUp(300, 'easeOutCubic');
+      }
       this.save();
     },
 
-    showReview: function() {
-      this.$('.review-details').show();
-      this.$('.add-review').fadeOut('fast');
-    },
-
-    saveComments: function() {
-      // TODO(david): Should initially be in this state if user had review
-      // TODO(david): Use spinner instead of static time icon
-      var button = this.$('.save-review');
-      button
-        .removeClass('btn-primary btn-success')
-        .addClass('btn-warning')
-        .prop('disabled', true)
-        .html('<i class="icon-time"></i> Saving...');
-
-      var profReview = _.extend({}, this.userCourse.get('professor_review'), {
-        comment: this.$('.prof-comments').val()
-      });
-      var courseReview = _.extend({}, this.userCourse.get('course_review'), {
-        comment: this.$('.course-comments').val()
-      });
-
-      this.saving = true;
-      var self = this;
-
-      var saveXhr = this.save({
-        'professor_review': profReview,
-        'course_review': courseReview
-      }, {
-        error: function(model, error) {
-          // Bring down the choose professor box if no prof chosen
-          // TODO(david): Actually throw an error subclass and test which error
-          if (_.isString(error) && error.indexOf('hich professor')) {
-            self.$('.prof-select-row')
-              .hide()
-              .appendTo(self.$('.user-course'))
-              .css('margin-top', '10px')
-              .addClass('text-error')
-              .fadeIn('slow');
-          }
-        }
-      });
-
-      var onError = function() {
-        button
-          .removeClass('btn-warning')
-          .addClass('btn-danger')
-          .prop('disabled', false)
-          .html('<i class="icon-exclamation-sign"></i> ' +
-              'Oh noes, that didn\'t work :( Try again');
-      };
-
-      if (saveXhr) {
-        saveXhr.done(function() {
-          self.saveButtonSuccess();
-        }).error(onError).always(function() {
-          self.saving = false;
-        });
-      } else {
-        onError();
-        self.saving = false;
-      }
+    saveComments: function(view) {
+      this.save()
+        .done(_.bind(view.saveSuccess, view))
+        .error(_.bind(view.saveError, view));
     },
 
     save: function(attrs, options) {
@@ -279,9 +224,87 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         new_prof_added: newProfAdded,
         course_id: this.courseModel.get('id')
       }, attrs), options);
+    }
+
+  });
+
+  var UserComment = RmcBackbone.Model.extend({
+    defaults: {
+      comment: '',
+      comment_date: null,
+      privacy: 'friends'
+    }
+  });
+
+  var UserCommentView = RmcBackbone.View.extend({
+    template: _.template($('#user-comment-tpl').html()),
+    className: 'user-comment',
+
+    initialize: function(options) {
+      this.review = options.review;
+      this.userCourse = options.userCourse;
+      this.placeholder = options.placeholder;
     },
 
-    saveButtonSuccess: function() {
+    render: function() {
+      this.$el.html(this.template(_.extend(this.review.toJSON(), {
+        placeholder: this.placeholder,
+        user_name: this.userCourse.get('user').get('name')
+      })));
+
+      var $comments = this.$('.comments')
+        .autosize({ bottomFeed: 3 })
+        .css('resize', 'none');
+
+      // Get autosize to adjust
+      _.defer(function() { $comments.trigger('input'); });
+
+      if (this.review.get('comment')) {
+        this.saveSuccess();
+        this.onFocus();
+      }
+
+      this.setPrivacy(this.review.get('privacy'));
+
+      return this;
+    },
+
+    events: {
+      'focus .comments': 'onFocus',
+      'click .save-review': 'onSave',
+      'keyup .comments': 'allowSave',
+      'click .privacy-tip .dropdown-menu li': 'onPrivacySelect'
+    },
+
+    onFocus: function() {
+      this.$('.submit-bar').fadeIn(300);
+      this.$('.comments').trigger('input');
+    },
+
+    onSave: function() {
+      this.review.set('comment', this.$('.comments').val());
+
+      this.$('.save-review')
+        .removeClass('btn-primary btn-success')
+        .addClass('btn-warning')
+        .prop('disabled', true)
+        .html('<i class="icon-time"></i> Saving...');
+
+      this.saving = true;
+    },
+
+    allowSave: function() {
+      if (this.saving || !this.review.get('comment')) return;
+
+      this.$('.save-review')
+        .removeClass('btn-success btn-warning btn-danger')
+        .addClass('btn-primary')
+        .prop('disabled', false)
+        .html('<i class="icon-save"></i> Update!');
+    },
+
+    saveSuccess: function() {
+      this.saving = false;
       this.$('.save-review')
         .removeClass('btn-warning btn-danger btn-primary')
         .addClass('btn-success')
@@ -289,16 +312,14 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         .html('<i class="icon-ok"></i> Posted.');
     },
 
-    allowSave: function() {
-      if (this.saving || !this.userCourse.hasComments()) {
-        return;
-      }
-
+    saveError: function() {
+      this.saving = false;
       this.$('.save-review')
-        .removeClass('btn-success btn-warning btn-danger')
-        .addClass('btn-primary')
+        .removeClass('btn-warning')
+        .addClass('btn-danger')
         .prop('disabled', false)
-        .html('<i class="icon-save"></i> Update!');
+        .html('<i class="icon-exclamation-sign"></i> ' +
+            'Error :( Try again');
     },
 
     onPrivacySelect: function(evt) {

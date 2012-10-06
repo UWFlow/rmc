@@ -1,23 +1,32 @@
 @import 'ratings';
 
 .user-course {
+  .lead {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
 
   .select2-result-css {
     color: red;
+  }
+
+  .select2-default {
+    // Select2 is dumb for using !important
+    color: inherit !important;
   }
 
   .select2-container .select2-choice {
     background: none;
     border: 1px solid rgba(0, 0, 0, 0);
     color: #3a87ad;  // TODO(david): Use Bootstrap's $infoText var somehow
-    text-decoration: underline;
+    font-weight: bold;
     padding-left: 3px;
     box-shadow: none;
     @include transition(all 0.2s ease-out);
 
-    div {
+    div, .select2-search-choice-close {
       opacity: 0;
-      @include transition(all 0.2s ease-out);
+      @include transition(opacity 0.2s ease-out);
     }
   }
 
@@ -28,9 +37,9 @@
     background-color: rgba(255, 255, 255, 0.5);
     @include transition(all 0.2s ease-out);
 
-    div {
+    div, .select2-search-choice-close {
       opacity: 1.0;
-      @include transition(all 0.2s ease-out);
+      @include transition(opacity 0.2s ease-out);
     }
   }
 
@@ -47,34 +56,12 @@
     float: right;
   }
 
-  .comments {
-    width: 94%;
-    min-height: 60px;
-  }
-
-  .review-details {
-    margin-top: 10px;
-    &.show-review {
-      display: block;
-    }
-  }
-
   .prof-question {
     margin-top: 15px;
   }
 
   .submit-bar {
-    margin-top: 5px;
-
     .privacy-msg {
-      opacity: 0.8;
-      //@include transition(all 0.2s ease-out);
-
-      &:hover {
-        //@include transition(all 0.2s ease-out);
-        opacity: 1.0;
-      }
-
       .dropdown {
         text-shadow: none;
         .dropdown-toggle {
@@ -90,9 +77,46 @@
     }
   }
 
-
   .save-error-msg {
     padding-left: 10px;
+  }
+
+}
+
+.user-comment {
+  .comments {
+    // TODO(david): Fix :focus box-shadow ugliness overlapping submit bar
+    width: 100%;
+    @include box-sizing(border-box);
+  }
+
+  &.course-comment .comments {
+    min-height: 92px;
+  }
+  &.prof-comment .comments {
+    min-height: 60px;
+  }
+
+  .submit-bar {
+    position: relative;
+    top: -47px;
+    margin-bottom: -38px;
+    border-color: #CCC;
+    border-top: 1px solid #DDD;
+    padding-top: 0;
+    padding-bottom: 0;
+    @include border-radius(0 0 3px 3px);
+
+    .save-review {
+      height: 28px;
+      margin-top: -3px;
+    }
+  }
+
+  .comments:focus + .well.submit-bar {
+    // TODO(david): Don't hardcoe. Get from Bootstrap.
+    border-color: rgba(82, 168, 236, 0.8);
+    border-top: 1px solid #DDD;
   }
 
 }

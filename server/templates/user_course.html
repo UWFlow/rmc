@@ -2,92 +2,78 @@
 
 {% call macros.us_template('add-review-tpl') %}
 <div class="user-course">
-  <div class="row-fluid prof-select-row">
+  <div class="row-fluid">
+    <div class="span12">
+      <p class="lead">
+        You took this course in <%- term_name %>. Was it&hellip;
+      </p>
+    </div>
+  </div>
+  <div class="row-fluid">
+    <div class="span4">
+      <div class="course-ratings-placeholder"></div>
+    </div>
+    <div class="span8">
+      <div class="course-comment-placeholder"></div>
+    </div>
+  </div>
+
+  <div class="row-fluid prof-select-row prof-question">
     <div class="span12">
       <div class="select2-inline">
-        You took this course in
-        <span class="term"><%- term_name %></span>
-        with
-        <input type="hidden" data-placeholder="which professor?" class="prof-select">
-        <button class="add-review btn btn-info">
-          <i class="icon-plus"></i> Add review!
-        </button>
+        <p class="lead">
+          Your professor was
+          <input type="hidden" data-placeholder="select one..." class="prof-select">
+        </p>
       </div>
     </div>
   </div>
 
-  <div class="review-details hide-initial">
-    <div class="row-fluid">
-      <div class="span12">
-        <h4>
-          Was the course...
-        </h4>
-      </div>
+  <div class="row-fluid prof-review hide-initial">
+    <div class="span4">
+      <div class="prof-ratings-placeholder"></div>
     </div>
-    <div class="row-fluid">
-      <div class="span4">
-        <div class="course-ratings-placeholder"></div>
-      </div>
-      <div class="span8">
-        <textarea rows="3" placeholder="Any tips or comments?"
-          class="comments course-comments"><%- course_review.comment %></textarea>
-      </div>
+    <div class="span8">
+      <div class="prof-comment-placeholder"></div>
     </div>
+  </div>
 
-    <div class="row-fluid prof-question">
-      <div class="span12">
-        <h4>
-          ...and was the professor...
-        </h4>
-      </div>
-    </div>
-    <div class="row-fluid">
-      <div class="span4">
-        <div class="prof-ratings-placeholder"></div>
-      </div>
-      <div class="span8">
-        <textarea placeholder="Comment about the professor..."
-          class="comments prof-comments"><%- professor_review.comment %></textarea>
-      </div>
-    </div>
+</div>
+{% endcall %}
 
-    <div class="row-fluid">
-      {# This is to have consistent column widths for better resizing #}
-      <div class="span4"></div>
-      <div class="span8 submit-bar">
-        <button type="submit" class="save-review btn btn-primary">
-          <i class="icon-comment"></i> Comment!
-        </button>
-        <span class="privacy-msg nav nav-pills">
-          &nbsp;&nbsp;
-          <li class="dropdown privacy-tip">
-            <a class="dropdown-toggle privacy-tip-more-info"
-              role="button"
-              data-toggle="dropdown"
-              href="#">
-              <span class="current-privacy">
-                <i class="icon-group"></i> Only friends
-              </span>
-              <b class="caret"></b>
-            </a>
-            <ul class="dropdown-menu" role="menu">
-              <li data-value="everyone">
-                <a><i class="icon-globe"></i> Everyone</a>
-              </li>
-              <li data-value="friends">
-                <a><i class="icon-group"></i> Friends</a>
-              </li>
-              <li data-value="me">
-                <a><i class="icon-lock"></i> No one</a>
-              </li>
-            </ul>
-          </li>
-          can see that <%- user_name %> wrote this
+
+{% call macros.us_template('user-comment-tpl') %}
+<textarea rows="3" placeholder="<%- placeholder %>"
+  class="comments"><%- comment %></textarea>
+<div class="well well-small submit-bar hide-initial">
+  <button type="submit" class="save-review btn btn-primary">
+    <i class="icon-comment"></i> Comment!
+  </button>
+  <span class="privacy-msg nav nav-pills">
+    &nbsp;&nbsp;
+    <li class="dropdown privacy-tip">
+      <a class="dropdown-toggle privacy-tip-more-info"
+        role="button"
+        data-toggle="dropdown"
+        href="#">
+        <span class="current-privacy">
+          <i class="icon-group"></i> Only friends
         </span>
-        <span class="save-error-msg text-error"></span>
-      </div>
-    </div>
-  </div>
-
+        <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu" role="menu">
+        <li data-value="everyone">
+          <a><i class="icon-globe"></i> Everyone</a>
+        </li>
+        <li data-value="friends">
+          <a><i class="icon-group"></i> Friends</a>
+        </li>
+        <li data-value="me">
+          <a><i class="icon-lock"></i> No one</a>
+        </li>
+      </ul>
+    </li>
+    can see that <%- user_name %> wrote this
+  </span>
 </div>
 {% endcall %}

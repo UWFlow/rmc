@@ -845,8 +845,7 @@ def user_course():
     elif uc_data.get('professor_id'):
         uc.professor_id = uc_data['professor_id']
     else:
-        # TODO(Sandy): Handle professor not set
-        pass
+        uc.professor_id = None
 
     now = datetime.now()
 

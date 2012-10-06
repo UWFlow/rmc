@@ -51,7 +51,7 @@ require.config({
     'ext/jquery': 'ext/jquery-1.8.1',
     'ext/bootstrap': 'ext/bootstrap-2.1.1',
     'ext/select2': 'ext/select2.min',
-    'ext/autosize': 'ext/jquery.autosize-min',
+    'ext/autosize': 'ext/jquery.autosize',
     'ext/cookie': 'ext/jquery.cookie',
     'ext/moment': 'ext/moment.min',
     'ext/slimScroll': 'ext/slimScroll-0.6.0',
