@@ -8,6 +8,9 @@ function($, __, FB) {
     var appId = '219309734863464';
   }
 
+  // Set the app_id on Facepile before we call FB.init
+  $('.fb-facepile').attr('data-app-id', appId);
+
   FB.init({appId: appId, status: true, cookie: true, xfbml: true});
 
   // Facebook Connect button
@@ -44,7 +47,7 @@ function($, __, FB) {
         };
         login(authResponse, params);
       });
-    });
+    }, {scope: 'email'});
   });
 
   var login = function(authResp, params) {

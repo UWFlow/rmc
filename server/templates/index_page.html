@@ -18,11 +18,13 @@
              pointer change when they hover over the img to look button-like #}
             <img class="fb-login-button" src="/static/img/ribbon_blue.png">
           </div>
-          {# TODO(Sandy): Make david position the facepile.
-             TODO(Sandy): Pass the app_id from server somehow. right now it's
-               the prod id. probably set it with jquery in facebook.js  #}
-          <div class="fb-facepile" data-app-id="219309734863464"
-            data-max-rows="1" data-width="300">
+          {# FIXME(Sandy): Permission requests after login now gives
+          us a cross-domain request error. I suspect it's because we're not
+          longer doing FB login in an iFrame. Luckily, we still seem to be
+          getting data back for the FB.api requests. Worry later? #}
+          {# TODO(Sandy): Make david position the facepile. #}
+          {# Note: data-app-id is set in facebook.js #}
+          <div class="fb-facepile" data-max-rows="1" data-width="300">
           </div>
         </div>
       </div>
