@@ -6,11 +6,12 @@ import sys
 import rmc.models as m
 import rmc.shared.constants as c
 
+# TODO(mack): remove duplication of fields throughout code
+# TODO(mack): deprecate overall rating
 
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 mongoengine.connect(c.MONGO_DB_RMC)
 
-# TODO(mack): store 'overall' in professor
 PROFESSOR_RATING_FIELDS = [
     'easiness',
     'clarity',
@@ -20,6 +21,7 @@ PROFESSOR_RATING_FIELDS = [
 COURSE_RATING_FIELDS = [
     'easiness',
     'interest',
+    'usefulness',
     'overall',
 ]
 
@@ -56,6 +58,7 @@ def import_mongo_course_rating():
     def get_fields_fn(uc):
         easiness = uc.course_review.easiness
         interest = uc.course_review.interest
+        usefulness = uc.course_review.usefulness
         if easiness and interest:
             overall = (easiness + interest) / 2
         elif easiness:
@@ -67,11 +70,13 @@ def import_mongo_course_rating():
             ('easiness', easiness),
             ('interest', interest),
             ('overall', overall),
+            ('usefulness', usefulness),
         ]
 
     def get_aggregate_fields_fn(uc):
         easiness = uc.easiness
         interest = uc.interest
+        # TODO(mack): add usefulness metric
 
         def calculate_overall_rating(e, i):
             return (e.count * e.rating + i.count * i.rating) / max(1, (e.count + i.count))
@@ -94,7 +99,8 @@ def import_mongo_course_rating():
     args = [courses, get_rating_fn]
     increment_ratings(*(args + [get_fields_fn, m.MenloCourse.objects]))
     increment_ratings(*(args + [get_fields_fn, m.UserCourse.objects]))
-    increment_aggregate_ratings(*(args + [get_aggregate_fields_fn, m.CritiqueCourse.objects]))
+    # TODO(mack): add back course critiques
+    #increment_aggregate_ratings(*(args + [get_aggregate_fields_fn, m.CritiqueCourse.objects]))
 
     count = [0]
     def set_course_ratings_in_mongo(courses):
@@ -106,6 +112,7 @@ def import_mongo_course_rating():
 
             course.easiness = ratings['easiness']
             course.interest = ratings['interest']
+            course.usefulness = ratings['usefulness']
             course.overall = ratings['overall']
 
             course.save()

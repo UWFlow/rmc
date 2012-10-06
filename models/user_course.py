@@ -56,6 +56,8 @@ class UserCourse(me.Document):
 
     meta = {
         'indexes': [
+            # TODO(mack): this index on user_id is probably not necessary
+            # since it duplicates the unique_with on user_id
             'user_id',
             'course_id',
             'professor_id',

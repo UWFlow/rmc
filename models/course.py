@@ -39,6 +39,7 @@ class Course(me.Document):
     easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
     interest = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
     usefulness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    # TODO(mack): deprecate overall rating
     overall = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
     professor_ids = me.ListField(me.StringField())
