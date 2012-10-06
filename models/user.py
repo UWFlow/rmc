@@ -99,11 +99,14 @@ class User(me.Document):
             # Using update rather than save because it should be more efficient
             friends.update(add_to_set__friend_ids=self.id)
 
-    # TODO(mack): cache value
+    # TODO(mack): think of better way to cache value
     @property
     def course_ids(self):
-        return [uc.course_id for uc in _user_course.UserCourse.objects(
-            id__in=self.course_history).only('course_id')]
+        if not hasattr(self, '_course_ids'):
+            user_courses = _user_course.UserCourse.objects(
+                id__in=self.course_history).only('course_id')
+            self._course_ids = [uc.course_id for uc in user_courses]
+        return self._course_ids
 
     @property
     # TODO(mack): support different sized pictures

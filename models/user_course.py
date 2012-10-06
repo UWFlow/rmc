@@ -125,6 +125,7 @@ class UserCourse(me.Document):
             'course_id': self.course_id,
             'professor_id': self.professor_id,
             'anonymous': self.anonymous,
+            'program_year_id': self.program_year_id,
             'course_review': {
                 'ratings': course_review.to_array(),
                 'comment': course_review.comment,

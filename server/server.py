@@ -179,39 +179,12 @@ def profile(profile_user_id):
     last_term_course_ids_by_friend = get_friend_course_ids_in_term(
             profile_user.friend_ids, LAST_TERM_ID)
 
-    # Get the user courses of profile user
-    profile_user_courses = profile_user.get_user_courses()
-    # Get a mapping from course id to user_course for profile user
-    profile_course_to_user_course = {}
-    for uc in profile_user_courses:
-        profile_course_to_user_course[uc.course_id] = uc
     # Get the course ids of courses profile user has taken
-    profile_course_ids = set(profile_course_to_user_course.keys())
-
-    if not own_profile:
-        # Get the user courses of current user
-        current_user_courses = current_user.get_user_courses()
-        # Get a mapping from course id to user_course for current user
-        current_course_to_user_course = {}
-        for uc in current_user_courses:
-            current_course_to_user_course[uc.course_id] = uc
-    else:
-        current_user_courses = profile_user_courses
-        current_course_to_user_course = profile_course_to_user_course
-
-
-    # Get user courses of friends of current user for displaying in transcript
-    # course cards
-    friend_user_courses = m.UserCourse.objects(
-            user_id__in=current_user.friend_ids,
-            course_id__in=profile_course_ids).only(
-                    'term_id', 'user_id', 'course_id')
+    profile_course_ids = set(profile_user.course_ids)
 
     # Fetch courses for transcript, which need more detailed information
     # than other courses (such as mutual and last term courses for friends)
     transcript_courses = m.Course.objects(id__in=profile_course_ids)
-    transcript_course_ids = set([c.id for c in transcript_courses])
-
 
     # Fetch remainining courses that need less data. This will be mutual
     # and last term courses for profile user's friends
@@ -243,29 +216,47 @@ def profile(profile_user_id):
         professor_dicts[professor_obj['id']] = professor_obj
 
     # Convert courses to dicts
+    course_dict_list, user_course_dict_list = m.Course.get_course_and_user_course_dicts(
+        transcript_courses, current_user, include_friends=own_profile)
     course_dicts = {}
+    for course_dict in course_dict_list:
+        course_dicts[course_dict['id']] = course_dict
+    user_course_dicts = {}
+    for user_course_dict in user_course_dict_list:
+        user_course_dicts[user_course_dict['id']] = user_course_dict
+
+    profile_uc_dict_list = []
+
+    # We only need to fetch usercourses for profile user if it is not the
+    # current user since m.Course.get_course_and_user_course_dicts() will
+    # have already fetched usercourses for the current user
+    if not own_profile:
+        # Get the user courses of profile user
+        profile_uc_dict_list = [
+                uc.to_dict() for uc in profile_user.get_user_courses()]
+        # Get a mapping from course id to user_course for profile user
+        profile_user_course_by_course = {}
+        for uc_dict in profile_uc_dict_list:
+            profile_user_course_by_course[uc_dict['course_id']] = uc_dict
+
+    # Fill in with information about profile user
     for course in transcript_courses:
-        course_dict = course.to_dict()
-        # The user course context that should be that of the current user
-        current_uc = current_course_to_user_course.get(course.id)
-        course_dict['user_course_id'] = current_uc.id if current_uc else None
-        profile_uc = profile_course_to_user_course.get(course.id)
-        course_dict['profile_user_course_id'] = profile_uc.id
-        course_dicts[course.id] = course_dict
+        course_dict = course_dicts[course.id]
+
+        if not own_profile:
+            # This has already been done for current user
+            profile_uc_dict = profile_user_course_by_course.get(course.id)
+            user_course_dicts[profile_uc_dict['id']] = profile_uc_dict
+        else:
+            user_course_id = course_dict.get('user_course_id')
+            course_dict['profile_user_course_id'] = course_dict.get(user_course_id)
+
+            if user_course_id:
+                profile_uc_dict_list.append(user_course_dicts[user_course_id])
+
     for course in friend_courses:
         course_dicts[course.id] = course.to_dict()
 
-    # Store friend usercourse ids in your own usercourses of the same
-    # course id for friends of current user
-    friend_user_courses_by_course = {}
-    for fuc in friend_user_courses:
-        if fuc.course_id in transcript_course_ids:
-            friend_user_courses_by_course.setdefault(
-                    fuc.course_id, []).append(fuc)
-    if own_profile:
-        for course_id, fucs in friend_user_courses_by_course.items():
-            course_dict = course_dicts[course_id]
-            course_dict['friend_user_course_ids'] = [fuc.id for fuc in fucs]
 
     def filter_course_ids(course_ids):
         return [course_id for course_id in course_ids
@@ -304,46 +295,28 @@ def profile(profile_user_id):
         user_dicts.setdefault(
                 current_user.id, {}).update(current_user.to_dict())
 
-    # Convert users courses to dicts
-    user_course_dicts = {}
-    for user_course in profile_user_courses:
-        if user_course.course_id not in transcript_course_ids:
-            continue
-
-        user_course_dicts[user_course.id] = user_course.to_dict()
-    if not own_profile:
-        for user_course in current_user_courses:
-            if user_course.course_id not in transcript_course_ids:
-                continue
-            user_course_dicts[user_course.id] = user_course.to_dict()
-    for user_course in friend_user_courses:
-        if (user_course.course_id not in course_dicts
-                or user_course.id in user_course_dicts):
-            continue
-        user_course_dicts[user_course.id] = user_course.to_dict()
-
-    def get_ordered_transcript(profile_user_courses):
+    def get_ordered_transcript(profile_uc_dict_list):
         transcript_by_term = {}
 
-        for uc in profile_user_courses:
-            transcript_by_term.setdefault(uc.term_id, []).append(uc)
+        for uc_dict in profile_uc_dict_list:
+            transcript_by_term.setdefault(uc_dict['term_id'], []).append(uc_dict)
 
         ordered_transcript = []
-        for term_id, ucs in sorted(transcript_by_term.items(), reverse=True):
+        for term_id, uc_dicts in sorted(transcript_by_term.items(), reverse=True):
             curr_term = m.Term(id=term_id)
             term_dict = {
                 'id': curr_term.id,
                 'name': curr_term.name,
-                'program_year_id': ucs[0].program_year_id,
-                'course_ids': [uc.course_id for uc in ucs
-                    if uc.course_id in course_dicts],
+                'program_year_id': uc_dicts[0]['program_year_id'],
+                'course_ids': [uc_dict['course_id'] for uc_dict in uc_dicts
+                    if uc_dict['course_id'] in course_dicts],
             }
             ordered_transcript.append(term_dict)
 
         return ordered_transcript
 
     # Store courses by term as transcript using the current user's friends
-    ordered_transcript = get_ordered_transcript(profile_user_courses)
+    ordered_transcript = get_ordered_transcript(profile_uc_dict_list)
 
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
@@ -405,47 +378,55 @@ def course_page(course_id):
 
     current_user = get_current_user()
 
-    course_obj = clean_course(course)
-    professor_objs = m.Professor.get_full_professors_for_course(
+    course_dict_list, user_course_dict_list = m.Course.get_course_and_user_course_dicts(
+            [course], current_user, include_friends=True, full_user_courses=True)
+
+    professor_dict_list = m.Professor.get_full_professors_for_course(
             course, current_user)
 
-    user_course_objs = []
-    user_objs = []
+    user_dict_list = []
     if current_user:
-        user_course = m.UserCourse.objects(
-                course_id=course_id, user_id=current_user.id).first()
-
-        user_course_objs = []
-        if user_course:
-            user_course_objs.append(user_course.to_dict())
-
-        # TODO(mack): optimize this
-        friend_user_courses = m.UserCourse.objects(id__in=
-                course_obj['friend_user_course_ids'])
-
-        for user_course in friend_user_courses:
-            user_course_objs.append(user_course.to_dict())
-
-        friend_ids = [uc.user_id for uc in friend_user_courses]
+        friend_ids = set()
+        for uc_dict in user_course_dict_list:
+            user_id = uc_dict['user_id']
+            if user_id == current_user.id:
+                continue
+            friend_ids.add(user_id)
         friends = m.User.objects(id__in=friend_ids)
-        user_objs = map(clean_user, [current_user] + list(friends))
 
-    ucs = m.UserCourse.objects(course_id=course_id)
+        user_dict_list = map(clean_user, [current_user] + list(friends))
 
-    ## TODO(mack): refactor tips similar to other models
-    #tip_objs = map(tip_from_uc, filter(course_review_exists, ucs))
+    user_dicts = {}
+    for user_dict in user_dict_list:
+        user_dicts[user_dict['id']] = user_dict
 
-    # TODO(david): Use a projection
-    tip_objs = [tip_from_uc(uc) for uc in ucs if
-            len(uc.course_review.comment) > MIN_REVIEW_LENGTH]
+    def tip_from_uc(uc_dict):
+        user_id = uc_dict['user_id']
+        user_dict = user_dicts[user_id]
+
+        names = [user_dict['first_name'], user_dict['last_name']]
+        if user_dict.get('middle_name'):
+            names.insert(1, user_dict['middle_name'])
+
+        full_name = ' '.join(names)
+        return {
+            'userId': user_id,
+            'name': full_name,
+            'comment': uc_dict['course_review']['comment'],
+            'comment_date': uc_dict['course_review']['comment_date'],
+        }
+
+    tip_dict_list = [tip_from_uc(uc_dict) for uc_dict in user_course_dict_list
+            if len(uc_dict['course_review']['comment']) > MIN_REVIEW_LENGTH]
+
 
     return flask.render_template('course_page.html',
         page_script='course_page.js',
-        course_obj=course_obj,
-        professor_objs=professor_objs,
-        tip_objs=tip_objs,
-        user_course_objs=user_course_objs,
-        user_objs=user_objs,
+        course_obj=course_dict_list[0],
+        professor_objs=professor_dict_list,
+        tip_objs=tip_dict_list,
+        user_course_objs=user_course_dict_list,
+        user_objs=user_dict_list,
         current_user_id=current_user.id if current_user else None,
         current_term_id=util.get_current_term_id(),
     )
@@ -566,8 +547,9 @@ def get_courses(course_ids):
       id__in=course_ids,
     )
 
-    # TODO(mack): do this more cleanly
-    course_objs = map(clean_course, courses)
+    # TODO(mack): not currently being called, fix it when it is needed
+    # course_objs = map(clean_course, courses)
+    course_objs = []
     professor_objs = m.Professor.get_reduced_professor_for_courses(courses)
 
     return util.json_dumps({
@@ -675,31 +657,22 @@ def search_courses():
 
     has_more = len(limited_courses) == count
 
-    course_objs = map(clean_course, limited_courses)
-    professor_objs = m.Professor.get_reduced_professors_for_courses(
+    course_dict_list, user_course_dict_list = m.Course.get_course_and_user_course_dicts(
+            limited_courses, current_user, include_friends=True, full_user_courses=False)
+    professor_dict_list = m.Professor.get_reduced_professors_for_courses(
             limited_courses)
 
-    user_objs = []
-    user_course_objs = []
-
+    user_dict_list = []
     if current_user:
-        course_ids = [c.id for c in limited_courses]
-        user_courses = m.UserCourse.objects(
-                user_id__in=[current_user.id] + current_user.friend_ids,
-                course_id__in=course_ids)
-
-        user_course_objs = []
-        for user_course in user_courses:
-            user_course_objs.append(user_course.to_dict())
-
-        users = m.User.objects(id__in=[uc.user_id for uc in user_courses])
-        user_objs = map(clean_user, users)
+        users = m.User.objects(id__in=[uc['user_id']
+            for uc in user_course_dict_list])
+        user_dict_list = map(clean_user, users)
 
     return util.json_dumps({
-        'user_objs': user_objs,
-        'course_objs': course_objs,
-        'professor_objs': professor_objs,
-        'user_course_objs': user_course_objs,
+        'user_objs': user_dict_list,
+        'course_objs': course_dict_list,
+        'professor_objs': professor_dict_list,
+        'user_course_objs': user_course_dict_list,
         'has_more': has_more,
     })
 
@@ -956,21 +929,6 @@ def clean_user(user):
         'last_term_course_ids': last_term_course_ids,
         'course_history': user.course_history,
         'course_ids': course_ids,
-    }
-
-def tip_from_uc(uc):
-    user_id = uc.user_id
-    user = m.User.objects(id=user_id).only('first_name', 'middle_name', 'last_name').first()
-    names = [user.first_name, user.last_name]
-    if user.middle_name is not None:
-        names.insert(1, user.middle_name)
-
-    full_name = ' '.join(names)
-    return {
-        'userId': user_id,
-        'name': full_name,
-        'comment': uc.course_review.comment,
-        'comment_date': uc.course_review.comment_date,
     }
 
 if __name__ == '__main__':
