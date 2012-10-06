@@ -110,7 +110,6 @@ class Professor(me.Document):
 
     @classmethod
     def get_full_professors_for_course(cls, course, current_user):
-
         professors = cls.objects(id__in=course.professor_ids)
         return [p.to_dict(course_id=course.id, current_user=current_user)
                 for p in professors]
@@ -140,8 +139,9 @@ class Professor(me.Document):
             course_review_dicts = []
             for uc in ucs:
 
-                course_review_dict = uc.professor_review.to_dict(
-                        current_user, uc)
+                #course_review_dict = uc.professor_review.to_dict(
+                        #current_user, uc)
+                course_review_dict = uc.professor_review.to_dict()
                 course_review_dicts.append(course_review_dict)
 
             dict_.update({

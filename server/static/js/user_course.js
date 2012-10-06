@@ -324,8 +324,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
 
     onPrivacySelect: function(evt) {
       $target = $(evt.currentTarget);
-      this.setPrivacy($target.data('value'));
-      // TODO(david): Actually persist to the server
+      var setting = $target.data('value');
+      this.setPrivacy(setting);
+      this.review.set('privacy', setting);
     },
 
     setPrivacy: function(setting) {

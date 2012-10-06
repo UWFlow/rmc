@@ -814,10 +814,6 @@ def user_course():
         # returns a 400
         raise ApiError('No user course found')
 
-    # Update privacy settings
-    # TODO(Sandy): Move this when we revamp privacy
-    uc.anonymous = uc_data['anonymous']
-
     # TODO(Sandy): Consider the case where the user picked a professor and rates
     # them, but then changes the professor. We need to remove the ratings from
     # the old prof's aggregated ratings and add them to the new prof's
@@ -855,14 +851,12 @@ def user_course():
     if uc_data.get('course_review'):
         # New course review data
         uc_data['course_review']['comment_date'] = now
-        uc.course_review.update_review(
-            **uc_data['course_review'])
+        uc.course_review.update(**uc_data['course_review'])
 
     if uc_data.get('professor_review'):
         # New prof review data
         uc_data['professor_review']['comment_date'] = now
-        uc.professor_review.update_review(
-            **uc_data['professor_review'])
+        uc.professor_review.update(**uc_data['professor_review'])
 
     uc.save()
 

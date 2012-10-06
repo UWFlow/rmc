@@ -1,8 +1,7 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'jquery.slide', 'rmc_backbone', 'ratings', 'util', 'comment', 'review'],
-function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util,
-    comment, review) {
+'jquery.slide', 'rmc_backbone', 'ratings', 'util', 'review'],
+function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
 
   var Prof = RmcBackbone.Model.extend({
     defaults: {

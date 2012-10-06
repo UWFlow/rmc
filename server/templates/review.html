@@ -11,3 +11,32 @@
   </div>
 </div>
 {% endcall %}
+
+{% call macros.us_template('comment-tpl') %}
+<div class="row-fluid">
+  <div class="span3 author">
+    <img class="img-rounded" width="50" height="50"
+        src="<%- author_pic_url %>" class="author-pic">
+    <div>
+      <small class="comment-date">
+        <% if (!anonymous) { %>
+          <% if (author.id) { %>
+            <a href="/profile/<%- author.id.$oid %>"><%- author.name %></a>
+          <% } else if (author.program_name) { %>
+            <span class="muted">A</span>
+            <%- author.program_name %>
+            <span class="muted">student</span>
+          <% } %>
+          <span class="muted">on</span>
+        <% } %>
+        <span class="muted">
+          <%- moment(comment_date).format('MMM D, YYYY') %>
+        </span>
+      </small>
+    </div>
+  </div>
+  <div class="comment-text span9">
+    <%- comment %>
+  </div>
+</div>
+{% endcall %}

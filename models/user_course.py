@@ -7,7 +7,7 @@ import professor
 import rating
 import review
 import term
-import user
+
 
 class CritiqueCourse(me.Document):
     meta = {
@@ -87,8 +87,6 @@ class UserCourse(me.Document):
 
     professor_id = me.StringField()
 
-    # is the review posted anonymously?
-    anonymous = me.BooleanField(default=False)
     course_review = me.EmbeddedDocumentField(review.CourseReview, default=review.CourseReview())
     professor_review = me.EmbeddedDocumentField(review.ProfessorReview, default=review.ProfessorReview())
 
@@ -113,9 +111,6 @@ class UserCourse(me.Document):
         )
 
     def to_dict(self):
-        course_review = self.course_review
-        professor_review = self.professor_review
-
         return {
             'id': self.id,
             'user_id': self.user_id,
@@ -124,18 +119,8 @@ class UserCourse(me.Document):
             'term_name': term.Term(id=self.term_id).name,
             'course_id': self.course_id,
             'professor_id': self.professor_id,
-            'anonymous': self.anonymous,
-            'program_year_id': self.program_year_id,
-            'course_review': {
-                'ratings': course_review.to_array(),
-                'comment': course_review.comment,
-                'comment_date': course_review.comment_date,
-            },
-            'professor_review': {
-                'ratings': professor_review.to_array(),
-                'comment': professor_review.comment,
-                'comment_date': professor_review.comment_date,
-            },
+            'course_review': self.course_review.to_dict(),
+            'professor_review': self.professor_review.to_dict(),
             'has_reviewed': self.has_reviewed,
         }
 
@@ -167,7 +152,6 @@ def get_reviews_for_course_prof(course_id, prof_id):
     user_reviews = UserCourse.objects(
         course_id=course_id,
         professor_id=prof_id,
-    ).only('professor_review', 'course_review', 'user_id', 'term_id',
-            'anonymous')
+    ).only('professor_review', 'course_review', 'user_id', 'term_id')
 
     return itertools.chain(menlo_reviews, user_reviews)
