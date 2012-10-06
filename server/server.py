@@ -867,38 +867,6 @@ def user_course():
 ###############################################################################
 # Helper functions
 
-def clean_course(course):
-    """Returns information about a course to be sent down an API.
-
-    Args:
-        course: The course object.
-        expanded: Whether to fetch more information, such as professor reviews.
-    """
-
-    current_user = get_current_user()
-
-    user_course_id = None
-    friend_user_courses = []
-    if current_user:
-        user_course = m.UserCourse.objects(
-                course_id=course.id, user_id=current_user.id).only('id').first()
-        if user_course:
-            user_course_id = user_course.id
-
-        # TODO(mack): make sure this is fast or do somewhere else more
-        # appropriate
-        friend_user_courses = m.UserCourse.objects(
-            course_id=course.id, user_id__in=current_user.friend_ids).only('id')
-
-    course_dict = course.to_dict()
-    course_dict.update({
-        'user_course_id': user_course_id,
-        'friend_user_course_ids': [fuc.id for fuc in friend_user_courses],
-    })
-
-    return course_dict
-
-
 def clean_user(user):
     program_name = user.short_program_name
 
