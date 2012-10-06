@@ -243,7 +243,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
         userCourse: this.userCourse,
-        readOnly: true
+        subject: 'course'
       });
 
       if (this.canShowAddReview && this.userCourse) {

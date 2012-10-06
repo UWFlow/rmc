@@ -100,7 +100,7 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
       });
       this.ratingsView = new ratings.RatingsView({
         ratings: this.prof.get('ratings'),
-        readOnly: true
+        subject: 'professor'
       });
     },
 

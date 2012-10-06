@@ -7,7 +7,8 @@
       <div class="rating-name span3">
         <%- capitalize(rating.getDisplayName()) %>
       </div>
-      <div class="rating-bar-span span8" title="<%- rating.getLikes() %> of <%- rating.get('count') %> think this was <%- rating.getDisplayName() %>">
+      <div class="rating-bar-span span8"
+        title="<%- rating.getLikes() %> of <%- rating.get('count') %> think this <%- subject %> was <%- rating.getDisplayName() %>">
         <div class="shown-rating">
           <div class="rating-progress progress <%- rating.getClass() %>">
             <div class="rating-bar bar active" style="width: 0%;"></div>

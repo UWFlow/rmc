@@ -70,15 +70,17 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
   });
 
   var RatingsView = RmcBackbone.View.extend({
+    template: _.template($('#ratings-tpl').html()),
 
     initialize: function(options) {
       this.ratings = options.ratings;
       this.userCourse = options.userCourse;
+      this.subject = options.subject;
     },
 
     render: function() {
       var ratings = this.ratings;
-      this.$el.html(_.template($('#ratings-tpl').html(), { ratings: ratings }));
+      this.$el.html(this.template({ ratings: ratings, subject: this.subject }));
 
       this.$('[title]').tooltip();
 
