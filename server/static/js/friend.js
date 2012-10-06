@@ -20,37 +20,47 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
           own_profile: this.profileUser.get('own_profile')
         }));
 
-      this.$('.friend-name')
-        .popover({
-          html: true,
-          title: this.friendModel.get('last_term_name'),
-          content: _.bind(this.getFriendPopoverContent, this),
-          trigger: 'hover',
-          placement: 'in right'
-        })
-        .on('click', '.popover', function(evt) {
-          // Prevent clicking in the hovercard from going to triggering the
-          // link the hovercard is attached to
-          if (!$(evt.target).is('a')) {
-            return false;
-          }
-        });
+      if (!this.profileUser.get('own_profile')) {
+        return this;
+      }
 
-      this.$('.mutual-courses')
-        .popover({
-          html: true,
-          title: 'Mutual Courses',
-          content: _.bind(this.getMutualCoursesPopoverContent, this),
-          trigger: 'hover',
-          placement: 'in right'
-        })
-        .click(function(evt) {
-          // Prevent clicking in the hovercard from going to triggering the
-          // link the hovercard is attached to
-          if (!$(evt.target).is('a')) {
-            return false;
-          }
-        });
+      var lastTermCourses = this.friendModel.get('last_term_courses');
+      if (lastTermCourses.length) {
+        this.$('.friend-name')
+          .popover({
+            html: true,
+            title: this.friendModel.get('last_term_name'),
+            content: _.bind(this.getFriendPopoverContent, this),
+            trigger: 'hover',
+            placement: 'in right'
+          })
+          .on('click', '.popover', function(evt) {
+            // Prevent clicking in the hovercard from going to triggering the
+            // link the hovercard is attached to
+            if (!$(evt.target).is('a')) {
+              return false;
+            }
+          });
+      }
+
+      var mutualCourses = this.friendModel.get('mutual_courses');
+      if (mutualCourses.length) {
+        this.$('.mutual-courses')
+          .popover({
+            html: true,
+            title: 'Mutual Courses',
+            content: _.bind(this.getMutualCoursesPopoverContent, this),
+            trigger: 'hover',
+            placement: 'in right'
+          })
+          .click(function(evt) {
+            // Prevent clicking in the hovercard from going to triggering the
+            // link the hovercard is attached to
+            if (!$(evt.target).is('a')) {
+              return false;
+            }
+          });
+      }
 
       return this;
     },
