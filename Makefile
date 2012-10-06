@@ -15,7 +15,7 @@ import_critiques:
 aggregate_data:
 	PYTHONPATH=.. python data/aggregator.py all
 
-init_data: import_menlo import_critiques aggregate_data
+init_data: import_menlo aggregate_data
 
 deploy:
 	@if [ `whoami` = 'rmc' ]; then \

@@ -182,9 +182,16 @@ def import_reviews():
         }
 
         def normalize_rating(menlo_rating):
-            # normalize 1..5 to 0..1
+            # normalize 1..5 to Yes/No:
+            # 1,2 => No, 3 => None, 4,5 => Yes
             try:
-                return float(int(menlo_rating) - 1) / 4
+                menlo_rating = int(menlo_rating)
+                if menlo_rating <= 2:
+                    return 0
+                elif menlo_rating >=4:
+                    return 1
+                else:
+                    return None
             except:
                 return None
 
