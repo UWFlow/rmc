@@ -1,4 +1,6 @@
 import rmc.shared.constants as c
+import rmc.models as m;
+import mongoengine as me;
 
 import argparse
 import glob
@@ -14,6 +16,8 @@ import urllib2
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
+me.connect(c.MONGO_DB_RMC)
+
 errors = []
 
 def html_parse(url):
@@ -27,7 +31,8 @@ def html_parse(url):
                 return parser.fromstring(result)
             except:
                 wait = 2 ** (tries + 1)
-                error = 'Exception parsing {url}. Sleeping for {wait} secs'.format(url=url, wait=wait)
+                error = 'Exception parsing {url}. Sleeping for {wait} secs'.format(
+                        url=url, wait=wait)
                 errors.append(error)
                 print error
                 time.sleep(wait)
@@ -37,16 +42,39 @@ def html_parse(url):
     raise
 
 def get_departments():
-    faculties = ['Applied Health Sciences', 'Arts', 'Engineering', 'Environment', 'Mathematics', 'Science']
+    faculties = {
+        'ahs': 'Applied Health Sciences',
+        'art': 'Arts',
+        'eng': 'Engineering',
+        'env': 'Environment',
+        'mat': 'Mathematics',
+        'sci': 'Science',
+    }
     count = 0
-    for faculty in faculties:
-        print 'FACULTY: ' + faculty
-        url = 'http://ugradcalendar.uwaterloo.ca/group/Courses-Faculty-of-{0}'.format(faculty.replace(' ', '-'))
-        print 'url is', url
+    for faculty_id, faculty_name in faculties.items():
+        url = 'http://ugradcalendar.uwaterloo.ca/group/Courses-Faculty-of-{0}'.format(
+                faculty_name.replace(' ', '-'))
         tree = html_parse(url)
         for e_department in tree.xpath('.//span[@id="ctl00_contentMain_lblContent"]/ul/ul/li/a'):
             count += 1
-            print 'text: ' + e_department.text_content() + ', link: ' + e_department.attrib['href']
+
+            reg = re.compile(r'^(.*?)\s+\((\w+)\).*$')
+            matches = re.findall(reg, e_department.text_content())[0]
+            dep_name = matches[0]
+            dep_id = matches[1].lower()
+            dep_url = 'http://ugradcalendar.uwaterloo.ca/courses/%s' % matches[1]
+
+            # TODO(mack): should be doing this in processor.py
+            if not m.Department.objects.with_id(dep_id):
+                print 'did not find %s, saving..' % dep_id
+                m.Department(
+                    id=dep_id,
+                    name=dep_name,
+                    faculty_id=faculty_id,
+                    url=dep_url,
+                ).save()
+
+
     print 'found: {0} departments'.format(count)
 
 def get_data_from_url(url, num_tries=5):
@@ -90,6 +118,7 @@ def file_exists(path):
         return True
     except:
         return False
+
 
 def get_uwdata_courses():
     deps = get_department_codes()
@@ -224,11 +253,9 @@ def get_bad_courses():
     f = open(os.path.join(sys.path[0], 'misc/bad_courses.txt'))
     data = json.load(f)
     count = 0
-    errors = []
     for course in data:
         count += 1
         url = 'http://uwlive.ca/courselect/search?q={query}'.format(query=course)
-        tries = 0
         try:
             u = urllib2.urlopen(url)
             result = u.read()
@@ -239,20 +266,12 @@ def get_bad_courses():
                 print 'bad: ' + course
         except:
             print 'exception: ' + course
-            #wait = 2 ** (tries + 1)
-            #error = 'Exception for {url}. Sleeping for {wait} secs'.format(url=url, wait=wait)
-            #errors.append(error)
-            #print error
-            #traceback.print_exc(file=sys.stdout)
-            #time.sleep(wait)
-            #tries += 1
-            #if tries == 5:
-            #  break
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    supported_modes = ['departments', 'courses', 'bad_courses']
+    supported_modes = ['departments', 'opendata_courses',
+            'uwdata_courses', 'bad_courses']
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
 
