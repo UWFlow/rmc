@@ -77,13 +77,33 @@ class BaseReview(me.EmbeddedDocument):
         if 'privacy' in kwargs:
             self.privacy = Privacy.to_int(kwargs['privacy'])
 
-    def to_dict(self):
-        return {
+    def to_dict(self, current_user=None, author_id=None):
+        dict_ = {
             'comment': self.comment,
             'comment_date': self.comment_date,
             'privacy': Privacy.to_str(self.privacy),
             'ratings': self.get_ratings_array(),
         }
+
+        if author_id:
+            # TODO(david): Remove circular dependency
+            import user as _user
+            author = _user.User.objects.only('first_name', 'last_name',
+                    'fbid', 'program_name').with_id(author_id)
+            show_author = self.should_show_author(current_user, author_id)
+            dict_['author'] = author.to_review_author_dict(current_user,
+                    show_author)
+
+        return dict_
+
+    def should_show_author(self, current_user, author_id):
+        if self.privacy == Privacy.ME:
+            return False
+        elif self.privacy == Privacy.FRIENDS:
+            return current_user and (author_id in current_user.friend_ids or
+                    current_user.id == author_id)
+        elif self.privacy == Privacy.EVERYONE:
+            return True
 
 
 class CourseReview(BaseReview):
@@ -92,7 +112,7 @@ class CourseReview(BaseReview):
     usefulness = me.FloatField(min_value=0.0, max_value=1.0, default=None)
 
     def rating_fields(self):
-        return ['interest', 'easiness', 'usefulness']
+        return ['usefulness', 'easiness', 'interest']
 
     # TODO(david): Refactor into base class
     def update_course_aggregate_ratings(self, cur_course):
@@ -124,22 +144,3 @@ class ProfessorReview(BaseReview):
         if hasattr(self, 'old_passion'):
             cur_professor.passion.update_aggregate_after_replacement(
                 self.old_passion, self.passion)
-
-    #def to_dict(self, current_user, user_course):
-        ## TODO(mack): this should somehow be done from UserCourse rather than
-        ## here since it currently requires passing through user_course which is
-        ## stupid
-
-        #dict_ = super(ProfessorReview, self).to_dict()
-
-        ## TODO(david): Maybe just pass down the entire user object
-        ## TODO(david) FIXME[uw](david): Should not nest comment
-        #if hasattr(user_course, 'user_id') and not user_course.anonymous:
-            ## TODO(mack): fix circular dependency
-            #import user as _user
-            #author = _user.User.objects.only('first_name', 'last_name', 'fbid',
-                    #'program_name').with_id(user_course.user_id)
-            #dict_['comment']['author'] = author.to_review_author_dict(
-                    #current_user)
-
-        #return dict_

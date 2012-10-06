@@ -208,16 +208,13 @@ class User(me.Document):
         }
 
 
-    def to_review_author_dict(self, current_user):
-        is_current_user = current_user and (current_user.id == self.id)
+    def to_review_author_dict(self, current_user, reveal_identity):
+        is_current_user = current_user and current_user.id == self.id
 
-        if current_user and (
-                self.id in current_user.friend_ids or is_current_user):
-
+        if reveal_identity:
             return {
                 'id': self.id,
                 'name': 'You' if is_current_user else self.name,
-                'fbid': self.fbid,
                 'fb_pic_url': self.fb_pic_url,
             }
 
@@ -225,4 +222,3 @@ class User(me.Document):
             return {
                 'program_name': self.short_program_name
             }
-

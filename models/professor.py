@@ -136,13 +136,8 @@ class Professor(me.Document):
                         >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
                     ucs)
 
-            course_review_dicts = []
-            for uc in ucs:
-
-                #course_review_dict = uc.professor_review.to_dict(
-                        #current_user, uc)
-                course_review_dict = uc.professor_review.to_dict()
-                course_review_dicts.append(course_review_dict)
+            course_review_dicts = [uc.professor_review.to_dict(current_user,
+                getattr(uc, 'user_id', None)) for uc in ucs]
 
             dict_.update({
                 'course_ratings': self.get_ratings_for_course(course_id),

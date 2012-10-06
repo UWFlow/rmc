@@ -405,11 +405,8 @@ def course_page(course_id):
         user_id = uc_dict['user_id']
         user_dict = user_dicts[user_id]
 
-        names = [user_dict['first_name'], user_dict['last_name']]
-        if user_dict.get('middle_name'):
-            names.insert(1, user_dict['middle_name'])
+        full_name = '%s %s' % (user_dict['first_name'], user_dict['last_name'])
 
-        full_name = ' '.join(names)
         return {
             'userId': user_id,
             'name': full_name,
