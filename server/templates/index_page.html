@@ -13,23 +13,16 @@
             Planning courses?<br>
             Ask your friends!
           </h1>
-{# TODO(sandy): fix width alignment issue and test max-rows #}
-{# FIXME[uw](Sandy): Try using Facepile? #}
-            {# TODO(mack): current hacky way to get access to event that only
-              happens during connecting via facebook button; see:
-              http://stackoverflow.com/questions/11771534/facebook-api-how-is-onlogin-called;
-              need to find a better way to do this. #}
-          <script>
-            var facebookLogin = function() {
-              require(['facebook'], function(facebook) {
-                facebook.firstLogin();
-              });
-            };
-          </script>
-          <div class="fb-login-button" data-show-faces="true"
-              data-width="335" data-max-rows="2" data-scope="email"
-              size="xlarge" onlogin="facebookLogin();">
-            Connect with Facebook
+          <div class="fb-login-button-container">
+          {# TODO(Sandy): Make david style the button (find image, make the
+             pointer change when they hover over the img to look button-like #}
+            <img class="fb-login-button" src="/static/img/ribbon_blue.png">
+          </div>
+          {# TODO(Sandy): Make david position the facepile.
+             TODO(Sandy): Pass the app_id from server somehow. right now it's
+               the prod id. probably set it with jquery in facebook.js  #}
+          <div class="fb-facepile" data-app-id="219309734863464"
+            data-max-rows="1" data-width="300">
           </div>
         </div>
       </div>

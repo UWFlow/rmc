@@ -10,37 +10,16 @@ function($, __, FB) {
 
   FB.init({appId: appId, status: true, cookie: true, xfbml: true});
 
-  var login = function(authResp, params) {
-    // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
-    // others to hijack someonne's session. We should probably look into
-    // a way of verifying the request. Maybe that's what Facebook Signed
-    // Requests are for? There are two corresponding server-side FIXMEs for this
-    params.fb_signed_request = authResp.signedRequest;
-    $.cookie('fbid', authResp.userID, { path: '/' });
-    $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
-    $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
-    $.ajax('/login', {
-      data: params,
-      type: 'POST',
-      success: function(data) {
-        // TODO(Sandy): handle errors here, expecting none right now though
-        window.location.href = '/profile';
-      },
-      error: function(xhr) {
-        FB.logout(function() {
-          window.location.href = '/';
-        });
-      }
-    });
-  };
-
-  var firstLogin = function() {
+  // Facebook Connect button
+  $('.fb-login-button').click(function() {
     // TODO(Sandy): Put up drip loader here
-    // First login, fetch user data from the FB Graph API
-    // TODO(Sandy): Grab and send more data: name, email, faculty, program, uni
-    // TODO(mack): could just get this from auth.login event, but this is
-    // cleaner
-    FB.getLoginStatus(function(response) {
+    FB.login(function(response) {
+      if (response.status !== 'connected') {
+        // TODO(Sandy): Handle what happens when they don't login?
+        return;
+      }
+
+      // First login, fetch user data from the FB Graph API
       var authResponse = response.authResponse;
 
       var deferredFriends = new $.Deferred();
@@ -65,6 +44,30 @@ function($, __, FB) {
         };
         login(authResponse, params);
       });
+    });
+  });
+
+  var login = function(authResp, params) {
+    // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
+    // others to hijack someonne's session. We should probably look into
+    // a way of verifying the request. Maybe that's what Facebook Signed
+    // Requests are for? There are two corresponding server-side FIXMEs for this
+    params.fb_signed_request = authResp.signedRequest;
+    $.cookie('fbid', authResp.userID, { path: '/' });
+    $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
+    $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
+    $.ajax('/login', {
+      data: params,
+      type: 'POST',
+      success: function(data) {
+        // TODO(Sandy): handle errors here, expecting none right now though
+        window.location.href = '/profile';
+      },
+      error: function(xhr) {
+        FB.logout(function() {
+          window.location.href = '/';
+        });
+      }
     });
   };
 
@@ -92,7 +95,6 @@ function($, __, FB) {
   };
 
   return {
-    firstLogin: firstLogin,
     loginIfPossible: loginIfPossible,
     logout: logout
   };
