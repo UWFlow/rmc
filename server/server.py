@@ -362,6 +362,7 @@ def courses():
         sort_modes=sort_modes,
         directions=directions,
         current_user_id=current_user.id if current_user else None,
+        user_objs=[current_user.to_dict()] if current_user else [],
     )
 
 
