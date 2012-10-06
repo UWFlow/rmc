@@ -14,6 +14,7 @@ import rmc.shared.constants as c
 import rmc.shared.secrets as s
 import rmc.models as m
 import rmc.shared.util as util
+import rmc.shared.rmclogger as rmclogger
 
 import base64
 import hashlib
@@ -722,6 +723,7 @@ def upload_transcript():
     transcript_data = util.json_loads(req.form['transcriptData'])
     courses_by_term = transcript_data['coursesByTerm']
 
+    # TODO(Sandy): Batch request fetch to mongo instead of fetch while looping
     for term in courses_by_term:
         term_id = get_term_id(term['name'])
         program_year_id = term['programYearId']
@@ -731,9 +733,16 @@ def upload_transcript():
             # TODO(Sandy): Fill in course weight and grade info here
             user_course = m.UserCourse.objects(
                 user_id=user_id, course_id=course_id, term_id=term_id).first()
-            # TODO(Sandy): This assumes the transcript is real and we create a UserCourse even if the course_id
-            # doesn't exist. It is possible for the user to spam us with fake courses on their transcript. Decide
-            # whether or not we should be creating these entries
+
+            if m.Course.objects.with_id(course_id) is None:
+                # Non-existant course according to our data
+                rmclogger.log_event(
+                    rmclogger.LOG_CATEGORY_DATA_MODEL,
+                    rmclogger.LOG_EVENT_UNKNOWN_COURSE_ID,
+                    course_id
+                )
+                continue
+
             if user_course is None:
                 user_course = m.UserCourse(
                     user_id=user_id,
@@ -756,6 +765,11 @@ def upload_transcript():
     user.cache_mutual_course_ids(r)
     user.save()
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_TRANSCRIPT,
+        rmclogger.LOG_EVENT_UPLOAD,
+        user_id
+    )
     return ''
 
 
@@ -774,6 +788,11 @@ def remove_transcript():
     # lose by removing their transcript.
     m.UserCourse.objects(user_id=current_user.id).delete()
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_TRANSCRIPT,
+        rmclogger.LOG_EVENT_REMOVE,
+        current_user.id
+    )
     return ''
 
 
