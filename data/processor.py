@@ -126,13 +126,10 @@ def get_prof_name(prof_name_menlo):
 
 def import_professors():
 
-    m.Professor.objects._collection.drop()
+    # NOTE: not safe to drop table anymore since users can add their own
+    # professors now
 
     def clean_professor(professor):
-        # department_name = None
-        # if 'info' in professor and 'Department' in professor['info']:
-        #     department_name = data['info']['Department'].strip()
-
         def clean_name(name):
             return re.sub(r'\s+', ' ', name.strip())
 
@@ -149,7 +146,8 @@ def import_professors():
         with open(file_name, 'r') as f:
             data = json.load(f)
         professor = clean_professor(data)
-        m.Professor(**professor).save()
+        if not m.Professor.objects(**professor):
+            m.Professor(**professor).save()
 
     print 'imported professors:', m.Professor.objects.count()
 
