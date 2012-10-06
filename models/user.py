@@ -1,7 +1,7 @@
 import itertools
 import mongoengine as me
 
-from term import Term
+import term as _term
 import user_course as _user_course
 
 class User(me.Document):
@@ -186,8 +186,12 @@ class User(me.Document):
 
         return pipe.execute()
 
-    def to_dict(self):
+    def to_dict(self, user_course_dicts={}):
         program_name = self.short_program_name
+
+        last_term_name = None
+        if self.last_term_id:
+            last_term_name = _term.Term(id=self.last_term_id).name
 
         return {
             'id': self.id,
@@ -198,9 +202,11 @@ class User(me.Document):
             'friend_ids': self.friend_ids,
             'fb_pic_url': self.fb_pic_url,
             'program_name': program_name,
+            'last_term_name': last_term_name,
             'last_program_year_id': self.last_program_year_id,
-            'course_history': self.course_history,
+            #'course_history': self.course_history,
         }
+
 
     def to_review_author_dict(self, current_user):
         is_current_user = current_user and (current_user.id == self.id)

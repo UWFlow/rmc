@@ -2,7 +2,6 @@ from datetime import datetime
 import bson
 import flask
 import functools
-import itertools
 import logging
 import mongoengine as me
 import pymongo
@@ -384,7 +383,7 @@ def course_page(course_id):
     professor_dict_list = m.Professor.get_full_professors_for_course(
             course, current_user)
 
-    user_dict_list = []
+    user_dicts = {}
     if current_user:
         friend_ids = set()
         for uc_dict in user_course_dict_list:
@@ -392,13 +391,13 @@ def course_page(course_id):
             if user_id == current_user.id:
                 continue
             friend_ids.add(user_id)
-        friends = m.User.objects(id__in=friend_ids)
+        friends = m.User.objects(id__in=friend_ids).only(
+                'first_name', 'last_name', 'fbid')
 
-        user_dict_list = map(clean_user, [current_user] + list(friends))
+        for friend in friends:
+            user_dicts[friend.id] = friend.to_dict()
+        user_dicts[current_user.id] = current_user.to_dict()
 
-    user_dicts = {}
-    for user_dict in user_dict_list:
-        user_dicts[user_dict['id']] = user_dict
 
     def tip_from_uc(uc_dict):
         user_id = uc_dict['user_id']
@@ -426,7 +425,7 @@ def course_page(course_id):
         professor_objs=professor_dict_list,
         tip_objs=tip_dict_list,
         user_course_objs=user_course_dict_list,
-        user_objs=user_dict_list,
+        user_objs=user_dicts.values(),
         current_user_id=current_user.id if current_user else None,
         current_term_id=util.get_current_term_id(),
     )
@@ -664,9 +663,11 @@ def search_courses():
 
     user_dict_list = []
     if current_user:
-        users = m.User.objects(id__in=[uc['user_id']
-            for uc in user_course_dict_list])
-        user_dict_list = map(clean_user, users)
+        user_ids = [uc['user_id'] for uc in user_course_dict_list
+                if uc['user_id'] != current_user.id]
+        users = m.User.objects(id__in=user_ids).only(
+                'first_name', 'last_name', 'fbid')
+        user_dict_list = [u.to_dict() for u in users]
 
     return util.json_dumps({
         'user_objs': user_dict_list,
@@ -863,41 +864,6 @@ def user_course():
         'course_review.comment_date': uc['course_review'][ 'comment_date'],
     })
 
-
-###############################################################################
-# Helper functions
-
-def clean_user(user):
-    program_name = user.short_program_name
-
-    last_term_name = None
-    if user.last_term_id:
-        last_term_name = m.Term(id=user.last_term_id).name
-
-    course_ids = []
-    last_term_course_ids = []
-    for uc in m.UserCourse.objects(id__in=user.course_history).only('course_id', 'term_id'):
-        course_ids.append(uc.course_id)
-        # TODO(Sandy): Handle courses that we have from UserCourse, but not in Course
-        if uc.term_id == util.get_current_term_id():
-            if m.Course.objects.only('id').with_id(uc.course_id):
-                last_term_course_ids.append(uc.course_id)
-
-    return {
-        'id': user.id,
-        'fbid': user.fbid,
-        'first_name': user.first_name,
-        'last_name': user.last_name,
-        'name': user.name,
-        'friend_ids': user.friend_ids,
-        'fb_pic_url': user.fb_pic_url,
-        'program_name': program_name,
-        'last_program_year_id': user.last_program_year_id,
-        'last_term_name': last_term_name,
-        'last_term_course_ids': last_term_course_ids,
-        'course_history': user.course_history,
-        'course_ids': course_ids,
-    }
 
 if __name__ == '__main__':
   app.debug = True
