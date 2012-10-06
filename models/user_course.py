@@ -122,6 +122,7 @@ class UserCourse(me.Document):
             'course_review': self.course_review.to_dict(),
             'professor_review': self.professor_review.to_dict(),
             'has_reviewed': self.has_reviewed,
+            'program_year_id': self.program_year_id,
         }
 
     def save(self, *args, **kwargs):
