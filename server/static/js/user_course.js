@@ -127,8 +127,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       courseRatings.on('change', _.bind(this.save, this, {}, {}));
       profRatings.on('change', _.bind(this.save, this, {}, {}));
 
-      this.profNames = _.pluck(this.courseModel.get('professors'), 'name');
-      this.profIds = _.pluck(this.courseModel.get('professors'), 'id');
+      this.profNames = this.courseModel.get('professors').pluck('name');
+      this.profIds = this.courseModel.get('professors').pluck('id');
       // TODO(david): Find a way to get select2 to not create search choice
       //     until a non-match for us (instead of manually doing this).
       this.matchesProf = _.bind(function(term) {
@@ -160,7 +160,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
           if (self.matchesProf(term)) return null;
           return {
             id: term,
-            text: 'new course prof ' + term
+            text: term
           };
         },
         initSelection : function (element, callback) {
