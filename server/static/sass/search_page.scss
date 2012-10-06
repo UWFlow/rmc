@@ -3,11 +3,12 @@
 
 #course-page-container {
   .keywords {
-    width: 98%;
-    padding-top: 10px;
-    line-height: 40px;
+    @include box-sizing(border-box);
+    width: 100%;
+    padding-bottom: 0;
+    line-height: 60px;
+    height: 60px;
     font-size: 40px;
-    height: 40px;
   }
 
   .course-search-form {
