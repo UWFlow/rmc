@@ -708,7 +708,7 @@ def upload_transcript():
             course_id = course_id.lower()
             # TODO(Sandy): Fill in course weight and grade info here
             user_course = m.UserCourse.objects(
-                user_id=user_id, course_id=course_id, term_id=term_id).first()
+                user_id=user_id, course_id=course_id).first()
 
             if user_course is None:
                 if m.Course.objects.with_id(course_id) is None:
@@ -726,9 +726,15 @@ def upload_transcript():
                     term_id=term_id,
                     program_year_id=program_year_id,
                 )
-                user_course.save()
+            else:
+                # Record only the latest attempt for duplicate/failed courses
+                if term_id > user_course.term_id:
+                    user_course.term_id = term_id
 
-            # We don't _need_ this check, but it's more robust if we mess up
+            user_course.save()
+
+            # We don't need to put this here and have this check, but it's more
+            # robust against data corruption if/when we mess up
             if user_course.id not in course_history_list:
                 course_history_list.append(user_course.id)
 
