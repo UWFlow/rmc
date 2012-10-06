@@ -245,13 +245,15 @@ def profile(profile_user_id):
         if not own_profile:
             # This has already been done for current user
             profile_uc_dict = profile_user_course_by_course.get(course.id)
-            user_course_dicts[profile_uc_dict['id']] = profile_uc_dict
+            profile_user_course_id = profile_uc_dict['id']
+            user_course_dicts[profile_user_course_id] = profile_uc_dict
         else:
-            user_course_id = course_dict.get('user_course_id')
-            course_dict['profile_user_course_id'] = course_dict.get(user_course_id)
+            profile_user_course_id = course_dict.get('user_course_id')
+            if profile_user_course_id:
+                profile_uc_dict_list.append(
+                        user_course_dicts[profile_user_course_id])
 
-            if user_course_id:
-                profile_uc_dict_list.append(user_course_dicts[user_course_id])
+        course_dict['profile_user_course_id'] = profile_user_course_id
 
     for course in friend_courses:
         course_dicts[course.id] = course.to_dict()
