@@ -121,7 +121,7 @@ class Professor(me.Document):
             'id': self.id,
             #'first_name': self.first_name,
             #'last_name': self.last_name,
-            'ratings': self.get_ratings(),
+            #'ratings': self.get_ratings(),
             'name': self.name,
         }
 
