@@ -108,9 +108,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         placeholder: 'Comment about the professor...'
       });
 
-      courseReview.on('change', _.bind(this.saveComments, this,
+      courseReview.on('change:comment', _.bind(this.saveComments, this,
             this.courseCommentView));
-      profReview.on('change', _.bind(this.saveComments, this,
+      profReview.on('change:comment', _.bind(this.saveComments, this,
             this.profCommentView));
 
       var courseRatings = this.userCourse.get('course_review').get('ratings');
