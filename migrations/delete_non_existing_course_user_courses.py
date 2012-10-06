@@ -1,0 +1,19 @@
+import rmc.models as m
+import rmc.shared.constants as c
+
+import mongoengine as me
+
+me.connect(c.MONGO_DB_RMC)
+
+def delete_non_existing_course_user_courses():
+    """Delete UserCourse models that reference Course objects we dont' have
+    (e.g. wkrpt100)"""
+
+    for uc in m.UserCourse.objects:
+        if not m.Course.objects.with_id(uc.course_id):
+            print 'deleting: %s, %s, %s' % (
+                    uc.user_id, uc.course_id, uc.term_id)
+            uc.delete()
+
+if __name__ == '__main__':
+    delete_non_existing_course_user_courses()
