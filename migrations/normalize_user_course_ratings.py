@@ -30,6 +30,10 @@ def normalize_user_course_ratings():
 
 
     for uc in m.UserCourse.objects:
+        if not m.Course.objects.with_id(uc.course_id):
+            print 'Skipping course %s' % uc.course_id
+            continue
+
         cr = uc.course_review
         pr = uc.professor_review
 

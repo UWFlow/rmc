@@ -6,7 +6,12 @@ import mongoengine as me
 me.connect(c.MONGO_DB_RMC)
 
 def delete_non_existing_course_user_courses():
-    """Delete UserCourse models that reference Course objects we dont' have
+    """
+    NOTE: Do not run this yet, as it seems from dry run that there are
+    some usercourses that we would be deleting that are legit courses
+    that we should try getting into our Course collection.
+
+    Delete UserCourse models that reference Course objects we dont' have
     (e.g. wkrpt100)"""
 
     for uc in m.UserCourse.objects:
