@@ -4,7 +4,7 @@ import rmc.models as m
 from datetime import datetime
 import glob
 import json
-import mongoengine
+import mongoengine as me
 import os
 import re
 import sys
@@ -111,6 +111,27 @@ def import_courses():
             else:
                 uwdata_ignored += 1
 
+
+    # Update courses with terms offered data
+    with open(os.path.join(
+            sys.path[0], c.TERMS_OFFERED_DATA_DIR, 'terms_offered.txt')) as f:
+
+        def map_term(term):
+            return {
+                'W': '01',
+                'S': '05',
+                'F': '09',
+            }[term]
+
+        terms_offered_by_course = json.load(f)
+        for course_id, terms_offered in terms_offered_by_course.items():
+            course = m.Course.objects.with_id(course_id)
+            if not course:
+                continue
+
+            course.terms_offered = map(map_term, terms_offered)
+            course.save()
+
     print 'backfilled %d courses from uwdata' % uwdata_count
     print 'ignored %d courses from uwdata' % uwdata_ignored
     print 'imported courses:', m.Course.objects.count()
@@ -146,6 +167,8 @@ def import_professors():
         with open(file_name, 'r') as f:
             data = json.load(f)
         professor = clean_professor(data)
+        # Since user's can now add professors, gotta first check
+        # that the professor does not aleady exist
         if not m.Professor.objects(**professor):
             m.Professor(**professor).save()
 
@@ -230,7 +253,7 @@ def import_reviews():
     print 'imported reviews:', m.MenloCourse.objects.count()
 
 if __name__ == '__main__':
-    mongoengine.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+    me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
     import_professors()
     import_departments()
     import_courses() # must be after departments

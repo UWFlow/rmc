@@ -44,6 +44,11 @@ class Course(me.Document):
 
     professor_ids = me.ListField(me.StringField())
 
+    # NOTE: The word term is overloaded based on where it's used. Here, it mean
+    # which terms of the year is the course being offered?
+    # e.g. ['01', '05', '09']
+    terms_offered = me.ListField(me.StringField())
+
     # eg. ['earth', '121l', 'earth121l', 'Introductory', 'Earth' 'Sciences', 'Laboratory', '1']
     _keywords = me.ListField(me.StringField(), required=True)
 
