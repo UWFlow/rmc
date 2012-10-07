@@ -8,6 +8,7 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
 
+TERMS_OFFERED_DATA_DIR = 'terms_offered'
 OPENDATA_COURSES_DATA_DIR = 'opendata_courses'
 UWDATA_COURSES_DATA_DIR = 'uwdata_courses'
 REVIEWS_DATA_DIR = 'reviews'

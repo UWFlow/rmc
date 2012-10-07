@@ -20,7 +20,7 @@ me.connect(c.MONGO_DB_RMC)
 
 errors = []
 
-def html_parse(url):
+def html_parse(url, num_tries=5):
     for parser in [html]:
         tries = 0
         while True:
@@ -30,16 +30,18 @@ def html_parse(url):
                 u.close()
                 return parser.fromstring(result)
             except:
+                tries += 1
+                if tries == num_tries:
+                    break
+
                 wait = 2 ** (tries + 1)
                 error = 'Exception parsing {url}. Sleeping for {wait} secs'.format(
                         url=url, wait=wait)
                 errors.append(error)
                 print error
                 time.sleep(wait)
-                tries += 1
-                if tries == 5:
-                    break
-    raise
+
+    return None
 
 def get_departments():
     faculties = {
@@ -246,32 +248,69 @@ def get_opendata_courses():
     print 'Bad course names: {names}'.format(names=bad_course_names)
 
 
-def get_bad_courses():
-    # PLAN OF ATTACK:
-    # 1) run all courses against uwlive.ca, any good courses processed
-    # 2) run remaining against uwaterloo api search, if multiple results returned, ignore
-    f = open(os.path.join(sys.path[0], 'misc/bad_courses.txt'))
-    data = json.load(f)
-    count = 0
-    for course in data:
-        count += 1
-        url = 'http://uwlive.ca/courselect/search?q={query}'.format(query=course)
-        try:
-            u = urllib2.urlopen(url)
-            result = u.read()
-            u.close()
-            if result and result.find('Your search returned 0 results') < 0:
-                print 'good: ' + course
-            else:
-                print 'bad: ' + course
-        except:
-            print 'exception: ' + course
+def get_terms_offered():
+    found = 0
+    missing_course_ids = []
+
+    terms_offered_by_course = {}
+    css_class_to_term = {
+        'offer-spring': 'S',
+        'offer-winter': 'W',
+        'offer-fall': 'F',
+    }
+
+    def save_data():
+        print 'writing to file'
+
+        file_name = os.path.join(
+                sys.path[0], '%s/terms_offered.txt' % c.TERMS_OFFERED_DATA_DIR)
+        with open(file_name, 'w') as f:
+            json.dump(terms_offered_by_course, f)
+
+        file_name = os.path.join(
+                sys.path[0], '%s/missing_courses.txt' % c.TERMS_OFFERED_DATA_DIR)
+        with open(file_name, 'w') as f:
+            json.dump(missing_course_ids, f)
+
+
+    for course in list(m.Course.objects):
+        terms_offered_by_course[course.id] = []
+
+        if len(terms_offered_by_course) % 100 == 0:
+            save_data()
+
+        department_id = course.department_id
+        number = course.number
+
+        url = 'http://uwlive.ca/courselect/courses/%s/%s' % (
+                department_id, number)
+        html_tree = html_parse(url, num_tries=1)
+        if html_tree is None:
+            missing_course_ids.append(course.id)
+        else:
+            for css_class, term_code in css_class_to_term.items():
+                if html_tree.xpath('.//li[@class="%s"]' % css_class):
+                    terms_offered_by_course[course.id].append(term_code)
+
+        if len(terms_offered_by_course[course.id]):
+            found += 1
+            print '+ %s' % course.id
+        else:
+            print '- %s' % course.id
+
+        time.sleep(0.5)
+
+    save_data()
+
+    print 'FOUND: %d' % found
+    print 'MISSING: %d' % len(missing_course_ids)
+
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     supported_modes = ['departments', 'opendata_courses',
-            'uwdata_courses', 'bad_courses']
+            'uwdata_courses', 'terms_offered']
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
 
@@ -281,7 +320,7 @@ if __name__ == '__main__':
         get_opendata_courses()
     elif args.mode == 'uwdata_courses':
         get_uwdata_courses()
-    elif args.mode == 'bad_courses':
-        get_bad_courses()
+    elif args.mode == 'terms_offered':
+        get_terms_offered()
     else:
         sys.exit('The mode %s is not supported' % args.mode)
