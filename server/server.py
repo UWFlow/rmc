@@ -589,6 +589,12 @@ def search_courses():
 
     current_user = get_current_user()
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_COURSE_SEARCH,
+        rmclogger.LOG_EVENT_SEARCH_PARAMS,
+        request.values
+    )
+
     query = {}
     if keywords:
         keywords = re.sub('\s+', ' ', keywords)
