@@ -348,6 +348,13 @@ def courses():
             'name': sort_mode['name'],
             'direction': sort_mode['direction'],
         }
+
+    terms = [
+        { 'value': '', 'name': 'any term' },
+        { 'value': '01', 'name': 'Winter' },
+        { 'value': '05', 'name': 'Spring' },
+        { 'value': '09', 'name': 'Fall' },
+    ]
     sort_modes = map(clean_sort_modes, COURSES_SORT_MODES)
     directions = [
         { 'value': pymongo.ASCENDING, 'name': 'increasing' },
@@ -359,6 +366,7 @@ def courses():
     return flask.render_template(
         'search_page.html',
         page_script='search_page.js',
+        terms=terms,
         sort_modes=sort_modes,
         directions=directions,
         current_user_id=current_user.id if current_user else None,
@@ -572,6 +580,7 @@ def search_courses():
 
     request = flask.request
     keywords = request.values.get('keywords')
+    term = request.values.get('term')
     sort_mode = request.values.get('sort_mode', 'num_ratings')
     default_direction = COURSES_SORT_MODES_BY_VALUE[sort_mode]['direction']
     direction = int(request.values.get('direction', default_direction))
@@ -580,6 +589,7 @@ def search_courses():
 
     current_user = get_current_user()
 
+    query = {}
     if keywords:
         keywords = re.sub('\s+', ' ', keywords)
         keywords = keywords.split(' ')
@@ -589,11 +599,13 @@ def search_courses():
             return re.compile('^%s' % keyword)
 
         keywords = map(regexify_keywords, keywords)
+        query['_keywords__all'] = keywords
 
-    if keywords:
-        unsorted_courses = m.Course.objects(_keywords__all=keywords)
-    else:
-        unsorted_courses = m.Course.objects()
+    if term:
+        query['terms_offered'] = term
+
+    unsorted_courses = m.Course.objects(**query)
+    print 'unsorted_courses', len(unsorted_courses)
 
     if sort_mode == 'friends':
 

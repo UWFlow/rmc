@@ -41,7 +41,21 @@
     </div>
     <form class="course-search-form nav nav-pills">
       <!-- TODO(mack): add search icon -->
-      Sorted
+      Search courses from
+      <li class="term-dropdown dropdown">
+        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
+          <span class="selected-term"><%- selectedTerm.name %></span>
+          <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+        <% _.each(terms, function(term) { %>
+          <li data-value="<%- term.value %>">
+            <a href="#"><%-term.name %></a>
+          </li>
+        <% }); %>
+        </ul>
+      </li>
+      sorted
       <li class="sort-mode-dropdown dropdown">
         <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
           <span class="selected-sort-mode"><%- selectedSortMode.name %></span>
@@ -56,14 +70,17 @@
         </ul>
       </li>
       in
-      <li class="order-dropdown dropdown">
+      <li class="direction-dropdown dropdown">
         <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
           <span class="selected-direction"><%- selectedDirection.name %></span>
           <b class="caret"></b>
         </a>
         <ul class="dropdown-menu" role="menu">
-          <li data-value="1"><a href="#">ascending</a></li>
-          <li data-value="-1"><a href="#">descending</a></li>
+        <% _.each(directions, function(direction) { %>
+          <li data-value="<%- direction.value %>">
+            <a href="#"><%-direction.name %></a>
+          </li>
+        <% }); %>
         </ul>
       </li>
       order
@@ -82,7 +99,9 @@
 
 {% block scripts %}
 <script>
+  window.pageData.terms = {{ terms|tojson|safe }};
   window.pageData.sortModes = {{ sort_modes|tojson|safe }};
+  window.pageData.directions = {{ directions|tojson|safe }};
   window.pageData.userObjs = {{ user_objs|tojson|safe }};
 </script>
 {% endblock %}

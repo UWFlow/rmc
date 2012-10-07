@@ -18,6 +18,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof) 
     hasMore: true,
 
     initialize: function(options) {
+      this.term = window.pageData.terms[0];
       this.sortMode = window.pageData.sortModes[0];
       this.setDirection(this.sortMode.direction);
       this.courses = new _course.CourseCollection();
@@ -34,9 +35,11 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof) 
     },
 
     render: function() {
-      var sortModes = window.pageData.sortModes;
       this.$el.html(_.template($('#search-form-tpl').html(), {
-        sortModes: sortModes,
+        terms: pageData.terms,
+        sortModes: pageData.sortModes,
+        directions: pageData.directions,
+        selectedTerm: this.term,
         selectedSortMode: this.sortMode,
         selectedDirection: this.direction
       }));
@@ -58,19 +61,25 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof) 
     },
 
     events: {
+      'click .term-dropdown .dropdown-menu li': 'changeTerm',
       'click .sort-mode-dropdown .dropdown-menu li': 'changeSortMode',
-      'click .order-dropdown .dropdown-menu li': 'changeDirection',
+      'click .direction-dropdown .dropdown-menu li': 'changeDirection',
       'input .keywords': 'changeKeywords',
       'paste .keywords': 'changeKeywords'
+    },
+
+    changeTerm: function(evt) {
+      var $target = $(evt.currentTarget);
+      this.$('.selected-term').text($target.text());
+      this.setTerm($target.attr('data-value'));
+
+      this.resetAndUpdate();
     },
 
     changeSortMode: function(evt) {
       var $target = $(evt.currentTarget);
       this.$('.selected-sort-mode').text($target.text());
-      var sortValue = $target.attr('data-value');
-      this.sortMode = _.find(window.pageData.sortModes, function(sortMode) {
-        return sortValue === sortMode.value;
-      }, this);
+      this.setSortMode($target.attr('data-value'));
       this.setDirection(this.sortMode.direction);
       this.$('.selected-direction').text(this.direction.name);
 
@@ -102,17 +111,22 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof) 
       }, this), FETCH_DELAY_MS);
     },
 
-    setDirection: function(direction) {
-      var directionName;
-      if (direction > 0) {
-        directionName = 'ascending';
-      } else {
-        directionName = 'descending';
-      }
-      this.direction = {
-        'value': direction,
-        'name': directionName
-      };
+    setTerm: function(termValue) {
+      this.term = _.find(pageData.terms, function(term) {
+        return term.value === termValue;
+      });
+    },
+
+    setSortMode: function(sortValue) {
+      this.sortMode = _.find(pageData.sortModes, function(sortMode) {
+        return sortValue === sortMode.value;
+      }, this);
+    },
+
+    setDirection: function(directionValue) {
+      this.direction = _.find(pageData.directions, function(direction) {
+        return direction.value === directionValue;
+      });
     },
 
     resetCourses: function() {
@@ -142,21 +156,19 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof) 
       }
       this.$('.loader').removeClass('hide');
       this.updatingCourses = true;
+      var args = {
+        offset: this.offset,
+        count: this.count,
+        term: this.term.value,
+        sort_mode: this.sortMode.value,
+        direction: this.direction.value,
+        keywords: this.keywords
+      };
+
       // TODO(mack): use $.ajax to handle error
-      var args = [];
-      args.push('offset=' + this.offset);
-      args.push('count=' + this.count);
-      if (this.sortMode) {
-        args.push('sort_mode=' + this.sortMode.value);
-      }
-      if (this.direction) {
-        args.push('direction=' + this.direction.value);
-      }
-      if (this.keywords) {
-        args.push('keywords=' + this.keywords);
-      }
       $.getJSON(
-        '/api/course-search?' + args.join('&'),
+        '/api/course-search',
+        args,
         _.bind(function(data) {
           if (reset) {
             this.courses.reset();
