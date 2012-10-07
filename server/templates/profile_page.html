@@ -12,33 +12,25 @@
   {{ profile_obj['name'] }}
 {% endblock %}
 
-{# TODO(david): duplication of row-fluid container-fluid code #}
-{# TODO(david): put vertical align in CSS stylesheet #}
-{% block header %}
-  <div class="container-fluid course-header">
-    <div class="row-fluid">
-      <div class="span10">
-  <h1 style="vertical-align: bottom;">
-    <img class="profile-pic img-polaroid" src="{{ profile_obj['fb_pic_url'] }}">
-    {{ profile_obj['name'] }}
-    {% if profile_obj['program_name'] %}
-    &nbsp;
-      <span class="muted" style="vertical-align: bottom;">
-        {% if profile_obj['last_program_year_id'] %}
-        {{ profile_obj['last_program_year_id'] }}
-        {% endif %}
-        {{ profile_obj['program_name'] }}
-      </span>
-    {% endif %}
-  </h1>
-      </div>
-    </div>
-  </div>
-{% endblock %}
-
 {% block body %}
   <div class="row-fluid">
-    <div class="span3 well" id="friend-sidebar-container">
+    <div class="span3">
+      <div class="row-fluid personal-info">
+        <div class="span12">
+          <img class="profile-pic img-polaroid" src="{{ profile_obj['fb_pic_url'] }}?type=large">
+          <h1 class="name">David Hu</h1>
+          {% if profile_obj['program_name'] %}
+            <p class="lead program">
+              {{ profile_obj.get('last_program_year_id', '') }}
+              {{ profile_obj['program_name'] }}
+            </p>
+          {% endif %}
+        </div>
+      </div>
+      <hr class="divider">
+      <div class="row-fluid">
+        <div class="span12" id="friend-sidebar-container"></div>
+      </div>
     </div>
     <div class="span9" id="profile-container">
       <div id="term-collection-container"></div>

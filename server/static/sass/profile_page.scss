@@ -4,13 +4,27 @@
 @import 'friend';
 
 header {
+  margin-bottom: 40px;
+}
+
+.personal-info {
   .profile-pic {
-    $profile-pic-size: 40px;
+    $profile-pic-size: 200px;
     width: $profile-pic-size;
     height: $profile-pic-size;
   }
-  margin-top: 20px;
-  margin-bottom: 10px;
+  .name {
+    margin-top: 15px;
+    margin-bottom: 0px;
+  }
+  .program {
+    margin-bottom: 0;
+  }
+}
+
+.divider {
+  border-top: 1px solid #CCC;
+  margin: 22px 0;
 }
 
 #transcript-container {
