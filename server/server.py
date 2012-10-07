@@ -557,11 +557,12 @@ def get_courses(course_ids):
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
     # TODO(david): Usefulness
-    { 'value': 'num_ratings', 'name': 'popularity', 'direction': pymongo.DESCENDING, 'field': 'overall.count' },
-    { 'value': 'friends', 'name': 'friends taking' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
-    { 'value': 'overall', 'name': 'overall rating', 'direction': pymongo.DESCENDING, 'field': 'overall.rating' },
-    { 'value': 'interest', 'name': 'interest', 'direction': pymongo.DESCENDING, 'field': 'interest.rating' },
-    { 'value': 'easiness', 'name': 'easiness' , 'direction': pymongo.DESCENDING, 'field': 'easiness.rating' },
+    { 'value': 'num_ratings', 'name': 'by popularity', 'direction': pymongo.DESCENDING, 'field': 'overall.count' },
+    { 'value': 'friends', 'name': 'by friends taking' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
+    { 'value': 'alphabetical', 'name': 'alphabetically', 'direction': pymongo.ASCENDING, 'field': 'id' },
+    { 'value': 'overall', 'name': 'by overall rating', 'direction': pymongo.DESCENDING, 'field': 'overall.rating' },
+    { 'value': 'interest', 'name': 'by interest', 'direction': pymongo.DESCENDING, 'field': 'interest.rating' },
+    { 'value': 'easiness', 'name': 'by easiness' , 'direction': pymongo.DESCENDING, 'field': 'easiness.rating' },
 ]
 COURSES_SORT_MODES_BY_VALUE = {}
 for sort_mode in COURSES_SORT_MODES:
