@@ -570,6 +570,9 @@ COURSES_SORT_MODES_BY_VALUE = {}
 for sort_mode in COURSES_SORT_MODES:
     COURSES_SORT_MODES_BY_VALUE[sort_mode['value']] = sort_mode
 
+# Special sort instructions are needed for these sort modes
+# TODO(Sandy): deprecate overall and add usefulness
+RATING_SORT_MODES = ['overall', 'interest', 'easiness']
 
 @app.route('/api/course-search', methods=['GET'])
 # TODO(mack): find a better name for function
@@ -653,10 +656,15 @@ def search_courses():
 
     else:
         sort_options = COURSES_SORT_MODES_BY_VALUE[sort_mode]
-        sort_instr = ''
-        if direction < 0:
-            sort_instr = '-'
-        sort_instr += sort_options['field']
+
+        if sort_mode in RATING_SORT_MODES:
+            sort_instr = '-' + sort_options['field']
+            sort_instr += "_positive" if direction < 0 else "_negative"
+        else:
+            sort_instr = ''
+            if direction < 0:
+                sort_instr = '-'
+            sort_instr += sort_options['field']
 
         unsorted_courses = m.Course.objects(**filters)
         sorted_courses = unsorted_courses.order_by(sort_instr)

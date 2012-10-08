@@ -8,10 +8,16 @@ import rmc.shared.util as util
 class AggregateRating(me.EmbeddedDocument):
     rating = me.FloatField(min_value=0.0, max_value=1.0, default=0.0)
     count = me.IntField(min_value=0, default=0)
-    sorting_score = me.FloatField(min_value=0.0, max_value=1.0, default=0.0)
+    sorting_score_positive = me.FloatField(
+        min_value=0.0, max_value=1.0, default=0.0)
+    sorting_score_negative = me.FloatField(
+        min_value=0.0, max_value=1.0, default=0.0)
 
     def update_sorting_score(self):
-        self.sorting_score = util.get_sorting_score(self.rating, self.count)
+        self.sorting_score_positive = util.get_sorting_score(
+            self.rating, self.count)
+        self.sorting_score_negative = util.get_sorting_score(
+            1 - self.rating, self.count)
 
 
     def add_rating(self, rating):
