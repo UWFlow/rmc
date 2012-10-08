@@ -139,7 +139,7 @@ class UserCourse(me.Document):
             cur_professor = professor.Professor.objects.with_id(
                 self.professor_id)
             self.professor_review.update_professor_aggregate_ratings(
-                cur_professor)
+                cur_professor, cur_course, self.course_review)
             cur_professor.save()
 
         super(UserCourse, self).save(*args, **kwargs)

@@ -2,6 +2,8 @@ from datetime import datetime
 import mongoengine as me
 import logging
 
+import professor as _professor
+
 
 class Privacy(object):
     ME = 0
@@ -143,11 +145,45 @@ class ProfessorReview(BaseReview):
         return ['clarity', 'passion']
 
     # TODO(david): Refactor into base class
-    def update_professor_aggregate_ratings(self, cur_professor):
+    # TODO(mack): tidy up interface so we don't have to pass in course,
+    # course_review
+    def update_professor_aggregate_ratings(self, cur_professor,
+            cur_course, course_review):
+
+        redis_changes = []
+
+        if hasattr(course_review, 'old_easiness'):
+            redis_changes.append({
+                'name': 'easiness',
+                'old': course_review.old_easiness,
+                'new': course_review.easiness,
+            })
+
+        if hasattr(course_review, 'old_interest'):
+            redis_changes.append({
+                'name': 'interest',
+                'old': course_review.old_interest,
+                'new': course_review.interest,
+            })
+
         # Update associated aggregate ratings
         if hasattr(self, 'old_clarity'):
             cur_professor.clarity.update_aggregate_after_replacement(
                 self.old_clarity, self.clarity)
+            redis_changes.append({
+                'name': 'clarity',
+                'old': self.old_clarity,
+                'new': self.clarity,
+            })
+
         if hasattr(self, 'old_passion'):
             cur_professor.passion.update_aggregate_after_replacement(
                 self.old_passion, self.passion)
+            redis_changes.append({
+                'name': 'passion',
+                'old': self.old_passion,
+                'new': self.passion,
+            })
+
+        cur_professor.update_redis_ratings_for_course(
+                cur_course.id, redis_changes)

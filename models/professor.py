@@ -2,7 +2,7 @@ from bson import json_util
 import mongoengine as me
 import redis
 
-import rating
+import rating as _rating
 import review as _review
 import rmc.shared.constants as c
 from rmc.shared import util
@@ -40,9 +40,9 @@ class Professor(me.Document):
     # eg. Becker
     last_name = me.StringField(required=True)
 
-    clarity = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    passion = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    clarity = me.EmbeddedDocumentField(_rating.AggregateRating, default=_rating.AggregateRating())
+    easiness = me.EmbeddedDocumentField(_rating.AggregateRating, default=_rating.AggregateRating())
+    passion = me.EmbeddedDocumentField(_rating.AggregateRating, default=_rating.AggregateRating())
 
     @classmethod
     def get_id_from_name(cls, first_name, last_name=None):
@@ -75,23 +75,61 @@ class Professor(me.Document):
             'easiness': self.easiness.to_dict(),
             'passion': self.passion.to_dict(),
         }
-        ratings_dict['overall'] = rating.get_overall_rating(
+        ratings_dict['overall'] = _rating.get_overall_rating(
                 ratings_dict.values()).to_dict()
         return util.dict_to_list(ratings_dict)
+
+    # TODO(mack): redis key should be namespaced under course_professor
+    # or something....
+    # TODO(mack): store all ratings under single hash which is
+    # supposed to be more memory efficient (and probably faster
+    # fetching as well)
+    def get_professor_course_redis_key(self, course_id, rating_name):
+        return ':'.join([course_id, self.id, rating_name])
+
+    def set_course_rating_in_redis(self, course_id, rating_name, aggregate_rating):
+        redis_key = self.get_professor_course_redis_key(
+                    course_id, rating_name)
+        r.set(redis_key, aggregate_rating.to_json())
+
+    def get_course_rating_from_redis(self, course_id, rating_name):
+        rating_json = r.get(self.get_professor_course_redis_key(
+            course_id, rating_name))
+
+        if rating_json:
+            rating_loaded = json_util.loads(rating_json)
+
+            return _rating.AggregateRating(
+                rating=rating_loaded['rating'],
+                count=rating_loaded['count'],
+            )
+
+        return None
+
+    def update_redis_ratings_for_course(self, course_id, changes):
+        # TOOO(mack): use redis pipeline for this
+        for change in changes:
+            rating_name = change['name']
+            agg_rating = self.get_course_rating_from_redis(
+                    course_id, rating_name)
+            if not agg_rating:
+                agg_rating = _rating.AggregateRating()
+
+            agg_rating.update_aggregate_after_replacement(
+                    change['old'], change['new'])
+
+            self.set_course_rating_in_redis(course_id, rating_name, agg_rating)
+
 
     # TODO(david): This should go on ProfCourse
     def get_ratings_for_course(self, course_id):
         rating_dict = {}
         for name in ['clarity', 'easiness', 'passion']:
-            rating_json = r.get(':'.join([course_id, self.id, name]))
-            if rating_json:
-                rating_loaded = json_util.loads(rating_json)
-                rating_dict[name] = rating.AggregateRating(
-                    rating=rating_loaded['rating'],
-                    count=rating_loaded['count'],
-                ).to_dict()
+            agg_rating = self.get_course_rating_from_redis(course_id, name)
+            if agg_rating:
+                rating_dict[name] = agg_rating.to_dict()
 
-        rating_dict['overall'] = rating.get_overall_rating(
+        rating_dict['overall'] = _rating.get_overall_rating(
                 rating_dict.values()).to_dict()
 
         return util.dict_to_list(rating_dict)

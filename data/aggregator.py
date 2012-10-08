@@ -185,14 +185,12 @@ def import_redis_course_professor_rating():
             for professor_id, ratings in professors.items():
                 if professor_id is None:
                     continue
+                professor = m.Professor.objects.with_id(professor_id)
+                if not professor:
+                    continue
                 for rating_type, aggregate_rating in ratings.items():
-                    # TODO(mack): store all ratings under single hash which is
-                    # supposed to be more memory efficient (and probably faster
-                    # fetching as well)
-                    # TODO(mack): redis key should be namespaced under
-                    # course_professor or something....
-                    redis_key = ':'.join([course_id, professor_id, rating_type])
-                    r.set(redis_key, aggregate_rating.to_json())
+                    professor.set_course_rating_in_redis(
+                            course_id, rating_type, aggregate_rating)
                     count[0] += 1
 
     set_course_professor_ratings_in_redis(courses)
