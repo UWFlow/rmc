@@ -164,9 +164,7 @@ class Course(me.Document):
             'code': self.code,
             'name': self.name,
             'description': self.description,
-            #'availFall': bool(int(course['availFall'])),
-            #'availSpring': bool(int(course['availSpring'])),
-            #'availWinter': bool(int(course['availWinter'])),
+            'terms_offered': self.terms_offered,
             # TODO(mack): create user models for friends
             #'friends': [1647810326, 518430508, 541400376],
             'ratings': util.dict_to_list(self.get_ratings()),

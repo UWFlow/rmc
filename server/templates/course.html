@@ -41,13 +41,27 @@
 {% call macros.us_template('course-inner-tpl') %}
 <div class="row-fluid">
   <div class="span6">
-    <p class="description"><%- course.description %></p>
-    <!-- TODO(david): Put this in when we get data for this. -->
-    <!--<div class="terms-offered">-->
-      <!--<span class="label fall">F</span>-->
-      <!--<span class="label winter">W</span>-->
-      <!--<span class="label spring">S</span>-->
-    <!--</div>-->
+    <p class="description">
+      <%- course.description %>
+      <span class="terms-offered">
+        <%
+          var offered_in = function(term) {
+            return !!_.find(course.terms_offered, function(term_offered) {
+              return term === term_offered;
+            });
+          };
+        %>
+        <% if (offered_in('09')) { %>
+          <span class="label fall">F</span>
+        <% } %>
+        <% if (offered_in('01')) { %>
+          <span class="label winter">W</span>
+        <% } %>
+        <% if (offered_in('05')) { %>
+          <span class="label spring">S</span>
+        <% } %>
+      </span>
+    </p>
   </div>
   <div class="span6">
     <div class="ratings-placeholder"></div>
