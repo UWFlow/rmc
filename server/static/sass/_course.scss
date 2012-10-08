@@ -87,11 +87,16 @@
     float: right;
     top: $top;
   }
+
   .voting {
+    visibility: hidden;
     float: right;
     top: $top;
     position: relative;
     margin-right: 5px;
+  }
+  &:hover .voting {
+    visibility: visible;
   }
 
   .sample-friends {
@@ -110,13 +115,14 @@
     $num-sample-friends: 3;
 
     @extend .clearfix;
-    margin-top: -3px;
+    position: absolute;
+    right: 120px;
+    top: 12px;
 
     display: inline-block;
     float: right;
+    margin-top: -3px;
     margin-right: 10px;
-    top: -5px;
-    position: relative;
 
     .friends-taken-title {
       font-weight: bold;
