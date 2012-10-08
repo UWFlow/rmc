@@ -331,6 +331,7 @@ def profile(profile_user_id):
         profile_obj=profile_dict,
         profile_user_id=profile_user.id,
         current_user_id=current_user.id,
+        own_profile=own_profile,
     )
 
 

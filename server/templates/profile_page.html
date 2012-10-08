@@ -35,7 +35,7 @@
     </div>
     <div class="span9" id="profile-container">
       <div id="term-collection-container"></div>
-      {% if profile_obj['own_profile'] %}
+      {% if own_profile %}
         <div id="transcript-container">
           <h2>Import Course History</h2>
             <p id="transcript-instructions">
@@ -82,5 +82,6 @@
   window.pageData.professorObjs = {{ professor_objs|tojson|safe }};
   window.pageData.courseObjs = {{ course_objs|tojson|safe }};
   window.pageData.profileUserId = {{ profile_user_id|tojson|safe }};
+  window.pageData.ownProfile = {{ own_profile|tojson|safe }};
 </script>
 {% endblock %}

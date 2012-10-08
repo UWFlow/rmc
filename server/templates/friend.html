@@ -5,7 +5,7 @@
   <%- num_friends %> <%- pluralize(num_friends, 'friend', 'friends') %>
 </div>
 <div class="friend-collection-placeholder"></div>
-<% if (own_profile) { %>
+<% if (pageData.ownProfile) { %>
   <button class="invite-friends-btn btn btn-primary">
     <i class="icon-plus"></i> Invite more friends!
   </button>
@@ -21,7 +21,7 @@
   <a class="friend-name" href=<%- friend.profile_url %>>
     <%- friend.name %>
   </a>
-  <% if (own_profile && mutual_courses.length > 0) { %>
+  <% if (pageData.ownProfile && mutual_courses.length > 0) { %>
     <a href="#" class="mutual-courses">
       <%- mutual_courses.length %>
       mutual <%- pluralize(mutual_courses.length, 'course', 'courses') %>

@@ -84,9 +84,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
         }, this));
       }
 
-      this.otherProfile = this.userCourse && this.profileUserCourse &&
-        this.userCourse.id !== this.profileUserCourse.id;
-
       this.canShowAddReview =
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
 
@@ -124,7 +121,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
         course: this.courseModel.toJSON(),
         user_course: this.userCourse && this.userCourse.toJSON(),
         profile_user_course: this.profileUserCourse && this.profileUserCourse.toJSON(),
-        other_profile: this.otherProfile
+        other_profile: pageData.ownProfile === false
       }));
 
       var title = '';
