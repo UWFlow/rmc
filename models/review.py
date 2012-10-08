@@ -147,6 +147,7 @@ class ProfessorReview(BaseReview):
     # TODO(david): Refactor into base class
     # TODO(mack): tidy up interface so we don't have to pass in course,
     # course_review
+    # TODO(mack): handle the case you change the professor
     def update_professor_aggregate_ratings(self, cur_professor,
             cur_course, course_review):
 
