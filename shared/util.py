@@ -47,13 +47,25 @@ def pnormaldist(qn):
 
     return -math.sqrt(w1 * w3)
 
-# The lower bound on the proportion of positive ratings given the observed
-# number of positive ratings (pos) and total ratings (n)
-# http://evanmiller.org/how-not-to-sort-by-average-rating.html
-def get_actual_rating_lower_bound(pos, n, confidence=c.RATINGS_CONFIDENCE):
+def get_sorting_score(phat, n, confidence=c.RATINGS_CONFIDENCE):
+    """
+    Get the score used for sorting by ratings
+
+    Returns the lower bound on Wilson Score. See
+    http://evanmiller.org/how-not-to-sort-by-average-rating.html
+
+    Args:
+        phat: The observed proportion of positive ratings (0 <= phat <= 1)
+        n: The total number of ratings
+        confidence: How much confidences we want for this to be the lower bound?
+    """
     if n == 0:
         return 0
 
-    z = pnormaldist(1-(1-confidence)/2)
-    phat = 1.0*pos/n
+    if confidence == c.RATINGS_CONFIDENCE:
+        z = 1.9599639715843482
+    else:
+        z = pnormaldist(1-(1-confidence)/2)
+    # Modified to optimize for our data model
+    #phat = 1.0*pos/n
     return (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
