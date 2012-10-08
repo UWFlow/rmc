@@ -3,13 +3,21 @@ import mongoengine as me
 # TODO(mack): use ujson
 import json
 
+import rmc.shared.util as util
+
 class AggregateRating(me.EmbeddedDocument):
     rating = me.FloatField(min_value=0.0, max_value=1.0, default=0.0)
     count = me.IntField(min_value=0, default=0)
+    sorting_score = me.FloatField(min_value=0.0, max_value=1.0, default=0.0)
+
+    def update_sorting_score(self):
+        self.sorting_score = util.get_sorting_score(self.rating, self.count)
+
 
     def add_rating(self, rating):
         self.rating = ((self.rating * self.count) + rating) / (self.count + 1)
         self.count += 1
+        self.update_sorting_score()
 
     def remove_rating(self, rating):
         if self.count == 0:
@@ -23,6 +31,7 @@ class AggregateRating(me.EmbeddedDocument):
                 (self.count - 1))
 
         self.count -= 1
+        self.update_sorting_score()
 
     def add_aggregate_rating(self, ar):
         if ar.count == 0:
@@ -30,6 +39,7 @@ class AggregateRating(me.EmbeddedDocument):
         total = ar.rating * ar.count
         self.rating = ((self.rating * self.count) + total) / (self.count + ar.count)
         self.count += ar.count
+        self.update_sorting_score()
 
     def to_dict(self):
         return {
