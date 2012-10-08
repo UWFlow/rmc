@@ -66,6 +66,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
   });
 
   var CourseView = RmcBackbone.View.extend({
+    MAX_REVIEW_LEVEL: 4,
+
     template: _.template($('#course-tpl').html()),
     className: 'course well',
 
@@ -76,6 +78,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
       // profileUserCourse like this since it's only gettable from
       // profile page
       this.profileUserCourse = this.courseModel.get('profile_user_course');
+      this.otherProfile = pageData.ownProfile === false;
 
       if (this.userCourse) {
         // TODO(mack): ensure that save actually is save of review
@@ -113,32 +116,95 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
     },
 
     onSaveUserReview: function() {
-      this.$('.current-user-ribbon').addClass('reviewed');
+      // Remove any old review-* class
+      this.$('.current-user-ribbon').removeClass(function(idx, cls) {
+        var matches = cls.match(/reviewed-\d+/g) || [];
+        return matches.join(' ');
+      })
+      .addClass('reviewed-' + this.getReviewLevel(this.userCourse));
+
+      this.updateRibbonTooltip(
+          this.$('.current-user-ribbon'), this.userCourse, true);
+    },
+
+    getReviewLevel: function(userCourse) {
+      var count = 0;
+
+      if (!userCourse) {
+        return count;
+      }
+
+      var countReview = function(review) {
+        if (review.get('comment')) {
+          count += 1;
+        }
+        var anyRating = review.get('ratings').any(function(rating) {
+          return _.isNumber(rating.get('rating'));
+        });
+        if (anyRating) {
+          count += 1;
+        }
+      };
+
+      countReview(userCourse.get('course_review'));
+      countReview(userCourse.get('professor_review'));
+
+      return count;
+    },
+
+    updateRibbonTooltip: function($ribbon, userCourse, own) {
+      termTookName = userCourse.get('term_name');
+
+      var title;
+      if (own) {
+        title = _s.sprintf('Taken in %s.', termTookName);
+      } else {
+        var user = userCourse.get('user');
+        title = _s.sprintf('%s took in %s.', user.get('first_name'), termTookName);
+      }
+
+      var currReviewLevel = this.getReviewLevel(this.userCourse);
+      if (currReviewLevel === 0) {
+        if (own) {
+          title += ' Please review?';
+        } else {
+          title += ' Not reviewed.';
+        }
+      } else if ( currReviewLevel === this.MAX_REVIEW_LEVEL) {
+        if (own) {
+          title += ' Thanks for reviewing :)';
+        } else {
+          title += ' Reviewed.';
+        }
+      } else {
+        title += ' Partially reviewed.';
+      }
+      $ribbon
+        .tooltip('destroy')
+        .tooltip({
+          title: title,
+          placement: 'top'
+        });
     },
 
     render: function() {
       this.$el.html(this.template({
         course: this.courseModel.toJSON(),
         user_course: this.userCourse && this.userCourse.toJSON(),
+        user_course_review_level:
+          this.userCourse && this.getReviewLevel(this.userCourse),
         profile_user_course: this.profileUserCourse && this.profileUserCourse.toJSON(),
-        other_profile: pageData.ownProfile === false
+        profile_user_course_review_level:
+          this.profileUserCourse && this.getReviewLevel(this.profileUserCourse),
+        other_profile: this.otherProfile
       }));
 
       var title = '';
       var termTookName = '';
 
       if (this.userCourse) {
-        termTookName = this.userCourse.get('term_name');
-        if (this.userCourse.get('has_reviewed')) {
-          title = _s.sprintf('Taken in %s. Thanks for reviewing!',
-              termTookName);
-        } else {
-          title = _s.sprintf('Taken in %s. Please review?', termTookName);
-        }
-        this.$('.current-user-ribbon').tooltip({
-          title: title,
-          placement: 'top'
-        });
+        this.updateRibbonTooltip(
+            this.$('.current-user-ribbon'), this.userCourse, true);
 
         if (this.canShowAddReview) {
           this.$('.voting-placeholder').replaceWith(this.votingView.render().el);
@@ -146,23 +212,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
       }
 
       if (this.otherProfile) {
-
-        var user = this.profileUserCourse.get('user');
-        termTookName = this.profileUserCourse.get('term_name');
-
-        if (this.profileUserCourse.get('has_reviewed')) {
-          // TODO(mack): fix terrible wording
-          title = _s.sprintf('Taken by %s in %s. Has been reviewed.',
-              user.get('first_name'), termTookName);
-        } else {
-          title = _s.sprintf('Taken by %s in %s',
-              user.get('first_name'), termTookName);
-        }
-
-        this.$('.profile-user-ribbon').tooltip({
-          title: title,
-          placement: 'top'
-        });
+        this.updateRibbonTooltip(
+            this.$('.profile-user-ribbon'), this.profileUserCourse, false);
       }
 
       this.$('.rating-box-placeholder').replaceWith(

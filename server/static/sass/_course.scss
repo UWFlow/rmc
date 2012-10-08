@@ -70,9 +70,19 @@
       width: $ribbon-width;
       height: 40px;
 
-      &.not-reviewed {
-        -webkit-filter: grayscale(1.0);
-        opacity: 0.4;
+      // TODO(mack): apply non-linear change to ribbon color as we change
+      // review level
+      $num-review-levels: 5;
+      $base-opacity: 0.3;
+      @for $i from 0 through $num-review-levels - 1 {
+        &.reviewed-#{$i} {
+          $curr-grayscale: 1.0 - $i/($num-review-levels - 1);
+          $curr-opacity: $base-opacity + (1.0 - $base-opacity) * $i/($num-review-levels - 1);
+
+          // TODO(mack): remove -webkite prefix
+          -webkit-filter: grayscale($curr-grayscale);
+          opacity: $curr-opacity;
+        }
       }
 
       i {
