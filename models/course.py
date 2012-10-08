@@ -86,7 +86,8 @@ class Course(me.Document):
 
     @classmethod
     def get_course_and_user_course_dicts(cls, courses, current_user,
-            include_friends=False, full_user_courses=False):
+            include_friends=False, include_all_users=False,
+            full_user_courses=False):
 
         course_dicts = []
         for course in courses:
@@ -95,22 +96,21 @@ class Course(me.Document):
         if not current_user:
             return course_dicts, []
 
-        friend_ids = []
-        if include_friends:
-            friend_ids = current_user.friend_ids
-
         course_ids = [c.id for c in courses]
+        query = {
+            'course_id__in': course_ids,
+        }
+        if not include_all_users and include_friends:
+            query['user_id__in'] = current_user.friend_ids
+
         if full_user_courses:
-            ucs = _user_course.UserCourse.objects(
-                user_id__in=[current_user.id] + friend_ids,
-                course_id__in=course_ids,
-            )
+            if not include_all_users:
+                query.setdefault('user_id__in', []).append(current_user.id)
+            ucs = _user_course.UserCourse.objects(**query)
             ucs = list(ucs)
         else:
-            ucs = _user_course.UserCourse.objects(
-                user_id__in=friend_ids,
-                course_id__in=course_ids,
-            ).only('term_id', 'user_id', 'course_id')
+            ucs = _user_course.UserCourse.objects(**query).only(
+                    'term_id', 'user_id', 'course_id')
 
             # TODO(mack): optimize to not always get full user course
             # for current_user

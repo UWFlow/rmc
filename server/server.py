@@ -390,7 +390,8 @@ def course_page(course_id):
     current_user = get_current_user()
 
     course_dict_list, user_course_dict_list = m.Course.get_course_and_user_course_dicts(
-            [course], current_user, include_friends=True, full_user_courses=True)
+            [course], current_user, include_all_users=True,
+            include_friends=True, full_user_courses=True)
 
     professor_dict_list = m.Professor.get_full_professors_for_course(
             course, current_user)
