@@ -358,8 +358,8 @@ def courses():
     ]
     sort_modes = map(clean_sort_modes, COURSES_SORT_MODES)
     directions = [
-        { 'value': pymongo.ASCENDING, 'name': 'increasing' },
-        { 'value': pymongo.DESCENDING, 'name': 'decreasing' },
+        { 'value': pymongo.ASCENDING, 'name': 'least' },
+        { 'value': pymongo.DESCENDING, 'name': 'most' },
     ]
 
     current_user = get_current_user()
@@ -559,12 +559,12 @@ def get_courses(course_ids):
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
     # TODO(david): Usefulness
-    { 'value': 'num_ratings', 'name': 'by popularity', 'direction': pymongo.DESCENDING, 'field': 'overall.count' },
-    { 'value': 'friends', 'name': 'by friends taking' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
-    { 'value': 'alphabetical', 'name': 'alphabetically', 'direction': pymongo.ASCENDING, 'field': 'id' },
-    { 'value': 'overall', 'name': 'by overall rating', 'direction': pymongo.DESCENDING, 'field': 'overall.sorting_score' },
-    { 'value': 'interest', 'name': 'by interest', 'direction': pymongo.DESCENDING, 'field': 'interest.sorting_score' },
-    { 'value': 'easiness', 'name': 'by easiness' , 'direction': pymongo.DESCENDING, 'field': 'easiness.sorting_score' },
+    { 'value': 'num_ratings', 'name': 'popular', 'direction': pymongo.DESCENDING, 'field': 'overall.count' },
+    { 'value': 'friends', 'name': 'friends taken' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
+    # TODO(Sandy): Add alphabetaical back in? discuss with people
+    # TODO(Sandy): Did we want to deprecate overall here?
+    { 'value': 'interest', 'name': 'interesting', 'direction': pymongo.DESCENDING, 'field': 'interest.sorting_score' },
+    { 'value': 'easiness', 'name': 'easy' , 'direction': pymongo.DESCENDING, 'field': 'easiness.sorting_score' },
 ]
 COURSES_SORT_MODES_BY_VALUE = {}
 for sort_mode in COURSES_SORT_MODES:

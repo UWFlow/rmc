@@ -55,21 +55,7 @@
         <% }); %>
         </ul>
       </li>
-      sorted
-      <li class="sort-mode-dropdown dropdown">
-        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-          <span class="selected-sort-mode"><%- selectedSortMode.name %></span>
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-        <% _.each(sortModes, function(sortMode) { %>
-          <li data-value="<%- sortMode.value %>">
-            <a href="#"><%-sortMode.name %></a>
-          </li>
-        <% }); %>
-        </ul>
-      </li>
-      in
+      sorted by
       <li class="direction-dropdown dropdown">
         <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
           <span class="selected-direction"><%- selectedDirection.name %></span>
@@ -83,7 +69,20 @@
         <% }); %>
         </ul>
       </li>
-      order
+      <li class="sort-mode-dropdown dropdown">
+        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
+          <span class="selected-sort-mode"><%- selectedSortMode.name %></span>
+          <b class="caret"></b>
+        </a>
+        <ul class="dropdown-menu" role="menu">
+        <% _.each(sortModes, function(sortMode) { %>
+          <li data-value="<%- sortMode.value %>">
+            <a href="#"><%-sortMode.name %></a>
+          </li>
+        <% }); %>
+        </ul>
+      </li>
+      first
     </form>
     <div style="clear:both;"></div>
     <div class="loader-container">
