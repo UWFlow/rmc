@@ -597,7 +597,7 @@ def search_courses():
         request.values
     )
 
-    query = {}
+    filters = {}
     if keywords:
         keywords = re.sub('\s+', ' ', keywords)
         keywords = keywords.split(' ')
@@ -607,13 +607,10 @@ def search_courses():
             return re.compile('^%s' % keyword)
 
         keywords = map(regexify_keywords, keywords)
-        query['_keywords__all'] = keywords
+        filters['_keywords__all'] = keywords
 
     if term:
-        query['terms_offered'] = term
-
-    unsorted_courses = m.Course.objects(**query)
-    print 'unsorted_courses', len(unsorted_courses)
+        filters['terms_offered'] = term
 
     if sort_mode == 'friends':
 
@@ -628,8 +625,8 @@ def search_courses():
                     num_friends_by_course[course_id] = 0
                 num_friends_by_course[course_id] += 1
 
-        existing_courses = m.Course.objects(
-                id__in=num_friends_by_course.keys()).only('id')
+        filters['id__in'] = num_friends_by_course.keys()
+        existing_courses = m.Course.objects(**filters).only('id')
         existing_course_ids = set(c.id for c in existing_courses)
         for course_id in num_friends_by_course.keys():
             if course_id not in existing_course_ids:
@@ -661,6 +658,7 @@ def search_courses():
             sort_instr = '-'
         sort_instr += sort_options['field']
 
+        unsorted_courses = m.Course.objects(**filters)
         sorted_courses = unsorted_courses.order_by(sort_instr)
         limited_courses = sorted_courses.skip(offset).limit(count)
 
