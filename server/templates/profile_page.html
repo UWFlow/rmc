@@ -34,7 +34,20 @@
       </div>
     </div>
     <div class="span9" id="profile-container">
+
+      {% if own_profile and not has_courses %}
+        <h2>Thanks for signing up!</h2>
+        <p class="lead">
+          If you could just take a moment to <a href="/onboarding">import your
+          course history</a> from your Quest transcript, you'll be able to
+          share and rate course you've taken with friends!
+        </p>
+      {% endif %}
+
       <div id="term-collection-container"></div>
+
+
+
       {#
       {% if own_profile %}
         <div id="transcript-container">

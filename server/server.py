@@ -341,6 +341,7 @@ def profile(profile_user_id):
         profile_user_id=profile_user.id,
         current_user_id=current_user.id,
         own_profile=own_profile,
+        has_courses=current_user.course_history,
     )
 
 
