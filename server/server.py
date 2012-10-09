@@ -301,7 +301,6 @@ def profile(profile_user_id):
         transcript_by_term = {}
 
         for uc_dict in profile_uc_dict_list:
-            print 'uc_dict', uc_dict['term_id']
             transcript_by_term.setdefault(uc_dict['term_id'], []).append(uc_dict)
 
         ordered_transcript = []
