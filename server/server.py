@@ -438,7 +438,9 @@ def course_page(course_id):
 @login_required
 @app.route('/onboarding', methods=['GET'])
 def onboarding():
-    return flask.render_template('onboarding_page.html')
+    return flask.render_template('onboarding_page.html',
+        page_script='onboarding_page.js',
+    )
 
 @app.route('/login', methods=['POST'])
 def login():
