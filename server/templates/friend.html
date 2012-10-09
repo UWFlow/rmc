@@ -31,15 +31,21 @@
 {% endcall %}
 
 {% call macros.us_template('friend-hovercard-tpl') %}
-<!-- TODO(mack): move course-mini into own backbone view -->
-<% friend = friend.toJSON(); %>
+{# TODO(mack): move course-mini into own backbone view #}
 <ul class="mini-courses unstyled">
 <% last_term_courses.each(function(course) { %>
-  <% course = course.toJSON(); %>
   <li class="mini-course">
-    <a href="<%- '/course/' + course.id %>" class="course-code"><%- course.code %></a>
+    <% var user_course = course.get('user_course'); %>
+    {# TODO(mack): should be comparing term_ids, not term_names #}
+    <% if (user_course && user_course.get('term_name') === last_term_name) { %>
+      <span class="mutual-taking icon-ok"
+          title="You are also taking this course in <%- last_term_name %>"></span>
+    <% } %>
+    <a href="<%- '/course/' + course.id %>" class="course-code">
+      <%- course.get('code') %>
+    </a>
     -
-    <span class="course-title"><%- course.name %></span>
+    <span class="course-title"><%- course.get('name') %></span>
   </li>
 <% }); %>
 </ul>

@@ -50,13 +50,16 @@
             .friend-hovercard, .mutual-courses-hovercard {
 
               @extend .clearfix;
-              width: 350px;
+              $mini-course-width: 350px;
+              $mini-course-padding: 10px;
+              width: $mini-course-width + 2*$mini-course-padding;
 
               .mini-courses {
                 width: 350px;
-                padding: 10px;
+                padding: $mini-course-padding;
 
                 .mini-course {
+                  position: relative;
                   margin-top: 3px;
                   .course-code {
                     font-size: 20px;
@@ -69,6 +72,21 @@
             }
 
             .friend-hovercard {
+              .mini-course {
+                padding-left: 23px;
+                .mutual-taking {
+                  color: $green;
+                  display: inline-block;
+                  position: absolute;
+                  left: 0px;
+                  // Bootstrap screws up setting width of tooltip, so gotta
+                  // hardcode a reasonable value
+                  .tooltip-inner {
+                    width: 150px;
+                  }
+                }
+              }
+
               .view-profile {
                 float: right;
                 padding: 0 10px 10px 0;

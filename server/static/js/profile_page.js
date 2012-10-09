@@ -21,8 +21,7 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof) {
     });
     var userCollection = new user.UserCollection(friendObjs);
     var friendSidebarView = new friend.FriendSidebarView({
-      friendCollection: userCollection,
-      profileUser: profileUser
+      friendCollection: userCollection
     });
     $('#friend-sidebar-container').html(friendSidebarView.render().el);
   })();

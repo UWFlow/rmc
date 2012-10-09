@@ -8,7 +8,6 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
 
     initialize: function(attributes) {
       this.friendModel = attributes.friendModel;
-      this.profileUser = attributes.profileUser;
       this.mutualCourses = this.friendModel.get('mutual_courses');
     },
 
@@ -17,10 +16,10 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
         _.template($('#friend-tpl').html(), {
           friend: this.friendModel,
           mutual_courses: this.mutualCourses,
-          own_profile: this.profileUser.get('own_profile')
+          own_profile: pageData.ownProfile
         }));
 
-      if (!this.profileUser.get('own_profile')) {
+      if (!pageData.ownProfile) {
         return this;
       }
 
@@ -103,16 +102,22 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
 
     initialize: function(attributes) {
       this.friendModel = attributes.friendModel;
-      this.lastTermCourses = this.friendModel.get('last_term_courses');
     },
 
     render: function() {
       this.$el.html(
         _.template($('#friend-hovercard-tpl').html(), {
-          friend: this.friendModel,
-          last_term_courses: this.lastTermCourses
+          friend: this.friendModel.toJSON(),
+          last_term_courses: this.friendModel.get('last_term_courses'),
+          last_term_name: this.friendModel.get('last_term_name')
         }
       ));
+
+      _.defer(function() {
+        this.$('.mutual-taking').tooltip({
+          placement: 'in top'
+        });
+      });
 
       return this;
     }
@@ -162,7 +167,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
     render: function() {
       this.$el.html(_.template($('#friend-sidebar-tpl').html(), {
         num_friends: this.friendCollection.length,
-        own_profile: this.profileUser.get('own_profile')
+        own_profile: pageData.ownProfile
       }));
       var collectionView = new FriendCollectionView({
         collection: this.friendCollection,

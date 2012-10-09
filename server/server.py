@@ -288,9 +288,6 @@ def profile(profile_user_id):
     # TODO(mack): This must be after friend user dicts since it can override
     # data in it. Remove this restriction
     profile_dict = profile_user.to_dict()
-    profile_dict.update({
-        'own_profile': own_profile
-    })
     user_dicts.setdefault(profile_user.id, {}).update(profile_dict)
 
     # Convert current user to dict
