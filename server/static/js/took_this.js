@@ -47,16 +47,18 @@ function(RmcBackbone, $, _, _s, bootstrap, util) {
       futureTermUserCourses.comparator =
         util.userCourseTermIdComparator;
 
-      // Bucket friends by term taken
-      userCourses.each(function(user_course) {
-        if (user_course.get('term_id') < currentTermId) {
-          pastTermUserCourses.add(user_course);
-        } else if (user_course.get('term_id') > currentTermId) {
-          futureTermUserCourses.add(user_course);
-        } else {
-          currentTermUserCourses.add(user_course);
-        }
-      });
+      if (userCourses) {
+        // Bucket friends by term taken
+        userCourses.each(function(user_course) {
+          if (user_course.get('term_id') < currentTermId) {
+            pastTermUserCourses.add(user_course);
+          } else if (user_course.get('term_id') > currentTermId) {
+            futureTermUserCourses.add(user_course);
+          } else {
+            currentTermUserCourses.add(user_course);
+          }
+        });
+      }
 
       this.collection = attributes.courseCode;
       this.pastTermUserCourses = pastTermUserCourses;

@@ -1,6 +1,14 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('took-this-sidebar-tpl') %}
+{# TODO(david): Actual Facebook connect button. XXX Flow users have taken this
+course? #}
+<% if (!window.pageData.currentUserId) { %>
+  <p class="lead">
+    <a href="/">Connect with Facebook</a> to see which of your friends are taking
+    this course!
+  </p>
+<% } %>
 <!-- TODO(sandy): wording for past present future -->
 <% if (num_friends_current > 0) { %>
   <h3 class="num-friends">

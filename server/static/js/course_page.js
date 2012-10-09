@@ -23,16 +23,12 @@ function($, course, tookThis, user, tips, prof, ratings, user_course, _review) {
   $('#course-inner-container').html(courseInnerView.render().el);
   courseInnerView.animateBars();
 
-  // TODO(mack): add prompt encouraging user to sign in to see friends
-  // who've taken this course
-  if (pageData.currentUserId) {
-    var tookThisSidebarView = new tookThis.TookThisSidebarView({
-      userCourses: courseModel.get('friend_user_courses'),
-      courseCode: courseModel.get('code'),
-      currentTermId: window.pageData.currentTermId
-    });
-    $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
-  }
+  var tookThisSidebarView = new tookThis.TookThisSidebarView({
+    userCourses: courseModel.get('friend_user_courses'),
+    courseCode: courseModel.get('code'),
+    currentTermId: window.pageData.currentTermId
+  });
+  $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
 
   var tipsCollection = new _review.ReviewCollection(window.pageData.tipObjs);
   var tipsView = new tips.ExpandableTipsView({ reviews: tipsCollection });
