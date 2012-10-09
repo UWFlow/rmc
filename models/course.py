@@ -84,6 +84,8 @@ class Course(me.Document):
         else:
             return professors.only('id', 'first_name', 'last_name')
 
+    # TODO(mack): this function is way too overloaded, even to separate into
+    # multiple functions based on usage
     @classmethod
     def get_course_and_user_course_dicts(cls, courses, current_user,
             include_friends=False, include_all_users=False,
@@ -93,10 +95,21 @@ class Course(me.Document):
         for course in courses:
             course_dicts.append(course.to_dict())
 
-        if not current_user:
-            return course_dicts, []
-
         course_ids = [c.id for c in courses]
+
+        if not current_user:
+            if include_all_users:
+                ucs = _user_course.UserCourse.objects(
+                        course_id__in=course_ids)
+                if not full_user_courses:
+                    ucs.only('term_id', 'user_id', 'course_id')
+
+                uc_dicts = [uc.to_dict() for uc in ucs]
+                return course_dicts, uc_dicts
+            else:
+                return course_dicts, []
+
+
         query = {
             'course_id__in': course_ids,
         }
@@ -124,13 +137,17 @@ class Course(me.Document):
 
         current_user_course_by_course = {}
         friend_user_courses_by_course = {}
+
+        user_course_dict_list = []
         for uc in ucs:
+            user_course_dict = uc.to_dict()
+            user_course_dict_list.append(user_course_dict)
             if uc.id in current_user_course_ids:
-                current_user_course_by_course[uc.course_id] = uc.to_dict()
+                current_user_course_by_course[uc.course_id] = user_course_dict
             elif include_friends:
                 if uc.user_id in current_user.friend_ids:
                     friend_user_courses_by_course.setdefault(
-                            uc.course_id, []).append(uc.to_dict())
+                            uc.course_id, []).append(user_course_dict)
 
         for course_dict in course_dicts:
             current_uc = current_user_course_by_course.get(
@@ -144,12 +161,7 @@ class Course(me.Document):
                 friend_uc_ids = [uc['id'] for uc in friend_ucs]
                 course_dict['friend_user_course_ids'] = friend_uc_ids
 
-        all_user_courses = current_user_course_by_course.values()
-        if include_friends:
-            for user_courses in friend_user_courses_by_course.values():
-                all_user_courses.extend(user_courses)
-
-        return course_dicts, all_user_courses
+        return course_dicts, user_course_dict_list
 
 
 
