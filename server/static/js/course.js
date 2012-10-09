@@ -74,6 +74,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     initialize: function(attributes) {
       this.courseModel = attributes.courseModel;
       this.userCourse = this.courseModel.get('user_course');
+      // TODO(mack): remove hardcode of '9999_99'
       // TODO(mack): Might not always be appropriate to just fetch
       // profileUserCourse like this since it's only gettable from
       // profile page
@@ -129,32 +130,44 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     updateRibbonTooltip: function($ribbon, userCourse, own) {
-      termTookName = userCourse.get('term_name');
+      var termTookName = userCourse.get('term_name');
+      var inShortlist = userCourse.get('term_id') === '9999_99';
 
       var title;
       if (own) {
-        title = _s.sprintf('Taken in %s.', termTookName);
+        if (inShortlist) {
+          title = 'In my shortlist';
+        } else {
+          title = _s.sprintf('Taken in %s.', termTookName);
+        }
       } else {
         var user = userCourse.get('user');
-        title = _s.sprintf('%s took in %s.', user.get('first_name'), termTookName);
+        if (inShortlist) {
+          title = _s.sprintf('In %s\'s shortlist', user.get('first_name'));
+        } else {
+          title = _s.sprintf('%s took in %s.', user.get('first_name'), termTookName);
+        }
       }
 
-      var currReviewLevel = this.getReviewLevel(this.userCourse);
-      if (currReviewLevel === 0) {
-        if (own) {
-          title += ' Please review?';
+      if (!inShortlist) {
+        var currReviewLevel = this.getReviewLevel(userCourse);
+        if (currReviewLevel === 0) {
+          if (own) {
+            title += ' Please review?';
+          } else {
+            title += ' Not reviewed.';
+          }
+        } else if ( currReviewLevel === this.MAX_REVIEW_LEVEL) {
+          if (own) {
+            title += ' Thanks for reviewing :)';
+          } else {
+            title += ' Reviewed.';
+          }
         } else {
-          title += ' Not reviewed.';
+          title += ' Partially reviewed.';
         }
-      } else if ( currReviewLevel === this.MAX_REVIEW_LEVEL) {
-        if (own) {
-          title += ' Thanks for reviewing :)';
-        } else {
-          title += ' Reviewed.';
-        }
-      } else {
-        title += ' Partially reviewed.';
       }
+
       $ribbon
         .tooltip('destroy')
         .tooltip({
@@ -398,6 +411,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       this.userCourse = attributes.userCourse;
       this.canShowAddReview =
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
+      this.canReview = this.userCourse && this.userCourse.get('term_id') !== '9999_99' &&
+          this.canShowAddReview && this.userCourse.has('term_id');
 
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
@@ -405,7 +420,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         subject: 'course'
       });
 
-      if (this.canShowAddReview && this.userCourse) {
+      if (this.canReview) {
         // TODO(david): Get user review data, and don't show or show altered if no
         //     user or user didn't take course.
         // TODO(mack): remove circular dependency
@@ -422,7 +437,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         more_details: moreDetails,
         course: this.courseModel.toJSON(),
         user_course: this.userCourse,
-        can_show_add_review: this.canShowAddReview
+        can_review: this.canReview
       }));
 
       if (this.userCourseView) {
