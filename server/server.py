@@ -441,10 +441,12 @@ def course_page(course_id):
         current_term_id=util.get_current_term_id(),
     )
 
-@login_required
 @app.route('/onboarding', methods=['GET'])
+@login_required
 def onboarding():
-    # TODO(Sandy): Make it so users can only see it once??? Maybe?
+    if get_current_user().course_history:
+        return flask.make_response(flask.redirect('profile'))
+
     return flask.render_template('onboarding_page.html',
         page_script='onboarding_page.js',
     )
