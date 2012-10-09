@@ -4,7 +4,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {
-      'id': '2012_09]',
+      'id': '2012_09',
       'name': 'Fall 2012',
       'program_year_id': '3A',
       'course_ids': []

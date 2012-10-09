@@ -2,6 +2,8 @@ import mongoengine as me
 
 class Term(me.Document):
 
+    SHORTLIST_TERM_ID = '9999_99'
+
     SEASONS = ['Winter', 'Spring', 'Fall']
     INVALID_TERM_MONTH = 13
 
@@ -23,7 +25,10 @@ class Term(me.Document):
 
     @property
     def name(self):
-        return '%s %d' % (self.season, self.year)
+        if self.id == self.SHORTLIST_TERM_ID:
+            return 'My Shortlist'
+        else:
+            return '%s %d' % (self.season, self.year)
 
     @classmethod
     def get_id_from_year_season(cls, year, season):

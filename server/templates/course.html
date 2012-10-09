@@ -1,7 +1,8 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('course-tpl') %}
-<!-- TODO(david) FIXME[uw]: Hotspot needs to be bigger -->
+{# TODO(david) FIXME[uw]: Hotspot needs to be bigger #}
+{# TODO(mack): remove uc.term_id null checks #}
 <div class="visible-section">
   <div class="course-code"><%- course.code %></div>
   <div class="course-name"><%- course.name %></div>
@@ -21,6 +22,17 @@
   <div class="rating-box-placeholder"></div>
   <div class="voting-placeholder"></div>
   <div class="sample-friends-placeholder"></div>
+  <% if (other_profile) { %>
+    <% if (!user_course || !user_course.term_id) { %>
+      <i class="add-course-btn icon-plus-sign"></i>
+    <% } %>
+  <% } else { %>
+    <% if (user_course && user_course.term_id) { %>
+      <i class="remove-course-btn icon-remove-sign"></i>
+    <% } else { %>
+      <i class="add-course-btn icon-plus-sign"></i>
+    <% } %>
+  <% } %>
   {# TODO(david): This is really dumb. Fix in a better way. #}
   <div style="clear: both; margin-bottom: -25px;"></div>
 </div>

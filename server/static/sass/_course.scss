@@ -205,6 +205,30 @@
     }
   }
 
+  .add-course-btn, .remove-course-btn {
+    display: none;
+  }
+
+  &:hover {
+    .add-course-btn, .remove-course-btn {
+      display: inline;
+      position: absolute;
+      right: 0;
+      top: 0;
+      opacity: 0.4;
+
+      &:hover {
+        opacity: 1.0;
+      }
+    }
+    .add-course-btn {
+      color: $green;
+    }
+    .remove-course-btn {
+      color: $gray;
+    }
+  }
+
   .course-inner {
     @extend .clearfix;
     margin-top: 20px;

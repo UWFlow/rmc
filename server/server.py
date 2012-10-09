@@ -304,6 +304,7 @@ def profile(profile_user_id):
         transcript_by_term = {}
 
         for uc_dict in profile_uc_dict_list:
+            print 'uc_dict', uc_dict['term_id']
             transcript_by_term.setdefault(uc_dict['term_id'], []).append(uc_dict)
 
         ordered_transcript = []
@@ -312,7 +313,7 @@ def profile(profile_user_id):
             term_dict = {
                 'id': curr_term.id,
                 'name': curr_term.name,
-                'program_year_id': uc_dicts[0]['program_year_id'],
+                'program_year_id': uc_dicts[0].get('program_year_id'),
                 'course_ids': [uc_dict['course_id'] for uc_dict in uc_dicts
                     if uc_dict['course_id'] in course_dicts],
             }
@@ -805,6 +806,37 @@ def remove_transcript():
     )
     return ''
 
+@app.route('/api/user/add_course_to_shortlist', methods=['POST'])
+@login_required
+def add_course_to_shortlist():
+    current_user = get_current_user()
+
+    user_course = m.UserCourse(
+        user_id=current_user.id,
+        course_id=flask.request.form.get('course_id'),
+        term_id=m.Term.SHORTLIST_TERM_ID,
+    )
+    user_course.save()
+    current_user.update(add_to_set__course_history=user_course.id)
+
+    return util.json_dumps({
+        'user_course': user_course.to_dict(),
+    })
+
+@app.route('/api/user/remove_course', methods=['POST'])
+@login_required
+def remove_course():
+    current_user = get_current_user()
+
+    user_course = m.UserCourse.objects(
+        user_id=current_user.id,
+        course_id=flask.request.form.get('course_id'),
+        term_id=flask.request.form.get('term_id'),
+    ).first()
+    current_user.update(pull__course_history=user_course.id)
+    user_course.delete()
+
+    return ''
 
 # XXX[uw](Sandy): Make this not completely fail when hitting this endpoint, otherwise the user would have wasted all
 # their work. We can do one of 1. a FB login on the client 2. store their data for after they login 3. don't let them

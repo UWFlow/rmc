@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/bootstrap', 'util', 'jquery.slide', 'prof'],
-function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
+'ratings', 'ext/bootstrap', 'util', 'jquery.slide', 'prof', 'ext/toastr'],
+function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
   var CourseModel = RmcBackbone.Model.extend({
     defaults: {
@@ -89,30 +89,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
 
       this.canShowAddReview =
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
-
-      var overallRating = this.courseModel.getOverallRating();
-      this.ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
-
-      if (this.canShowAddReview && this.userCourse) {
-        this.votingView = new ratings.RatingChoiceView({
-          model: this.userCourse.getOverallRating(),
-          voting: true,
-          className: 'voting'
-        });
-      }
-
-      this.courseInnerView = new CourseInnerView({
-        courseModel: this.courseModel,
-        userCourse: this.userCourse,
-        canShowAddReview: this.canShowAddReview
-      });
-
-      var friendUserCourses = this.courseModel.get('friend_user_courses');
-      if (friendUserCourses) {
-        this.sampleFriendsView = new SampleFriendsView({
-          friendUserCourses: friendUserCourses
-        });
-      }
     },
 
     onSaveUserReview: function() {
@@ -187,6 +163,22 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
         });
     },
 
+    updateAddCourseTooltip: function() {
+      this.$('.add-course-btn')
+        .tooltip('destroy')
+        .tooltip({
+          title: 'Add course to shortlist'
+        });
+    },
+
+    updateRemoveCourseTooltip: function() {
+      this.$('.remove-course-btn')
+        .tooltip('destroy')
+        .tooltip({
+          title: 'Remove course from shortlist'
+        });
+    },
+
     render: function() {
       this.$el.html(this.template({
         course: this.courseModel.toJSON(),
@@ -198,6 +190,33 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
           this.profileUserCourse && this.getReviewLevel(this.profileUserCourse),
         other_profile: this.otherProfile
       }));
+
+      var overallRating = this.courseModel.getOverallRating();
+      this.ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
+
+      if (this.canShowAddReview && this.userCourse) {
+        this.votingView = new ratings.RatingChoiceView({
+          model: this.userCourse.getOverallRating(),
+          voting: true,
+          className: 'voting'
+        });
+      }
+
+      this.courseInnerView = new CourseInnerView({
+        courseModel: this.courseModel,
+        userCourse: this.userCourse,
+        canShowAddReview: this.canShowAddReview
+      });
+
+      var friendUserCourses = this.courseModel.get('friend_user_courses');
+      if (friendUserCourses) {
+        this.sampleFriendsView = new SampleFriendsView({
+          friendUserCourses: friendUserCourses
+        });
+      }
+
+      this.updateAddCourseTooltip();
+      this.updateRemoveCourseTooltip();
 
       var title = '';
       var termTookName = '';
@@ -241,9 +260,93 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof) {
     },
 
     events: {
+      'click .add-course-btn': 'addShortlistCourse',
+      'click .remove-course-btn': 'removeTranscriptCourse',
       // TODO(david): Figure out a nicer interaction without requiring click
       'click .visible-section': 'toggleCourse',
       'focus .new-review-input': 'expandNewReview'
+    },
+
+    addShortlistCourse: function(evt) {
+      // Adds course to shortlist
+
+      var onSuccess = _.bind(function(resp) {
+        //TODO(mack): consider alternative placement of toast so that it
+        // doesn't potentially cover up the main nav
+        toastr.success(
+          _s.sprintf('%s was added to your shortlist!',
+            this.courseModel.get('name'))
+        );
+
+        // TODO(mack): remove require()
+        var _user_course = require('user_course');
+        // Add the new user course to the collection cache
+        _user_course.UserCourses.addToCache(resp.user_course);
+        this.userCourse = _user_course.UserCourses.getFromCache(
+          resp.user_course.id.$oid);
+        this.courseModel.set('user_course_id', this.userCourse.id);
+
+        this.$('.add-course-btn')
+          .removeClass('add-course-btn icon-plus-sign')
+          .addClass('remove-course-btn icon-remove-sign');
+        this.updateRemoveCourseTooltip();
+
+        // TODO(mack): properly update this.userCourse in child views, and call
+        this.render();
+      }, this);
+
+      $.ajax(
+        '/api/user/add_course_to_shortlist',
+        {
+          type: 'POST',
+          data: { course_id: this.courseModel.id },
+          dataType: 'json',
+          success: onSuccess
+        }
+      );
+
+      return false;
+    },
+
+    removeTranscriptCourse: function(evt) {
+      var onSuccess = _.bind(function(resp) {
+        toastr.info(
+          _s.sprintf('%s was removed!', this.courseModel.get('name'))
+        );
+
+        // TODO(mack): remove require()
+        var _user_course = require('user_course');
+        // Remove the user course from the collection cache
+        _user_course.UserCourses.removeFromCache(this.userCourse);
+        this.courseModel.set('user_course_id', undefined);
+        this.userCourse = undefined;
+
+        this.$('.remove-course-btn').tooltip('destroy');
+        if (pageData.ownProfile) {
+          // We should only be removing the course card if the user is on their
+          // own profile
+          var onHide = _.bind(function() {
+            // TODO(mack): properly destory subviews
+            this.close();
+          }, this);
+
+          this.$el.slideUp(200, onHide);
+        } else {
+          this.render();
+        }
+
+      }, this);
+
+      $.post(
+        '/api/user/remove_course',
+        {
+          course_id: this.userCourse.get('course_id'),
+          term_id: this.userCourse.get('term_id')
+        },
+        onSuccess
+      );
+
+      return false;
     },
 
     toggleCourse: function(evt) {

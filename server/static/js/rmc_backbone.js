@@ -36,6 +36,21 @@ function(Backbone, $, _) {
       return obj;
     },
 
+    getReferenceFields: function() {
+      if (_.isFunction(this.referenceFields)) {
+        return this.referenceFields();
+      } else {
+        return this.referenceFields || {};
+      }
+    },
+
+    getCachedReferenceKey: function(attr) {
+      // Since there is only one _cachedReferences per Model type,
+      // we gotta key the cache on the model's cid...until we think
+      // of a better way to do this.
+      return this.cid + ':' + attr;
+    },
+
     /**
      * TODO(mack): add field to each referenceField item to
      * specify if the reference is optional.
@@ -57,21 +72,12 @@ function(Backbone, $, _) {
         return this._super('get', arguments);
       }
 
-      // Since there is only one _cachedReferences per Model type,
-      // we gotta key the cache on the model's cid...until we think
-      // of a better way to do this.
-      var key = this.cid + ':' + attr;
-
+      var key = this.getCachedReferenceKey(attr);
       var val;
       if (key in this._cachedReferences) {
         val = this._cachedReferences[key];
-      } else if (_.isObject(this.referenceFields)) {
-        var referenceFields;
-        if (_.isFunction(this.referenceFields)) {
-          referenceFields = this.referenceFields();
-        } else {
-          referenceFields = this.referenceFields;
-        }
+      } else {
+        var referenceFields = this.getReferenceFields();
 
         if (!(attr in referenceFields)) {
           return;
@@ -124,6 +130,22 @@ function(Backbone, $, _) {
           });
           this._oidFields[attr] = true;
         }
+
+        // During set, check if we are setting over an _id that is associated
+        // with a reference field. If so, invalidate the key for the associated
+        // reference field.
+        // TODO(mack): optimize this
+        var referenceFields = this.getReferenceFields();
+        var cacheKey;
+        _.each(referenceFields, function(arr, key) {
+          if (attr === arr[0]) {
+            cacheKey = this.getCachedReferenceKey(key);
+            return false;
+          }
+        }, this);
+        if (cacheKey && cacheKey in this._cachedReferences) {
+          delete this._cachedReferences[cacheKey];
+        }
       }
 
       return this._super('set', [attrs, options]);
@@ -166,6 +188,18 @@ function(Backbone, $, _) {
     collection.add(objs, {silent: true});
   };
 
+  Collection.removeFromCache = function(objs) {
+    // TODO(mack): enforce obj.id is set?
+
+    if (!_.isArray(objs)) {
+      objs = [objs];
+    }
+
+    var collection = collectionCaches[this._cacheName];
+    // Prevent validation of models on initial add
+    collection.remove(objs, {silent: true});
+  };
+
   Collection.getFromCache = function(ids) {
     if (!this._cacheName) {
       console.warn('A cache does not exist for this collection type');
@@ -197,7 +231,12 @@ function(Backbone, $, _) {
   };
 
 
-  var View = Backbone.View.extend({});
+  var View = Backbone.View.extend({
+    close: function() {
+      this.remove();
+      this.unbind();
+    }
+  });
 
   /**
    * A base collection view that just renders a collection's contents into an
