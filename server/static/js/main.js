@@ -108,6 +108,9 @@ function($, _, _s, Backbone, util, moment, __, __, _facebook, toastr) {
   })();
 
   $(function() {
+    $('.navbar .beta').tooltip({
+      placement: 'bottom'
+    });
     $('.navbar .icon-signout').tooltip({
       title: 'Sign out',
       placement: 'bottom'
