@@ -1,45 +1,24 @@
 @import 'base';
 
+$header-height: 668px;
+
 #landing-header {
   width: 100%;
   position: absolute;
   top: 0;
-  height: 668px;
+  height: $header-height;
   overflow: hidden;
   padding: 0;
   background-color: white;
-  @include box-shadow(0 3px 9px -2px rgba(0, 0, 0, 0.5));
+  //@include box-shadow(0 3px 9px -2px rgba(0, 0, 0, 0.5));
   min-width: 700px;
-
-  #steps {
-    p {
-      font-size: 50px;
-      line-height: 50px;
-      font-weight: lighter;
-      color: #444;
-    }
-    .row-fluid {
-      margin-bottom: 60px;
-      background: url(/static/img/homepage_section_divider.png) top center no-repeat;
-      padding-top: 80px;
-      &:first-child {
-        background: none;
-        padding-top: 0px;
-      }
-    }
-  }
-
-  footer #landing-footer-text {
-    padding-top: 30px;
-    text-align: center;
-  }
 
   .header-bg {
     opacity: 0;
     @include background(url(/static/img/slc-header-lens.jpg));
     position: absolute;
     width: 2452px;
-    height: 668px;
+    height: $header-height;
     top: 0;
     right: 0;
     background-repeat: no-repeat;
@@ -59,9 +38,13 @@
     padding: 20px 40px;
     padding-bottom: 25px;
     right: 0;
-    width: 550px;
+    width: 620px;
     opacity: 0;
     color: #333;
+
+    .welcome {
+      font-size: 40px;
+    }
 
     .tagline {
       color: #222;
@@ -133,6 +116,81 @@
       color: white;
       text-shadow: 0 1px 0 rgba(20, 20, 20, .5);
       text-align: center;
+    }
+  }
+}
+
+body {
+  @include background(none);
+}
+
+
+.fade-to-footer {
+  $gradient-height: 80px;
+  position: absolute;
+  top: $header-height - $gradient-height;
+  height: $gradient-height;
+  display: block;
+  width: 100%;
+  @include background(linear-gradient(top, rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0)));
+}
+
+footer {
+  // TODO(david): Don't hardcode nav bar height
+  margin-top: $header-height - 54px;
+  height: auto;
+  text-align: center;
+  padding-top: 20px;
+
+  .footer-text {
+    color: #DDD;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    font-size: 14px;
+    @include transition(all 0.2s ease-out);
+
+    &:hover {
+      @include transition(all 0.2s ease-out);
+      color: #AAA;
+      a {
+        color: #AAA;
+        @include transition(all 0.2s ease-out);
+      }
+    }
+
+    a {
+      color: #DDD;
+      @include transition(all 0.2s ease-out);
+      &:hover {
+        @include transition(all 0.2s ease-out);
+        color: $flowBlue;
+        text-decoration: none;
+      }
+    }
+
+    ul {
+      list-style: none;
+      li {
+        list-style-image: none;
+        list-style-type: none;
+        display: inline-block;
+        border-right: 1px solid #E8E8E9;
+        padding-right: 10px;
+        margin-right: 10px;
+
+        text-transform: uppercase;
+        letter-spacing: 3px;
+
+        &:last-child {
+          margin-right: 0;
+          padding-right: 0;
+          border-right: none;
+        }
+      }
+    }
+
+    p {
+      font-weight: lighter;
     }
   }
 }

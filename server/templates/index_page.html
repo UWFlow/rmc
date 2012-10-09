@@ -10,9 +10,9 @@
 <div id="landing-header">
   <div class="sign-up-box">
     <div class="sign-up-content">
-      <h1>Welcome to Flow.</h1>
+      <h1 class="welcome">Welcome to Flow.</h1>
       <p class="lead tagline">
-        Plan university courses with friends in mind.
+        Discover, plan, and track university courses with friends in mind.
       </p>
 
       <div class="fb-login-button">
@@ -34,11 +34,16 @@
 </div>
 {% endblock %}
 
-{% block body %}
-
-<section id="steps">
-</section>
-{% endblock %}
-
 {% block footer %}
+<div class="fade-to-footer"></div>
+<div class="footer-text">
+  <ul>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Privacy Policy</a></li>
+    <li><a href="#">Terms of Service</a></li>
+  </ul>
+  <p>
+    Flow is not affiliated with the University of Waterloo.
+  </p>
+</div>
 {% endblock %}

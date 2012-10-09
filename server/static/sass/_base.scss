@@ -154,8 +154,8 @@ a:hover {
 
         &:hover {
           @include transition(all 0.3s ease-out);
-          border-top: 3px solid #0A93B5;
-          color: #0A93B5;
+          border-top: 3px solid $flowBlue;
+          color: $flowBlue;
         }
       }
       &.active a {

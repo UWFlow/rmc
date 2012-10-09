@@ -122,7 +122,7 @@ function($, _, _s, Backbone, util, moment, __, __, _facebook, toastr) {
 
     // Async-load footer background image
     var $footer = $('footer');
-    if ($footer.length) {
+    if ($footer.length && window.location.pathname !== '/') {
       // TODO(david): Use jpg and have it fade out into bg color
       $footer.css('background',
         'url(/static/img/footer_background_2000_min.png) center center no-repeat');
