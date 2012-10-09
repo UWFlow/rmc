@@ -9,6 +9,7 @@
   padding: 0;
   background-color: white;
   @include box-shadow(0 3px 9px -2px rgba(0, 0, 0, 0.5));
+  min-width: 700px;
 
   #steps {
     p {
@@ -47,11 +48,7 @@
     -moz-transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
     -o-transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
     transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
-    -webkit-transform: translate3d(0, 0, 0);
-    -moz-transform: translate3d(0, 0, 0);
-    -ms-transform: translate3d(0, 0, 0);
-    -o-transform: translate3d(0, 0, 0);
-    transform: translate3d(0, 0, 0);
+    @include transform(translate3d(0, 0, 0));
   }
 
   .sign-up-box {
