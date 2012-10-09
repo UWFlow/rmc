@@ -151,9 +151,13 @@ def profile(profile_user_id):
         profile_user = current_user
     else:
         own_profile = False
+        if profile_user_id not in current_user.friend_ids:
+            logging.info("User (%s) tried to access non-friend profile (%s)"
+                    % (current_user.id, profile_user_id))
+            return flask.redirect('/profile', 302)
         profile_user = m.User.objects.with_id(profile_user_id)
         if profile_user is None:
-            logging.warn('other-use is None')
+            logging.warn('profile_user is None')
             return flask.redirect('/profile', 302)
 
     # PART TWO - DATA FETCHING
