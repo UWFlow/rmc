@@ -98,6 +98,7 @@ def get_current_user():
 
     return req.current_user
 
+
 def login_required(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
@@ -545,6 +546,11 @@ def login():
         logging.error('Exception while saving user: %s' % ex)
         return 'Error'
     return ''
+
+
+@app.route('/privacy')
+def privacy():
+    return flask.render_template('privacy_page.html')
 
 
 # TODO(mack): move API's to separate file
