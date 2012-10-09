@@ -75,6 +75,7 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
   // TODO(david): Need base expandable collection view
   var ExpandableProfView = RmcBackbone.View.extend({
     template: _.template($('#prof-expandable-reviews-tpl').html()),
+    firstExpanded: false,
     expanded: false,
     numShown: 1,
 
@@ -120,11 +121,7 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
 
       // Professor reviews
       this.$('.reviews-collection-placeholder').replaceWith(
-        this.profReviewCollectionView.render().el);
-
-      // TODO(david): Performance: delay rendering of hidden reviews
-      this.$('.review-post').slice(this.numShown)
-        .wrapAll('<div class="expanded-reviews hide-initial">');
+        this.profReviewCollectionView.render(true).el);
 
       return this;
     },
@@ -137,17 +134,36 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
       return Math.max(this.numReviews() - this.numShown);
     },
 
+    // TODO(mack): refactor this mess
     toggleExpand: function() {
-      if (this.expanded) {
-        this.$('.expanded-reviews').fancySlide('up');
-        this.$('.toggle-reviews')
-          .html('See ' + this.numHidden() + ' more ' +
-              util.pluralize(this.numHidden(), 'review') + ' &raquo;');
+
+      var toggle = _.bind(function() {
+        if (this.expanded) {
+          this.$('.expanded-reviews').fancySlide('up');
+          this.$('.toggle-reviews')
+            .html('See ' + this.numHidden() + ' more ' +
+                util.pluralize(this.numHidden(), 'review') + ' &raquo;');
+        } else {
+          this.$('.expanded-reviews').fancySlide('down');
+          this.$('.toggle-reviews').html('&laquo; Hide reviews');
+        }
+        this.expanded = !this.expanded;
+      }, this);
+
+      if (!this.firstExpanded) {
+        this.firstExpanded = true;
+        this.$('.toggle-reviews').text('Loading...');
+        window.setTimeout(_.bind(function() {
+          this.profReviewCollectionView.render(false);
+
+          this.$('.review-post').slice(this.numShown)
+            .wrapAll('<div class="expanded-reviews hide-initial">');
+
+          toggle();
+        }, this), 100);
       } else {
-        this.$('.expanded-reviews').fancySlide('down');
-        this.$('.toggle-reviews').html('&laquo; Hide reviews');
+        toggle();
       }
-      this.expanded = !this.expanded;
     }
   });
 

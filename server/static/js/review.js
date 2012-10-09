@@ -94,11 +94,43 @@ function(RmcBackbone, $, _, ratings, util) {
     }
   });
 
-  var ReviewCollectionView = RmcBackbone.CollectionView.extend({
+  // Cannot use RmcBackbone.CollectionView since we need to delay loading
+  // of rest of collection
+  var ReviewCollectionView = RmcBackbone.View.extend({
     className: 'review-collection',
+    tagName: 'article',
 
     createItemView: function(model) {
       return new ReviewView({ model: model });
+    },
+
+    addItemView: function(view) {
+      view.tagName = 'section';
+      // TODO(david): Append all at once for faster DOM rendering
+      this.$el.append(view.render().el);
+    },
+
+    // TODO(mack): refactor this mess
+    render: function(firstOnly) {
+      if (!this.collection.length) {
+        return this;
+      }
+
+      if (firstOnly === true) {
+        var firstModel = this.collection.first();
+        var view = this.createItemView(firstModel);
+        this.addItemView(view);
+      } else if (firstOnly === false) {
+        var restModels = this.collection.rest();
+        _.each(restModels, function(model) {
+          var view = this.createItemView(model);
+          this.addItemView(view);
+        }, this);
+      } else {
+        throw 'ReviewCollectionView.render() must be called with argument firstOnly';
+      }
+
+      return this;
     }
   });
 
