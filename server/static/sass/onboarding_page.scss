@@ -29,7 +29,7 @@ header {
 
   #transcript-instructions {
     text-align: left;
-    font-size: 26px;
+    font-size: 25px;
     line-height: 52px;
     //margin-right: 40px;
   }
@@ -38,14 +38,18 @@ header {
     width: 100%;
     overflow: hidden;
     height: 100px;
-    font-size: 26px;
+    font-size: 25px;
     line-height: 30px;
   }
 
   #transcript-disclaimer {
     text-align: left;
-    font-size: 26px;
+    font-size: 25px;
     line-height: 52px;
+  }
+
+  #onboarding-skip-container {
+    text-align: right;
   }
 
   #transcript-remove-text {
