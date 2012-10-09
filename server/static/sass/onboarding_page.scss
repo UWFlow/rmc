@@ -36,7 +36,7 @@ header {
   #transcript-text {
     width: 100%;
     border-sizing: box-border;
-    height: 100px;
+    height: 80px;
     margin-top: 20px;
     font-size: 20px;
     resize: none;
@@ -47,7 +47,8 @@ header {
     background: url(/static/img/mbp-880x559.png);
     width: 880px;
     height: 559px;
-    margin-left: -35px;
+    margin-left: -10px;
+    margin-top: -10px;
 
     #transcript-video {
       width: 640px;
