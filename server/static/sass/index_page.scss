@@ -1,43 +1,141 @@
 @import 'base';
 
 #landing-header {
-  //background: #dd8888;
-  @include background(url(http://subtlepatterns.subtlepatterns.netdna-cdn.com/patterns/retina_wood.png));
-  text-align: center;
-  &.hero-unit {
-    @include border-radius(0px);
-  }
+  width: 100%;
+  position: absolute;
+  top: 0;
+  height: 668px;
+  overflow: hidden;
+  padding: 0;
+  background-color: white;
   @include box-shadow(0 3px 9px -2px rgba(0, 0, 0, 0.5));
-  h1 {
-    font-size: 100px;
-    color: rgba(0, 0, 0, 0.6);
-  }
-  .fb-login-button-container {
-    padding-top: 50px;
-    min-height: 95px;
-  }
-}
 
-
-#steps {
-  p {
-    font-size: 50px;
-    line-height: 50px;
-    font-weight: lighter;
-    color: #444;
-  }
-  .row-fluid {
-    margin-bottom: 60px;
-    background: url(/static/img/homepage_section_divider.png) top center no-repeat;
-    padding-top: 80px;
-    &:first-child {
-      background: none;
-      padding-top: 0px;
+  #steps {
+    p {
+      font-size: 50px;
+      line-height: 50px;
+      font-weight: lighter;
+      color: #444;
+    }
+    .row-fluid {
+      margin-bottom: 60px;
+      background: url(/static/img/homepage_section_divider.png) top center no-repeat;
+      padding-top: 80px;
+      &:first-child {
+        background: none;
+        padding-top: 0px;
+      }
     }
   }
-}
 
-footer #landing-footer-text {
-  padding-top: 30px;
-  text-align: center;
+  footer #landing-footer-text {
+    padding-top: 30px;
+    text-align: center;
+  }
+
+  .header-bg {
+    opacity: 0;
+    @include background(url(/static/img/slc-header-lens.jpg));
+    position: absolute;
+    width: 2452px;
+    height: 668px;
+    top: 0;
+    right: 0;
+    background-repeat: no-repeat;
+    -webkit-transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98);
+    -webkit-transition-delay: 100ms;
+    -moz-transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
+    -o-transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
+    transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
+    -webkit-transform: translate3d(0, 0, 0);
+    -moz-transform: translate3d(0, 0, 0);
+    -ms-transform: translate3d(0, 0, 0);
+    -o-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+
+  .sign-up-box {
+    z-index: 10;
+    top: 150px;
+    position: absolute;
+    height: 230px;
+    top: 200px;
+    padding: 20px 40px;
+    right: 0;
+    width: 550px;
+    opacity: 0;
+    color: #333;
+
+    .tagline {
+      color: #222;
+    }
+
+    .sign-up-content {
+      @include transform(translate3d(50px, 0, 0));
+    }
+
+    &.animated {
+      opacity: 1;
+      z-index: 3;
+      background: rgba(255, 255, 255, 0.65);
+      @include transition(all 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98));
+
+      .sign-up-content {
+        @include transform(translate3d(0, 0, 0));
+        @include transition(all 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98));
+      }
+    }
+  }
+
+  .fb-login-button {
+    @include border-radius(5px);
+    background-color: #AEACAC;
+    @include box-shadow(0 0 2px rgba(0, 0, 0, 0.2));
+    @include background-image(linear-gradient(top, #5575AF, #355997));
+    width: 310px;
+    height: 50px;
+    line-height: 49px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    text-align: center;
+    opacity: 0.8;
+    @include transition(all 0.2s ease-out);
+    margin-bottom: 10px;
+
+    &:hover {
+      @include transition(all 0.2s ease-out);
+      @include box-shadow(0 0 20px rgba(0, 0, 0, 0.4));
+      opacity: 1.0;
+      cursor: pointer;
+
+      .fb-login-text {
+        @include text-shadow(0 0px 10px rgba(255, 255, 255, 0.5));
+      }
+    }
+
+    .fb-logo-box {
+      border-radius: 5px 0 0 5px;
+      @include background-image(linear-gradient(top, #3B5D9B, #29416E));
+      float: left;
+      height: 50px;
+      width: 50px;
+
+      .fb-logo-f {
+        height: 30px;
+        width: 15px;
+      }
+    }
+    .fb-login-text {
+      font-weight: bold;
+      font-size: 22px;
+      color: white;
+      text-shadow: 0 1px 0 rgba(20, 20, 20, .5);
+      text-align: center;
+    }
+  }
 }

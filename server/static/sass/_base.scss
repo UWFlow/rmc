@@ -111,6 +111,14 @@ a:hover {
   cursor: pointer;
 }
 
+.navbar {
+  z-index: 100;
+  position: relative;
+  background: rgba(255, 255, 255, 0.80);
+  @include box-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
+  height: 50px;
+}
+
 footer {
   // TODO(david): Figure out background-size: cover instead of height
   // TODO(david): FIgure out empty gap on Sandy's computer

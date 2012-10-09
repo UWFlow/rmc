@@ -4,62 +4,39 @@
   <link rel="stylesheet" href="{{ '/static/css/index_page.css'|version }}">
 {% endblock %}
 
+{% set nav_item = "landing" %}
+
 {% block header %}
-  <div id="landing-header" class="hero-unit">
-    <div class="container-fluid">
-      <div class="row-fluid">
-        <div class="span12">
-          <h1>
-            Planning courses?<br>
-            Ask your friends!
-          </h1>
-          <div class="fb-login-button-container">
-          {# TODO(Sandy): Make david style the button (find image, make the
-             pointer change when they hover over the img to look button-like #}
-            <img class="fb-login-button" src="/static/img/ribbon_blue.png">
-          </div>
-          {# FIXME(Sandy): Permission requests after login now gives
-          us a cross-domain request error. I suspect it's because we're not
-          longer doing FB login in an iFrame. Luckily, we still seem to be
-          getting data back for the FB.api requests. Worry later? #}
-          {# TODO(Sandy): Make david position the facepile. #}
-          {# Note: data-app-id is set in facebook.js #}
-          <div class="fb-facepile" data-max-rows="1" data-width="300">
-          </div>
+<div id="landing-header">
+  <div class="sign-up-box">
+    <div class="sign-up-content">
+      <h1>Welcome to Flow.</h1>
+      <p class="lead tagline">
+        Plan university courses with friends in mind.
+      </p>
+
+      <div class="fb-login-button">
+        <div class="fb-logo-box">
+          <img class="fb-logo-f" src="/static/img/f-6-25.png">
         </div>
+        <div class="fb-login-text">Connect with Facebook</div>
       </div>
+
+      {# FIXME(Sandy): Permission requests after login now gives
+      us a cross-domain request error. I suspect it's because we're not
+      longer doing FB login in an iFrame. Luckily, we still seem to be
+      getting data back for the FB.api requests. Worry later? #}
+      {# Note: data-app-id is set in facebook.js #}
+      <div class="fb-facepile" data-max-rows="1" data-width="320"></div>
     </div>
   </div>
+  <i class="header-bg"></i>
+</div>
 {% endblock %}
 
 {% block body %}
 
-{# TODO(mack): use ol rather than div #}
 <section id="steps">
-  <div class="row-fluid">
-    <div class="span4">
-      <img class="img-circle" src="http://placekitten.com/400/250">
-    </div>
-    <div class="span8">
-      <p style="padding-left: 40px;"><br><br>See what your friends took</p>
-    </div>
-  </div>
-  <div class="row-fluid">
-    <div class="span8">
-      <p style="text-align: right; padding-right: 40px;"><br><br>Get useful ratings and reviews</p>
-    </div>
-    <div class="span4">
-      <img class="img-circle" src="http://placekitten.com/401/250">
-    </div>
-  </div>
-  <div class="row-fluid">
-    <div class="span4">
-      <img class="img-circle" src="http://placekitten.com/402/250">
-    </div>
-    <div class="span8">
-      <p style="padding-left: 40px;"><br><br>Share and review what you took</p>
-    </div>
-  </div>
 </section>
 {% endblock %}
 

@@ -7,7 +7,8 @@
     <meta name="author" content="TODO(david)">
 
     <!-- CSS stylesheets -->
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600">
+    <link rel="stylesheet"
+    href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600">
     <link rel="stylesheet" href="{{ '/static/css/ext.css'|version }}">
     {% block stylesheets %}
     {% endblock %}
@@ -49,24 +50,22 @@
     <div id="fb-root"></div>
 
     <div class="navbar navbar-static-top">
-      <div class="navbar-inner">
-        <div class="container-fluid">
-          <a class="brand" href="/">Course Flow</a>
-          <ul class="nav pull-right">
-            <li class="{{ 'active' if nav_item == 'courses' else '' }}">
-              <a href="/courses"><i class="icon-reorder"></i> Courses</a>
-            </li>
-            <li class="{{ 'active' if nav_item == 'profile' else '' }}">
-              <a href="/profile"><i class="icon-user"></i> Profile</a>
-            </li>
-            {% if current_user_id %}
-              <li class="divider-vertical"></li>
-              <li>
-                <a href="#"><i class="icon-signout"></i></a>
-              </li>
-            {% endif %}
-          </ul>
-        </div>
+      <div class="container-fluid">
+        <a class="brand" href="/">Course Flow</a>
+        <ul class="nav pull-right">
+          <li class="{{ 'active' if nav_item == 'courses' else '' }}">
+            <a href="/courses"><i class="icon-reorder"></i> Courses</a>
+          </li>
+          <li class="{{ 'active' if nav_item == 'profile' else '' }}">
+            <a href="/profile"><i class="icon-user"></i> Profile</a>
+          </li>
+          {% if current_user_id %}
+          <li class="divider-vertical"></li>
+          <li>
+            <a href="#"><i class="icon-signout"></i></a>
+          </li>
+          {% endif %}
+        </ul>
       </div>
     </div>
     <header>
@@ -95,6 +94,7 @@
     {% endblock %}
 
     {# UserVoice #}
+    {% if nav_item != 'landing' %}
     <script type="text/javascript">
       var uvOptions = {};
       (function() {
@@ -103,5 +103,6 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
       })();
     </script>
+    {% endif %}
   </body>
 </html>
