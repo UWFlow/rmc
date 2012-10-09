@@ -30,6 +30,10 @@ require.config({
     'ext/slimScroll': {
       deps: ['ext/jquery', 'ext/jqueryui']
     },
+    'ext/toastr': {
+      deps: ['ext/jquery'],
+      exports: 'toastr'
+    },
     'ext/underscore': {
       exports: '_'
     },
@@ -56,6 +60,7 @@ require.config({
     'ext/moment': 'ext/moment.min',
     'ext/slimScroll': 'ext/slimScroll-0.6.0',
     'ext/jqueryui': 'ext/jquery-ui-1.8.23.custom.min',
+    'ext/toastr': 'ext/toastr',
     'ext/underscore': 'ext/underscore-1.3.3',
     'ext/underscore.string': 'ext/underscore.string-2.0.0',
     // TODO(mack): host locally?
@@ -66,8 +71,13 @@ require.config({
 
 require(['ext/jquery', 'ext/underscore', 'ext/underscore.string',
     'ext/backbone', 'util', 'ext/moment', 'ext/bootstrap', 'ext/cookie',
-    'facebook'],
-function($, _, _s, Backbone, util, moment, __, __, _facebook) {
+    'facebook', 'ext/toastr'],
+function($, _, _s, Backbone, util, moment, __, __, _facebook, toastr) {
+  // Set defaults for toastr notifications
+  toastr.options = {
+    timeOut: 1000
+  };
+
   // Add helpers functions to all templates
   (function() {
     var template = _.template;
