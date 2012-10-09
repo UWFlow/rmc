@@ -1,0 +1,58 @@
+@import 'base';
+
+// TODO(Sandy): Cleanup this file. Mostly copied from profile_page
+header {
+  margin-bottom: 40px;
+}
+
+.personal-info {
+  .name {
+    margin-top: 15px;
+    margin-bottom: 0px;
+  }
+  .program {
+    margin-bottom: 0;
+    color: #666;
+  }
+}
+
+.divider {
+  border-top: 1px solid #CCC;
+  margin: 22px 0;
+}
+
+#transcript-container {
+  h2 {
+    font-size: 50px;
+    line-height: 52px;
+  }
+
+  #transcript-instructions {
+    text-align: left;
+    font-size: 26px;
+    line-height: 52px;
+    //margin-right: 40px;
+  }
+
+  #transcript-text {
+    width: 100%;
+    overflow: hidden;
+    height: 100px;
+    font-size: 26px;
+    line-height: 30px;
+  }
+
+  #transcript-disclaimer {
+    text-align: left;
+    font-size: 26px;
+    line-height: 52px;
+  }
+
+  #transcript-remove-text {
+    float: right;
+  }
+
+  #transcript-error {
+    color: #ff0000;
+  }
+}

@@ -431,6 +431,10 @@ def course_page(course_id):
         current_term_id=util.get_current_term_id(),
     )
 
+@login_required
+@app.route('/onboarding', methods=['GET'])
+def onboarding():
+    return flask.render_template('onboarding_page.html')
 
 @app.route('/login', methods=['POST'])
 def login():
