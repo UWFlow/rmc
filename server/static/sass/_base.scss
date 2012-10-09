@@ -130,6 +130,13 @@ a:hover {
         background: url('/static/img/flow-logo-75x35.png') no-repeat;
         opacity: 0;
       }
+      .beta {
+        margin-left: 85px;
+        font-variant: small-caps;
+        letter-spacing: 1px;
+        font-size: 30px;
+        line-height: 28px;
+      }
       &:hover {
         .logo-no-color {
           opacity: 0;
