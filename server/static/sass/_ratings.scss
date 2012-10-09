@@ -44,18 +44,21 @@ $cell-height: 28px;
 }
 
 .rating-box {
-  $rating-size: 35px;
+  $rating-size: 30px;
+  $margin-height: 5px;
   $num-size: 11px;
 
   position: relative;
   text-align: center;
-  line-height: $rating-size + $num-size;
+  line-height: $rating-size + $margin-height + $num-size;
   width: 52px;
   background-color: #666;
 
   .rating {
     font-size: $rating-size;
     line-height: $rating-size;
+    margin-bottom: $margin-height;
+
     .percent {
       font-size: 56%;
     }
