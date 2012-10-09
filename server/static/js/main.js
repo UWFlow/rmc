@@ -111,13 +111,6 @@ function($, _, _s, Backbone, util, moment, __, __, _facebook, toastr) {
     $('.navbar .icon-signout').tooltip({
       title: 'Sign out',
       placement: 'bottom'
-    }).click(function(evt) {
-      // TODO(mack): Alternatively we would immediately go to home page with
-      // query param indicating logout. Should consider that if this is too
-      // slow.
-      _facebook.logout(function() {
-        window.location.href = '/';
-      });
     });
 
     // Async-load footer background image
