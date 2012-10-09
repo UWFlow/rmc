@@ -2,9 +2,9 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>{% block page_title %}{% endblock %} - Course Flow</title>
-    <meta name="description" content="TODO(david)">
-    <meta name="author" content="TODO(david)">
+    <title>{% block page_title %}{% endblock %}{{ ' - ' if self.page_title() else '' }} Flow</title>
+    <meta name="description" content="Plan your university courses with friends in mind.">
+    <meta name="author" content="Flow">
 
     <!-- CSS stylesheets -->
     <link rel="stylesheet"
