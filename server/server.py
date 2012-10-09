@@ -31,10 +31,16 @@ app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
-flask.render_template = functools.partial(flask.render_template,
-        env=app.config['ENV'],
-        version=VERSION,
-        js_dir=app.config['JS_DIR'])
+flask_render_template = flask.render_template
+def render_template(*args, **kwargs):
+    kwargs.update({
+        'env': app.config['ENV'],
+        'version': VERSION,
+        'js_dir': app.config['JS_DIR'],
+        'current_user': get_current_user(),
+    })
+    return flask_render_template(*args, **kwargs)
+flask.render_template = render_template
 
 if not app.debug:
     from logging.handlers import TimedRotatingFileHandler
