@@ -132,8 +132,9 @@ class UserCourse(me.Document):
         # http://docs.mongodb.org/manual/tutorial/perform-two-phase-commits/
         # or run nightly ratings aggregation script to fix race condtions
         cur_course = course.Course.objects.with_id(self.course_id)
-        self.course_review.update_course_aggregate_ratings(cur_course)
-        cur_course.save()
+        if cur_course:
+            self.course_review.update_course_aggregate_ratings(cur_course)
+            cur_course.save()
 
         if self.professor_id:
             cur_professor = professor.Professor.objects.with_id(
