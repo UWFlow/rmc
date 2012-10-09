@@ -57,16 +57,16 @@
         </a>
         <ul class="nav pull-right">
           <li class="{{ 'active' if nav_item == 'courses' else '' }}">
-            <a href="/courses"><i class="icon-reorder"></i> Courses</a>
+            <a href="/courses"><i class="icon-reorder"></i> Search Courses</a>
           </li>
-          <li class="{{ 'active' if nav_item == 'profile' else '' }}">
-            <a href="/profile"><i class="icon-user"></i> Profile</a>
-          </li>
-          {% if current_user_id %}
-          <li class="divider-vertical"></li>
-          <li>
-            <a href="#"><i class="icon-signout"></i></a>
-          </li>
+          {% if current_user %}
+            <li class="{{ 'active' if nav_item == 'profile' else '' }}">
+              <a href="/profile"><i class="icon-user"></i> Profile</a>
+            </li>
+            <li class="divider-vertical"></li>
+            <li>
+              <a href="#"><i class="icon-signout"></i></a>
+            </li>
           {% endif %}
         </ul>
       </div>
