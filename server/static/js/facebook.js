@@ -64,7 +64,7 @@ function($, __, FB) {
       type: 'POST',
       success: function(data) {
         // TODO(Sandy): handle errors here, expecting none right now though
-        window.location.href = '/profile';
+        window.location.href = '/onboarding';
       },
       error: function(xhr) {
         FB.logout(function() {

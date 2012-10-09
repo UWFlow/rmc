@@ -438,6 +438,7 @@ def course_page(course_id):
 @login_required
 @app.route('/onboarding', methods=['GET'])
 def onboarding():
+    # TODO(Sandy): Make it so users can only see it once??? Maybe?
     return flask.render_template('onboarding_page.html',
         page_script='onboarding_page.js',
     )
