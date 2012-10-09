@@ -1,6 +1,10 @@
 @import 'base';
 @import 'course';
 
+header {
+  padding-top: 15px;
+}
+
 #course-page-container {
   .keywords {
     @include box-sizing(border-box);
