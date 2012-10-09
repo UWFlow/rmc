@@ -22,10 +22,7 @@ header {
 }
 
 #onboarding-container {
-  max-width: 1000px;
   text-align: left;
-  margin: 0;
-  padding: 0;
   float: none;
 
   .step {
@@ -39,10 +36,28 @@ header {
   #transcript-text {
     width: 100%;
     border-sizing: box-border;
-    height: 216px;
+    height: 100px;
     margin-top: 20px;
-    font-size: 18px;
+    font-size: 20px;
     resize: none;
+  }
+
+  #laptop-container {
+    position: relative;
+    background: url(/static/img/mbp-880x559.png);
+    width: 880px;
+    height: 559px;
+    margin-left: -35px;
+
+    #transcript-video {
+      width: 640px;
+      height: 400px;
+      z-index: 10;
+      position: absolute;
+      left: 122px;
+      top: 66px;
+    }
+
   }
 
   #transcript-disclaimer {
