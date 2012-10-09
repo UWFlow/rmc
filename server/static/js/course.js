@@ -167,7 +167,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       this.$('.add-course-btn')
         .tooltip('destroy')
         .tooltip({
-          title: 'Add course to shortlist'
+          title: 'Add to my shortlist',
+          placement: 'left'
         });
     },
 
@@ -175,7 +176,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       this.$('.remove-course-btn')
         .tooltip('destroy')
         .tooltip({
-          title: 'Remove course from shortlist'
+          title: 'Remove from profile',
+          placement: 'left'
         });
     },
 
