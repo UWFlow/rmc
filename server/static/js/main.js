@@ -75,7 +75,7 @@ require(['ext/jquery', 'ext/underscore', 'ext/underscore.string',
 function($, _, _s, Backbone, util, moment, __, __, _facebook, toastr) {
   // Set defaults for toastr notifications
   toastr.options = {
-    timeOut: 1000
+    timeOut: 3000
   };
 
   // Add helpers functions to all templates
