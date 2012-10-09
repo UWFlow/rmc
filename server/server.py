@@ -403,6 +403,7 @@ def course_page(course_id):
             user_id = uc_dict['user_id']
             if user_id == current_user.id:
                 continue
+            # TODO(Sandy): This is poorly named because its not only friends...
             friend_ids.add(user_id)
         friends = m.User.objects(id__in=friend_ids).only(
                 'first_name', 'last_name', 'fbid')

@@ -128,8 +128,9 @@ class Course(me.Document):
             if uc.id in current_user_course_ids:
                 current_user_course_by_course[uc.course_id] = uc.to_dict()
             elif include_friends:
-                friend_user_courses_by_course.setdefault(
-                        uc.course_id, []).append(uc.to_dict())
+                if uc.user_id in current_user.friend_ids:
+                    friend_user_courses_by_course.setdefault(
+                            uc.course_id, []).append(uc.to_dict())
 
         for course_dict in course_dicts:
             current_uc = current_user_course_by_course.get(
