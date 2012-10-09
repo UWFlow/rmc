@@ -21,31 +21,35 @@ header {
   margin: 22px 0;
 }
 
-#transcript-container {
-  h2 {
-    font-size: 50px;
-    line-height: 52px;
+#onboarding-container {
+  max-width: 1000px;
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  float: none;
+
+  .step {
+    font-size: 18px;
+    //line-height: 20px;
   }
 
   #transcript-instructions {
     text-align: left;
-    font-size: 25px;
-    line-height: 52px;
-    //margin-right: 40px;
   }
 
   #transcript-text {
     width: 100%;
-    overflow: hidden;
-    height: 100px;
-    font-size: 25px;
-    line-height: 30px;
+    border-sizing: box-border;
+    height: 216px;
+    margin-top: 20px;
+    font-size: 18px;
+    resize: none;
   }
 
   #transcript-disclaimer {
     text-align: left;
-    font-size: 25px;
-    line-height: 52px;
+    font-size: 18px;
+    line-height: 20px;
   }
 
   #onboarding-skip-container {
