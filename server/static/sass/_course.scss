@@ -236,23 +236,6 @@
     clear: both;
   }
 
-  .description {
-    .terms-offered {
-      display: inline-block;
-      padding-left: 10px;
-
-      .fall {
-        background-color: $orange;
-      }
-      .winter {
-        background-color: $blue;
-      }
-      .spring {
-        background-color: $green;
-      }
-    }
-  }
-
   .ratings {
     margin-top: 10px;
     margin-bottom: 20px;
@@ -271,5 +254,28 @@
   .more-info {
     margin-bottom: 0;
     min-height: 0;
+  }
+}
+
+.course-inner {
+  .terms-offered {
+    .fall {
+      background-color: $orange;
+    }
+    .winter {
+      background-color: $blue;
+    }
+    .spring {
+      background-color: $green;
+    }
+
+    .fall, .winter, .spring {
+      opacity: 0.4;
+      &.offered {
+        opacity: 1.0;
+      }
+    }
+
+    margin-bottom: 5px;
   }
 }

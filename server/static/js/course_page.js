@@ -20,7 +20,7 @@ function($, course, tookThis, user, tips, prof, ratings, user_course, _review) {
     courseModel: courseModel,
     userCourse: userCourse
   });
-  $('#course-inner-placeholder').html(courseInnerView.render().el);
+  $('#course-inner-container').html(courseInnerView.render().el);
   courseInnerView.animateBars();
 
   // TODO(mack): add prompt encouraging user to sign in to see friends
@@ -36,7 +36,7 @@ function($, course, tookThis, user, tips, prof, ratings, user_course, _review) {
 
   var tipsCollection = new _review.ReviewCollection(window.pageData.tipObjs);
   var tipsView = new tips.ExpandableTipsView({ reviews: tipsCollection });
-  $('#tips-collection-placeholder').replaceWith(tipsView.render().el);
+  $('#tips-collection-container').replaceWith(tipsView.render().el);
 
   // TODO(david): Handle no professors for course
   var profsCollection = courseModel.get('professors');
