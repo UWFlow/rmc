@@ -35,6 +35,7 @@
     </div>
     <div class="span9" id="profile-container">
       <div id="term-collection-container"></div>
+      {#
       {% if own_profile %}
         <div id="transcript-container">
           <h2>Import Course History</h2>
@@ -54,10 +55,10 @@
           Flow uses your transcript to import your course history and share it
           with friends. <b>We do not store grades or any other private
           information.</b> For more details, check out our privacy
-          {# XXX(Sandy): link to privacy policy #}
           policy.
         </p>
       {% endif %}
+      #}
     </div>
   </div>
 {% endblock %}
