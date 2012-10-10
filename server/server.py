@@ -446,7 +446,7 @@ def course_page(course_id):
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
         rmclogger.LOG_EVENT_SINGLE_COURSE, {
-            'current_user': current_user.id,
+            'current_user': current_user.id if current_user else None,
             'course_id': course_id,
         },
     )
