@@ -199,12 +199,13 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
     },
 
     logToGA: function(event, label) {
+      // TODO(Sandy): Include more info like course_id
+      // NOTE: The 4th param "value" can ONLY be an integer
       _gaq.push([
         '_trackEvent',
         'USER_ENGAGEMENT',
         event,
-        label,
-        this.userCourse.get('course_id')
+        label
       ]);
     },
 
