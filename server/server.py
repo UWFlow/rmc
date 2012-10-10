@@ -681,6 +681,9 @@ def search_courses():
 
     filters = {}
     if keywords:
+        # Clean keywords to just alphanumeric and space characters
+        keywords = re.sub(r'[^\w ]', ' ', keywords)
+
         keywords = re.sub('\s+', ' ', keywords)
         keywords = keywords.split(' ')
 
