@@ -70,8 +70,10 @@ function($, __, FB) {
           'USER_GENERIC',
           'FACEBOOK_CONNECTED'
         ]);
-        // TODO(Sandy): handle errors here, expecting none right now though
-        window.location.href = '/onboarding';
+        // Redirect after the event gets logged
+        _gaq.push(function() {
+          window.location.href = '/onboarding';
+        });
       },
       error: function(xhr) {
         FB.logout(function() {
