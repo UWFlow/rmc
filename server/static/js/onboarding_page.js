@@ -11,7 +11,8 @@ function($, _, _s, transcript, util) {
     _gaq.push([
       '_trackEvent',
       'USER_GENERIC',
-      'WANT_MANUAL_COURSE_IMPORTING']);
+      'WANT_MANUAL_COURSE_IMPORTING'
+    ]);
   });
 
   $transcript.bind('input paste', function(evt) {
@@ -63,6 +64,11 @@ function($, _, _s, transcript, util) {
       },
       function() {
         // TODO(mack): load and update page with js rather than reloading
+        _gaq.push([
+          '_trackEvent',
+          'USER_GENERIC',
+          'TRANSCRIPT_UPLOAD'
+        ]);
         window.location.href = '/profile';
       },
       'json'
