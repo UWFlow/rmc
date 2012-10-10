@@ -5,11 +5,6 @@
   <%- num_friends %> <%- pluralize(num_friends, 'friend', 'friends') %>
 </div>
 <div class="friend-collection-placeholder"></div>
-<% if (pageData.ownProfile) { %>
-  <button class="invite-friends-btn btn btn-primary">
-    <i class="icon-plus"></i> Invite more friends!
-  </button>
-<% } %>
 {% endcall %}
 
 {% call macros.us_template('friend-tpl') %}
