@@ -446,9 +446,7 @@ def course_page(course_id):
 @login_required
 def onboarding():
     if get_current_user().course_history:
-        # XXX(Sandy) UNCOMMENT THIS. DO NOT DEPLOY. left in for easy testing
-        #return flask.make_response(flask.redirect('profile'))
-        pass
+        return flask.make_response(flask.redirect('profile'))
 
     return flask.render_template('onboarding_page.html',
         page_script='onboarding_page.js',
