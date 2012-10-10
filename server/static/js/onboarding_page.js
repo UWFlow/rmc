@@ -5,6 +5,15 @@ function($, _, _s, transcript, util) {
 
   var $transcript = $('#transcript-text');
 
+  // Log events for manually importing courses button clicks
+  $("#manual-course-import-button").click(function(evt) {
+    // TODO(Sandy): Add fbid as the label
+    _gaq.push([
+      '_trackEvent',
+      'USER_GENERIC',
+      'WANT_MANUAL_COURSE_IMPORTING']);
+  });
+
   $transcript.bind('input paste', function(evt) {
     console.log('input paste');
     // Remove any old info from the page
