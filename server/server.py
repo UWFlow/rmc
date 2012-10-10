@@ -122,6 +122,11 @@ def index():
     if not logout and get_current_user():
         return flask.make_response(flask.redirect('profile'))
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_LANDING,
+    )
+
     return flask.render_template('index_page.html',
             page_script='index_page.js')
 
@@ -328,6 +333,14 @@ def profile(profile_user_id):
     # Store courses by term as transcript using the current user's friends
     ordered_transcript = get_ordered_transcript(profile_uc_dict_list)
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_PROFILE, {
+            'current_user': current_user.id,
+            'profile_user': profile_user.id,
+        },
+    )
+
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
         transcript_obj=ordered_transcript,
@@ -430,6 +443,14 @@ def course_page(course_id):
     tip_dict_list = [tip_from_uc(uc_dict) for uc_dict in user_course_dict_list
             if len(uc_dict['course_review']['comment']) >= MIN_REVIEW_LENGTH]
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_SINGLE_COURSE, {
+            'current_user': current_user.id,
+            'course_id': course_id,
+        },
+    )
+
     return flask.render_template('course_page.html',
         page_script='course_page.js',
         course_obj=course_dict_list[0],
@@ -445,8 +466,16 @@ def course_page(course_id):
 @app.route('/onboarding', methods=['GET'])
 @login_required
 def onboarding():
-    if get_current_user().course_history:
+    current_user = get_current_user()
+
+    if current_user.course_history:
         return flask.make_response(flask.redirect('profile'))
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_ONBOARDING,
+        current_user.id,
+    )
 
     return flask.render_template('onboarding_page.html',
         page_script='onboarding_page.js',
@@ -556,11 +585,29 @@ def login():
 
 @app.route('/privacy')
 def privacy():
+    # current_user CAN be None, but that's okay for logging
+    current_user = get_current_user()
+    user_id = current_user.id if current_user else None
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_PRIVACY_POLICY,
+        user_id,
+    )
+
     return flask.render_template('privacy_page.html')
 
 
 @app.route('/about', methods=['GET'])
 def about_page():
+    # current_user CAN be None, but that's okay for logging
+    current_user = get_current_user()
+    user_id = current_user.id if current_user else None
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_ABOUT,
+        user_id,
+    )
+
     return flask.render_template('about_page.html')
 
 
