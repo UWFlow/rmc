@@ -59,21 +59,22 @@ function($, __, FB) {
     $.cookie('fbid', authResp.userID, { path: '/' });
     $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
     $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
+    // TODO(Sandy): This assumes the /login request will succeed, will may not
+    // be the case. But if we make this request in the success handler, it might
+    // not get logged at all. We could setTimeout it, but that would cause delay
+    // and also I think /login should normally just be successful
+    // TODO(Sandy): This counts people whose cookies were dead, but have
+    // already TOSed Flow on Facebook. We should log each group individually
+    _gaq.push([
+      '_trackEvent',
+      'USER_GENERIC',
+      'FACEBOOK_CONNECT'
+    ]);
     $.ajax('/login', {
       data: params,
       type: 'POST',
       success: function(data) {
-        // TODO(Sandy): This counts people whose cookies were dead, but have
-        // already ToSed Flow on Facebook. We should log each group individually
-        _gaq.push([
-          '_trackEvent',
-          'USER_GENERIC',
-          'FACEBOOK_CONNECTED'
-        ]);
-        // Redirect after the event gets logged
-        _gaq.push(function() {
-          window.location.href = '/onboarding';
-        });
+        window.location.href = '/onboarding';
       },
       error: function(xhr) {
         FB.logout(function() {
