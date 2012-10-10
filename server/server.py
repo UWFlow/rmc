@@ -441,6 +441,7 @@ def course_page(course_id):
         current_term_id=util.get_current_term_id(),
     )
 
+
 @app.route('/onboarding', methods=['GET'])
 @login_required
 def onboarding():
@@ -450,6 +451,7 @@ def onboarding():
     return flask.render_template('onboarding_page.html',
         page_script='onboarding_page.js',
     )
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -555,6 +557,11 @@ def login():
 @app.route('/privacy')
 def privacy():
     return flask.render_template('privacy_page.html')
+
+
+@app.route('/about', methods=['GET'])
+def about_page():
+    return flask.render_template('about_page.html')
 
 
 # TODO(mack): move API's to separate file

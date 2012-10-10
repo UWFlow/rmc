@@ -1,0 +1,42 @@
+@import 'base';
+
+header {
+  // TODO(david): This number is repeated a lot of places.
+  margin-bottom: 20px;
+}
+
+#about-container {
+  .meet-team {
+    margin-bottom: 20px;
+  }
+
+  .bio-row {
+    margin-bottom: 50px;
+  }
+
+  .card-info {
+    padding-left: 20px;
+
+    .name {
+      margin-top: -8px;
+      margin-bottom: 5px;
+    }
+
+    .program {
+      margin-top: 0;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 22px;
+      margin-bottom: 15px;
+      font-weight: lighter;
+    }
+
+    .links {
+      .link {
+        padding-right: 30px;
+      }
+      margin-bottom: 15px;
+    }
+  }
+}
