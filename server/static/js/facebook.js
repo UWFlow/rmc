@@ -63,6 +63,13 @@ function($, __, FB) {
       data: params,
       type: 'POST',
       success: function(data) {
+        // TODO(Sandy): This counts people whose cookies were dead, but have
+        // already ToSed Flow on Facebook. We should log each group individually
+        _gaq.push([
+          '_trackEvent',
+          'USER_GENERIC',
+          'FACEBOOK_CONNECTED'
+        ]);
         // TODO(Sandy): handle errors here, expecting none right now though
         window.location.href = '/onboarding';
       },
