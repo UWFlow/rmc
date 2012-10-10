@@ -64,6 +64,25 @@
         other private information. See our <a href="/privacy">privacy
           policy</a> for more information.
       </p>
+    {# Modal dialog for manually import courses coming soon #}
+      <div class="modal hide-initial fade" id="manual-course-import-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">×</button>
+          <h1 id="myModalLabel">Sorry...</h1>
+        </div>
+        <div class="modal-body">
+          <p>
+            We're still working on this feature, but check back soon!
+          </p>
+          <p>
+            For now, the only way to import your course history is by using your
+            Quest transcript.
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn" data-dismiss="modal">Okay</button>
+        </div>
+      </div>
       <div id="manual-course-import-container">
         <a href="#manual-course-import-modal" role="button"
           class="btn btn-large btn-primary" id="manual-course-import-text"
@@ -71,22 +90,6 @@
       </div>
     </div>
   </div>
-  {# Modal dialog for manually import courses coming soon
-TODO(Sandy): make this work
-  <div class="modal hide fade" id="manual-course-import-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal">×</button>
-      <h3 id="myModalLabel">Modal header</h3>
-    </div>
-    <div class="modal-body">
-      <p>One fine body…</p>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" data-dismiss="modal">Close</button>
-      <button class="btn btn-primary">Save changes</button>
-    </div>
-  </div>
-#}
 {% endblock %}
 
 {% block footer %}
