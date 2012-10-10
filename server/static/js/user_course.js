@@ -109,9 +109,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       });
 
       courseReview.on('change:comment', _.bind(this.saveComments, this,
-            this.courseCommentView));
+            this.courseCommentView, 'COURSE'));
       profReview.on('change:comment', _.bind(this.saveComments, this,
-            this.profCommentView));
+            this.profCommentView, 'PROFESSOR'));
 
       var courseRatings = this.userCourse.get('course_review').get('ratings');
       var profRatings = this.userCourse.get('professor_review').get('ratings');
@@ -124,8 +124,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       });
 
       // TODO(david): Should be a change on model triggers save
-      courseRatings.on('change', _.bind(this.save, this, {}, {}));
-      profRatings.on('change', _.bind(this.save, this, {}, {}));
+      courseRatings.on('change', _.bind(this.saveRatings, this, 'COURSE'));
+      profRatings.on('change', _.bind(this.saveRatings, this, 'PROFESSOR'));
 
       this.profNames = this.courseModel.get('professors').pluck('name');
       this.profIds = this.courseModel.get('professors').pluck('id');
@@ -198,6 +198,16 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       'change .prof-select': 'onProfSelect'
     },
 
+    logToGA: function(event, label) {
+      _gaq.push([
+        '_trackEvent',
+        'USER_ENGAGEMENT',
+        event,
+        label,
+        this.userCourse.get('course_id')
+      ]);
+    },
+
     onProfSelect: function() {
       var profData = this.$('.prof-select').select2('data');
       if (profData) {
@@ -205,13 +215,20 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       } else {
         this.$('.prof-review').slideUp(300, 'easeOutCubic');
       }
+      this.logToGA('PROFESSOR', 'SELECT');
       this.save();
     },
 
-    saveComments: function(view) {
+    saveComments: function(view, reviewType) {
+      this.logToGA(reviewType, 'REVIEW');
       this.save()
         .done(_.bind(view.saveSuccess, view))
         .error(_.bind(view.saveError, view));
+    },
+
+    saveRatings: function(ratingType) {
+      this.logToGA(ratingType, 'RATING');
+      this.save();
     },
 
     save: function(attrs, options) {
