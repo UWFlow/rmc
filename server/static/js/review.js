@@ -43,7 +43,7 @@ function(RmcBackbone, $, _, ratings, util) {
           util.getHashCode(this.get('comment')) % 10 + 40
       ];
       this.set('author_pic_url',
-          'http://placedog.com/g/' + size[0] + '/' + size[1]);
+          'http://placekitten.com/g/' + size[0] + '/' + size[1]);
     },
 
     setProgramAvatar: function() {

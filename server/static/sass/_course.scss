@@ -11,7 +11,7 @@
     // TODO(david): More crap on hover
     @include box-shadow(0 0 10px rgba(0, 0, 0, 0.1));
     // TODO(david): Should not hardcode #F7F7F7
-    @include background(linear-gradient(top, #FCFCFC, #F6F6F6));
+    @include background(linear-gradient(top, #FCFCFC, #F2F2F2));
     border-color: darken($wellBorderColor, 10%);
   }
 
