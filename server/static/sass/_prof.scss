@@ -53,6 +53,7 @@
     letter-spacing: 3px;
     text-transform: uppercase;
     color: $textColor;
+    @include transition(all 0.2s ease-out);
 
     &:hover {
       @include transition(all 0.2s ease-out);

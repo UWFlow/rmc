@@ -136,6 +136,8 @@ body {
 }
 
 footer {
+  $footer-text-color: #CCC;
+  $footer-hover-color: #999;
   // TODO(david): Don't hardcode nav bar height
   margin-top: $header-height - 54px;
   height: auto;
@@ -143,7 +145,7 @@ footer {
   padding-top: 20px;
 
   .footer-text {
-    color: #DDD;
+    color: $footer-text-color;
     padding-top: 20px;
     padding-bottom: 20px;
     font-size: 14px;
@@ -151,15 +153,15 @@ footer {
 
     &:hover {
       @include transition(all 0.2s ease-out);
-      color: #AAA;
+      color: $footer-hover-color;
       a {
-        color: #AAA;
+        color: $footer-hover-color;
         @include transition(all 0.2s ease-out);
       }
     }
 
     a {
-      color: #DDD;
+      color: $footer-text-color;
       @include transition(all 0.2s ease-out);
       &:hover {
         @include transition(all 0.2s ease-out);
