@@ -20,7 +20,9 @@ course? #}
 <% if (num_friends_future > 0) { %>
   <h3 class="num-friends">
     <%- num_friends_future %>
-    <%- pluralize(num_friends_future, 'friend', 'friends') %> plan to take this
+    <%- pluralize(num_friends_future, 'friend', 'friends') %>
+    <%- pluralize(num_friends_future, 'plans', 'plan') %>
+    to take this
   </h3>
   <div class="took-this-future-term-collection-placeholder"></div>
 <% } %>
