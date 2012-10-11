@@ -468,7 +468,7 @@ def course_page(course_id):
 def onboarding():
     current_user = get_current_user()
 
-    if current_user.course_history:
+    if current_user.course_history and not 'test' in flask.request.values:
         return flask.make_response(flask.redirect('profile'))
 
     rmclogger.log_event(
