@@ -57,6 +57,17 @@ function($, _, _s, transcript, util) {
       });
     });
 
+    // TODO(Sandy): This assumes the /transcript request will succeed and that
+    // google's servers are faster than ours, which may not be the case. But if
+    // we make this request in the success handler, it might not get logged at
+    // all (due to the redirect). We could setTimeout the redirect, but that
+    // would cause delay and also since /transcript should just be succesful,
+    // we'll do this for now. Maybe move to server side
+    _gaq.push([
+      '_trackEvent',
+      'USER_GENERIC',
+      'TRANSCRIPT_UPLOAD'
+    ]);
     $.post(
       '/api/transcript',
       {
@@ -64,12 +75,10 @@ function($, _, _s, transcript, util) {
       },
       function() {
         // TODO(mack): load and update page with js rather than reloading
-        _gaq.push([
-          '_trackEvent',
-          'USER_GENERIC',
-          'TRANSCRIPT_UPLOAD'
-        ]);
-        window.location.href = '/profile';
+        // Fail safe to make sure at least we sent off the _gaq trackEvent
+        _gaq.push(function() {
+          window.location.href = '/profile';
+        });
       },
       'json'
     );
