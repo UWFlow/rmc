@@ -545,6 +545,13 @@ def login():
         user.fb_access_token = fb_access_token
         user.fb_access_token_expiry_date = fb_access_token_expiry_date
         user.save()
+        rmclogger.log_event(
+            rmclogger.LOG_CATEGORY_IMPRESSION,
+            rmclogger.LOG_EVENT_LOGIN, {
+                'new_user': False,
+                'user_id': user.id,
+            },
+        )
         return ''
 
     # TODO(Sandy): Can remove the try except now becaues we're uisng form.get, same for all the other lines
@@ -574,7 +581,15 @@ def login():
             'friend_fbids': friend_fbids,
 #TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
         }
-        user = m.User(**user_obj).save()
+        user = m.User(**user_obj)
+        user.save()
+        rmclogger.log_event(
+            rmclogger.LOG_CATEGORY_IMPRESSION,
+            rmclogger.LOG_EVENT_LOGIN, {
+                'new_user': True,
+                'user_id': user.id,
+            },
+        )
     except KeyError as ex:
         # Invalid key (shouldn't be happening)
 # TODO(Sandy): redirect to landing page, or nothing
