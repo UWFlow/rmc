@@ -121,6 +121,21 @@ def login_required(f):
 
     return wrapper
 
+def redirect_to_profile(user):
+    """
+    Returns a flask.redirect() to a given user's profile.
+
+    Basically redirect the request to the /profile endpoint with their ObjectId
+
+    Args:
+        user: The user's profile to redirects to. Should NOT be None.
+    """
+    if user is None:
+        # This should only happen during development time...
+        logging.error('redirect_to_profile(user) called with user=None')
+        return flask.redirect('/profile', 302)
+
+    return flask.redirect('/profile/%s' % user.id, 302)
 
 @app.route('/')
 def index():
@@ -167,25 +182,30 @@ def profile(profile_user_id):
             profile_user_id = bson.ObjectId(profile_user_id)
     except:
         logging.warn('Invalid profile_user_id (%s)' % profile_user_id)
-        return flask.redirect('/profile', 302)
+        return redirect_to_profile(current_user)
 
-    # XXX(Sandy)[uw]: Run permission check on this user to show restricted
-    # profile view if not friends. simple fbid lookup should do
-    # Check if viewing own or another user's profile
-    if not profile_user_id or profile_user_id == current_user.id:
+    if not profile_user_id:
+        return redirect_to_profile(current_user)
+
+    if profile_user_id == current_user.id:
         own_profile = True
         profile_user = current_user
     else:
         own_profile = False
+
+        # Allow only friends to view profile
         if not (profile_user_id in current_user.friend_ids
                 or current_user.is_admin and flask.request.values.get('admin')):
             logging.info("User (%s) tried to access non-friend profile (%s)"
                     % (current_user.id, profile_user_id))
-            return flask.redirect('/profile', 302)
+            return redirect_to_profile(current_user)
+
         profile_user = m.User.objects.with_id(profile_user_id)
+        # Technically we don't need this check due to above (under normal
+        # operation). Though have this anyway as a failsafe
         if profile_user is None:
             logging.warn('profile_user is None')
-            return flask.redirect('/profile', 302)
+            return redirect_to_profile(current_user)
 
     # PART TWO - DATA FETCHING
 
