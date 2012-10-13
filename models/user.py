@@ -66,9 +66,12 @@ class User(me.Document):
 
     # List of UserCourse.id's
     course_history = me.ListField(me.ObjectIdField())
+
     # TODO(mack): figure out why last_term_id was commented out in
     # a prior diff: #260f174
+    # Deprecated
     last_term_id = me.StringField()
+    # Deprecated
     last_program_year_id = me.StringField()
 
     @property
@@ -186,12 +189,13 @@ class User(me.Document):
 
         return pipe.execute()
 
+
     def to_dict(self, user_course_dicts={}):
         program_name = self.short_program_name
 
-        last_term_name = None
-        if self.last_term_id:
-            last_term_name = _term.Term(id=self.last_term_id).name
+        #last_term_name = None
+        #if self.last_term_id:
+        #    last_term_name = _term.Term(id=self.last_term_id).name
 
         return {
             'id': self.id,
@@ -202,8 +206,8 @@ class User(me.Document):
             'friend_ids': self.friend_ids,
             'fb_pic_url': self.fb_pic_url,
             'program_name': program_name,
-            'last_term_name': last_term_name,
-            'last_program_year_id': self.last_program_year_id,
+            #'last_term_name': last_term_name,
+            #'last_program_year_id': self.last_program_year_id,
             #'course_history': self.course_history,
         }
 

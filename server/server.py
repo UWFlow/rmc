@@ -148,6 +148,7 @@ def profile(profile_user_id):
     # avoid subtle overwrites by data that has fields filled out
 
     LAST_TERM_ID = util.get_current_term_id()
+    print 'last_term_id', LAST_TERM_ID
 
     # PART ONE - VALIDATION
 
@@ -282,6 +283,7 @@ def profile(profile_user_id):
 
     # Convert friend users to dicts
     user_dicts = {}
+    # TODO(mack): should really be named current_term
     last_term = m.Term(id=LAST_TERM_ID)
     for friend in friends:
         user_dict = friend.to_dict()
@@ -297,10 +299,32 @@ def profile(profile_user_id):
 
         user_dicts[friend.id] = user_dict
 
+
+    def get_latest_program_year_id(uc_dict_list, user_id):
+        latest_term_uc = None
+        for uc_dict in uc_dict_list:
+            if uc_dict['user_id'] != user_id:
+                continue
+            elif not latest_term_uc:
+                latest_term_uc = uc_dict
+            elif (uc_dict['term_id'] > latest_term_uc['term_id']
+                    and uc_dict['term_id'] <= LAST_TERM_ID):
+                latest_term_uc = uc_dict
+                print 'uc', latest_term_uc
+
+        if latest_term_uc:
+            return latest_term_uc['program_year_id']
+
+        return None
+
     # Convert profile user to dict
     # TODO(mack): This must be after friend user dicts since it can override
     # data in it. Remove this restriction
     profile_dict = profile_user.to_dict()
+    profile_dict.update({
+        'last_program_year_id': get_latest_program_year_id(
+            user_course_dict_list, profile_user.id),
+    })
     user_dicts.setdefault(profile_user.id, {}).update(profile_dict)
 
     # Convert current user to dict
@@ -468,7 +492,7 @@ def course_page(course_id):
 def onboarding():
     current_user = get_current_user()
 
-    if current_user.course_history and not 'test' in flask.request.values:
+    if current_user.course_history:
         return flask.make_response(flask.redirect('profile'))
 
     rmclogger.log_event(

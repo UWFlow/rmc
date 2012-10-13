@@ -102,7 +102,8 @@ class Course(me.Document):
                 ucs = _user_course.UserCourse.objects(
                         course_id__in=course_ids)
                 if not full_user_courses:
-                    ucs.only('term_id', 'user_id', 'course_id')
+                    ucs.only('program_year_id', 'term_id', 'user_id',
+                            'course_id')
 
                 uc_dicts = [uc.to_dict() for uc in ucs]
                 return course_dicts, uc_dicts
