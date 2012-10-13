@@ -21,7 +21,7 @@ deploy:
 	@if [ `whoami` = 'rmc' ]; then \
 		./deploy.sh; \
 	else \
-		cat deploy.sh | ssh rmc sh; \
+		cat deploy.sh | ssh rmc DEPLOYER=`whoami` sh; \
 	fi
 
 clean:

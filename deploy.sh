@@ -3,7 +3,10 @@
 # Updates and restarts rmc webapp on the machine.
 # Can be run either directly on the machine, or by running
 #
-# $ cat deploy.sh | ssh rmc sh
+# $ cat deploy.sh | ssh rmc DEPLOYER=`whoami` sh
+#
+# Env Args:
+#    $DEPLOYER: whoami
 #
 # TODO(mack): use fancy fabfile to do this and have backups/staging
 
@@ -22,6 +25,8 @@ compass compile server --output-style compressed --force
 echo "Compiling js"
 ( cd server && node r.js -o build.js )
 
-
-
+echo "Restarting daemon"
 sudo service rmc_daemon restart
+
+echo "Notifying HipChat"
+python notify_deploy.py $DEPLOYER
