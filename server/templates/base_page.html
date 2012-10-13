@@ -16,6 +16,9 @@
     <!-- TODO(david): Favicon -->
 
     <!-- Javascript -->
+    {% block head_scripts %}
+    {% endblock %}
+
     <script>
       window.pageData = {};
       window.pageData.env = '{{ env }}';

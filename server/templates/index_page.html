@@ -6,6 +6,23 @@
 
 {% set nav_item = "landing" %}
 
+{% block head_scripts %}
+<!-- Google Analytics Content Experiment code -->
+<script>function utmx_section(){}function utmx(){}(function(){var
+k='64363987-0',d=document,l=d.location,c=d.cookie;
+if(l.search.indexOf('utm_expid='+k)>0)return;
+function f(n){if(c){var i=c.indexOf(n+'=');if(i>-1){var j=c.
+indexOf(';',i);return escape(c.substring(i+n.length+1,j<0?c.
+length:j))}}}var x=f('__utmx'),xx=f('__utmxx'),h=l.hash;d.write(
+'<sc'+'ript src="'+'http'+(l.protocol=='https:'?'s://ssl':
+'://www')+'.google-analytics.com/ga_exp.js?'+'utmxkey='+k+
+'&utmx='+(x?x:'')+'&utmxx='+(xx?xx:'')+'&utmxtime='+new Date().
+valueOf()+(h?'&utmxhash='+escape(h.substr(1)):'')+
+'" type="text/javascript" charset="utf-8"><\/sc'+'ript>')})();
+</script><script>utmx('url','A/B');</script>
+<!-- End of Google Analytics Content Experiment code -->
+{% endblock %}
+
 {% block header %}
 <div id="landing-header">
   <div class="sign-up-box">
@@ -19,7 +36,7 @@
         <div class="fb-logo-box">
           <img class="fb-logo-f" src="/static/img/f-6-25.png">
         </div>
-        <div class="fb-login-text">Connect with Facebook</div>
+        <span class="fb-login-text">Connect with Facebook</span>
       </div>
 
       {# FIXME(Sandy): Permission requests after login now gives
@@ -27,7 +44,8 @@
       longer doing FB login in an iFrame. Luckily, we still seem to be
       getting data back for the FB.api requests. Worry later? #}
       {# Note: data-app-id is set in facebook.js #}
-      <div class="fb-facepile" data-max-rows="1" data-width="320"></div>
+      <div class="fb-facepile" data-max-rows="1" data-width="350"></div>
+
     </div>
   </div>
   <i class="header-bg"></i>

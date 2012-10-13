@@ -68,11 +68,11 @@ $header-height: 668px;
   }
 
   .fb-login-button {
+    display: inline-block;
     @include border-radius(5px);
     background-color: #AEACAC;
     @include box-shadow(0 0 2px rgba(0, 0, 0, 0.2));
     @include background-image(linear-gradient(top, #5575AF, #355997));
-    width: 310px;
     height: 50px;
     line-height: 49px;
     -webkit-touch-callout: none;
@@ -111,6 +111,7 @@ $header-height: 668px;
       }
     }
     .fb-login-text {
+      padding: 0 25px;
       font-weight: bold;
       font-size: 22px;
       color: white;
