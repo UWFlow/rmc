@@ -29,4 +29,4 @@ echo "Restarting daemon"
 sudo service rmc_daemon restart
 
 echo "Notifying HipChat"
-python notify_deploy.py $DEPLOYER
+PYTHONPATH=$HOME python notify_deploy.py $DEPLOYER
