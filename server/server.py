@@ -162,8 +162,12 @@ def profile(profile_user_id):
 
     current_user = get_current_user()
 
-    if profile_user_id:
-        profile_user_id = bson.ObjectId(profile_user_id)
+    try:
+        if profile_user_id:
+            profile_user_id = bson.ObjectId(profile_user_id)
+    except:
+        logging.warn('Invalid profile_user_id (%s)' % profile_user_id)
+        return flask.redirect('/profile', 302)
 
     # XXX(Sandy)[uw]: Run permission check on this user to show restricted
     # profile view if not friends. simple fbid lookup should do
