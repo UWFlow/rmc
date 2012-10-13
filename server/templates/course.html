@@ -1,13 +1,11 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('course-tpl') %}
-{# TODO(david) FIXME[uw]: Hotspot needs to be bigger #}
 {# TODO(mack): remove uc.term_id null checks #}
 <div class="visible-section">
   <div class="course-code"><%- course.code %></div>
   <div class="course-name"><%- course.name %></div>
   <div class="ribbons">
-    {# TODO(mack): clean up the following line #}
     <% if (user_course && user_course.term_id) { %>
       <div class="current-user-ribbon reviewed-<%- user_course_review_level %>">
         <i class="icon-pencil"></i>

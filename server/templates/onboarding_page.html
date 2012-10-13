@@ -6,9 +6,29 @@
   <link rel="stylesheet" href="{{ '/static/css/onboarding_page.css'|version }}">
 {% endblock %}
 
+{% set nav_item = "onboarding" %}
+
 {% block page_title %}Welcome{% endblock %}
 
 {% block body %}
+<center>
+  <div class="row-fluid">
+    <div class="span12">
+
+      <h1>[pic] Welcome, Mack!</h1>
+      <p class="lead">
+        To get your profile started, select your favourite course:
+      </p>
+      <div id="add-fav-course-placeholder"></div>
+
+    </div>
+  </div>
+</center>
+
+{% endblock body %}
+
+{# TODO(david): Move this! #}
+{% block transcript %}
   <div class="row-fluid">
     <div class="span12" id="onboarding-container">
 
@@ -100,6 +120,8 @@
 {% endblock %}
 
 {% block templates %}
+{% include 'user_course.html' %}
+{% include 'fav_course.html' %}
 {% endblock %}
 
 {% block scripts %}

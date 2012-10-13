@@ -55,25 +55,31 @@
 
     <div class="navbar navbar-static-top">
       <div class="container-fluid">
-        <a class="brand" href="/">
+
+        <a class="brand"
+            href="{{ "/onboarding" if nav_item == "onboarding" else "/" }}">
           <i class="logo logo-no-color"></i>
           <i class="logo logo-color"></i>
           <span class="beta" title="We're currently in closed beta for UW Accounting and Finance! We'll be opening up to more programs soon!">SAF Beta</span>
         </a>
-        <ul class="nav pull-right">
-          <li class="{{ 'active' if nav_item == 'courses' else '' }}">
-            <a href="/courses"><i class="icon-reorder"></i> Search Courses</a>
-          </li>
-          {% if current_user %}
-            <li class="{{ 'active' if nav_item == 'profile' else '' }}">
-              <a href="/profile"><i class="icon-user"></i> Profile</a>
+
+        {% if nav_item != 'onboarding' %}
+          <ul class="nav pull-right">
+            <li class="{{ 'active' if nav_item == 'courses' else '' }}">
+              <a href="/courses"><i class="icon-reorder"></i> Search Courses</a>
             </li>
-            <li class="divider-vertical"></li>
-            <li>
-              <a href="/?logout=1"><i class="icon-signout"></i></a>
-            </li>
-          {% endif %}
-        </ul>
+            {% if current_user %}
+              <li class="{{ 'active' if nav_item == 'profile' else '' }}">
+                <a href="/profile"><i class="icon-user"></i> Profile</a>
+              </li>
+              <li class="divider-vertical"></li>
+              <li>
+                <a href="/?logout=1"><i class="icon-signout"></i></a>
+              </li>
+            {% endif %}
+          </ul>
+        {% endif %}
+
       </div>
     </div>
     <header>
@@ -86,10 +92,12 @@
       {% endblock %}
     </div>
 
-    <footer>
-      {% block footer %}
-      {% endblock %}
-    </footer>
+    {% if nav_item != 'onboarding' %}
+      <footer>
+        {% block footer %}
+        {% endblock %}
+      </footer>
+    {% endif %}
 
     {% block templates %}
     {% endblock %}
