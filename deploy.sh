@@ -25,8 +25,6 @@ compass compile server --output-style compressed --force
 echo "Compiling js"
 ( cd server && node r.js -o build.js )
 
-echo "Restarting daemon"
 sudo service rmc_daemon restart
 
-echo "Notifying HipChat"
 PYTHONPATH=$HOME python notify_deploy.py $DEPLOYER

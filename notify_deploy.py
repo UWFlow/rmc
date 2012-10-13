@@ -30,6 +30,6 @@ if __name__ == '__main__':
 
     try:
         r = requests.post(HIPCHAT_API_URL, msg, params=payload)
-        print 'Message sent to Hack: {1}\nResponse: {2}'.format(msg, r.text)
+        print 'Message sent to Hack: %s\nResponse: %s' % (msg, r.text)
     except:
         print sys.exc_info()[1]
