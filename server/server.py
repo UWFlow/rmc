@@ -46,16 +46,22 @@ if not app.debug:
     from logging.handlers import TimedRotatingFileHandler
     logging.basicConfig(level=logging.INFO)
 
+    formatter = logging.Formatter('%(asctime)s - %(levelname)s in'
+            ' %(module)s:%(lineno)d %(message)s')
+
     file_handler = TimedRotatingFileHandler(filename=app.config['LOG_PATH'],
             when='D')
     file_handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s in'
-            ' %(module)s:%(lineno)d %(message)s')
     file_handler.setFormatter(formatter)
-
-    # TODO(david): Add email handler for critical level
     app.logger.addHandler(file_handler)
     logging.getLogger('').addHandler(file_handler)  # Root handler
+
+    from log_handler import HipChatHandler
+    hipchat_handler = HipChatHandler(s.HIPCHAT_TOKEN, s.HIPCHAT_HACK_ROOM_ID,
+            notify=True, color='red', sender='Flask')
+    hipchat_handler.setLevel(logging.WARN)
+    hipchat_handler.setFormatter(formatter)
+    logging.getLogger('').addHandler(hipchat_handler)
 else:
     logging.basicConfig(level=logging.DEBUG)
 
@@ -101,7 +107,7 @@ def get_current_user():
         if fbid:
             as_user = m.User.objects(fbid=fbid).first()
             if as_user is None:
-                logging.info("Bad as_fbid (%s) in get_current_user()" % fbid)
+                logging.warn("Bad as_fbid (%s) in get_current_user()" % fbid)
             else:
                 req.current_user = as_user
 
@@ -196,7 +202,7 @@ def profile(profile_user_id):
         # Allow only friends to view profile
         if not (profile_user_id in current_user.friend_ids
                 or current_user.is_admin and flask.request.values.get('admin')):
-            logging.info("User (%s) tried to access non-friend profile (%s)"
+            logging.warn("User (%s) tried to access non-friend profile (%s)"
                     % (current_user.id, profile_user_id))
             return redirect_to_profile(current_user)
 
