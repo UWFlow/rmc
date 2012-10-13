@@ -3,6 +3,8 @@
 
 .course.well {
   position: relative;
+  padding: 0;
+  $inner-padding: 18px;
 
   margin-bottom: 10px;
   @include box-shadow(0 0 0 rgba(0, 0, 0, 0.0));
@@ -21,6 +23,7 @@
     &:hover {
       cursor: pointer;
     }
+    padding: $inner-padding;
   }
 
   $top: -12px;
@@ -231,9 +234,10 @@
 
   .course-inner {
     @extend .clearfix;
-    margin-top: 20px;
     margin-bottom: 0;
     clear: both;
+    padding: $inner-padding;
+    padding-top: 0;
   }
 
   .ratings {
