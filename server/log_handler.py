@@ -1,14 +1,12 @@
 """Custom log handler for posting log messages to HipChat.
 
-From https://gist.github.com/3176710
+Adapted from https://gist.github.com/3176710
 
 The API documentation is available at
 https://www.hipchat.com/docs/api/method/rooms/message
 
 The room id can be found by going to
 https://{{your-account}}.hipchat.com/rooms/ids
-
-73709
 
 The tokens can be set at https://{{your-account}}.hipchat.com/admin/api
 
@@ -17,9 +15,10 @@ Dependencies: Requests (http://docs.python-requests.org)
 
 import sys
 import requests
-from logging import Handler, INFO, DEBUG, WARN, WARNING, ERROR, CRITICAL
+import logging
 
-class HipChatHandler(Handler):
+
+class HipChatHandler(logging.Handler):
     """Log handler used to send notifications to HipChat"""
 
     HIPCHAT_API_URL = 'https://api.hipchat.com/v1/rooms/message'
@@ -38,7 +37,7 @@ class HipChatHandler(Handler):
         :param colors (optional): a dict of level:color pairs (eg.
             {'DEBUG:'red'} used to override the default color)
         """
-        Handler.__init__(self)
+        logging.Handler.__init__(self)
         self.token = token
         self.room = room
         self.sender = sender
@@ -54,8 +53,14 @@ class HipChatHandler(Handler):
         try:
             # use a custom level-based color from self.colors, if it exists in
             # the dict
-            color = self.colors.get(record.levelname,self.color)
-            r = self._sendToHipChat(record.getMessage(),color, self.notify)
+            color = self.colors.get(record.levelname, self.color)
+
+            msg = str(self.format(record))
+            if record.exc_info:
+                msg += "\n%s" % logging._defaultFormatter.formatException(
+                        record.exc_info)
+
+            r = self._sendToHipChat(msg, color, self.notify)
 
             # use print, not logging, as that would introduce a circular
             # reference
@@ -73,6 +78,8 @@ class HipChatHandler(Handler):
             'color': color,
             'from': self.sender,
             'room_id': self.room,
-            'message': msg
+            'message': msg,
+            'message_format': 'text',
         }
+
         return requests.post(self.HIPCHAT_API_URL, msg, params=payload)
