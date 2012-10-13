@@ -107,7 +107,8 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
         .html(this.template(this.model.toJSON()))
         .tooltip({
           title: this.model.getLikes() + ' likes, ' + this.model.getDislikes() +
-              ' dislikes'
+              ' dislikes',
+          placement: 'in top'
         });
       return this;
     }
