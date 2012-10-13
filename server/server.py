@@ -148,7 +148,6 @@ def profile(profile_user_id):
     # avoid subtle overwrites by data that has fields filled out
 
     LAST_TERM_ID = util.get_current_term_id()
-    print 'last_term_id', LAST_TERM_ID
 
     # PART ONE - VALIDATION
 
@@ -165,7 +164,8 @@ def profile(profile_user_id):
         profile_user = current_user
     else:
         own_profile = False
-        if profile_user_id not in current_user.friend_ids:
+        if not (profile_user_id in current_user.friend_ids
+                or current_user.is_admin and flask.request.values.get('admin')):
             logging.info("User (%s) tried to access non-friend profile (%s)"
                     % (current_user.id, profile_user_id))
             return flask.redirect('/profile', 302)
