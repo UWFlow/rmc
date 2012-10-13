@@ -28,4 +28,8 @@ if __name__ == '__main__':
         'message_format': 'text',
     }
 
-    return requests.post(HIPCHAT_API_URL, msg, params=payload)
+    try:
+        r = requests.post(HIPCHAT_API_URL, msg, params=payload)
+        print 'Message sent to Hack: {1}\nResponse: {2}'.format(msg, r.text)
+    except:
+        print sys.exc_info()[1]
