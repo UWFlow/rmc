@@ -74,7 +74,7 @@ class HipChatHandler(logging.Handler):
         """Does the actual sending of the message."""
         payload = {
             'auth_token': self.token,
-            'notify': notify,
+            'notify': 1 if notify else 0,
             'color': color,
             'from': self.sender,
             'room_id': self.room,
