@@ -853,6 +853,18 @@ def search_courses():
         'has_more': has_more,
     })
 
+# Returns a list with the codes and names of every course we have
+@app.route('/api/courses/codes-names', methods=['GET'])
+def get_all_course_codes_and_names():
+    courses = []
+
+    for course in m.Course.objects():
+        courses.append({
+            'code': course.code,
+            'name': course.name
+        })
+
+    return json_util.dumps(courses)
 
 @app.route('/api/transcript', methods=['POST'])
 @login_required

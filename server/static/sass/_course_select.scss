@@ -1,0 +1,33 @@
+@import 'base';
+@import 'course';
+
+#course-select-container {
+  .course-select-input {
+    @extend .clearfix;
+    float: right;
+    .dropdown {
+      display: inline-block;
+      float: none;
+      .dropdown-toggle {
+        $side-padding: 3px;
+        padding-left: $side-padding;
+        padding-right: $side-padding;
+      }
+    }
+
+    width: 98%;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  }
+}
+
+.course-select-override-select2 {
+  .select2-highlighted {
+    color: #444;
+    background: #fff;
+  }
+
+  .select2-results {
+    color: #444;
+  }
+}

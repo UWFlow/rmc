@@ -1,0 +1,16 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('prof-card-tpl') %}
+<input id="course-select-input" type="hidden" multiple
+  data-placeholder="Add a course"
+  class="course-select-input">
+{% endcall %}
+
+<!--- into profile_page.html 
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="course-select-container">
+          </div>
+        </div>
+      </div>
+      -->

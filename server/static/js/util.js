@@ -114,6 +114,19 @@ function(_, _s) {
     return retVal;
   };
 
+  /**
+   * Returns true if the browser supports local storage
+   * @return {Boolean}
+   */
+  var supportsLocalStorage = function() {
+    try {
+      return 'localStorage' in window && window['localStorage'] !== null;
+    } catch (e) {
+      // TODO(Sandy): Investigate alternatives here
+      return false;
+    }
+  };
+
   return {
     getQueryParam: getQueryParam,
     capitalize: capitalize,
@@ -123,6 +136,7 @@ function(_, _s) {
     getDisplayRating: getDisplayRating,
     getHashCode: getHashCode,
     toDate: toDate,
-    userCourseTermIdComparator: userCourseTermIdComparator
+    userCourseTermIdComparator: userCourseTermIdComparator,
+    supportsLocalStorage: supportsLocalStorage
   };
 });
