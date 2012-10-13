@@ -74,6 +74,8 @@ class User(me.Document):
     # Deprecated
     last_program_year_id = me.StringField()
 
+    is_admin = me.BooleanField(default=False)
+
     @property
     def name(self):
         return '%s %s' % (self.first_name , self.last_name)
