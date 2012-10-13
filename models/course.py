@@ -91,6 +91,9 @@ class Course(me.Document):
             include_friends=False, include_all_users=False,
             full_user_courses=False):
 
+        limited_user_course_fields = [
+                'program_year_id', 'term_id', 'user_id', 'course_id']
+
         course_dicts = []
         for course in courses:
             course_dicts.append(course.to_dict())
@@ -102,8 +105,7 @@ class Course(me.Document):
                 ucs = _user_course.UserCourse.objects(
                         course_id__in=course_ids)
                 if not full_user_courses:
-                    ucs.only('program_year_id', 'term_id', 'user_id',
-                            'course_id')
+                    ucs.only(**limited_user_course_fields)
 
                 uc_dicts = [uc.to_dict() for uc in ucs]
                 return course_dicts, uc_dicts
@@ -124,7 +126,7 @@ class Course(me.Document):
             ucs = list(ucs)
         else:
             ucs = _user_course.UserCourse.objects(**query).only(
-                    'term_id', 'user_id', 'course_id')
+                    *limited_user_course_fields)
 
             # TODO(mack): optimize to not always get full user course
             # for current_user

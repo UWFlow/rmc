@@ -310,7 +310,6 @@ def profile(profile_user_id):
             elif (uc_dict['term_id'] > latest_term_uc['term_id']
                     and uc_dict['term_id'] <= LAST_TERM_ID):
                 latest_term_uc = uc_dict
-                print 'uc', latest_term_uc
 
         if latest_term_uc:
             return latest_term_uc['program_year_id']
