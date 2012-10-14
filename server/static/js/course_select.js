@@ -5,15 +5,45 @@ function($, _, _s, select2, RmcBackbone, course, util) {
 
 // TODO(Sandy): Decide naming. Is CourseSelect good? Maybe CourseSelectBox
   var CourseSelect = RmcBackbone.Model.extend({
-      // TODO(Sandy): Restructure this and add field for placeholder text
-      // TODO(Sandy): Allow callback on select
-      defaults: {
+    // TODO(Sandy): Restructure this and add field for placeholder text
+    // TODO(Sandy): Allow callback on select
+    defaults: {
+      // List of courses to show in the drop down (ordered same as array).
+      course_selections: [{
         code: 'SCI 238',
         name: 'Introduction to Astronomy omg omg omg'
-     }
-     // XXX(Sandy): sensible defaults
-     // do it in initialize, because we dont want to trigger a potential fetch
-     // everytime when not necessary
+      }, {
+        code: 'ECON 102',
+        name: 'Macro Economics AWESOME COURSE'
+      }]
+    },
+
+    initialize: function(attributes) {
+      if (!attributes || !attributes.course_selections) {
+        // TODO(Sandy): Maybe we can strategically fetch this once somewhere
+        // before to reduce wait time on first click?
+        if (util.supportsLocalStorage() &&
+            window.localStorage.courseSelectData) {
+          console.log('nah i got it');
+          // XXX(Sandy)[uw]: Allow the server to force clear cache
+          this.set('course_selections',
+            $.parseJSON(window.localStorage.courseSelectData));
+        } else {
+          console.log('querying server');
+          $.getJSON('/api/courses/codes-names', function(respObj) {
+            console.log('code-names ajax return');
+            sortedObj = _.sortBy(respObj, function(c) {
+              return c.code;
+            });
+
+            if (util.supportsLocalStorage()) {
+              window.localStorage.courseSelectData = JSON.stringify(sortedObj);
+            }
+            this.set('course_selections', sortedObj);
+          });
+        }
+      }
+    }
   });
 
   var CourseSelectView = RmcBackbone.View.extend({
@@ -25,48 +55,24 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     render: function() {
       this.$el.html(this.template());
 
+      var courseSelectData = this.model.get('course_selections');
+      var queryHandler = function(options) {
+        return courseSelectQuery(courseSelectData, options);
+      }
+
       // Handle the autocomplete course box
       this.$('.course-select-input').select2({
         dropdownCssClass: 'course-select-override-select2',
         formatResult: courseSelectFormatResult,
-        formatSelection: couresSelectFormatSelection,
-        query: courseSelectQuery
+        formatSelection: courseSelectFormatSelection,
+        query: queryHandler
       }).change(selectOnChange);
 
       return this;
     }
   });
 
-/*
-  var CourseSelectCollection = RmcBackbone.Collection.extend({
-    model: CourseSelect
-  });
-
-*/
-
   // Internal functions
-
-/*
-  // TODO(Sandy): Move this logic to defaults
-  if (util.supportsLocalStorage() && window.localStorage.courseSelectData) {
-    // XXX(Sandy)[uw]: Allow the server to force clear cache
-    window.pageData.courseSelectData =
-      $.parseJSON(window.localStorage.courseSelectData);
-  } else {
-    $.getJSON('/api/courses/codes-names', function(respObj) {
-      console.log('code-names ajax return');
-      sortedObj = _.sortBy(respObj, function(c) {
-        return c.code;
-      });
-
-      if (util.supportsLocalStorage()) {
-        window.localStorage.courseSelectData = JSON.stringify(sortedObj);
-      }
-
-      window.pageData.courseSelectData = sortedObj;
-    });
-  }
-  */
 
   var courseSelectFormatResult = function(item) {
     var c = item.course;
@@ -84,12 +90,12 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     return render;
   }
 
-  var couresSelectFormatSelection = function(e) {
+  var courseSelectFormatSelection = function(e) {
     // TODO(Sandy): Container content when element selected
     return 'Add a course';
   }
 
-  var courseSelectQuery = function(options) {
+  var courseSelectQuery = function(courseSelectData, options) {
     var courseSelectData;
     data = {
       results: []
@@ -99,7 +105,7 @@ function($, _, _s, select2, RmcBackbone, course, util) {
       // Course select data already filtered, just a paging call
       courseSelectData = options.context.filteredCourses;
     } else {
-      courseSelectData = window.pageData.courseSelectData;
+      courseSelectData = courseSelectData;
 
       if (!courseSelectData) {
         // Data fetch might not have finished yet, wait a bit

@@ -15,27 +15,6 @@ course_select) {
     pageData.profileUserId.$oid);
 
   // TODO(sandy): remove, testing only
-  if (util.supportsLocalStorage() && window.localStorage.courseSelectData) {
-    console.log('nah i got it');
-    // XXX(Sandy)[uw]: Allow the server to force clear cache
-    window.pageData.courseSelectData =
-      $.parseJSON(window.localStorage.courseSelectData);
-  } else {
-    console.log('querying server');
-    $.getJSON('/api/courses/codes-names', function(respObj) {
-      console.log('code-names ajax return');
-      sortedObj = _.sortBy(respObj, function(c) {
-        return c.code;
-      });
-
-      if (util.supportsLocalStorage()) {
-        window.localStorage.courseSelectData = JSON.stringify(sortedObj);
-      }
-
-      window.pageData.courseSelectData = sortedObj;
-    });
-  }
-
   var courseSelectView = new course_select.CourseSelectView({
     model: new course_select.CourseSelect()
   });
