@@ -17,7 +17,6 @@
 
   .select2-container {
     vertical-align: baseline;
-    margin-right: -2px;
   }
 
   .select2-container .select2-choice {
@@ -38,7 +37,7 @@
         &:before {
           font-family: FontAwesome;
           font-weight: normal;
-          font-size: 16px;
+          font-size: 14px;
           content: "\f0d7";
         }
       }
@@ -153,7 +152,7 @@
 
 body .select2-drop {
   margin-top: 4px;
-  padding-top: 4px;
+  padding-top: 5px;
   border: 1px solid #AAA;
   @include border-radius(4px);
   width: 200px !important;
