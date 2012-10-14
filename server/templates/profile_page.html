@@ -35,6 +35,13 @@
     </div>
     <div class="span9" id="profile-container">
 
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="course-select-container">
+          </div>
+        </div>
+      </div>
+
       {% if own_profile and not has_courses %}
         <h2>Thanks for signing up!</h2>
         <p class="lead">
@@ -86,6 +93,7 @@
   {% include 'term.html' %}
   {% include 'ratings.html' %}
   {% include 'user_course.html' %}
+  {% include 'course_select.html' %}
 {% endblock %}
 
 {% block scripts %}

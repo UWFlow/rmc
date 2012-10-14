@@ -864,7 +864,7 @@ def get_all_course_codes_and_names():
             'name': course.name
         })
 
-    return json_util.dumps(courses)
+    return util.json_dumps(courses)
 
 @app.route('/api/transcript', methods=['POST'])
 @login_required

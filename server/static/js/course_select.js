@@ -1,11 +1,53 @@
-require(
+define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/select2',
-'course', 'util'],
-function($, _, _s, select2, course, util) {
-  // TODO(Sandy): (after rebase) Code here to take into account re-factor that
-  // mack did
+'rmc_backbone', 'course', 'util'],
+function($, _, _s, select2, RmcBackbone, course, util) {
 
-  // TODO(Sandy): Move this logic to outside this class, to be more generic
+// TODO(Sandy): Decide naming. Is CourseSelect good? Maybe CourseSelectBox
+  var CourseSelect = RmcBackbone.Model.extend({
+      // TODO(Sandy): Restructure this and add field for placeholder text
+      // TODO(Sandy): Allow callback on select
+      defaults: {
+        code: 'SCI 238',
+        name: 'Introduction to Astronomy omg omg omg'
+     }
+     // XXX(Sandy): sensible defaults
+     // do it in initialize, because we dont want to trigger a potential fetch
+     // everytime when not necessary
+  });
+
+  var CourseSelectView = RmcBackbone.View.extend({
+    className: 'course-select',
+    template: _.template($('#course-select-tpl').html()),
+
+    // TODO(Sandy): Provide reset method on view/
+
+    render: function() {
+      this.$el.html(this.template());
+
+      // Handle the autocomplete course box
+      this.$('.course-select-input').select2({
+        dropdownCssClass: 'course-select-override-select2',
+        formatResult: courseSelectFormatResult,
+        formatSelection: couresSelectFormatSelection,
+        query: courseSelectQuery
+      }).change(selectOnChange);
+
+      return this;
+    }
+  });
+
+/*
+  var CourseSelectCollection = RmcBackbone.Collection.extend({
+    model: CourseSelect
+  });
+
+*/
+
+  // Internal functions
+
+/*
+  // TODO(Sandy): Move this logic to defaults
   if (util.supportsLocalStorage() && window.localStorage.courseSelectData) {
     // XXX(Sandy)[uw]: Allow the server to force clear cache
     window.pageData.courseSelectData =
@@ -24,6 +66,7 @@ function($, _, _s, select2, course, util) {
       window.pageData.courseSelectData = sortedObj;
     });
   }
+  */
 
   var courseSelectFormatResult = function(item) {
     var c = item.course;
@@ -31,6 +74,7 @@ function($, _, _s, select2, course, util) {
       code: c.code,
       name: c.name
     });
+    // XXX(sandy): make course select not return ratings view
     var courseView = new course.CourseView({
       courseModel: courseModel,
       tagname: 'li'
@@ -38,6 +82,11 @@ function($, _, _s, select2, course, util) {
 
     var render = courseView.render().$el;
     return render;
+  }
+
+  var couresSelectFormatSelection = function(e) {
+    // TODO(Sandy): Container content when element selected
+    return 'Add a course';
   }
 
   var courseSelectQuery = function(options) {
@@ -54,6 +103,7 @@ function($, _, _s, select2, course, util) {
 
       if (!courseSelectData) {
         // Data fetch might not have finished yet, wait a bit
+        console.log('setting timeout to wait for async request');
         setTimeout(courseSelectQuery(options), 500);
         return;
       }
@@ -112,6 +162,7 @@ function($, _, _s, select2, course, util) {
       });
     }
     options.callback(data);
+    console.log('quer end');
   };
 
   var selectOnChange = function(event) {
@@ -121,17 +172,9 @@ function($, _, _s, select2, course, util) {
     $('.course-select').select2('val', 'eg.');
   };
 
-  var couresSelectFormatSelection = function(e) {
-    // TODO(Sandy): Container content when element selected
-    return 'Add a course';
-  }
-
-  // Handle the autocomplete course box
-  this.$('#course-select-input').select2({
-    dropdownCssClass: 'course-select-override-select2',
-    formatResult: courseSelectFormatResult,
-    formatSelection: couresSelectFormatSelection,
-    query: courseSelectQuery
-  }).change(selectOnChange);
-
+  return {
+    CourseSelect: CourseSelect,
+    CourseSelectView: CourseSelectView
+    //CourseSelectCollection: CourseSelectCollection
+  };
 });

@@ -1,7 +1,10 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof'],
-function($, _, _s, transcript, term, course, friend, util, user, uc, _prof) {
+'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof',
+'course_select'],
+function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
+course_select) {
+  //console.log($, _, _s, transcript, term, course, friend, util, user, uc, _prof, course_selct);
 
   user.UserCollection.addToCache(pageData.userObjs);
   course.CourseCollection.addToCache(pageData.courseObjs);
@@ -10,6 +13,35 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof) {
 
   var profileUser = user.UserCollection.getFromCache(
     pageData.profileUserId.$oid);
+
+  // TODO(sandy): remove, testing only
+  if (util.supportsLocalStorage() && window.localStorage.courseSelectData) {
+    console.log('nah i got it');
+    // XXX(Sandy)[uw]: Allow the server to force clear cache
+    window.pageData.courseSelectData =
+      $.parseJSON(window.localStorage.courseSelectData);
+  } else {
+    console.log('querying server');
+    $.getJSON('/api/courses/codes-names', function(respObj) {
+      console.log('code-names ajax return');
+      sortedObj = _.sortBy(respObj, function(c) {
+        return c.code;
+      });
+
+      if (util.supportsLocalStorage()) {
+        window.localStorage.courseSelectData = JSON.stringify(sortedObj);
+      }
+
+      window.pageData.courseSelectData = sortedObj;
+    });
+  }
+
+  var courseSelectView = new course_select.CourseSelectView({
+    model: new course_select.CourseSelect()
+  });
+
+  var rendered = courseSelectView.render().el;
+  $('#course-select-container').html(rendered);
 
   // Render friend sidebar
   (function() {
