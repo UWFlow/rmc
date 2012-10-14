@@ -104,8 +104,15 @@ def get_current_user():
                 fbid=fbid, fb_access_token=fb_access_token).first()
 
     if req.current_user and req.current_user.is_admin:
+        oid = req.args.get('as_oid', '')
         fbid = req.args.get('as_fbid', '')
-        if fbid:
+        if oid:
+            try:
+                as_user = m.User.objects.with_id(oid)
+                req.current_user = as_user
+            except:
+                logging.warn("Bad as_oid (%s) in get_current_user()" % oid)
+        elif fbid:
             as_user = m.User.objects(fbid=fbid).first()
             if as_user is None:
                 logging.warn("Bad as_fbid (%s) in get_current_user()" % fbid)
