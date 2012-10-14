@@ -58,16 +58,15 @@
 #sign-in-banner-container {
   height: 75px;
   display: none;
-  text-align: center;
 
   .sign-in-banner {
     display: inline-block;
 
     // TODO(mack): investigate why position:absolute doesn't work here
-    position: relative;
+    position: absolute;
     &.affix {
-      top: 0px;
       position: fixed;
+      top: 0px;
     }
 
     opacity: 0.9;
@@ -75,9 +74,16 @@
       opacity: 1.0;
     }
 
+    // TODO(mack): Make this work properly with text-align: center
+    $banner-width: 820px;
+    width: $banner-width;
+    left: 50%;
+    margin-left: -$banner-width/2;
+
     text-align: center;
     height: 50px;
-    padding: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     z-index: 10;
 
     border: 1px solid rgba(34, 25, 25, 0.25);
