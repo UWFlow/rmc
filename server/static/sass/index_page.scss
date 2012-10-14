@@ -99,22 +99,22 @@ footer {
     padding-top: 20px;
     padding-bottom: 20px;
     font-size: 14px;
-    //@include transition(all 0.2s ease-out);
+    @include transition(all 0.2s ease-out);
 
     &:hover {
-      //@include transition(all 0.2s ease-out);
+      @include transition(all 0.2s ease-out);
       color: $footer-hover-color;
       a {
         color: $footer-hover-color;
-        //@include transition(all 0.2s ease-out);
+        @include transition(all 0.2s ease-out);
       }
     }
 
     a {
       color: $footer-text-color;
-      //@include transition(all 0.2s ease-out);
+      @include transition(all 0.2s ease-out);
       &:hover {
-        //@include transition(all 0.2s ease-out);
+        @include transition(all 0.2s ease-out);
         color: $flowBlue;
         text-decoration: none;
       }
