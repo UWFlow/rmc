@@ -540,7 +540,7 @@ def onboarding():
     if not fav_course:
         fav_course = m.user_course.UserCourse(
             user_id=current_user.id,
-            term_id=m.term.Term.UNKNOWN_TERM_ID,
+            term_id=m.term.Term.PAST_TERM_ID,
         )
 
     return flask.render_template('onboarding_page.html',

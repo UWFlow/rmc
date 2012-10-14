@@ -3,7 +3,7 @@ import mongoengine as me
 class Term(me.Document):
 
     SHORTLIST_TERM_ID = '9999_99'
-    UNKNOWN_TERM_ID = '9999_98'
+    PAST_TERM_ID = '0000_00'
 
     SEASONS = ['Winter', 'Spring', 'Fall']
     INVALID_TERM_MONTH = 13
@@ -28,7 +28,7 @@ class Term(me.Document):
     def name(self):
         if self.id == self.SHORTLIST_TERM_ID:
             return 'My Shortlist'
-        elif self.id == self.UNKNOWN_TERM_ID:
+        elif self.id == self.PAST_TERM_ID:
             return ''
         else:
             return '%s %d' % (self.season, self.year)

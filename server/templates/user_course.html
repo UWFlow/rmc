@@ -5,7 +5,35 @@
   <div class="row-fluid">
     <div class="span12">
       <p class="lead">
-        You took this course in <%- term_name %>. Was it&hellip;
+        You took this course in
+        <select data-placeholder="select term" class="term-select">
+          <option></option>
+          <option value="2012_09">Fall 2012</option>
+          <option value="2012_05">Spring 2012</option>
+          <option value="2012_01">Winter 2012</option>
+
+          <option value="2011_09">Fall 2011</option>
+          <option value="2011_05">Spring 2011</option>
+          <option value="2011_01">Winter 2011</option>
+
+          <option value="2010_09">Fall 2010</option>
+          <option value="2010_05">Spring 2010</option>
+          <option value="2010_01">Winter 2010</option>
+
+          <option value="2009_09">Fall 2009</option>
+          <option value="2009_05">Spring 2009</option>
+          <option value="2009_01">Winter 2009</option>
+
+          <option value="2008_09">Fall 2008</option>
+          <option value="2008_05">Spring 2008</option>
+          <option value="2008_01">Winter 2008</option>
+
+          <option value="2007_09">Fall 2007</option>
+          <option value="2007_05">Spring 2007</option>
+          <option value="2007_01">Winter 2007</option>
+        </select>
+
+        <%- term_name %>. Was it&hellip;
       </p>
     </div>
   </div>
@@ -23,7 +51,9 @@
       <div class="select2-inline">
         <p class="lead">
           Your professor was
-          <input type="hidden" data-placeholder="select one..." class="prof-select">
+          <input type="hidden" data-placeholder="select one"
+            class="prof-select"><!--
+            --><span class="who-was hide-initial">, who was...</span>
         </p>
       </div>
     </div>

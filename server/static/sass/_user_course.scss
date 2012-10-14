@@ -15,41 +15,71 @@
     color: inherit !important;
   }
 
+  .select2-container {
+    vertical-align: baseline;
+    margin-right: -2px;
+  }
+
   .select2-container .select2-choice {
     background: none;
-    border: 1px solid rgba(0, 0, 0, 0);
+    border: none;
     color: #3a87ad;  // TODO(david): Use Bootstrap's $infoText var somehow
-    font-weight: bold;
+    font-weight: normal;
     padding-left: 3px;
-    box-shadow: none;
+    @include box-shadow(none);
     @include transition(all 0.2s ease-out);
 
-    div, .select2-search-choice-close {
+    div {
+      background: none;
+      border: none;
+      margin-right: -2px;
+      b {
+        background: none;
+        &:before {
+          font-family: FontAwesome;
+          font-weight: normal;
+          font-size: 16px;
+          content: "\f0d7";
+        }
+      }
+    }
+
+    .select2-search-choice-close {
       opacity: 0;
       @include transition(opacity 0.2s ease-out);
+      margin-right: -14px;
     }
   }
 
   .select2-container:hover .select2-choice,
   .select2-container.select2-dropdown-open .select2-choice {
-    border: 1px solid #AAA;
-    @include box-shadow(0 1px 0 #FFF inset);
-    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    @include box-shadow(none);
+    background-color: rgba(0, 0, 0, 0.05);
     @include transition(all 0.2s ease-out);
+    @include border-radius(4px);
 
-    div, .select2-search-choice-close {
+    .select2-search-choice-close {
       opacity: 1.0;
       @include transition(opacity 0.2s ease-out);
     }
   }
 
-  .term {
-    font-weight: bold;
+  .select2-container.select2-dropdown-open .select2-choice {
+    background-color: rgba(0, 0, 0, 0.35);
+
+    div b:before {
+      color: white;
+    }
+
+    span {
+      color: white;
+      text-shadow: none;
+    }
   }
 
-  .prof-select {
-    width: 240px;
-    margin-left: -3px;
+  .term {
+    font-weight: normal;
   }
 
   .add-review {
@@ -119,4 +149,12 @@
     border-top: 1px solid #DDD;
   }
 
+}
+
+body .select2-drop {
+  margin-top: 4px;
+  padding-top: 4px;
+  border: 1px solid #AAA;
+  @include border-radius(4px);
+  width: 200px !important;
 }

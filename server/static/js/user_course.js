@@ -151,6 +151,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.$('.prof-comment-placeholder').replaceWith(
           this.profCommentView.render().el);
 
+      this.$('.term-select').select2();
+
       // TODO(david): Make this prettier and conform to our styles
       // TODO(david): Show "Add..." option
       var $profSelect = this.$('.prof-select');
@@ -213,8 +215,10 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       var profData = this.$('.prof-select').select2('data');
       if (profData) {
         this.$('.prof-review').slideDown(300, 'easeOutCubic');
+        this.$('.who-was').show();
       } else {
         this.$('.prof-review').slideUp(300, 'easeOutCubic');
+        this.$('.who-was').hide();
       }
       this.logToGA('PROFESSOR', 'SELECT');
       this.save();
