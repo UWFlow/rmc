@@ -2,6 +2,16 @@ define(
 ['rmc_backbone', 'ext/underscore', 'ext/underscore.string', 'util', 'course'],
 function(RmcBackbone, _, _s, util, _course) {
 
+  var getShortProgramName = function(programName) {
+    programName = programName || '';
+    programName = programName.replace('Mathematics', 'Math');
+    programName = programName.replace('Chartered Accountancy', 'CA');
+    programName = programName.replace('Account and Financial Management', 'AFM');
+    programName = programName.replace(/ - .* Option$/, '');
+
+    return programName;
+  };
+
   var UserModel = RmcBackbone.Model.extend({
     defaults: {
       id: '0000000001',
@@ -31,11 +41,17 @@ function(RmcBackbone, _, _s, util, _course) {
       return '/profile/' + this.get('id');
     },
 
+    getShortProgramName: function() {
+      var programName = this.get('program_name');
+      return getShortProgramName(programName);
+    },
+
     toJSON: function() {
       var json = this._super('toJSON', arguments);
       return _.extend(json, {
         profile_url: this.getProfileUrl(),
-        fb_pic_url: this.getFbPicUrl()
+        fb_pic_url: this.getFbPicUrl(),
+        short_program_name: this.getShortProgramName()
       });
     }
   });
@@ -116,6 +132,7 @@ function(RmcBackbone, _, _s, util, _course) {
 
   return {
     UserModel: UserModel,
-    UserCollection: UserCollection
+    UserCollection: UserCollection,
+    getShortProgramName: getShortProgramName
   };
 });

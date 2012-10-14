@@ -22,9 +22,9 @@
         <% if (!anonymous) { %>
           <% if (author.id) { %>
             <a href="/profile/<%- author.id.$oid %>"><%- author.name %></a>
-          <% } else if (author.program_name) { %>
+          <% } else if (author.short_program_name) { %>
             <span class="muted">A</span>
-            <%- author.program_name %>
+            <%- author.short_program_name %>
             <span class="muted">student</span>
           <% } %>
           <span class="muted">on</span>

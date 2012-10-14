@@ -21,6 +21,11 @@ function(RmcBackbone, $, _, ratings, util) {
       if (attrs && attrs.author && attrs.author.fb_pic_url) {
         this.set('author_pic_url', attrs.author.fb_pic_url);
       } else if (attrs && attrs.author && attrs.author.program_name) {
+        // TODO(mack): remove require()
+        // TODO(mack): maybe should set short_program_name on server
+        var _user = require('user');
+        attrs.author.short_program_name = _user.getShortProgramName(
+          attrs.author.program_name);
         this.setProgramAvatar();
       } else {
         this.set('anonymous', true);
