@@ -51,6 +51,10 @@
   }
 }
 
+.fb-facepile {
+  width: 350px;
+}
+
 #sign-in-banner-container {
   height: 75px;
   display: none;
@@ -59,7 +63,8 @@
   .sign-in-banner {
     display: inline-block;
 
-    position: absolute;
+    // TODO(mack): investigate why position:absolute doesn't work here
+    position: relative;
     &.affix {
       top: 0px;
       position: fixed;
@@ -92,6 +97,33 @@
     .fb-facepile {
       vertical-align: top;
       margin: -5px 0 0 10px;
+    }
+  }
+}
+
+.sign-in-modal {
+  width: 470px;
+  overflow: hidden;
+
+  .modal-body {
+    text-align: center;
+
+    .lead {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+
+    .fb-login-text{
+      padding: 0 70px;
+    }
+
+    .fb-facepile {
+      overflow: hidden;
+      vertical-align: top;
+      margin: -5px 0 0 10px;
+      // This aligns it with left edge of facebook connect button
+      // TODO(mack): calculate this rather than hardcoding
+      left: 15px;
     }
   }
 }

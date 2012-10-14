@@ -238,6 +238,29 @@ function(Backbone, $, _) {
     }
   });
 
+  var ModalView = View.extend({
+    events: {
+      'click .close': 'close'
+    },
+
+    show: function() {
+      // Close any existing modals first
+      $('body > .modal-wrapper').each(function(idx, el) {
+        var modalView = $(el).data('view');
+        modalView.close();
+      });
+
+      // Show this modal
+      this.render();
+      this.$el
+        .addClass('modal-wrapper')
+        .data('view', this);
+      // TODO(mack): maybe should have #modal-container rather than just
+      // appending to body
+      $('body').append(this.$el);
+    }
+  });
+
   /**
    * A base collection view that just renders a collection's contents into an
    * unordered list.
@@ -325,6 +348,7 @@ function(Backbone, $, _) {
     Model: Model,
     Collection: Collection,
     View: View,
+    ModalView: ModalView,
     CollectionView: CollectionView
   };
 });

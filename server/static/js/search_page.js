@@ -44,6 +44,18 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         selectedDirection: this.direction
       }));
 
+      var $friendOption = this.$('.sort-mode-dropdown [data-value="friends"]');
+      $friendOption.click(function(evt) {
+        if (!pageData.currentUserId) {
+          _sign_in.renderModal({
+            title: 'Oops!',
+            message: 'We don\'t know who your friends are...',
+            fbConnectText: 'Let us know!'
+          });
+          return false;
+        }
+      });
+
       $('.dropdown-toggle').dropdown();
       var courseCollectionView = new _course.CourseCollectionView({
         courses: this.courses

@@ -1,19 +1,32 @@
 {% import 'macros.html' as macros %}
 
-{% call macros.us_template('sign-in-banner-tpl') %}
 {# TODO(mack): remove duplicated code (from index_page.html #}
+
+{% call macros.us_template('sign-in-banner-tpl') %}
+<div class="fb-login-placeholder"></div>
+{% endcall %}
+
+{% call macros.us_template('sign-in-modal-tpl') %}
+<div class="modal sign-in-modal">
+  <div class="modal-header"><h3><%- title %></h3></div>
+  <div class="modal-body">
+    <p class="lead"><%- message %></p>
+    <div class="fb-login-placeholder"></div>
+  </div>
+  <div class="modal-footer"><button class="btn close">Close</button></div>
+</div>
+<div class="modal-backdrop"></div>
+{% endcall %}
+
+
+{% call macros.us_template('fb-login-tpl') %}
 <div class="fb-login-button">
   <div class="fb-logo-box">
     <img class="fb-logo-f" src="/static/img/f-6-25.png">
   </div>
   <span class="fb-login-text"><%- fb_connect_text %></span>
 </div>
-
-{# FIXME(Sandy): Permission requests after login now gives
-us a cross-domain request error. I suspect it's because we're not
-longer doing FB login in an iFrame. Luckily, we still seem to be
-getting data back for the FB.api requests. Worry later? #}
-{# Note: data-app-id is set in facebook.js #}
+{# FIXME(Sandy): same comment as in index_page.html #}
+{# <div class="fb-facepile" data-max-rows="1" data-width="350"></div> #}
 <div class="fb-facepile" data-max-rows="1" data-width="350"></div>
-
 {% endcall %}
