@@ -133,3 +133,7 @@ sudo update-rc.d -f rmc_daemon remove
 sudo ln -sfnv $CONFIG_DIR/etc/init.d/rmc_daemon /etc/init.d
 sudo update-rc.d rmc_daemon defaults
 sudo service rmc_daemon start
+
+echo "Installing crontab"
+(cd rmc && crontab aws_setup/crontab)
+sudo apt-get install -y mailutils
