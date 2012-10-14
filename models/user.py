@@ -1,6 +1,7 @@
 import itertools
 import mongoengine as me
 
+import course
 import term as _term
 import user_course as _user_course
 
@@ -75,6 +76,9 @@ class User(me.Document):
     last_program_year_id = me.StringField()
 
     is_admin = me.BooleanField(default=False)
+
+    # Favourite/favorite course
+    fav_course_id = me.StringField()
 
     @property
     def name(self):
@@ -191,6 +195,13 @@ class User(me.Document):
 
         return pipe.execute()
 
+    def get_fav_user_course(self):
+        if self.fav_course_id:
+            return _user_course.UserCourse.objects.first(
+                user_id=self.id,
+                course_id=self.fav_course_id,
+            )
+        return None
 
     def to_dict(self, user_course_dicts={}):
         program_name = self.short_program_name

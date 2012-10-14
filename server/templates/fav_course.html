@@ -1,11 +1,14 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('add-fav-course-tpl') %}
-Here is the adding favourite course view!
-<br>
-[Sandy's wishlist thing]
-<br>
-[usercourse review thing]
+<div class="add-course-placeholder">
+  [Here is Sandy's adding favourite course select2!]
+</div>
+
+<div class="user-course-container alert alert-info hide-initial">
+  <div class="user-course-placeholder"></div>
+</div>
+
 <br>
 [save and continue button?]
 {% endcall %}

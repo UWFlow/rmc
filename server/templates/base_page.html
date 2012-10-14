@@ -23,8 +23,10 @@
     <script>
       window.pageData = {};
       window.pageData.env = '{{ env }}';
-      {% if current_user_id %}
-        window.pageData.currentUserId = {{ current_user_id|tojson|safe }};
+      {% if current_user %}
+        window.pageData.currentUser = {{ current_user.to_dict()|tojson|safe }};
+        {# TODO(david): Get rid of currentUserId #}
+        window.pageData.currentUserId = {{ current_user.id|tojson|safe }};
       {% endif %}
       {% if page_script %}
         window.pageData.pageScript = '{{ ('/static/%s/%s' % (js_dir, page_script))|version }}';

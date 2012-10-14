@@ -1,8 +1,8 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/jqueryui', 'ext/underscore', 'ext/underscore.string',
 'ratings', 'ext/select2', 'ext/autosize', 'course', 'user', 'ext/bootstrap', 'prof'],
-function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course, _user,
-  _bootstrap, _prof) {
+function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
+    _course, _user, _bootstrap, _prof) {
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model

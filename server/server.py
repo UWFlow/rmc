@@ -414,7 +414,6 @@ def profile(profile_user_id):
         # figure out a cleaner way to do this w/o passing another param
         profile_obj=profile_dict,
         profile_user_id=profile_user.id,
-        current_user_id=current_user.id,
         own_profile=own_profile,
         has_courses=current_user.course_history,
     )
@@ -455,7 +454,6 @@ def courses():
         terms=terms,
         sort_modes=sort_modes,
         directions=directions,
-        current_user_id=current_user.id if current_user else None,
         user_objs=[current_user.to_dict()] if current_user else [],
     )
 
@@ -520,7 +518,6 @@ def course_page(course_id):
         tip_objs=tip_dict_list,
         user_course_objs=user_course_dict_list,
         user_objs=user_dicts.values(),
-        current_user_id=current_user.id if current_user else None,
         current_term_id=util.get_current_term_id(),
     )
 
@@ -539,8 +536,16 @@ def onboarding():
         current_user.id,
     )
 
+    fav_course = current_user.get_fav_user_course()
+    if not fav_course:
+        fav_course = m.user_course.UserCourse(
+            user_id=current_user.id,
+            term_id=m.term.Term.UNKNOWN_TERM_ID,
+        )
+
     return flask.render_template('onboarding_page.html',
         page_script='onboarding_page.js',
+        fav_course=fav_course.to_dict(),
     )
 
 
@@ -702,10 +707,8 @@ def get_courses(course_ids):
       id__in=course_ids,
     )
 
-    # TODO(mack): not currently being called, fix it when it is needed
-    # course_objs = map(clean_course, courses)
-    course_objs = []
-    professor_objs = m.Professor.get_reduced_professor_for_courses(courses)
+    course_objs = [c.to_dict() for c in courses]
+    professor_objs = m.Professor.get_reduced_professors_for_courses(courses)
 
     return util.json_dumps({
         'course_objs': course_objs,

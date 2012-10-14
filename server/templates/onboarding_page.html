@@ -123,9 +123,13 @@
 {% endblock %}
 
 {% block templates %}
-{% include 'user_course.html' %}
-{% include 'fav_course.html' %}
+  {% include 'user_course.html' %}
+  {% include 'fav_course.html' %}
+  {% include 'ratings.html' %}
 {% endblock %}
 
 {% block scripts %}
+<script>
+  window.pageData.favCourse = {{ fav_course|tojson|safe }};
+</script>
 {% endblock %}

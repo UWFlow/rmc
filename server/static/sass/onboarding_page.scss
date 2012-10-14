@@ -1,4 +1,5 @@
 @import 'base';
+@import 'fav_course';
 
 header {
   margin-bottom: 40px;
@@ -7,7 +8,6 @@ header {
 .welcome-title {
   vertical-align: bottom;
 }
-
 
 // TODO(Sandy): Cleanup this file. Mostly copied from profile_page
 #onboarding-container {
