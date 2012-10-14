@@ -18,6 +18,7 @@ course_select) {
   var myOnSelectHandler = function(event) {
     console.log('yay i got picked');
     console.log(event);
+    courseSelectView.clearSelection();
   }
 
   var courseSelectModel = new course_select.CourseSelect({

@@ -61,7 +61,18 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     className: 'course-select',
     template: _.template($('#course-select-tpl').html()),
 
-    // TODO(Sandy): Provide reset method on view/
+    // XXX(Sandy): WIP
+    clearSelection: function() {
+      console.log('got cleared');
+      console.log(this);
+      console.log($(this));
+      console.log($(this).find('.course-select'));
+      $(this).find('.course-select').select2('val', 'eg.');
+      $('.course-select').select2('val', 'eg.');
+      console.log('got cleared');
+      console.log($('.course-select'));
+      console.log($('.course-select').select2('val'));
+    },
 
     render: function() {
       this.$el.html(this.template({
@@ -176,6 +187,8 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     var end = Math.min(curPage * RESULTS_PER_PAGE, courseResults.length);
     for (var i = start; i < end; ++i) {
       c = courseResults[i];
+      // XXX(Sandy): wtf does this do/where is it called/used? removing
+      // FormatSelection makes qwe show up...
       data.results.push({
         id: c.code,
         text: 'qwe',
