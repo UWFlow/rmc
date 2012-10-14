@@ -15,7 +15,10 @@
   <div class="row-fluid">
     <div class="span12">
 
-      <h1>[pic] Welcome, Mack!</h1>
+      <h1 class="welcome-title">
+        <img class="img-polaroid" src="{{ current_user.fb_pic_url }}"></img>
+        Welcome, {{ current_user.first_name }}!
+      </h1>
       <p class="lead">
         To get your profile started, select your favourite course:
       </p>

@@ -1,26 +1,15 @@
 @import 'base';
 
-// TODO(Sandy): Cleanup this file. Mostly copied from profile_page
 header {
   margin-bottom: 40px;
 }
 
-.personal-info {
-  .name {
-    margin-top: 15px;
-    margin-bottom: 0px;
-  }
-  .program {
-    margin-bottom: 0;
-    color: #666;
-  }
+.welcome-title {
+  vertical-align: bottom;
 }
 
-.divider {
-  border-top: 1px solid #CCC;
-  margin: 22px 0;
-}
 
+// TODO(Sandy): Cleanup this file. Mostly copied from profile_page
 #onboarding-container {
   text-align: left;
   float: none;

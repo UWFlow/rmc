@@ -48,16 +48,15 @@
   </head>
 
   <body>
-    <!-- TODO(david): Real responsive layout:
+    {# TODO(david): Real responsive layout:
          http://twitter.github.com/bootstrap/scaffolding.html#responsive
-    -->
+    #}
     <div id="fb-root"></div>
 
     <div class="navbar navbar-static-top">
       <div class="container-fluid">
 
-        <a class="brand"
-            href="{{ "/onboarding" if nav_item == "onboarding" else "/" }}">
+        <a class="brand" {% if nav_item != "onboarding" %}href="/"{% endif %}>
           <i class="logo logo-no-color"></i>
           <i class="logo logo-color"></i>
           <span class="beta" title="We're currently in closed beta for UW Accounting and Finance! We'll be opening up to more programs soon!">SAF Beta</span>
@@ -82,6 +81,7 @@
 
       </div>
     </div>
+
     <header>
       {% block header %}
       {% endblock %}
@@ -110,7 +110,7 @@
     {% endblock %}
 
     {# UserVoice #}
-    {% if nav_item != 'landing' %}
+    {% if nav_item not in ['landing', 'onboarding'] %}
     <script type="text/javascript">
       var uvOptions = {};
       (function() {

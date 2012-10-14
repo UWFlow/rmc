@@ -208,6 +208,7 @@ class User(me.Document):
             'friend_ids': self.friend_ids,
             'fb_pic_url': self.fb_pic_url,
             'program_name': program_name,
+            'fb_pic_url': self.fb_pic_url,
             #'last_term_name': last_term_name,
             #'last_program_year_id': self.last_program_year_id,
             #'course_history': self.course_history,
