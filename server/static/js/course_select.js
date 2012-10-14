@@ -5,9 +5,15 @@ function($, _, _s, select2, RmcBackbone, course, util) {
 
 // TODO(Sandy): Decide naming. Is CourseSelect good? Maybe CourseSelectBox
   var CourseSelect = RmcBackbone.Model.extend({
-    // TODO(Sandy): Restructure this and add field for placeholder text
     // TODO(Sandy): Allow callback on select
+    // Note(Sandy): Not sure if I'm using Backbone right. I have a function here
+    // (that isn't needed when rendering the view with .template) and a long
+    // list of words that also doesn't get passed to the template. But it's part
+    // of this reusable object.
+    // TODO(Sandy): Restructure this?
     defaults: {
+      placeholderText: "Find a course",
+      onSelectHandler: function(event) {},
       // Don't actually have defaults, otherwise we end up loading false data
       /*
       // List of courses to show in the drop down (ordered same as array).
@@ -30,6 +36,7 @@ function($, _, _s, select2, RmcBackbone, course, util) {
             window.localStorage.courseSelectData) {
           console.log('nah i got it');
           // XXX(Sandy)[uw]: Allow the server to force clear cache
+          // For now, do window.localStorage.remove('courseSelectData')
           this.set('course_selections',
             $.parseJSON(window.localStorage.courseSelectData));
         } else {
@@ -57,7 +64,9 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     // TODO(Sandy): Provide reset method on view/
 
     render: function() {
-      this.$el.html(this.template());
+      this.$el.html(this.template({
+        placeholderText: this.model.get('placeholderText')
+      }));
 
       var courseSelectModel = this.model;
       var queryHandler = function(options) {
@@ -70,7 +79,7 @@ function($, _, _s, select2, RmcBackbone, course, util) {
         formatResult: courseSelectFormatResult,
         formatSelection: courseSelectFormatSelection,
         query: queryHandler
-      }).change(selectOnChange);
+      }).change(this.model.get('onSelectHandler'));
 
       return this;
     }
@@ -96,7 +105,8 @@ function($, _, _s, select2, RmcBackbone, course, util) {
 
   var courseSelectFormatSelection = function(e) {
     // TODO(Sandy): Container content when element selected
-    return 'Add a course';
+    // what does this do again?
+    return 'courseSelectFormatSelection';
   }
 
   var courseSelectQuery = function(courseSelectModel, options) {
@@ -176,12 +186,16 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     console.log('quer end');
   };
 
+/*
   var selectOnChange = function(event) {
     console.log('selectOnChange');
     console.log(event);
     console.log($('.course-select').select2('val'));
+    // USEFUL: This let's you reset the text to the placeholder
+    // TODO(Sandy): make this a method of the view
     $('.course-select').select2('val', 'eg.');
   };
+  */
 
   return {
     CourseSelect: CourseSelect,

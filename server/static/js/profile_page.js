@@ -15,8 +15,18 @@ course_select) {
     pageData.profileUserId.$oid);
 
   // TODO(sandy): remove, testing only
+  var myOnSelectHandler = function(event) {
+    console.log('yay i got picked');
+    console.log(event);
+  }
+
+  var courseSelectModel = new course_select.CourseSelect({
+    placeholderText: 'Show these words instead',
+    onSelectHandler: myOnSelectHandler
+  });
+
   var courseSelectView = new course_select.CourseSelectView({
-    model: new course_select.CourseSelect()
+    model: courseSelectModel
   });
 
   var rendered = courseSelectView.render().el;

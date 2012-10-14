@@ -1,6 +1,6 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('course-select-tpl') %}
-<input type="hidden" multiple data-placeholder="Add a course"
+<input type="hidden" multiple data-placeholder="<%- placeholderText %>"
   class="course-select-input">
 {% endcall %}
