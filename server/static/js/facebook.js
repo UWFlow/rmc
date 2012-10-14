@@ -2,55 +2,15 @@ define(
 ['ext/jquery', 'ext/cookie', 'ext/facebook'],
 function($, __, FB) {
 
+  // This does not need to wait until DOMReady
   if (window.pageData.env === 'dev') {
     var appId = '289196947861602';
   } else {
     var appId = '219309734863464';
   }
-
-  // Set the app_id on Facepile before we call FB.init
-  $('.fb-facepile').attr('data-app-id', appId);
-
   FB.init({appId: appId, status: true, cookie: true, xfbml: true});
 
-  // Facebook Connect button
-  $('.fb-login-button').click(function() {
-    // TODO(Sandy): Put up drip loader here
-    FB.login(function(response) {
-      if (response.status !== 'connected') {
-        // TODO(Sandy): Handle what happens when they don't login?
-        return;
-      }
-
-      // First login, fetch user data from the FB Graph API
-      var authResponse = response.authResponse;
-
-      var deferredFriends = new $.Deferred();
-      FB.api('/me/friends', function(response) {
-        var fbids = _.pluck(response.data, 'id');
-        deferredFriends.resolve(fbids);
-      });
-
-      var deferredMe = new $.Deferred();
-      FB.api('/me', function(response) {
-        deferredMe.resolve(response);
-      });
-
-      $.when(deferredMe, deferredFriends).done(function(me, friendFbids) {
-        var params = {
-          'friend_fbids': JSON.stringify(friendFbids),
-          'first_name': me.first_name,
-          'middle_name': me.middle_name,
-          'last_name': me.last_name,
-          'email': me.email,
-          'gender': me.gender
-        };
-        login(authResponse, params);
-      });
-    }, {scope: 'email'});
-  });
-
-  var login = function(authResp, params) {
+  var login = function(authResp, params, nextUrl) {
     // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
     // others to hijack someonne's session. We should probably look into
     // a way of verifying the request. Maybe that's what Facebook Signed
@@ -77,7 +37,12 @@ function($, __, FB) {
       success: function(data) {
         // Fail safe to make sure at least we sent off the _gaq trackEvent
         _gaq.push(function() {
-          window.location.href = '/onboarding';
+          if (nextUrl) {
+            window.location.href = '/onboarding?next=' +
+              window.encodeURIComponent(nextUrl);
+          } else {
+            window.location.href = '/onboarding';
+          }
         });
       },
       error: function(xhr) {
@@ -111,9 +76,59 @@ function($, __, FB) {
     FB.logout(cb);
   };
 
+
+  // TODO(mack): this should be moved into its own backbone view
+  var initConnectButton = function(nextUrl) {
+    // Set the app_id on Facepile before we call FB.init
+    $('.fb-facepile').attr('data-app-id', appId);
+
+    // TODO(mack): This is being again because the facepil element might have
+    // been added to the page after page load (i.e. via backbone view). Should
+    // figure out better way to do it without calling this again.
+    FB.init({appId: appId, status: true, cookie: true, xfbml: true});
+
+    // Facebook Connect button
+    $('.fb-login-button').click(function() {
+      // TODO(Sandy): Put up drip loader here
+      FB.login(function(response) {
+        if (response.status !== 'connected') {
+          // TODO(Sandy): Handle what happens when they don't login?
+          return;
+        }
+
+        // First login, fetch user data from the FB Graph API
+        var authResponse = response.authResponse;
+
+        var deferredFriends = new $.Deferred();
+        FB.api('/me/friends', function(response) {
+          var fbids = _.pluck(response.data, 'id');
+          deferredFriends.resolve(fbids);
+        });
+
+        var deferredMe = new $.Deferred();
+        FB.api('/me', function(response) {
+          deferredMe.resolve(response);
+        });
+
+        $.when(deferredMe, deferredFriends).done(function(me, friendFbids) {
+          var params = {
+            'friend_fbids': JSON.stringify(friendFbids),
+            'first_name': me.first_name,
+            'middle_name': me.middle_name,
+            'last_name': me.last_name,
+            'email': me.email,
+            'gender': me.gender
+          };
+          login(authResponse, params, nextUrl);
+        });
+      }, {scope: 'email'});
+    });
+  };
+
   return {
     loginIfPossible: loginIfPossible,
-    logout: logout
+    logout: logout,
+    initConnectButton: initConnectButton
   };
 
 });

@@ -79,6 +79,9 @@
         </ul>
       </div>
     </div>
+    {% if not current_user_id %}
+      <div id="sign-in-banner-container"></div>
+    {% endif %}
     <header>
       {% block header %}
       {% endblock %}

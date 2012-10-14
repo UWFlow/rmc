@@ -1,7 +1,7 @@
 require(
 ['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'ratings',
-'user_course', 'review'],
-function($, course, tookThis, user, tips, prof, ratings, user_course, _review) {
+'user_course', 'review', 'sign_in'],
+function($, course, tookThis, user, tips, prof, ratings, user_course, _review, _sign_in) {
 
   course.CourseCollection.addToCache(pageData.courseObj);
   user.UserCollection.addToCache(pageData.userObjs);
@@ -39,4 +39,5 @@ function($, course, tookThis, user, tips, prof, ratings, user_course, _review) {
   var profsView = new prof.ProfCollectionView({ collection: profsCollection });
   $('#professor-review-container').html(profsView.render().el);
 
+  _sign_in.renderBannerIfNecessary('See friends taking this course!');
 });

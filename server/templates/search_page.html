@@ -17,8 +17,7 @@
 {% block body %}
   <div class="row-fluid">
     <div class="span12">
-      <div id="course-page-container">
-      </div>
+      <div id="course-search-container"></div>
     </div>
   </div>
 {% endblock %}
@@ -30,6 +29,7 @@
   {% include 'ratings.html' %}
   {% include 'user_course.html' %}
   {% include 'course.html' %}
+  {% include 'sign_in.html' %}
 
   <!-- TODO(mack): add to own file? -->
   <script type="text/html" id="search-form-tpl">

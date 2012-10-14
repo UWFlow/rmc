@@ -1,10 +1,10 @@
 require(
 ['facebook', 'ext/jquery', 'util'],
-function(facebook, $, util) {
+function(_facebook, $, util) {
   if (util.getQueryParam('logout')) {
-    facebook.logout();
+    _facebook.logout();
   } else {
-    facebook.loginIfPossible();
+    _facebook.loginIfPossible();
   }
 
   // Facebook connect button A/B test
@@ -14,4 +14,8 @@ function(facebook, $, util) {
 
   $('.header-bg').css('opacity', 1.0);
   $('.sign-up-box').addClass('animated');
+
+  window.setTimeout(function() {
+    _facebook.initConnectButton();
+  }, 3000);
 });

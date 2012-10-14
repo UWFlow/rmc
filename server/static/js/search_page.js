@@ -1,6 +1,6 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course', 'prof'],
-function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course', 'prof', 'sign_in'],
+function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, _sign_in) {
 
   var FETCH_DELAY_MS = 300;
 
@@ -203,7 +203,9 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof) 
 
   var init = function() {
     var courseSearchView = new CourseSearchView({});
-    $('#course-page-container').append(courseSearchView.render().$el);
+    $('#course-search-container').append(courseSearchView.render().$el);
+
+    _sign_in.renderBannerIfNecessary('See what your friends are taking!');
   };
 
   init();

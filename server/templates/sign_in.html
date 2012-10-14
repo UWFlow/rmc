@@ -1,0 +1,19 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('sign-in-banner-tpl') %}
+{# TODO(mack): remove duplicated code (from index_page.html #}
+<div class="fb-login-button">
+  <div class="fb-logo-box">
+    <img class="fb-logo-f" src="/static/img/f-6-25.png">
+  </div>
+  <span class="fb-login-text"><%- fb_connect_text %></span>
+</div>
+
+{# FIXME(Sandy): Permission requests after login now gives
+us a cross-domain request error. I suspect it's because we're not
+longer doing FB login in an iFrame. Luckily, we still seem to be
+getting data back for the FB.api requests. Worry later? #}
+{# Note: data-app-id is set in facebook.js #}
+<div class="fb-facepile" data-max-rows="1" data-width="350"></div>
+
+{% endcall %}

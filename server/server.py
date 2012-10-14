@@ -539,7 +539,11 @@ def onboarding():
     current_user = get_current_user()
 
     if current_user.course_history and not 'test' in flask.request.values:
-        return flask.make_response(flask.redirect('profile'))
+        redirect_url = flask.request.values.get('next')
+        if redirect_url:
+            return flask.make_response(flask.redirect(redirect_url))
+        else:
+            return flask.make_response(flask.redirect('profile'))
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,

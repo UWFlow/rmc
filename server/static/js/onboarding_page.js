@@ -16,7 +16,6 @@ function($, _, _s, transcript, util) {
   });
 
   $transcript.bind('input paste', function(evt) {
-    console.log('input paste');
     // Remove any old info from the page
     $('#terms').empty();
     $('#transcript-error').empty();
@@ -33,7 +32,6 @@ function($, _, _s, transcript, util) {
   });
 
   var addTranscriptData = function(data) {
-    console.log('called addTranscriptData');
     // Try/catch around parsing logic so that we show error message
     // should anything go wrong
     var transcriptData;
@@ -77,7 +75,12 @@ function($, _, _s, transcript, util) {
         // TODO(mack): load and update page with js rather than reloading
         // Fail safe to make sure at least we sent off the _gaq trackEvent
         _gaq.push(function() {
-          window.location.href = '/profile';
+          var redirectUrl = util.getQueryParam('next');
+          if (redirectUrl) {
+            window.location.href = redirectUrl;
+          } else {
+            window.location.href = '/profile';
+          }
         });
       },
       'json'

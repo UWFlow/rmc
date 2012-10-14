@@ -1,4 +1,5 @@
 @import 'base';
+@import 'sign_in';
 
 $header-height: 668px;
 
@@ -67,58 +68,6 @@ $header-height: 668px;
     }
   }
 
-  .fb-login-button {
-    display: inline-block;
-    @include border-radius(5px);
-    background-color: #AEACAC;
-    @include box-shadow(0 0 2px rgba(0, 0, 0, 0.2));
-    @include background-image(linear-gradient(top, #5575AF, #355997));
-    height: 50px;
-    line-height: 49px;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    -khtml-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
-    text-align: center;
-    opacity: 0.8;
-    @include transition(all 0.2s ease-out);
-    margin-bottom: 10px;
-
-    &:hover {
-      @include transition(all 0.2s ease-out);
-      @include box-shadow(0 0 20px rgba(0, 0, 0, 0.4));
-      opacity: 1.0;
-      cursor: pointer;
-
-      .fb-login-text {
-        @include text-shadow(0 0px 10px rgba(255, 255, 255, 0.5));
-      }
-    }
-
-    .fb-logo-box {
-      border-radius: 5px 0 0 5px;
-      @include background-image(linear-gradient(top, #3B5D9B, #29416E));
-      float: left;
-      height: 50px;
-      width: 50px;
-
-      .fb-logo-f {
-        height: 30px;
-        width: 15px;
-      }
-    }
-    .fb-login-text {
-      padding: 0 25px;
-      font-weight: bold;
-      font-size: 22px;
-      color: white;
-      text-shadow: 0 1px 0 rgba(20, 20, 20, .5);
-      text-align: center;
-    }
-  }
 }
 
 body {
@@ -150,22 +99,22 @@ footer {
     padding-top: 20px;
     padding-bottom: 20px;
     font-size: 14px;
-    @include transition(all 0.2s ease-out);
+    //@include transition(all 0.2s ease-out);
 
     &:hover {
-      @include transition(all 0.2s ease-out);
+      //@include transition(all 0.2s ease-out);
       color: $footer-hover-color;
       a {
         color: $footer-hover-color;
-        @include transition(all 0.2s ease-out);
+        //@include transition(all 0.2s ease-out);
       }
     }
 
     a {
       color: $footer-text-color;
-      @include transition(all 0.2s ease-out);
+      //@include transition(all 0.2s ease-out);
       &:hover {
-        @include transition(all 0.2s ease-out);
+        //@include transition(all 0.2s ease-out);
         color: $flowBlue;
         text-decoration: none;
       }

@@ -1,11 +1,12 @@
 @import 'base';
 @import 'course';
+@import 'sign_in';
 
 header {
   padding-top: 15px;
 }
 
-#course-page-container {
+#course-search-container {
   .keywords {
     @include box-sizing(border-box);
     width: 100%;

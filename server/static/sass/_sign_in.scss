@@ -1,0 +1,97 @@
+.fb-login-button {
+  display: inline-block;
+  @include border-radius(5px);
+  background-color: #AEACAC;
+  @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
+  @include background-image(linear-gradient(top, #5575AF, #355997));
+  height: 50px;
+  line-height: 49px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  text-align: center;
+  opacity: 0.8;
+  @include transition(all 0.2s ease-out);
+  margin-bottom: 10px;
+
+  &:hover {
+    @include transition(all 0.2s ease-out);
+    @include box-shadow(0 0 20px rgba(0, 0, 0, 0.4));
+    opacity: 1.0;
+    cursor: pointer;
+
+    .fb-login-text {
+      @include text-shadow(0 0px 10px rgba(255, 255, 255, 0.5));
+    }
+  }
+
+  .fb-logo-box {
+    border-radius: 5px 0 0 5px;
+    @include background-image(linear-gradient(top, #3B5D9B, #29416E));
+    float: left;
+    height: 50px;
+    width: 50px;
+
+    .fb-logo-f {
+      height: 30px;
+      width: 15px;
+    }
+  }
+  .fb-login-text {
+    padding: 0 25px;
+    font-weight: bold;
+    font-size: 22px;
+    color: white;
+    text-shadow: 0 1px 0 rgba(20, 20, 20, .5);
+    text-align: center;
+  }
+}
+
+#sign-in-banner-container {
+  height: 75px;
+  display: none;
+  text-align: center;
+
+  .sign-in-banner {
+    display: inline-block;
+
+    position: absolute;
+    &.affix {
+      top: 0px;
+      position: fixed;
+    }
+
+    opacity: 0.9;
+    &:hover {
+      opacity: 1.0;
+    }
+
+    text-align: center;
+    height: 50px;
+    padding: 20px;
+    z-index: 10;
+
+    border: 1px solid rgba(34, 25, 25, 0.25);
+    border-top: 0;
+    @include border-radius(0 0 5px 5px);
+    @include box-shadow(0 1px 3px rgba(34, 25, 25, 0.2));
+
+    $dark-color: #f9f9f9;
+    $light-color: #fff;
+    @include background(linear-gradient(bottom, $light-color 0%, $dark-color 100%));
+
+    .fb-login-button{
+      vertical-align: top;
+      margin: 0;
+    }
+
+    .fb-facepile {
+      vertical-align: top;
+      margin: -5px 0 0 10px;
+    }
+  }
+}
