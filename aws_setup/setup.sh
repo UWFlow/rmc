@@ -135,5 +135,5 @@ sudo update-rc.d rmc_daemon defaults
 sudo service rmc_daemon start
 
 echo "Installing crontab"
-(cd rmc && crontab aws_setup/crontab)
+crontab $CONFIG_DIR/crontab
 sudo apt-get install -y mailutils
