@@ -8,6 +8,8 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     // TODO(Sandy): Restructure this and add field for placeholder text
     // TODO(Sandy): Allow callback on select
     defaults: {
+      // Don't actually have defaults, otherwise we end up loading false data
+      /*
       // List of courses to show in the drop down (ordered same as array).
       course_selections: [{
         code: 'SCI 238',
@@ -16,12 +18,14 @@ function($, _, _s, select2, RmcBackbone, course, util) {
         code: 'ECON 102',
         name: 'Macro Economics AWESOME COURSE'
       }]
+      */
     },
 
     initialize: function(attributes) {
       if (!attributes || !attributes.course_selections) {
         // TODO(Sandy): Maybe we can strategically fetch this once somewhere
-        // before to reduce wait time on first click?
+        // before to reduce wait time on first click? Though it looks pretty
+        // reasonable now (assuming decent connection)
         if (util.supportsLocalStorage() &&
             window.localStorage.courseSelectData) {
           console.log('nah i got it');
@@ -40,7 +44,7 @@ function($, _, _s, select2, RmcBackbone, course, util) {
               window.localStorage.courseSelectData = JSON.stringify(sortedObj);
             }
             this.set('course_selections', sortedObj);
-          });
+          }.bind(this));
         }
       }
     }
@@ -55,9 +59,9 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     render: function() {
       this.$el.html(this.template());
 
-      var courseSelectData = this.model.get('course_selections');
+      var courseSelectModel = this.model;
       var queryHandler = function(options) {
-        return courseSelectQuery(courseSelectData, options);
+        return courseSelectQuery(courseSelectModel, options);
       }
 
       // Handle the autocomplete course box
@@ -95,8 +99,7 @@ function($, _, _s, select2, RmcBackbone, course, util) {
     return 'Add a course';
   }
 
-  var courseSelectQuery = function(courseSelectData, options) {
-    var courseSelectData;
+  var courseSelectQuery = function(courseSelectModel, options) {
     data = {
       results: []
     };
@@ -105,12 +108,14 @@ function($, _, _s, select2, RmcBackbone, course, util) {
       // Course select data already filtered, just a paging call
       courseSelectData = options.context.filteredCourses;
     } else {
-      courseSelectData = courseSelectData;
+      courseSelectData = courseSelectModel.get('course_selections');
 
       if (!courseSelectData) {
         // Data fetch might not have finished yet, wait a bit
         console.log('setting timeout to wait for async request');
-        setTimeout(courseSelectQuery(options), 500);
+        setTimeout(function() {
+          courseSelectQuery(courseSelectModel, options)
+        }, 500);
         return;
       }
 
