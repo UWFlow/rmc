@@ -6,7 +6,7 @@ function(RmcBackbone, _, _s, util, _course) {
     programName = programName || '';
     programName = programName.replace('Mathematics', 'Math');
     programName = programName.replace('Chartered Accountancy', 'CA');
-    programName = programName.replace('Account and Financial Management', 'AFM');
+    programName = programName.replace('Accounting and Financial Management', 'AFM');
     programName = programName.replace(/ - .* Option$/, '');
 
     return programName;
