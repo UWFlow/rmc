@@ -50,7 +50,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
           _sign_in.renderModal({
             title: 'Oops!',
             message: 'We don\'t know who your friends are...',
-            fbConnectText: 'Let us know!'
+            fbConnectText: 'Let us know!',
+            source: 'MODAL_FRIENDS_TAKEN'
           });
           return false;
         }
@@ -217,7 +218,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     var courseSearchView = new CourseSearchView({});
     $('#course-search-container').append(courseSearchView.render().$el);
 
-    _sign_in.renderBannerIfNecessary('See what your friends are taking!');
+    _sign_in.renderBannerIfNecessary(
+        'BANNER_SEARCH_PAGE', 'See what your friends are taking!');
   };
 
   init();

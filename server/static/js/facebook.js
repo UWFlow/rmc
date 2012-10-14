@@ -10,7 +10,7 @@ function($, __, FB) {
   }
   FB.init({appId: appId, status: true, cookie: true, xfbml: true});
 
-  var login = function(authResp, params, nextUrl) {
+  var login = function(authResp, params, source, nextUrl) {
     // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
     // others to hijack someonne's session. We should probably look into
     // a way of verifying the request. Maybe that's what Facebook Signed
@@ -29,8 +29,9 @@ function($, __, FB) {
     _gaq.push([
       '_trackEvent',
       'USER_GENERIC',
-      'FACEBOOK_CONNECT'
+      'FACEBOOK_CONNECT_' + source.toUpperCase()
     ]);
+
     $.ajax('/login', {
       data: params,
       type: 'POST',
@@ -78,7 +79,7 @@ function($, __, FB) {
 
 
   // TODO(mack): this should be moved into its own backbone view
-  var initConnectButton = function(nextUrl) {
+  var initConnectButton = function(source, nextUrl) {
     // Set the app_id on Facepile before we call FB.init
     $('.fb-facepile').attr('data-app-id', appId);
 
@@ -119,7 +120,7 @@ function($, __, FB) {
             'email': me.email,
             'gender': me.gender
           };
-          login(authResponse, params, nextUrl);
+          login(authResponse, params, source, nextUrl);
         });
       }, {scope: 'email'});
     });

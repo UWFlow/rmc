@@ -7,6 +7,7 @@ function($, _, RmcBackbone, _facebook) {
 
     initialize: function(attributes) {
       this.fbConnectText = attributes.fbConnectText || 'Connect with Facebook';
+      this.source = attributes.source;
     },
 
     render: function() {
@@ -22,7 +23,7 @@ function($, _, RmcBackbone, _facebook) {
     },
 
     postRender: function() {
-      _facebook.initConnectButton(window.location.href);
+      _facebook.initConnectButton(this.source, window.location.href);
     }
   });
 
@@ -36,7 +37,8 @@ function($, _, RmcBackbone, _facebook) {
     initialize: function(attributes) {
       this.fbConnectText = attributes.fbConnectText;
       this.fbLoginView = new FbLoginView({
-        fbConnectText: this.fbConnectText
+        fbConnectText: this.fbConnectText,
+        source: attributes.source
       });
     },
 
@@ -58,14 +60,15 @@ function($, _, RmcBackbone, _facebook) {
     }
   });
 
-  var renderBannerIfNecessary = function(fbConnectText) {
+  var renderBannerIfNecessary = function(source, fbConnectText) {
     if (pageData.currentUserId) {
       return;
     }
 
     fbConnectText = fbConnectText || 'See what your friends are taking!';
     var signInBannerView = new SignInBannerView({
-      fbConnectText: fbConnectText
+      fbConnectText: fbConnectText,
+      source: source
     });
 
     $('#sign-in-banner-container')
@@ -84,7 +87,8 @@ function($, _, RmcBackbone, _facebook) {
       this.title = attributes.title;
       this.message = attributes.message;
       this.fbLoginView = new FbLoginView({
-        fbConnectText: attributes.fbConnectText
+        fbConnectText: attributes.fbConnectText,
+        source: attributes.source
       });
     },
 
