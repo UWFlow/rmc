@@ -698,7 +698,7 @@ import api
 
 
 @app.route('/api/courses/<string:course_ids>', methods=['GET'])
-# TODO(mack): find a better name for function
+@api.jsonify
 def get_courses(course_ids):
     course_ids = [c.lower() for c in course_ids.split(',')]
     courses = m.Course.objects(
@@ -708,10 +708,10 @@ def get_courses(course_ids):
     course_objs = [c.to_dict() for c in courses]
     professor_objs = m.Professor.get_reduced_professors_for_courses(courses)
 
-    return util.json_dumps({
+    return {
         'course_objs': course_objs,
         'professor_objs': professor_objs,
-    })
+    }
 
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
@@ -732,6 +732,7 @@ for sort_mode in COURSES_SORT_MODES:
 RATING_SORT_MODES = ['overall', 'interest', 'easiness']
 
 @app.route('/api/course-search', methods=['GET'])
+@api.jsonify
 # TODO(mack): find a better name for function
 # TODO(mack): a potential problem with a bunch of the sort modes is if the
 # value they are sorting by changes in the objects. this can lead to missing
@@ -845,13 +846,13 @@ def search_courses():
                 'first_name', 'last_name', 'fbid')
         user_dict_list = [u.to_dict() for u in users]
 
-    return util.json_dumps({
+    return {
         'user_objs': user_dict_list,
         'course_objs': course_dict_list,
         'professor_objs': professor_dict_list,
         'user_course_objs': user_course_dict_list,
         'has_more': has_more,
-    })
+    }
 
 
 @app.route('/api/transcript', methods=['POST'])
@@ -955,6 +956,7 @@ def remove_transcript():
 
 @app.route('/api/user/add_course_to_shortlist', methods=['POST'])
 @login_required
+@api.jsonify
 def add_course_to_shortlist():
     current_user = get_current_user()
 
@@ -966,9 +968,9 @@ def add_course_to_shortlist():
     user_course.save()
     current_user.update(add_to_set__course_history=user_course.id)
 
-    return util.json_dumps({
+    return {
         'user_course': user_course.to_dict(),
-    })
+    }
 
 @app.route('/api/user/remove_course', methods=['POST'])
 @login_required
@@ -1012,8 +1014,9 @@ def get_user_course():
 # XXX[uw](Sandy): Make this not completely fail when hitting this endpoint, otherwise the user would have wasted all
 # their work. We can do one of 1. a FB login on the client 2. store their data for after they login 3. don't let them
 # start writing if they aren't logged in. 1 or 3 seems best
-@login_required
 @app.route('/api/user/course', methods=['POST', 'PUT'])
+@login_required
+@api.jsonify
 def edit_user_course():
     uc_data = util.json_loads(flask.request.data)
     user = get_current_user()
@@ -1093,12 +1096,12 @@ def edit_user_course():
         user.fav_user_course_id = str(uc.id)
         user.save()
 
-    return util.json_dumps({
+    return {
         'professor_review.comment_date': uc['professor_review'][
             'comment_date'],
         'course_review.comment_date': uc['course_review']['comment_date'],
         'id': uc.id,
-    })
+    }
 
 
 if __name__ == '__main__':
