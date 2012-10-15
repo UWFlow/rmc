@@ -7,12 +7,11 @@
   <% } else { %>
     <i class="arrow icon-caret-right"></i>
   <% } %>
-  <%- name %> &nbsp;
   <% if (program_year_id) { %>
-  <span class="muted">
     <%- program_year_id %>
-  </span>
   <% } %>
+  {# TODO(david): Put in CSS file. #}
+  <span class="muted" style="font-weight: 300;"><%- name %></span>
 </div>
 <div class="course-collection-placeholder"></div>
 {% endcall %}
