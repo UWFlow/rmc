@@ -22,6 +22,8 @@ errors = []
 
 
 def html_parse(url, num_tries=5):
+    # TODO(mack): should also try lxml.html parser since soupparser could also
+    # potentially not parse correctly
     for parser in [soupparser]:
         tries = 0
         while True:
