@@ -1005,6 +1005,14 @@ def user_course():
     uc_data = util.json_loads(flask.request.data)
     user = get_current_user()
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_USER_COURSE, {
+            'uc_data': uc_data,
+            'user_id': user.id,
+        },
+    )
+
     # Validate request object
     course_id = uc_data.get('course_id')
     term_id = uc_data.get('term_id')
