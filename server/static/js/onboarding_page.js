@@ -3,6 +3,7 @@ require(
 'fav_course', 'user_course', 'user'],
 function($, _, _s, transcript, util, _fav_course, _user_course, _user) {
 
+  // TODO(david): Do this in base.js?
   if (window.pageData.currentUser) {
     _user.UserCollection.addToCache(window.pageData.currentUser);
   }
@@ -11,7 +12,7 @@ function($, _, _s, transcript, util, _fav_course, _user_course, _user) {
 
   var userCourseModel = new _user_course.UserCourse(window.pageData.favCourse);
   var addFavCourseView = new _fav_course.AddFavCourseView({
-    favCourse: userCourseModel
+    userCourse: userCourseModel
   });
 
   // FIXME(david): Don't show if someone already has a fav course selected

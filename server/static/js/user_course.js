@@ -55,6 +55,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         'professor_review.comment_date'];
       this.get('course_review').comment_date = attrs[
         'course_review.comment_date'];
+      this.set('id', attrs.id.$oid);
       // We return nothing because we have a nested collection which can't be
       // just replaced over because it has event handlers.
       return {};
@@ -189,6 +190,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
             .select2('data', { id: profId, text: prof.get('name') });
         }
         this.$('.prof-review').show();
+        this.$('.who-was').show();
       }
 
       this.$('.course-ratings-placeholder').replaceWith(

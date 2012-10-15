@@ -22,7 +22,7 @@
   .select2-container .select2-choice {
     background: none;
     border: none;
-    color: #3a87ad;  // TODO(david): Use Bootstrap's $infoText var somehow
+    color: inherit;
     font-weight: normal;
     padding-left: 3px;
     overflow: visible;

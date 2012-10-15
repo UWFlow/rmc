@@ -10,11 +10,22 @@ function(RmcBackbone, $, _jqueryui, _, _s, _select2, _bootstrap, _user_course,
     className: 'add-fav-course',
 
     initialize: function(options) {
-      this.favCourse = options.favCourse;  // FavCourse is a UserCourse model
+      this.userCourse = options.userCourse;
     },
 
     render: function() {
-      this.$el.html(this.template(this.favCourse.toJSON()));
+      this.$el.html(this.template(this.userCourse.toJSON()));
+
+      if (this.courseModel) {
+        this.userCourseView = new _user_course.UserCourseView({
+          userCourse: this.userCourse,
+          courseModel: this.courseModel
+        });
+
+        this.$('.user-course-placeholder').html(
+            this.userCourseView.render().el);
+        this.$('.user-course-container').fadeIn();
+      }
       return this;
     },
 
@@ -25,23 +36,38 @@ function(RmcBackbone, $, _jqueryui, _, _s, _select2, _bootstrap, _user_course,
     onCourseSelect: function() {
       // FIXME(david): Completely remove any old UserCourse stuff
       // FIXME(david): don't hardcode
-      this.favCourse.set('course_id', 'cs135');
+      var courseId = 'cs115';
+      this.userCourse.set('course_id', courseId);
 
-      $.getJSON('/api/courses/cs135', _.bind(function(data) {
-        _course.CourseCollection.addToCache(data.course_objs);
-        _prof.ProfCollection.addToCache(data.professor_objs);
+      var courseDeferred = $.getJSON('/api/courses/' + courseId);
+      var userCourseDeferred = $.getJSON('/api/user/course?404ok',
+          { course_id: courseId });
 
-        var courseObj = data.course_objs[0];
-        var courseModel = _course.CourseCollection.getFromCache(courseObj.id);
+      var deferredHandlers = _.bind(function(courseArgs, userCourseArgs) {
+        var courseData = courseArgs[0];
+        var userCourseData = userCourseArgs[0];
 
-        this.favCourseView = new _user_course.UserCourseView({
-          userCourse: this.favCourse,
-          courseModel: courseModel
-        });
+        _course.CourseCollection.addToCache(courseData.course_objs);
+        _prof.ProfCollection.addToCache(courseData.professor_objs);
 
-        this.$('.user-course-placeholder').html(this.favCourseView.render().el);
-        this.$('.user-course-container').fadeIn();
-      }, this));
+        var courseObj = courseData.course_objs[0];
+        this.courseModel = _course.CourseCollection.getFromCache(courseObj.id);
+
+        // TODO(david): Handle the case of user changing their existing
+        //     favourite course to a course they haven't taken before (should
+        //     show empty review, but currently they will just be editing their
+        //     old review). This is not done yet because this involves
+        //     significant duplication of default UserCourse data on the client.
+        //     One solution: for old (non-onboarding) users, only allow
+        //     selecting from courses they've taken.
+        if (userCourseData.status !== 404) {
+          this.userCourse = new _user_course.UserCourse(userCourseData);
+        }
+
+        this.render();
+      }, this);
+
+      $.when(courseDeferred, userCourseDeferred).then(deferredHandlers);
     }
 
   });
