@@ -20,6 +20,7 @@ me.connect(c.MONGO_DB_RMC)
 
 errors = []
 
+
 def html_parse(url, num_tries=5):
     for parser in [html]:
         tries = 0
@@ -114,12 +115,59 @@ def get_department_codes():
         all_deps.add(result['Acronym'].strip().lower())
     return all_deps
 
+
 def file_exists(path):
     try:
         with open(path) as f: pass
         return True
     except:
         return False
+
+def get_ucalendar_courses():
+    def get_course_info_from_tree(course_tree):
+        course_intro = course_tree.xpath('.//tr[1]/td[1]')[0].text_content()
+        # Note, this is Waterloo's course id
+        course_id = course_tree.xpath('.//tr[1]/td[2]')[0].text_content()
+        course_name = course_tree.xpath('.//tr[2]')[0].text_content()
+        course_description = course_tree.xpath('.//tr[3]')[0].text_content()
+        course_notes = []
+        for e in course_tree.xpath('.//tr//i'):
+            text_content = e.text_content().strip()
+            if text_content:
+                course_notes.append(text_content)
+
+        return {
+            'intro': course_intro,
+            'id': course_id,
+            'name': course_name,
+            'description': course_description,
+            'notes': course_notes,
+        }
+
+
+    for department in m.Department.objects:
+        file_path = os.path.join(sys.path[0], '%s/%s.txt' % (
+            c.UCALENDAR_COURSES_DATA_DIR, department.id))
+        if file_exists(file_path):
+            print 'Skipping: %s' % department.id
+            continue
+
+        dep_url = 'http://ugradcalendar.uwaterloo.ca/courses/%s' % (
+                department.id.upper())
+        dep_tree = html_parse(dep_url, num_tries=1)
+        if dep_tree is None:
+            print 'Skipping: %s' % department.id
+            continue
+
+        print 'Processing: %s' % department.id
+
+        course_infos = []
+        for course_tree in dep_tree.xpath('.//center'):
+            course_info = get_course_info_from_tree(course_tree)
+            course_infos.append(course_info)
+
+        with open(file_path, 'w') as f:
+            json.dump(course_infos, f)
 
 
 def get_uwdata_courses():
@@ -309,13 +357,15 @@ def get_terms_offered():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    supported_modes = ['departments', 'opendata_courses',
+    supported_modes = ['departments', 'ucalendar_courses', 'opendata_courses',
             'uwdata_courses', 'terms_offered']
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
 
     if args.mode == 'departments':
         get_departments()
+    elif args.mode == 'ucalendar_courses':
+        get_ucalendar_courses()
     elif args.mode == 'opendata_courses':
         get_opendata_courses()
     elif args.mode == 'uwdata_courses':
