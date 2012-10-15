@@ -48,8 +48,16 @@ function($, _, _s, select2, RmcBackbone, course, util) {
             });
 
             if (util.supportsLocalStorage()) {
-              window.localStorage.courseSelectData = JSON.stringify(sortedObj);
+              try {
+                window.localStorage.setItem(
+                    'courseSelectData', JSON.stringify(sortedObj));
+              } catch (e) {
+                // Browser quota exceeded? QUOTA_EXCEEDED_ERR
+                // Or something else...No caching for this user :(
+              }
             }
+            // XXX(Sandy): Cache this in the RmcBackbone cache, so we don't
+            // fetch redundant data when rendering multiple course-select's
             this.set('course_selections', sortedObj);
           }.bind(this));
         }
@@ -110,8 +118,7 @@ function($, _, _s, select2, RmcBackbone, course, util) {
       tagname: 'li'
     });
 
-    var render = courseView.render().$el;
-    return render;
+    return courseView.render().$el;
   }
 
   var courseSelectFormatSelection = function(e) {
