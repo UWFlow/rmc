@@ -4,7 +4,7 @@ import mongoengine as me;
 
 import argparse
 import glob
-from lxml import html
+from lxml.html import soupparser
 import json
 import os
 import time
@@ -22,7 +22,7 @@ errors = []
 
 
 def html_parse(url, num_tries=5):
-    for parser in [html]:
+    for parser in [soupparser]:
         tries = 0
         while True:
             try:
@@ -148,9 +148,9 @@ def get_ucalendar_courses():
     for department in m.Department.objects:
         file_path = os.path.join(sys.path[0], '%s/%s.txt' % (
             c.UCALENDAR_COURSES_DATA_DIR, department.id))
-        if file_exists(file_path):
-            print 'Skipping: %s' % department.id
-            continue
+        #if file_exists(file_path):
+        #    print 'Skipping: %s' % department.id
+        #    continue
 
         dep_url = 'http://ugradcalendar.uwaterloo.ca/courses/%s' % (
                 department.id.upper())
@@ -162,9 +162,13 @@ def get_ucalendar_courses():
         print 'Processing: %s' % department.id
 
         course_infos = []
-        for course_tree in dep_tree.xpath('.//center'):
-            course_info = get_course_info_from_tree(course_tree)
-            course_infos.append(course_info)
+        course_trees = dep_tree.xpath('.//center')
+        if not course_trees:
+            print 'Could not find courses for %' % department.id
+        else:
+            for course_tree in course_trees:
+                course_info = get_course_info_from_tree(course_tree)
+                course_infos.append(course_info)
 
         with open(file_path, 'w') as f:
             json.dump(course_infos, f)
