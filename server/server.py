@@ -75,13 +75,6 @@ def tojson(obj):
 def version(file_name):
     return '%s?v=%s' % (file_name, VERSION)
 
-class ApiError(Exception):
-    """
-        All errors during api calls should use this rather than Exception
-        directly.
-    """
-    pass
-
 
 def get_current_user():
     """
@@ -541,6 +534,7 @@ def onboarding():
         fav_course = m.user_course.UserCourse(
             user_id=current_user.id,
             term_id=m.term.Term.PAST_TERM_ID,
+            is_fav_course=True,
         )
 
     return flask.render_template('onboarding_page.html',
@@ -698,6 +692,10 @@ def about_page():
 ###############################
 ######## API ##################
 ###############################
+
+
+import api
+
 
 @app.route('/api/courses/<string:course_ids>', methods=['GET'])
 # TODO(mack): find a better name for function
@@ -987,14 +985,42 @@ def remove_course():
 
     return ''
 
+
+@app.route('/api/user/course', methods=['GET'])
+@login_required
+@api.jsonify
+def get_user_course():
+    """Get a user_course object that belongs to the current user."""
+    req = flask.request
+
+    current_user = get_current_user()
+
+    # TODO(david): Should probably allow fetching by ID as well
+    course_id = req.args.get('course_id')
+    if not course_id:
+        raise api.ApiError('No course_id set')
+
+    user_course = m.user_course.UserCourse.get_first(current_user.id,
+            course_id, req.args.get('term_id'))
+
+    if user_course:
+        return user_course.to_dict()
+    else:
+        return api.not_found()
+
+
 # XXX[uw](Sandy): Make this not completely fail when hitting this endpoint, otherwise the user would have wasted all
 # their work. We can do one of 1. a FB login on the client 2. store their data for after they login 3. don't let them
 # start writing if they aren't logged in. 1 or 3 seems best
 @login_required
 @app.route('/api/user/course', methods=['POST', 'PUT'])
-def user_course():
+def edit_user_course():
     uc_data = util.json_loads(flask.request.data)
     user = get_current_user()
+
+    # TODO(david): Authorization: Make sure the user_id of the user_course is
+    #     the same as the current_user. This is easy to do  but I just have to
+    #     test it which is a pain.
 
     # Validate request object
     course_id = uc_data.get('course_id')
@@ -1004,33 +1030,18 @@ def user_course():
             (course_id, term_id))
         # TODO(david): Perhaps we should have a request error function that
         # returns a 400
-        raise ApiError('No course_id or term_id set')
+        raise api.ApiError('No course_id or term_id set')
 
-    # Fetch existing UserCourse
-    uc = m.UserCourse.objects(
-        user_id=user.id,
-        course_id=uc_data['course_id'],
-        term_id=uc_data['term_id']
-    ).first()
-
-    # Maybe user changed term ID. Try not specifying term ID.
-    # TODO(david): Handle the case of a user taking a course multiple times,
-    #     then changing term ID of one of those courses
+    # Fetch existing UserCourse or create
+    uc = (m.UserCourse.objects.with_id(uc_data['id']) if uc_data.get('id')
+            else None)
     if uc is None:
-        uc = m.UserCourse.objects(
+        # TODO(david): Deal with program_year_id <--> term ID mapping
+        uc = m.UserCourse(
             user_id=user.id,
-            course_id=uc_data['course_id'],
-        ).first()
-        if uc is not None:
-            uc.term_id = uc_data['term_id']
-
-    if uc is None:
-        logging.error("/api/user/course User course not found for "
-            "user_id=%s course_id=%s term_id=%s" %
-            (user.id, course_id, term_id))
-        # TODO(david): Perhaps we should have a request error function that
-        # returns a 400
-        raise ApiError('No user course found')
+            course_id=course_id,
+            term_id=term_id,
+        )
 
     # TODO(Sandy): Consider the case where the user picked a professor and rates
     # them, but then changes the professor. We need to remove the ratings from
@@ -1078,10 +1089,15 @@ def user_course():
 
     uc.save()
 
+    if uc_data.get('is_fav_course'):
+        user.fav_user_course_id = str(uc.id)
+        user.save()
+
     return util.json_dumps({
         'professor_review.comment_date': uc['professor_review'][
             'comment_date'],
-        'course_review.comment_date': uc['course_review'][ 'comment_date'],
+        'course_review.comment_date': uc['course_review']['comment_date'],
+        'id': uc.id,
     })
 
 

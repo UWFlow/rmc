@@ -92,6 +92,8 @@ class UserCourse(me.Document):
     course_review = me.EmbeddedDocumentField(review.CourseReview, default=review.CourseReview())
     professor_review = me.EmbeddedDocumentField(review.ProfessorReview, default=review.ProfessorReview())
 
+    is_fav_course = me.BooleanField(default=False)
+
     # TODO(mack): add section_id
     # section_id = StringField()
 
@@ -125,6 +127,7 @@ class UserCourse(me.Document):
             'professor_review': self.professor_review.to_dict(),
             'has_reviewed': self.has_reviewed,
             'program_year_id': self.program_year_id,
+            'is_fav_course': self.is_fav_course,
         }
 
     def save(self, *args, **kwargs):
@@ -144,6 +147,13 @@ class UserCourse(me.Document):
             cur_professor.save()
 
         super(UserCourse, self).save(*args, **kwargs)
+
+    @staticmethod
+    def get_first(user_id, course_id, term_id=None):
+        queryset = UserCourse.objects(user_id=user_id, course_id=course_id)
+        if term_id:
+            queryset = queryset.filter(term_id=term_id)
+        return queryset.first()
 
 
 # TODO(david): Should be static method of ProfCourse
