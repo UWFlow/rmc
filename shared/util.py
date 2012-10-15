@@ -1,6 +1,7 @@
 from bson import json_util
 import rmc.shared.constants as c
 import math
+import logging
 
 def json_loads(json_str):
     return json_util.loads(json_str)
@@ -62,10 +63,22 @@ def get_sorting_score(phat, n, confidence=c.RATINGS_CONFIDENCE):
     if n == 0:
         return 0
 
-    if confidence == c.RATINGS_CONFIDENCE:
-        z = 1.9599639715843482
-    else:
-        z = pnormaldist(1-(1-confidence)/2)
-    # Modified to optimize for our data model
-    #phat = 1.0*pos/n
-    return (phat + z*z/(2*n) - z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
+    try:
+        if confidence == c.RATINGS_CONFIDENCE:
+            z = 1.9599639715843482
+        else:
+            z = pnormaldist(1-(1-confidence)/2)
+        # Modified to optimize for our data model
+        #phat = 1.0*pos/n
+        retVal = (phat + z*z/(2*n) -
+                z * math.sqrt((phat*(1-phat)+z*z/(4*n))/n))/(1+z*z/n)
+    except:
+        # This should never happen, so we should debug this case as soon as we
+        # get the error.
+        # Returning phat should be the same as calling the function with n=INF.
+        # While this is bad, it's better than nothing and we can fix it
+        # with the re-aggregator.
+        logging.error('get_sorting_score(%s, %s, %s) threw an exception'
+                % (phat, n, confidence))
+        retVal = max(0, min(1, phat))
+    return retVal
