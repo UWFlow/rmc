@@ -1013,6 +1013,17 @@ def user_course():
         term_id=uc_data['term_id']
     ).first()
 
+    # Maybe user changed term ID. Try not specifying term ID.
+    # TODO(david): Handle the case of a user taking a course multiple times,
+    #     then changing term ID of one of those courses
+    if uc is None:
+        uc = m.UserCourse.objects(
+            user_id=user.id,
+            course_id=uc_data['course_id'],
+        ).first()
+        if uc is not None:
+            uc.term_id = uc_data['term_id']
+
     if uc is None:
         logging.error("/api/user/course User course not found for "
             "user_id=%s course_id=%s term_id=%s" %

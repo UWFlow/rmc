@@ -152,6 +152,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
           this.profCommentView.render().el);
 
       this.$('.term-select').select2();
+      var termId = this.userCourse.get('term_id');
+      // XXX(david): Log to GA when termId is not found and show it anyway
+      if (termId) {
+        this.$('.term-select').select2('val', termId);
+      }
 
       // TODO(david): Make this prettier and conform to our styles
       // TODO(david): Show "Add..." option
@@ -197,7 +202,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     events: {
-      'change .prof-select': 'onProfSelect'
+      'change .prof-select': 'onProfSelect',
+      'change .term-select': 'onTermSelect'
     },
 
     logToGA: function(event, label) {
@@ -209,6 +215,13 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         event,
         label
       ]);
+    },
+
+    onTermSelect: function() {
+      // TODO(david): There should be some sort of immediate animation or
+      //     response acknowledge successful change of term
+      this.logToGA('TERM', 'SELECT');
+      this.save();
     },
 
     onProfSelect: function() {
@@ -240,10 +253,12 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       var profData = this.$('.prof-select').select2('data');
       var profId = profData && profData.id;
       var newProfAdded = _.contains(this.profIds, profId) ? false : profId;
+      var termId = this.$('.term-select').select2('val');
 
       return this.userCourse.save(_.extend({
         professor_id: profId,
         new_prof_added: newProfAdded,
+        term_id: termId,
         course_id: this.courseModel.get('id')
       }, attrs), options);
     }
