@@ -46,8 +46,21 @@ def import_courses():
         keywords.extend(course_title.split(' '))
         return keywords
 
+    # TODO(mack): rs215 seems to be duplicated. see,
+    # http://www.ucalendar.uwaterloo.ca/1213/COURSE/course-RS.html
+    def clean_ucalendar_course(dep, course):
+        number = re.findall(r'^.*? (\d+[A-Za-z]*?) .*$', course['intro'])[0]
+        name = course['name'].strip()
+        return {
+            'id': '%s%s' % (dep, number),
+            'department_id': dep,
+            'number': number,
+            'name': name,
+            'description': course['description'].strip(),
+            '_keywords': build_keywords(dep, number, name),
+        }
+
     def clean_opendata_course(dep, course):
-        dep = dep.lower()
         number = course['Number'].lower()
         return {
             'id': '%s%s' % (dep, number),
@@ -59,25 +72,8 @@ def import_courses():
                 dep, number, course['Title']),
         }
 
-
-    for file_name in glob.glob(os.path.join(
-            sys.path[0], c.OPENDATA_COURSES_DATA_DIR, '*.txt')):
-
-        with open(file_name, 'r') as f:
-            data = json.load(f)
-
-        dep_name = get_department_name_from_file_path(file_name)
-        if not m.Department.objects.with_id(dep_name):
-            print 'could not find department %s' % dep_name
-            continue
-
-        for course in data.values():
-            course = clean_opendata_course(dep_name, course)
-            m.Course(**course).save()
-
     def clean_uwdata_course(dep, course):
         course = course['course']
-        dep = dep.lower()
         number = course['course_number'].lower()
         return {
             'id': '%s%s' % (dep, number),
@@ -89,27 +85,50 @@ def import_courses():
                     dep, number, course['title']),
         }
 
-    uwdata_count = 0
-    uwdata_ignored = 0
-    for file_name in glob.glob(os.path.join(
-            sys.path[0], c.UWDATA_COURSES_DATA_DIR, '*.txt')):
 
-        with open(file_name, 'r') as f:
-            data = json.load(f)
+    sources = [
+        {
+            'name': 'ucalendar',
+            'clean_fn': clean_ucalendar_course,
+            'dir': c.UCALENDAR_COURSES_DATA_DIR,
+        },
+        {
+            'name': 'opendata',
+            'clean_fn': clean_opendata_course,
+            'dir': c.OPENDATA_COURSES_DATA_DIR,
+        },
+        {
+            'name': 'uwdata',
+            'clean_fn': clean_uwdata_course,
+            'dir': c.UWDATA_COURSES_DATA_DIR,
+        },
+    ]
 
-        dep_name = get_department_name_from_file_path(file_name)
-        if not m.Department.objects.with_id(dep_name):
-            print 'could not find department %s' % dep_name
-            continue
 
-        for course in data:
-            course = clean_uwdata_course(dep_name, course)
+    for source in sources:
+        source['added'] = 0
+        source['ignored'] = 0
+        for file_name in glob.glob(os.path.join(
+                sys.path[0], source['dir'], '*.txt')):
 
-            if not m.Course.objects.with_id(course['id']):
-                uwdata_count += 1
-                m.Course(**course).save()
-            else:
-                uwdata_ignored += 1
+            with open(file_name, 'r') as f:
+                courses = json.load(f)
+
+            dep_name = get_department_name_from_file_path(file_name)
+            if not m.Department.objects.with_id(dep_name):
+                print 'could not find department %s' % dep_name
+                continue
+
+            # The input data can be a list or dict (with course number as key)
+            if type(courses) == dict:
+                courses = courses.values()
+            for course in courses:
+                course = source['clean_fn'](dep_name, course)
+                if not m.Course.objects.with_id(course['id']):
+                    m.Course(**course).save()
+                    source['added'] += 1
+                else:
+                    source['ignored'] += 1
 
 
     # Update courses with terms offered data
@@ -132,8 +151,10 @@ def import_courses():
             course.terms_offered = map(map_term, terms_offered)
             course.save()
 
-    print 'backfilled %d courses from uwdata' % uwdata_count
-    print 'ignored %d courses from uwdata' % uwdata_ignored
+    for source in sources:
+        print 'source: %s, added: %d, ignored: %d' % (
+                source['name'], source['added'], source['ignored'])
+
     print 'imported courses:', m.Course.objects.count()
 
 
