@@ -46,6 +46,7 @@ def html_parse(url, num_tries=5):
 
     return None
 
+# TODO(mack): add to text file rather than directly to mongo
 def get_departments():
     faculties = {
         'ahs': 'Applied Health Sciences',
@@ -79,8 +80,8 @@ def get_departments():
                     url=dep_url,
                 ).save()
 
-
     print 'found: {0} departments'.format(count)
+
 
 def get_data_from_url(url, num_tries=5):
     tries = 0
