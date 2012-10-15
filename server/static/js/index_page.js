@@ -15,7 +15,5 @@ function(_facebook, $, util) {
   $('.header-bg').css('opacity', 1.0);
   $('.sign-up-box').addClass('animated');
 
-  window.setTimeout(function() {
-    _facebook.initConnectButton('HOME');
-  }, 3000);
+  _facebook.initConnectButton('HOME');
 });
