@@ -16,9 +16,13 @@ function($, __, FB) {
     // a way of verifying the request. Maybe that's what Facebook Signed
     // Requests are for? There are two corresponding server-side FIXMEs for this
     params.fb_signed_request = authResp.signedRequest;
-    $.cookie('fbid', authResp.userID, { path: '/' });
-    $.cookie('fb_access_token', authResp.accessToken, { path: '/' });
-    $.cookie('fb_access_token_expires_in', authResp.expiresIn, { path: '/' });
+    // TODO(Sandy): When switching over to Flask sessions be sure to remove
+    // these old cookies
+    $.cookie('fbid', authResp.userID, { expires: 365, path: '/' });
+    $.cookie('fb_access_token', authResp.accessToken,
+        { expires: 365, path: '/' });
+    $.cookie('fb_access_token_expires_in', authResp.expiresIn,
+        { expires: 365, path: '/' });
     // TODO(Sandy): This assumes the /login request will succeed, which may not
     // be the case. But if we make this request in the success handler, it might
     // not get logged at all (due to redirect). We could setTimeout it, but that
