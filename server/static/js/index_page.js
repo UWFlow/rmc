@@ -4,7 +4,7 @@ function(_facebook, $, util) {
   if (util.getQueryParam('logout')) {
     _facebook.logout();
   } else {
-    _facebook.loginIfPossible();
+    _facebook.loginIfPossible('HOME_AUTO');
   }
 
   // Facebook connect button A/B test

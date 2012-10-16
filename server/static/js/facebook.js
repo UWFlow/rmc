@@ -58,14 +58,14 @@ function($, __, FB) {
   // might not need this logic here. We should consider if there are any other
   // cases that needs this logic (eg. maybe we want the user to be able to see
   // the landing page?)
-  var loginIfPossible = function() {
+  var loginIfPossible = function(source, nextUrl) {
     FB.getLoginStatus(function(response) {
       // TODO(Sandy): Make redirect happen server-side so we don't even need to load the landing page
       // TODO(Sandy): Fetch user data here or better yet use realtime API to get friend updates
       if (response.status === 'connected') {
         // The user is already logged into Facebook and has ToSed our app before
         // Store the potentially updated access token in DB if necessary
-        login(response.authResponse, {});
+        login(response.authResponse, {}, source, nextUrl);
       }
     });
   };
