@@ -34,18 +34,20 @@ Much love,
 The Flow Team."""
 
     # TODO(mack): .only()
+    # TODO(mack): Inspect why sent_exam_schedule_notifier_email=False doesn't work
     #users = m.User.objects(
-    #    sent_exam_schedule_notifier_email=False,
     #    email__exists=True,
     #)
     users = m.User.objects(
         fbid='1647810326',
-        sent_exam_schedule_notifier_email=False,
         email__exists=True,
     )
 
     num_sent = 0
     for user in users:
+        if user.sent_exam_schedule_notifier_email:
+            continue
+
         try:
             params = {
                 'first_name': user.first_name,
