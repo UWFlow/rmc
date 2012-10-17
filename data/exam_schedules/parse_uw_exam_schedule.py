@@ -1,5 +1,6 @@
 from time import mktime
 from datetime import datetime
+from datetime import timedelta
 
 import mongoengine
 import os
@@ -91,8 +92,10 @@ def parse_exam_schedule():
         try:
             start_date = datetime.fromtimestamp(mktime(
                     time.strptime(start_date_string, date_format)))
+            start_date += timedelta(hours=4)
             end_date = datetime.fromtimestamp(mktime(
                     time.strptime(end_date_string, date_format)))
+            end_date += timedelta(hours=4)
         except:
             print "Could not get date for line '%s'" % ' '.join(tokens)
             start_date = None
