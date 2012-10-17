@@ -1,6 +1,6 @@
 from course import Course
 from department import Department
-from exam_slot import Exam
+from exam import Exam
 from offering import CourseOffering
 from professor import Professor
 from rating import AggregateRating
