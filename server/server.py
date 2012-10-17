@@ -272,6 +272,8 @@ def profile_page(profile_user_id):
     professor_objs = m.Professor.get_reduced_professors_for_courses(
             transcript_courses)
 
+    # Fetch exam schedules
+
     # PART THREE - TRANSFORM DATA TO DICTS
 
     # Convert professors to dicts

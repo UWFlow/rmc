@@ -1,6 +1,12 @@
 import mongoengine as me
 
 class Exam(me.Document):
+    meta = {
+        'indexes': [
+            'course_id',
+        ],
+    }
+
     course_id = me.StringField(required=True)
 
     # A string listing the sections. E.g. '001', '001, 003', '002 to 004'
