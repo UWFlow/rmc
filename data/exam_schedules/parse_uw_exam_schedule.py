@@ -1,6 +1,7 @@
-import re
 import os
+import re
 import sys
+import time
 
 import rmc.models as m
 
@@ -73,26 +74,38 @@ def parse_exam_schedule():
         for i in range(index, index + 4):
             exam_date_string += safe_list_get(tokens, i) + ' '
 
-        exam_date_string = exam_date_string.strip()
         index += 4
 
-        start_time_string = safe_list_get(tokens, index) +
-            safe_list_get(tokens, index + 1)
+        start_date_string = (exam_date_string + safe_list_get(tokens, index) +
+            safe_list_get(tokens, index + 1))
         index += 2
 
-        end_time_string = safe_list_get(tokens, index) +
-            safe_list_get(tokens, index + 1)
+        end_date_string = (exam_date_string + safe_list_get(tokens, index) +
+            safe_list_get(tokens, index + 1))
         index += 2
 
         # E.g. Tuesday December 11, 2012 7:30PM
         #      Tuesday December 11, 2012 10:00PM
-        date_format = "%A %B %d, %Y %I"
+        date_format = "%A %B %d, %Y %I:%M%p"
+        # TODO(sandy): See if timezone matters
 
+        start_date = time.strptime(start_date_string, date_format)
+        end_date = time.strptime(end_date_string, date_format)
 
+        print "my dates"
+        print start_date
+        print end_date
 
+        # Get the location
+        location = ''
+        while index < len(tokens):
+            location += tokens[index] + ' '
+            index += 1
 
+        location = location.strip()
+        print "my location=%s" % location
 
-        break;
+        # break;
 
 
 if __name__ == '__main__':
