@@ -74,12 +74,18 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
 
   var $transcript = $('#transcript-text');
 
-  // FIXME(david): Detect if we have an exam schedule passed down
-  var examSchedule = new _exam.ExamSchedule();
-  var examScheduleView = new _exam.ExamScheduleView({
-    examSchedule: examSchedule
-  });
-  $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
+  var examObjs = window.pageData.examObjs;
+  if (examObjs && examObjs.length) {
+    var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
+    // TODO(david): 2013
+    var examSchedule = new _exam.ExamSchedule({
+      exams: examCollection
+    });
+    var examScheduleView = new _exam.ExamScheduleView({
+      examSchedule: examSchedule
+    });
+    $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
+  }
 
   $transcript.bind('input paste', function(evt) {
     // Remove any old info from the page

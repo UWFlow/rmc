@@ -22,19 +22,19 @@
         <% exams.each(function(exam) { %>
           <tr>
             <td>
-              <%- exam.get('course_name') %>
+              <%- exam.get('course').get('code') %>
             </td>
             <td>
               <%- exam.get('sections') %>
             </td>
             <td>
-              <%- moment(exam.get('start_date')).format('dddd, MMM Do') %>
+              <%- moment(exam.get('start_date').$date).format('dddd, MMM Do') %>
             </td>
             <td>
-              <%- moment(exam.get('start_date')).format('h:mm a') %>
+              <%- moment(exam.get('start_date').$date).format('h:mm a') %>
             </td>
             <td>
-              <%- moment(exam.get('end_date')).format('h:mm a') %>
+              <%- moment(exam.get('end_date').$date).format('h:mm a') %>
             </td>
             <td>
               <%- exam.get('location') %>

@@ -407,7 +407,8 @@ def profile_page(profile_user_id):
     # Fetch exam schedules
     # TODO(david): 2013
     if transcript_by_term.get('2012_09'):
-        current_course_ids = [c['id'] for c in transcript_by_term['2012_09']]
+        current_course_ids = [c['course_id'] for c in transcript_by_term['2012_09']]
+        print current_course_ids
         exam_objs = m.Exam.objects(course_id__in=current_course_ids)
         exam_dicts = [e.to_dict() for e in exam_objs]
     else:

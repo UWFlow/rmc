@@ -1,11 +1,10 @@
 define(
-['rmc_backbone', 'ext/jquery', 'ext/underscore'],
-function(RmcBackbone, $, _) {
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'course'],
+function(RmcBackbone, $, _, _course) {
 
   var Exam = RmcBackbone.Model.extend({
     defaults: {
       course_id: 'cs137',
-      course_name: 'CS 137',
       sections: '001,002',
       start_date: new Date(2012, 11, 11, 19),
       end_date: new Date(2012, 11, 11, 21),
@@ -13,20 +12,26 @@ function(RmcBackbone, $, _) {
       location_known: true,
       info_known: true,
       url: ''
+    },
+
+    referenceFields: {
+      course: ['course_id', _course.CourseCollection]
     }
   });
 
   var ExamCollection = RmcBackbone.Collection.extend({
-    model: Exam
+    model: Exam,
+
+    comparator: function(exam) {
+      return exam.get('start_date').$date;
+    }
   });
 
   var ExamSchedule = RmcBackbone.Model.extend({
     defaults: {
       exams: new ExamCollection([null, null, null, null, null]),
+      // TODO(david): 2013
       term_name: 'Fall 2012'
-    },
-
-    initialize: function(exam) {
     }
   });
 
