@@ -18,7 +18,7 @@ function(RmcBackbone, $, _, _course) {
       course: ['course_id', _course.CourseCollection]
     },
 
-    getCourseName: function() {
+    getCourseCode: function() {
       var course = this.get('course');
       return course ? course.get('code') : this.get('course_id');
     }

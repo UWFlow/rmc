@@ -21,7 +21,7 @@
         <% _.each(exams.groupedByCourse(), function(courseExams) { %>
         <tr>
           <td>
-            <%- courseExams[0].get('course').get('code') %>
+            <%- courseExams[0].getCourseCode() %>
           </td>
           <td>
             <% _.each(courseExams, function(exam) { %>
