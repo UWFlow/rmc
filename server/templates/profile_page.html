@@ -44,9 +44,8 @@
         </p>
       {% endif %}
 
+      <div id="exam-schedule-placeholder"></div>
       <div id="term-collection-container"></div>
-
-
 
       {#
       {% if own_profile %}
@@ -86,6 +85,7 @@
   {% include 'term.html' %}
   {% include 'ratings.html' %}
   {% include 'user_course.html' %}
+  {% include 'exam.html' %}
 {% endblock %}
 
 {% block scripts %}

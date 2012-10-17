@@ -1,0 +1,49 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('exam-schedule-tpl') %}
+<div class="row-fluid">
+  <div class="span12">
+    <h1>Your <%- term_name %> final exam schedule</h1>
+    <table class="exam-table table table-striped table-rounded table-bordered">
+      <caption>
+        Your <%- term_name %> final exam schedule
+      </caption>
+      <thead>
+        <tr>
+          <th>Course</th>
+          <th>Section(s)</th>
+          <th>Date</th>
+          <th>Start</th>
+          <th>End</th>
+          <th>Location</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% exams.each(function(exam) { %>
+          <tr>
+            <td>
+              <%- exam.get('course_name') %>
+            </td>
+            <td>
+              <%- exam.get('sections') %>
+            </td>
+            <td>
+              <%- moment(exam.get('start_date')).format('dddd, MMM Do') %>
+            </td>
+            <td>
+              <%- moment(exam.get('start_date')).format('h:mm a') %>
+            </td>
+            <td>
+              <%- moment(exam.get('end_date')).format('h:mm a') %>
+            </td>
+            <td>
+              <%- exam.get('location') %>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+
+    </table>
+  </div>
+</div>
+{% endcall %}

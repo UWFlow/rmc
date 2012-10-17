@@ -1,7 +1,8 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof'],
-function($, _, _s, transcript, term, course, friend, util, user, uc, _prof) {
+'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam'],
+function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
+    _exam) {
 
   user.UserCollection.addToCache(pageData.userObjs);
   course.CourseCollection.addToCache(pageData.courseObjs);
@@ -38,7 +39,10 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof) {
     var termCollectionView = new term.TermCollectionView({
       termCollection: termCollection
     });
-    $('#term-collection-container').html(termCollectionView.render().el).show();
+    $('#term-collection-container')
+      .html(termCollectionView.render().el)
+      .prepend('<h1>Your courses</h1>')
+      .show();
 
     transcript_remove_text = $('#transcript-remove-text')
       .html('<a id="remove-transcript-link">Remove my course history, ratings and reviews!</a>')
@@ -60,15 +64,22 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof) {
         }, duration);
       });
     });
-  }
+  };
 
   // Render the transcript, if available
   var transcriptObj = window.pageData.transcriptObj;
-  if (transcriptObj && transcriptObj.length != 0) {
+  if (transcriptObj && transcriptObj.length !== 0) {
     renderTranscript(transcriptObj);
   }
 
   var $transcript = $('#transcript-text');
+
+  // FIXME(david): Detect if we have an exam schedule passed down
+  var examSchedule = new _exam.ExamSchedule();
+  var examScheduleView = new _exam.ExamScheduleView({
+    examSchedule: examSchedule
+  });
+  $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
 
   $transcript.bind('input paste', function(evt) {
     // Remove any old info from the page
