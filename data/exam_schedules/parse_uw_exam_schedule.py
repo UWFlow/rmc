@@ -128,6 +128,8 @@ def parse_exam_schedule():
 
         if (start_date and end_date):
             exam_slot.info_known = True;
+        else:
+            exam_slot.info_known = False;
 
         exam_slot.save()
 
