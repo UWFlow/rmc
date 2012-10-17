@@ -41,7 +41,8 @@ def is_day_of_week(token):
     return False
 
 def parse_exam_schedule():
-    reg = re.compile(r'^(.*?)\s+\((\w+)\).*$')
+
+    m.Exam.objects._collection.drop()
 
     # TODO(Sandy): Don't hardcode path. Look at example from crawler.py
     exam_file = open('uw_oct_16_2012_good.txt')
