@@ -181,7 +181,7 @@ def crash():
 @app.route('/profile', defaults={'profile_user_id': None})
 @app.route('/profile/<string:profile_user_id>')
 @login_required
-def profile(profile_user_id):
+def profile_page(profile_user_id):
     # TODO(mack): for dict maps, use .update() rather than overwriting to
     # avoid subtle overwrites by data that has fields filled out
 
