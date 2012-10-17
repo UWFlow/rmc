@@ -436,7 +436,7 @@ def profile_page(profile_user_id):
         profile_user_id=profile_user.id,
         current_user_id=current_user.id,
         own_profile=own_profile,
-        has_courses=current_user.course_history,
+        has_courses=current_user.has_course_history,
         exam_objs=exam_dicts,
     )
 
@@ -551,7 +551,7 @@ def course_page(course_id):
 def onboarding():
     current_user = get_current_user()
 
-    if current_user.course_history and not 'test' in flask.request.values:
+    if current_user.has_course_history and not 'test' in flask.request.values:
         redirect_url = flask.request.values.get('next')
         if redirect_url:
             return flask.make_response(flask.redirect(redirect_url))

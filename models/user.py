@@ -131,6 +131,12 @@ class User(me.Document):
             return self.program_name.split(',')[0]
         return ''
 
+    @property
+    def has_course_history(self):
+        # TODO(Sandy): This is only a heuristic right now. Have flags for
+        # importing courses and/or manually adding courses later
+        return (self.course_history and len(self.course_history) > 3)
+
     def get_user_courses(self):
         return _user_course.UserCourse.objects(id__in=self.course_history)
 
