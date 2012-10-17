@@ -32,8 +32,6 @@ days_of_week = [
 
 # TODO(sandy): Figure out how to match multple words in regex. |'s didn't work
 def is_day_of_week(token):
-    print 'given token'
-    print token
     for day in days_of_week:
         if re.match(day, token):
             return True
@@ -52,10 +50,6 @@ def parse_exam_schedule():
         index = 0
         tokens = re.split('\s+', line)
 
-        for token in tokens:
-            print "%s" % token
-        print ' '
-
         # Get the course ID
         course_id = safe_list_get(tokens, 0) + safe_list_get(tokens, 1)
         course_id = course_id.lower()
@@ -67,10 +61,8 @@ def parse_exam_schedule():
         # Get the sections
         # day_of_week_pattern = re.compile(
         index = 2
-        print 'sections'
         section_string = ''
         while not is_day_of_week(safe_list_get(tokens, index)):
-            print "section: %s" % safe_list_get(tokens, index)
             section_string = safe_list_get(tokens, index) + ' '
             index += 1
 
@@ -106,10 +98,6 @@ def parse_exam_schedule():
             start_date = None
             end_date = None
 
-        print "my dates"
-        print start_date
-        print end_date
-
         # Get the location
         location = ''
         while index < len(tokens):
@@ -117,7 +105,6 @@ def parse_exam_schedule():
             index += 1
 
         location = location.strip()
-        print "my location=%s" % location
 
         exam_slot = m.Exam()
         exam_slot.course_id = course_id
