@@ -272,8 +272,6 @@ def profile_page(profile_user_id):
     professor_objs = m.Professor.get_reduced_professors_for_courses(
             transcript_courses)
 
-    # Fetch exam schedules
-
     # PART THREE - TRANSFORM DATA TO DICTS
 
     # Convert professors to dicts
@@ -400,10 +398,21 @@ def profile_page(profile_user_id):
             }
             ordered_transcript.append(term_dict)
 
-        return ordered_transcript
+        return ordered_transcript, transcript_by_term
 
     # Store courses by term as transcript using the current user's friends
-    ordered_transcript = get_ordered_transcript(profile_uc_dict_list)
+    ordered_transcript, transcript_by_term = get_ordered_transcript(
+            profile_uc_dict_list)
+
+    # Fetch exam schedules
+    # TODO(david): 2013
+    if transcript_by_term.get('2012_09'):
+        current_course_ids = [c['id'] for c in transcript_by_term['2012_09']]
+        exam_objs = m.Exam.objects(course_id__in=current_course_ids)
+        exam_dicts = [e.to_dict() for e in exam_objs]
+    else:
+        exam_dicts = []
+
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
@@ -427,6 +436,7 @@ def profile_page(profile_user_id):
         current_user_id=current_user.id,
         own_profile=own_profile,
         has_courses=current_user.course_history,
+        exam_objs=exam_dicts,
     )
 
 
