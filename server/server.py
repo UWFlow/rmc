@@ -550,9 +550,13 @@ def course_page(course_id):
 @login_required
 def onboarding():
     current_user = get_current_user()
+    req = flask.request
 
-    if current_user.has_course_history and not 'test' in flask.request.values:
-        redirect_url = flask.request.values.get('next')
+    # Only redirect away from onboarding if we got here from a login attempt
+    # and the user has imported course history. Otherwise, let /onboarding be
+    # accessible to logged in users.
+    if req.values.get('from') == 'login' and current_user.has_course_history:
+        redirect_url = req.values.get('next')
         if redirect_url:
             return flask.make_response(flask.redirect(redirect_url))
         else:
