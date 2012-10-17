@@ -19,17 +19,19 @@ def send_exam_schedule_email():
 
     # TODO(mack): should not show num_friends if it's 0
     email_body = \
-"""Hey %(first_name)s,
+"""%(first_name), welcome to Flow!
+%(friends_joined_line)
+Flow now lets you see your final exam schedule for this term! Check it out on your profile at http://uwflow.com/profile
 
-Thanks for signing up for Flow! We're really excited to have you on board. Did you know %(num_friends)d friends have also signed up and are using Flow?
+We’ll continue working hard to bring you more awesome features! Like us on on Facebook (http://www.facebook.com/planyourflow) and follow us on Twitter (https://twitter.com/useflow) to stay updated.
 
-Flow now lets you see your final exam schedule for this term! Check it out on your profile at: http://uwflow.com/profile. (Don't worry, we'll continue to update it, so you don't have to!)
+Good luck with the incoming storm of midterms!
+-The Flow Team"""
 
-We're working hard to bring you more awesome features! Like us on on Facebook (http://www.facebook.com/planyourflow) and follow us on Twitter (https://twitter.com/useflow) to stay updated.
-
-Much love,
-
-The Flow Team."""
+    friends_joined_line = \
+"""
+%(num_friends)d of your friends started using Flow since last week.
+"""
 
     # TODO(mack): .only()
     # TODO(mack): Inspect why sent_exam_schedule_notifier_email=False doesn't work
@@ -49,8 +51,11 @@ The Flow Team."""
         try:
             params = {
                 'first_name': user.first_name,
-                'num_friends': len(user.friend_ids),
+                'friends_joined_line': '',
             }
+            if (user.friend_ids):
+                params['friends_joined_line'] = friends_joined_line % {
+                        'num_friends': len(user.friend_ids) }
             conn.send_email(
                 c.EMAIL_SENDER,
                 EMAIL_TITLE,
