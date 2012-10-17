@@ -10,7 +10,7 @@ def safe_list_get(l, idx, default=''):
     try:
         return l[idx]
     except IndexError:
-        print "failed to get %s-th term of '%s'" % (idx, l.join())
+        print "failed to get %s-th term of '%s'" % (idx, ' '.join(l))
         return default
 
 days_of_week = [
@@ -37,10 +37,11 @@ def parse_exam_schedule():
     reg = re.compile(r'^(.*?)\s+\((\w+)\).*$')
 
     # TODO(Sandy): Don't hardcode path. Look at example from crawler.py
-    exam_file = open('uw_oct_16_2012.txt')
+    exam_file = open('uw_oct_16_2012_good.txt')
 
 
     for line in exam_file:
+        index = 0
         tokens = re.split('\s+', line)
 
         exam_slot = m.Exam()
@@ -54,7 +55,7 @@ def parse_exam_schedule():
         course_id.lower()
 
         if not course_id:
-            print "Skipping line '%s'" % l.join()
+            print "Skipping line '%s'" % ' '.join(tokens)
             continue
 
         # Get the sections
