@@ -1,6 +1,24 @@
 .exam-table {
+  margin-bottom: 0;
   background: white;
+
   caption {
     display: none;
   }
+
+  td {
+    vertical-align: middle;
+
+    p {
+      margin-bottom: 6px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+}
+.last-updated {
+  float: right;
 }

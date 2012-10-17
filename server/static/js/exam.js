@@ -24,6 +24,13 @@ function(RmcBackbone, $, _, _course) {
 
     comparator: function(exam) {
       return exam.get('start_date').$date;
+    },
+
+    groupedByCourse: function() {
+      return this.chain()
+        .groupBy(function(model) { return model.get('course_id'); })
+        .sortBy(function(exams) { return exams[0].get('start_date').$date; })
+        .value();
     }
   });
 

@@ -4,46 +4,62 @@
 <div class="row-fluid">
   <div class="span12">
     <h1><%- term_name %> final exam schedule</h1>
-    <table class="exam-table table table-striped table-rounded table-bordered">
-      <caption>
-        Your <%- term_name %> final exam schedule
-      </caption>
-      <thead>
-        <tr>
-          <th>Course</th>
-          <th>Section(s)</th>
-          <th>Date</th>
-          <th>Start</th>
-          <th>End</th>
-          <th>Location</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% exams.each(function(exam) { %>
+    <div class="well">
+      <table class="exam-table table table-striped">
+        <caption>
+          Your <%- term_name %> final exam schedule
+        </caption>
+        <thead>
+          <tr>
+            <th>Course</th>
+            <th>Section(s)</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% _.each(exams.groupedByCourse(), function(courseExams) { %>
           <tr>
             <td>
-              <%- exam.get('course').get('code') %>
+              <%- courseExams[0].get('course').get('code') %>
             </td>
             <td>
-              <%- exam.get('sections') %>
+              <% _.each(courseExams, function(exam) { %>
+                <p>
+                  <%- exam.get('sections') %>
+                </p>
+              <% }); %>
             </td>
             <td>
-              <%- moment(exam.get('start_date').$date).format('dddd, MMM Do') %>
+              <% _.each(courseExams, function(exam) { %>
+              <p>
+                <%- moment(exam.get('start_date').$date).format('MMM Do (dddd)') %>
+              </p>
+              <% }); %>
             </td>
             <td>
-              <%- moment(exam.get('start_date').$date).format('h:mm a') %>
+              <% _.each(courseExams, function(exam) { %>
+                <p>
+                  <%- moment(exam.get('start_date').$date).format('h:mm a') %>
+                  &ndash;
+                  <%- moment(exam.get('end_date').$date).format('h:mm a') %>
+                </p>
+              <% }); %>
             </td>
             <td>
-              <%- moment(exam.get('end_date').$date).format('h:mm a') %>
-            </td>
-            <td>
-              <%- exam.get('location') %>
+              <% _.each(courseExams, function(exam) { %>
+                <p>
+                  <%- exam.get('location') %>
+                </p>
+              <% }); %>
             </td>
           </tr>
-        <% }); %>
-      </tbody>
-    </table>
-    <small style="float: right;">
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+    <small class="last-updated">
       Last updated Oct. 16, 2012 from
       <a href="http://www.registrar.uwaterloo.ca/exams/schedule.pdf">
         Fall 2012 Final Examination Schedule
