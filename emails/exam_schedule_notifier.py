@@ -19,15 +19,13 @@ def send_exam_schedule_email():
 
     # TODO(mack): should not show num_friends if it's 0
     email_body = \
-"""Hey %(first_name)s!
+"""Hey %(first_name)s,
 
-Thanks for signing up for Flow! We're really excited to have you on board.
+Thanks for signing up for Flow! We're really excited to have you on board. Did you know %(num_friends)d friends have also signed up and are using Flow?
 
-Did you know %(num_friends)d friends have also signed up and are using Flow to plan, track and discover new courses!
+Flow now lets you see your final exam schedule for this term! Check it out on your profile at: http://uwflow.com/profile. (Don't worry, we'll continue to update it, so you don't have to!)
 
-Also, Flow now lets you see your final exam schedule for this term! Check if out on your profile at: http://uwflow.com/profile. (Don't worry, we'll continue to update it, so you don't have too!)
-
-We're working hard to bring you more awesome features! Stay connected with us on Facebook (http://www.facebook.com/planyourflow) and Twitter (https://twitter.com/useflow).
+We're working hard to bring you more awesome features! Like us on on Facebook (http://www.facebook.com/planyourflow) and follow us on Twitter (https://twitter.com/useflow) to stay updated.
 
 Much love,
 
