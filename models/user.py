@@ -76,6 +76,9 @@ class User(me.Document):
 
     is_admin = me.BooleanField(default=False)
 
+    # TODO(mack): refactor this into something maintainable
+    sent_exam_schedule_notifier_email = me.BooleanField(default=False)
+
     @property
     def name(self):
         return '%s %s' % (self.first_name , self.last_name)

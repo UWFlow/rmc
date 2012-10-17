@@ -18,3 +18,5 @@ DEPARTMENTS_DATA_DIR = 'departments'
 CURRENT_TERM_ID = '2012_09'
 
 RATINGS_CONFIDENCE = 0.95
+
+EMAIL_SENDER = 'flow@uwflow.com'
