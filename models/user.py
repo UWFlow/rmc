@@ -222,6 +222,22 @@ class User(me.Document):
             #'course_history': self.course_history,
         }
 
+    # TODO(mack): make race condition safe?
+    def delete(self, *args, **kwargs):
+        # Remove this user from the friend lists of all friends
+        friends = User.objects(id__in=self.friend_ids)
+        friends.update(pull__friend_ids=self.id)
+
+        # Delete all their user course objects
+        _user_course.UserCourse.objects(user_id=self.id).delete()
+
+        # TODO(mack): delete mutual course information from redis?
+        # should be fine for now since we are removing this user from their
+        # friends' friend_ids, and redis cache will be regenerated daily
+        # from aggregator.py
+
+        return super(User, self).delete(*args, **kwargs)
+
 
     def to_review_author_dict(self, current_user, reveal_identity):
         is_current_user = current_user and current_user.id == self.id
