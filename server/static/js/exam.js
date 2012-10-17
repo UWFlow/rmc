@@ -16,6 +16,11 @@ function(RmcBackbone, $, _, _course) {
 
     referenceFields: {
       course: ['course_id', _course.CourseCollection]
+    },
+
+    getCourseName: function() {
+      var course = this.get('course');
+      return course ? course.get('code') : this.get('course_id');
     }
   });
 
