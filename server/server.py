@@ -624,7 +624,11 @@ def login():
             return 'Error'
 
     # Validate against Facebook's signed request
-    fb_data = parse_signed_request(fbsr, s.FB_APP_SECRET)
+    if app.config['ENV'] == 'dev':
+        fb_data = parse_signed_request(fbsr, s.FB_APP_SECRET_DEV)
+    else:
+        fb_data = parse_signed_request(fbsr, s.FB_APP_SECRET_PROD)
+
     if fb_data is None or fb_data['user_id'] != fbid:
         # Data is invalid
         return 'Error'
