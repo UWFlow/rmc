@@ -42,7 +42,7 @@ def parse_exam_schedule():
     for line in exam_file:
         tokens = re.split('\s+', line)
 
-        exam_slot = m.ExamSlot()
+        exam_slot = m.Exam()
 
         for token in tokens:
             print "%s" % token
@@ -83,6 +83,10 @@ def parse_exam_schedule():
         end_time_string = safe_list_get(tokens, index) +
             safe_list_get(tokens, index + 1)
         index += 2
+
+        # E.g. Tuesday December 11, 2012 7:30PM
+        #      Tuesday December 11, 2012 10:00PM
+        date_format = "%A %B %d, %Y %I"
 
 
 
