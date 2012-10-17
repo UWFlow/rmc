@@ -10,3 +10,4 @@ redis==2.6.2
 hiredis==0.1.1
 requests==0.14.1
 BeautifulSoup==3.2.1
+boto==2.6.0
