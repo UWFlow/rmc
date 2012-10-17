@@ -30,10 +30,11 @@ function($, __, FB) {
     // successful. Do this server side or on next page
     // TODO(Sandy): This counts people whose cookies were dead, but have
     // already TOSed Flow on Facebook. We should log each group individually
+    // TODO(Sandy): Assert source
     _gaq.push([
       '_trackEvent',
       'USER_GENERIC',
-      'FACEBOOK_CONNECT_' + source.toUpperCase()
+      'FACEBOOK_CONNECT_' + String(source).toUpperCase()
     ]);
 
     $.ajax('/login', {
