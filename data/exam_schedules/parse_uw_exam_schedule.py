@@ -57,7 +57,7 @@ def parse_exam_schedule():
 
         # Get the course ID
         course_id = safe_list_get(tokens, 0) + safe_list_get(tokens, 1)
-        course_id.lower()
+        course_id = course_id.lower()
 
         if not course_id:
             print "Skipping line '%s'" % ' '.join(tokens)
