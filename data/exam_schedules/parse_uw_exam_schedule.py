@@ -1,9 +1,16 @@
+from time import mktime
+from datetime import datetime
+
+import mongoengine
 import os
 import re
 import sys
 import time
 
 import rmc.models as m
+import rmc.shared.constants as c
+
+mongoengine.connect(c.MONGO_DB_RMC)
 
 # TODO(Sandy): move into better place
 def safe_list_get(l, idx, default=''):
@@ -43,8 +50,6 @@ def parse_exam_schedule():
     for line in exam_file:
         index = 0
         tokens = re.split('\s+', line)
-
-        exam_slot = m.Exam()
 
         for token in tokens:
             print "%s" % token
@@ -90,8 +95,15 @@ def parse_exam_schedule():
         date_format = "%A %B %d, %Y %I:%M%p"
         # TODO(sandy): See if timezone matters
 
-        start_date = time.strptime(start_date_string, date_format)
-        end_date = time.strptime(end_date_string, date_format)
+        try:
+            start_date = datetime.fromtimestamp(mktime(
+                    time.strptime(start_date_string, date_format)))
+            end_date = datetime.fromtimestamp(mktime(
+                    time.strptime(end_date_string, date_format)))
+        except:
+            print "Could not get date for line '%s'" % ' '.join(tokens)
+            start_date = None
+            end_date = None
 
         print "my dates"
         print start_date
@@ -106,7 +118,19 @@ def parse_exam_schedule():
         location = location.strip()
         print "my location=%s" % location
 
-        # break;
+        exam_slot = m.Exam()
+        exam_slot.course_id = course_id
+        exam_slot.sections = section_string
+        exam_slot.start_date = start_date
+        exam_slot.end_date = end_date
+        exam_slot.location = location
+
+        if (start_date and end_date):
+            exam_slot.info_known = True;
+
+        exam_slot.save()
+
+        # TODO(Sandy): Set URL
 
 
 if __name__ == '__main__':
