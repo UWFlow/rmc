@@ -44,10 +44,10 @@ function($, __, FB) {
         // Fail safe to make sure at least we sent off the _gaq trackEvent
         _gaq.push(function() {
           if (nextUrl) {
-            window.location.href = '/onboarding?from=login&next=' +
+            window.location.href = '/profile?next=' +
               window.encodeURIComponent(nextUrl);
           } else {
-            window.location.href = '/onboarding?from=login';
+            window.location.href = '/profile';
           }
         });
       },

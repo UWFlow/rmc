@@ -221,6 +221,15 @@ def profile_page(profile_user_id):
             logging.warn('profile_user is None')
             return redirect_to_profile(current_user)
 
+    # Redirect the user appropriately... to /onboarding if they have no course
+    # history, and to wherever they logged in from if they just logged in
+    if own_profile:
+        redirect_url = flask.request.values.get('next')
+        if current_user.has_course_history and redirect_url:
+            return flask.make_response(flask.redirect(redirect_url))
+        elif not current_user.has_course_history:
+            return flask.make_response(flask.redirect('onboarding'))
+
     # PART TWO - DATA FETCHING
 
     # Get the mutual course ids of friends of profile user
@@ -550,17 +559,6 @@ def course_page(course_id):
 @login_required
 def onboarding():
     current_user = get_current_user()
-    req = flask.request
-
-    # Only redirect away from onboarding if we got here from a login attempt
-    # and the user has imported course history. Otherwise, let /onboarding be
-    # accessible to logged in users.
-    if req.values.get('from') == 'login' and current_user.has_course_history:
-        redirect_url = req.values.get('next')
-        if redirect_url:
-            return flask.make_response(flask.redirect(redirect_url))
-        else:
-            return flask.make_response(flask.redirect('profile'))
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
