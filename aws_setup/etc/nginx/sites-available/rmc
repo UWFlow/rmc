@@ -1,4 +1,8 @@
 server {
+  listen       80;
+  # server_name  planyourflow.com redccnt.com uwflow.com;
+  server_name  _;
+
   gzip on;
   gzip_vary on;
   gzip_proxied any;
@@ -6,10 +10,18 @@ server {
   gzip_http_version 1.1;
   gzip_types text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/xml+rss text/javascript;
 
-  listen       80;
-  # server_name  planyourflow.com redccnt.com uwflow.com;
-  server_name  _;
-  location / { try_files $uri @rmc_app; }
+  location / {
+    # Don't cache dynamically generated responses from Flask
+    expires 0;
+    add_header Cache-Control no-cache;
+
+    try_files $uri @rmc_app;
+  }
+
+  location /static {
+    alias /home/rmc/rmc/server/static/;
+  }
+
   location @rmc_app {
     include uwsgi_params;
     uwsgi_pass unix:/tmp/uwsgi.sock;
