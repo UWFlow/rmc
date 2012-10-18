@@ -11,18 +11,22 @@ server {
   gzip_types text/plain text/css application/json application/x-javascript application/javascript text/xml application/xml application/xml+rss text/javascript;
 
   location / {
-    # Don't cache dynamically generated responses from Flask
-    expires 0;
-    add_header Cache-Control no-cache;
-
     try_files $uri @rmc_app;
   }
 
   location /static {
+    expires 2d;
+    add_header Pragma public;
+    add_header Cache-Control "public";
+
     alias /home/rmc/rmc/server/static/;
   }
 
   location @rmc_app {
+    # Don't cache dynamically generated responses from Flask
+    expires 0;
+    add_header Cache-Control no-cache;
+
     include uwsgi_params;
     uwsgi_pass unix:/tmp/uwsgi.sock;
   }
