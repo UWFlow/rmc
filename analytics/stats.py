@@ -18,7 +18,7 @@ def generic_stats():
     print len(users)
 
     print "User with course_history"
-    print sum([1 if user.course_history else 0 for user in users])
+    print sum([1 if user.has_course_history else 0 for user in users])
 
     print "Total UserCourse"
     print len(ucs)
@@ -73,6 +73,16 @@ def courses_in_exam_but_not_course():
     for c in ecs:
         if len(m.Course.objects(id=c)) == 0:
             print c
+
+# Shorthands for common query operations
+def ucs_for_cid(course_id):
+    return m.UserCourse.objects(course_id=course_id)
+
+def cid(course_id):
+    return m.Course.objects.with_id(course_id)
+
+def uid(user_id):
+    return m.User.objects.with_id(get_user)
 
 # TODO(Sandy): cleanup this file overtime
 # The basic idea is to add queries to this file whenever we want to know
