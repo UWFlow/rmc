@@ -223,6 +223,8 @@ def profile_page(profile_user_id):
 
     # Redirect the user appropriately... to /onboarding if they have no course
     # history, and to wherever they logged in from if they just logged in
+    # TODO(david): Should have frontend decide whether to take us to /profile
+    #     or /onboarding and not redirect in one of these two places
     if own_profile:
         redirect_url = flask.request.values.get('next')
         if current_user.has_course_history and redirect_url:
