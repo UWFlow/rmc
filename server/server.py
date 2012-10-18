@@ -1012,6 +1012,13 @@ def remove_course():
         course_id=flask.request.form.get('course_id'),
         term_id=flask.request.form.get('term_id'),
     ).first()
+
+    if not user_course:
+        logging.warn("No UserCourse found matching request values %s" %
+                flask.request.values)
+        # TODO(david): Use api.py:not_found in my onboarding-v2 branch
+        return ''
+
     current_user.update(pull__course_history=user_course.id)
     user_course.delete()
 
