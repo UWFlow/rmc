@@ -24,7 +24,7 @@ server {
 
   location @rmc_app {
     # Don't cache dynamically generated responses from Flask
-    expires 0;
+    expires epoch;
     add_header Cache-Control no-cache;
 
     include uwsgi_params;
