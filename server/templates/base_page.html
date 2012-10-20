@@ -125,7 +125,14 @@
         var intercomSettings = {
           app_id: '4ytbu7ss',
           email: {{ current_user.email|tojson|safe }},
-          created_at: {{ current_user.join_date.strftime('%s') }}
+          created_at: {{ current_user.join_date.strftime('%s') }},
+          custom_data: {
+            'friends': {{ current_user.friend_ids|length }},
+            'program': {{ current_user.short_program_name|tojson|safe }},
+            'year': {{ current_user.last_program_year_id|tojson|safe }},
+            'courses': {{ current_user.course_history|length }},
+            'profile': {{ current_user.absolute_profile_url|tojson|safe }}
+          }
         };
       </script>
       <script>

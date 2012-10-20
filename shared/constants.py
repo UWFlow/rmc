@@ -8,6 +8,9 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
 
+# TODO(david): Can this be not hard-coded?
+PROD_HOST = 'http://uwflow.com'
+
 TERMS_OFFERED_DATA_DIR = 'terms_offered'
 UCALENDAR_COURSES_DATA_DIR = 'ucalendar_courses'
 OPENDATA_COURSES_DATA_DIR = 'opendata_courses'

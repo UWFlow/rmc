@@ -1,8 +1,10 @@
 import itertools
+
 import mongoengine as me
 
 import term as _term
 import user_course as _user_course
+from rmc.shared import constants
 
 class User(me.Document):
 
@@ -49,7 +51,7 @@ class User(me.Document):
     # use the site
     friend_fbids = me.ListField(me.StringField())
 
-    birth_date = me.DateTimeField()
+    birth_date = me.DateTimeField( )
 
     last_visited = me.DateTimeField()
     # TODO(mack): consider using SequenceField()
@@ -124,6 +126,10 @@ class User(me.Document):
     @property
     def profile_url(self):
         return '/profile/%s' % self.id
+
+    @property
+    def absolute_profile_url(self):
+        return '%s%s?admin=1' % (constants.PROD_HOST, self.profile_url)
 
     @property
     def short_program_name(self):
