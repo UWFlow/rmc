@@ -14,8 +14,6 @@
     {% block stylesheets %}
     {% endblock %}
 
-    <!-- TODO(david): Favicon -->
-
     <!-- Javascript -->
     {% block head_scripts %}
     {% endblock %}
@@ -34,6 +32,7 @@
     <script async data-main="{{ '/static/%s/main.js' % js_dir }}" src="{{ ('/static/%s/ext/require-2.0.6.js' % js_dir)|version }}">
     </script>
 
+    {# Google Analytics #}
     <script type="text/javascript">
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '{{ ga_property_id }}']);
@@ -48,12 +47,26 @@
         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
       })();
     </script>
+
+    {# Mixpanel #}
+    <script type="text/javascript">
+      (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.1.min.js';d=c.getElementsByTagName("script")[0];d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?
+      g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable track track_pageview track_links track_forms register register_once unregister identify name_tag set_config people.identify people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
+      {# TODO(Sandy): Set up a local mixpanel to not pollute prod data #}
+      mixpanel.init("0a5e88bd3f288fe8a2d8adf94b452212");
+      {# We want these "Super Properties" sent on every event #}
+
+      {# TODO(Sandy): What else do we want here? Sending more data is free for
+          Mixpanel, but will cause minimum overhead on each user request#}
+      {% if current_user %}
+        mixpanel.register({user_id: '{{ current_user.id }}'});
+      {% endif %}
+    </script>
   </head>
 
   <body>
-    <!-- TODO(david): Real responsive layout:
-         http://twitter.github.com/bootstrap/scaffolding.html#responsive
-    -->
+    {# TODO(david): Real responsive layout:
+         http://twitter.github.com/bootstrap/scaffolding.html#responsive #}
     <div id="fb-root"></div>
 
     <div class="navbar navbar-static-top">

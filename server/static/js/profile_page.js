@@ -155,4 +155,6 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
   };
 
   init();
+
+  mixpanel.track('Impression: Profile page');
 });

@@ -218,6 +218,10 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       }
       this.logToGA('PROFESSOR', 'SELECT');
       this.save();
+
+      mixpanel.track('Reviewing: Professor selected', {
+        course_id: this.userCourse.get('course_id')
+      })
     },
 
     saveComments: function(view, reviewType) {
@@ -225,11 +229,21 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       this.save()
         .done(_.bind(view.saveSuccess, view))
         .error(_.bind(view.saveError, view));
+
+      mixpanel.track('Reviewing: Save comments', {
+        review_type: reviewType,
+        course_id: this.userCourse.get('course_id')
+      });
     },
 
     saveRatings: function(ratingType) {
       this.logToGA(ratingType, 'RATING');
       this.save();
+
+      mixpanel.track('Reviewing: Save Ratings', {
+        rating_type: ratingType,
+        course_id: this.userCourse.get('course_id')
+      });
     },
 
     save: function(attrs, options) {

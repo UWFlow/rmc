@@ -178,6 +178,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         keywords: this.keywords
       };
 
+      mixpanel.track('Course search request', args);
       // TODO(mack): use $.ajax to handle error
       $.getJSON(
         '/api/course-search',

@@ -324,7 +324,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
           dataType: 'json',
           success: onSuccess
         }
-      );
+      ).done(function() {
+        mixpanel.track('Add to shortlist', {
+          course_id: this.courseModel.id.$oid
+        });
+      }.bind(this));
 
       return false;
     },
@@ -334,6 +338,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         toastr.info(
           _s.sprintf('%s was removed!', this.courseModel.get('name'))
         );
+
+        mixpanel.track('Removed transcript course', {
+          course_id: this.courseModel.id.$oid
+        });
 
         // TODO(mack): remove require()
         var _user_course = require('user_course');

@@ -11,4 +11,6 @@ function(_facebook, $, util) {
   $('.sign-up-box').addClass('animated');
 
   _facebook.initConnectButton('HOME');
+
+  mixpanel.track('Impression: Landing page');
 });

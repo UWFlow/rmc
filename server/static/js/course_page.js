@@ -42,4 +42,6 @@ function($, course, tookThis, user, tips, prof, ratings, user_course, _review, _
   _sign_in.renderBannerIfNecessary(
       'BANNER_COURSE_PAGE',
       'See friends taking this course!');
+
+  mixpanel.track('Impression: Single course page');
 });

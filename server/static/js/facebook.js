@@ -36,6 +36,7 @@ function($, __, FB) {
       'USER_GENERIC',
       'FACEBOOK_CONNECT_' + String(source).toUpperCase()
     ]);
+    mixpanel.track('Facebook Connect', { source: source });
 
     $.ajax('/login', {
       data: params,
