@@ -276,8 +276,10 @@
 
     .fall, .winter, .spring {
       opacity: 0.2;
+      -webkit-filter: grayscale(1.0);
       &.offered {
         opacity: 1.0;
+        -webkit-filter: none;
       }
     }
 
