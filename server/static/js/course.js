@@ -324,11 +324,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
           dataType: 'json',
           success: onSuccess
         }
-      ).done(function() {
+      ).done(_.bind(function() {
         mixpanel.track('Add to shortlist', {
           course_id: this.courseModel.id.$oid
         });
-      }.bind(this));
+      }, this));
 
       return false;
     },
