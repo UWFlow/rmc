@@ -103,7 +103,7 @@ function($, __, FB) {
           return;
         }
 
-        // First login, fetch user data from the FB Graph API
+        // Potentially first login, fetch user data from the FB Graph API
         var authResponse = response.authResponse;
 
         var deferredFriends = new $.Deferred();
@@ -127,6 +127,12 @@ function($, __, FB) {
             'gender': me.gender
           };
           login(authResponse, params, source, nextUrl);
+          // TODO(Sandy): Maybe make /login send down the logged in user_id so
+          // we can log info about it? May not be necessary and we'll run into
+          // some async-logging/redirect issues. Consider this
+          mixpanel.track('Impression: Landing page (New User)', {
+            source: source
+          });
         });
       }, {scope: 'email'});
     });
