@@ -633,6 +633,16 @@ def login():
         # Data is invalid
         return 'Error'
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_LOGIN, {
+            'fbid': fbid,
+            'token': fb_access_token,
+            'expiry': fb_access_token_expiry_date,
+            'fb_data': fb_data,
+        },
+    )
+
     # FIXME[uw](mack): Someone could pass fake fb_access_token for an fbid, need to
     # validate on facebook before creating the user. (Sandy): See the note above on using signed_request
     user = m.User.objects(fbid=fbid).first()
