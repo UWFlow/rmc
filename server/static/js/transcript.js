@@ -58,20 +58,26 @@ function($, _, _s) {
       var termName = matches[1];
       var programYearId = matches[2];
       termRaw = termRaw.substring(termName.length);
-      matches = termRaw.match(/[A-Z]+ \d{3}[A-Z]?/g);
+
+      var termLines = termRaw.split(/\r\n|\r|\n/g);
       var courseIds = [];
-      // TODO(mack): filter non-courses from matches
-      if (matches) {
-        _.each(matches, function(courseId) {
-          courseId = courseId.replace(/\s+/g, '').toLowerCase();
-          courseIds.push(courseId);
-        });
-        coursesByTerm.push({
-          name: termName,
-          programYearId: programYearId,
-          courseIds: courseIds
-        });
-      }
+      _.each(termLines, function(termLine) {
+        // Assumption is that course codes that identify courses you've taken
+        // should only appear at the beginning of a line
+        matches = termLine.match(/^\s*[A-Z]+ \d{3}[A-Z]?/);
+        // TODO(mack): filter non-courses from matches
+        if (!matches || !matches.length) {
+          return;
+        }
+        courseId = matches[0].replace(/\s+/g, '').toLowerCase();
+        courseIds.push(courseId);
+      });
+
+      coursesByTerm.push({
+        name: termName,
+        programYearId: programYearId,
+        courseIds: courseIds
+      });
     });
 
     return {
