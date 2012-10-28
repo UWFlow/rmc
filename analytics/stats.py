@@ -5,7 +5,7 @@ from datetime import timedelta
 
 me.connect('rmc', host='localhost', port=27017)
 
-def generic_stats():
+def print_generic_stats():
     #today = datetime.now() - timedelta(hours=4)
     #today = today.replace(hour=0, minute=0, second=0, microsecond=0)
     today = datetime.now() - timedelta(hours=24)
@@ -57,8 +57,62 @@ def generic_stats():
             join_count += 1
     print join_count
 
+def users_as_of(date):
+    users = m.User.objects()
+    join_count = 0
+    for user in users:
+        join_date = user.join_date
+        if join_date <= date:
+            join_count += 1
+    return join_count
 
-def all_user_names():
+def reviews_given(user):
+    ucs = m.UserCourse.objects(user_id=user.id)
+    review_count = 0
+    for uc in ucs:
+        if uc.course_review.comment:
+            review_count += 1
+        if uc.professor_review.comment:
+            review_count += 1
+    return review_count
+
+def ratings_given(user):
+    ucs = m.UserCourse.objects(user_id=user.id)
+    rating_count = 0
+    for uc in ucs:
+	cr = uc.course_review
+        if cr.interest or cr.easiness or cr.usefulness:
+            rating_count += 1
+        pr = uc.professor_review
+        if pr.clarity or pr.passion:
+            rating_count += 1
+    return rating_count
+
+def print_users_who_reviewed():
+    users = m.User.objects()
+    user_review_count = 0
+    user_rating_count = 0
+    total_reviews = 0
+    total_ratings = 0
+    for user in users:
+        num_review = reviews_given(user)
+        num_rating = ratings_given(user)
+        total_reviews += num_review
+        total_ratings += num_rating
+        if num_review > 0:
+            #print user.first_name + " " + user.last_name + " " + str(num_review)
+            user_review_count += 1
+        if num_rating > 0:
+            user_rating_count += 1
+    print "Users who reviewed"
+    print user_review_count
+    print total_reviews
+    print "Users who rated"
+    print user_rating_count
+    print total_ratings
+
+
+def print_all_user_names():
     users = m.User.objects()
     for user in users:
         #output.encode('UTF-8')
@@ -68,11 +122,17 @@ def all_user_names():
         output = user.first_name + " " + user.last_name
         print output.encode('UTF-8')
 
-def courses_in_exam_but_not_course():
+def print_courses_in_exam_but_not_course():
     ecs = [e.course_id for e in m.Exam.objects()]
     for c in ecs:
         if len(m.Course.objects(id=c)) == 0:
             print c
+
+def print_exam_collection():
+    ecs = m.Exam.objects()
+    for e in sorted(ecs, key=lambda exam: exam.course_id):
+        e_dict = e.to_dict()
+        print e_dict
 
 # Shorthands for common query operations
 def ucs_for_cid(course_id):
@@ -89,4 +149,7 @@ def uid(user_id):
 # something, we should never directly do it in ipython. This way, we can reuse
 # existing queries and avoid mistakes
 if __name__ == '__main__':
-        generic_stats()
+    print_exam_collection()
+    #print_generic_stats()
+    #print users_as_of(datetime(2012, 10, 19))
+    #print_users_who_reviewed()
