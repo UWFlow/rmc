@@ -734,13 +734,11 @@ def about_page():
 def login_as_demo_user():
 
     fbid = c.DEMO_ACCOUNT_FBID
-    user = m.User.objects(fbid=fbid)
+    user = m.User.objects(fbid=fbid).first()
     # To catch errors on dev. We may not all have the test account in our mongo
     if user is None:
         logging.error("Accessed non-existant test/demo account %s" % fbid)
         return flask.redirect('/profile')
-
-    user = user.first()
 
     resp = flask.make_response(flask.redirect('/profile/%s' % user.id, 302))
     # Set user's cookies to mimic demo account
