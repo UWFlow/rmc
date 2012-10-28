@@ -730,8 +730,8 @@ def about_page():
 
     return flask.render_template('about_page.html')
 
-@app.route('/flow-demo')
-def flow_demo():
+@app.route('/demo')
+def login_as_demo_user():
 
     fbid = c.DEMO_ACCOUNT_FBID
     user = m.User.objects(fbid=fbid)
