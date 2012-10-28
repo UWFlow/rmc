@@ -730,6 +730,23 @@ def about_page():
 
     return flask.render_template('about_page.html')
 
+@app.route('/flow-demo')
+def flow_demo():
+
+    fbid = c.DEMO_ACCOUNT_FBID
+    user = m.User.objects(fbid=fbid)
+    # To catch errors on dev. We may not all have the test account in our mongo
+    if user is None:
+        logging.error("Accessed non-existant test/demo account %s" % fbid)
+        return flask.redirect('/profile')
+
+    user = user.first()
+
+    resp = flask.make_response(flask.redirect('/profile/%s' % user.id, 302))
+    # Set user's cookies to mimic demo account
+    resp.set_cookie('fbid', user.fbid)
+    resp.set_cookie('fb_access_token', user.fb_access_token)
+    return resp
 
 # TODO(mack): move API's to separate file
 # TODO(mack): add security measures (e.g. require auth, xsrf cookie)
