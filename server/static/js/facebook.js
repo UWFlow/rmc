@@ -68,14 +68,6 @@ function($, _, __, FB) {
   };
 
 
-  var logout = function(cb) {
-    $.removeCookie('fbid');
-    $.removeCookie('fb_access_token');
-    $.removeCookie('fb_access_token_expires_in');
-    FB.logout(cb);
-  };
-
-
   // TODO(mack): this should be moved into its own backbone view
   var initConnectButton = function(source, nextUrl) {
     // Set the app_id on Facepile before we call FB.init
@@ -139,7 +131,6 @@ function($, _, __, FB) {
 
   var methods = {
     initConnectButton: initConnectButton,
-    logout: logout,
     showSendDialogProfile: showSendDialogProfile
   };
 

@@ -156,6 +156,9 @@ def index():
     # Redirect logged-in users to profile
     # TODO(Sandy): If we request extra permissions from FB, we'll need to show them the landing page to let them to
     # Connect again and accept the new permissions. Alternatively, we could use other means of requesting for new perms
+    # TODO(mack): checking for logout flag probably no longer necessary since
+    # we are now clearing cookie before redirecting to home page, so
+    # get_current_user() would return None
     logout = bool(flask.request.values.get('logout'))
     if not logout and get_current_user():
         return flask.make_response(flask.redirect('profile'))

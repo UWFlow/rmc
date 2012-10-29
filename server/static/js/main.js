@@ -111,9 +111,14 @@ function($, _, _s, Backbone, util, moment, __, __, _facebook, toastr) {
     $('.navbar .beta').tooltip({
       placement: 'bottom'
     });
-    $('.navbar .icon-signout').tooltip({
+    $('.navbar .signout-btn').tooltip({
       title: 'Sign out',
       placement: 'bottom'
+    }).click(function() {
+      $.removeCookie('fbid', { path: '/' });
+      $.removeCookie('fb_access_token', { path: '/' });
+      $.removeCookie('fb_access_token_expires_in', { path: '/' });
+      window.location.href = '/?logout=1';
     });
 
     // Async-load footer background image
