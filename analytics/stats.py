@@ -134,6 +134,22 @@ def print_exam_collection():
         e_dict = e.to_dict()
         print e_dict
 
+def print_program_names(users):
+    for user in users:
+        if user.program_name:
+            print user.program_name
+
+def has_user_taken_cid(user, course_id):
+    return course_id in user.course_ids
+
+def users_who_took(course_id):
+    users = m.User.objects()
+    users_taken = []
+    for user in users:
+        if has_user_taken_cid(user, course_id):
+            users_taken.append(user)
+    return users_taken
+
 # Shorthands for common query operations
 def ucs_for_cid(course_id):
     return m.UserCourse.objects(course_id=course_id)
@@ -149,7 +165,12 @@ def uid(user_id):
 # something, we should never directly do it in ipython. This way, we can reuse
 # existing queries and avoid mistakes
 if __name__ == '__main__':
-    print_exam_collection()
+    users = m.User.objects()
+    courses = m.User.objects()
+    ucs = m.User.objects()
+
+    print_program_names(users)
+    #print_exam_collection()
     #print_generic_stats()
     #print users_as_of(datetime(2012, 10, 19))
     #print_users_who_reviewed()
