@@ -179,7 +179,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       };
 
       mixpanel.track('Course search request', args);
-      mixpanel.people.increment({'Load course search data': 1});
+      mixpanel.people.increment({'Course search request': 1});
       // TODO(mack): use $.ajax to handle error
       $.getJSON(
         '/api/course-search',

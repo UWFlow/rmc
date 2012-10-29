@@ -179,22 +179,22 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
       // Setup up FB Invite Friends buttons
       this.$('.invite-friends-btn').click(function() {
         // Facebook engagement intent
-        mixpanel.track('Facebook engagement intent', {
+        mixpanel.track('Facebook invite friends intent', {
           method: 'send',
           type: 'invite_friends',
           from_page: 'profile'
         });
-        mixpanel.people.increment({'Invite Facebook friends intent': 1});
+        mixpanel.people.increment({'Facebook invite friends intent': 1});
 
         _facebook.showSendDialogProfile(function(response) {
           if (response && response.success) {
             // Facebook engagement completed
-            mixpanel.track('Facebook engagement completed', {
+            mixpanel.track('Facebook invite friends completed', {
               method: 'send',
               type: 'invite_friends',
               from_page: 'profile'
             });
-            mixpanel.people.increment({'Invite Facebook friends completed': 1});
+            mixpanel.people.increment({'Facebook invite friends completed': 1});
           }
         });
       });
