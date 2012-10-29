@@ -89,6 +89,7 @@ footer {
   $footer-text-color: #CCC;
   $footer-hover-color: #999;
   // TODO(david): Don't hardcode nav bar height
+  position: relative;
   margin-top: $header-height - 54px;
   height: auto;
   text-align: center;
@@ -151,7 +152,7 @@ footer {
   // no position:relative on the footer
   .mixpanel-logo {
     position: absolute;
-    bottom: 10px;
+    top: 40px;
     right: 10px;
     opacity: 0.4;
   }
