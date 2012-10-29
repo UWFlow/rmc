@@ -11,6 +11,11 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
 
   var profileUser = user.UserCollection.getFromCache(
     pageData.profileUserId.$oid);
+  var currentUser;
+  if (pageData.currentUserId) {
+    currentUser = user.UserCollection.getFromCache(
+      pageData.currentUserId.$oid);
+  }
 
   // Render friend sidebar
   (function() {
@@ -22,6 +27,7 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
     });
     var userCollection = new user.UserCollection(friendObjs);
     var friendSidebarView = new friend.FriendSidebarView({
+      currentUser: currentUser,
       friendCollection: userCollection
     });
     $('#friend-sidebar-container').html(friendSidebarView.render().el);

@@ -8,6 +8,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
 
     initialize: function(attributes) {
       this.friendModel = attributes.friendModel;
+      this.isFriendClickable = attributes.isFriendClickable;
       this.mutualCourses = this.friendModel.get('mutual_courses');
     },
 
@@ -15,6 +16,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
       this.$el.html(
         _.template($('#friend-tpl').html(), {
           friend: this.friendModel,
+          is_friend_clickable: this.isFriendClickable,
           mutual_courses: this.mutualCourses,
           own_profile: pageData.ownProfile
         }));
@@ -149,8 +151,21 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
     className: 'friend-collection',
 
     createItemView: function(model, itemAttributes) {
+      // Only friends of currentUser (and currentUser) should be clickable
+      var currentUser = itemAttributes.currentUser;
+      var isFriendClickable = false;
+      if (currentUser) {
+        var clickableIds = currentUser.get('friend_ids');
+        clickableIds.push(currentUser.get('id'));
+        // TODO(Sandy): Optimize if slow for many friends?
+        if (_.contains(currentUser.get('friend_ids'), model.get('id'))) {
+          isFriendClickable = true;
+        }
+      }
+
       return new FriendView({
         friendModel: model,
+        isFriendClickable: isFriendClickable,
         profileUser: itemAttributes.profileUser
       });
     }
@@ -160,7 +175,9 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
     className: 'friend-sidebar',
 
     initialize: function(attributes) {
+      this.currentUser = attributes.currentUser;
       this.friendCollection = attributes.friendCollection;
+      // TODO(Sandy): seems like profilerUser doesn't get used anymore. clenaup?
       this.profileUser = attributes.profileUser;
     },
 
@@ -171,7 +188,10 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
       }));
       var collectionView = new FriendCollectionView({
         collection: this.friendCollection,
-        itemAttributes: { profileUser: this.profileUser }
+        itemAttributes: {
+          profileUser: this.profileUser,
+          currentUser: this.currentUser
+        }
       });
       this.$('.friend-collection-placeholder').replaceWith(
         collectionView.render().$el);

@@ -14,13 +14,25 @@
 
 {% call macros.us_template('friend-tpl') %}
 <% friend = friend.toJSON(); %>
-<a class="friend-pic" href="<%- friend.profile_url %>">
-  <img class="img-rounded" src="<%- friend.fb_pic_url %>">
-</a>
-<div class="friend-info">
-  <a class="friend-name" href=<%- friend.profile_url %>>
-    <%- friend.name %>
+<% if (is_friend_clickable) { %>
+  <a class="friend-pic" href="<%- friend.profile_url %>">
+    <img class="img-rounded" src="<%- friend.fb_pic_url %>">
   </a>
+<% } else { %>
+  <div class="friend-pic" href="<%- friend.profile_url %>">
+    <img class="img-rounded" src="<%- friend.fb_pic_url %>">
+  </div>
+<% } %>
+<div class="friend-info">
+  <% if (is_friend_clickable) { %>
+    <a class="friend-name" href=<%- friend.profile_url %>>
+      <%- friend.name %>
+    </a>
+  <% } else { %>
+    <div class="friend-name" href=<%- friend.profile_url %>>
+      <%- friend.name %>
+    </div>
+  <% } %>
   <% if (pageData.ownProfile && mutual_courses.length > 0) { %>
     <a href="#" class="mutual-courses">
       <%- mutual_courses.length %>
