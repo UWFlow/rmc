@@ -75,27 +75,29 @@ body {
 }
 
 
-.fade-to-footer {
-  $gradient-height: 80px;
-  position: absolute;
-  top: $header-height - $gradient-height;
-  height: $gradient-height;
-  display: block;
-  width: 100%;
-  @include background(linear-gradient(top, rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0)));
-}
-
 footer {
   $footer-text-color: #CCC;
   $footer-hover-color: #999;
+
   // TODO(david): Don't hardcode nav bar height
-  position: relative;
   margin-top: $header-height - 54px;
   height: auto;
   text-align: center;
   padding-top: 20px;
 
+  .fade-to-footer {
+    $gradient-height: 80px;
+    position: absolute;
+    top: $header-height - $gradient-height;
+    height: $gradient-height;
+    display: block;
+    width: 100%;
+    @include background(linear-gradient(top, rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0)));
+  }
+
   .footer-text {
+    position: relative;
+
     color: $footer-text-color;
     padding-top: 20px;
     padding-bottom: 20px;
@@ -145,15 +147,15 @@ footer {
     p {
       font-weight: lighter;
     }
-  }
 
-  // TODO(mack): might want to move out of the footer since using position:absolute
-  // to attach the logo to the bottom right corner is only possible because there's
-  // no position:relative on the footer
-  .mixpanel-logo {
-    position: absolute;
-    top: 40px;
-    right: 10px;
-    opacity: 0.4;
+    // TODO(mack): might want to move out of the footer since using position:absolute
+    // to attach the logo to the bottom right corner is only possible because there's
+    // no position:relative on the footer
+    .mixpanel-logo {
+      position: absolute;
+      top: 40px;
+      right: 10px;
+      opacity: 0.4;
+    }
   }
 }
