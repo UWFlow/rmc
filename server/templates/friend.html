@@ -4,6 +4,11 @@
 <div class="num-friends">
   <%- num_friends %> <%- pluralize(num_friends, 'friend', 'friends') %>
 </div>
+<% if (own_profile) { %>
+  <button class="invite-friends-btn btn btn-large btn-primary">
+    <i class="icon-plus"></i> Invite more friends!
+  </button>
+<% } %>
 <div class="friend-collection-placeholder"></div>
 {% endcall %}
 

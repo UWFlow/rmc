@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'ext/slimScroll', 'course'],
-function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
+'ext/bootstrap', 'ext/slimScroll', 'course', 'facebook'],
+function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
 
   var FriendView = RmcBackbone.View.extend({
     className: 'friend',
@@ -176,6 +176,26 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course) {
       this.$('.friend-collection-placeholder').replaceWith(
         collectionView.render().$el);
 
+      // Setup up FB Invite Friends buttons
+      this.$('.invite-friends-btn').click(function() {
+        // Facebook engagement intent
+        mixpanel.track('Facebook engagement intent', {
+          method: 'send',
+          type: 'invite_friends',
+          from_page: 'profile'
+        });
+
+        _facebook.showSendDialogProfile(function(response) {
+          if (response && response.success) {
+            // Facebook engagement completed
+            mixpanel.track('Facebook engagement completed', {
+              method: 'send',
+              type: 'invite_friends',
+              from_page: 'profile'
+            });
+          }
+        });
+      });
       return this;
     }
   });
