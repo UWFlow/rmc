@@ -138,7 +138,7 @@
     {% endif %}
 
     {# Intercom.io #}
-    {% if current_user and current_user.email %}
+    {% if current_user %}
       <script id="IntercomSettingsScriptTag">
         var intercomSettings = {
           app_id: '4ytbu7ss',
@@ -150,6 +150,7 @@
           {%- endif %}
           custom_data: {
             friends: {{ current_user.friend_ids|length }},
+            gender: {{ current_user.gender|tojson|safe }},
             program: {{ current_user.short_program_name|tojson|safe }},
             year: {{ current_user.last_program_year_id|tojson|safe }},
             courses: {{ current_user.course_history|length }},
