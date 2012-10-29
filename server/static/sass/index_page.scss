@@ -145,4 +145,14 @@ footer {
       font-weight: lighter;
     }
   }
+
+  // TODO(mack): might want to move out of the footer since using position:absolute
+  // to attach the logo to the bottom right corner is only possible because there's
+  // no position:relative on the footer
+  .mixpanel-logo {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    opacity: 0.4;
+  }
 }
