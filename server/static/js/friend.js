@@ -184,6 +184,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
           type: 'invite_friends',
           from_page: 'profile'
         });
+        mixpanel.people.increment({'Invite Facebook friends intent': 1});
 
         _facebook.showSendDialogProfile(function(response) {
           if (response && response.success) {
@@ -193,6 +194,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
               type: 'invite_friends',
               from_page: 'profile'
             });
+            mixpanel.people.increment({'Invite Facebook friends completed': 1});
           }
         });
       });

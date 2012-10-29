@@ -221,7 +221,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
 
       mixpanel.track('Reviewing: Professor selected', {
         course_id: this.userCourse.get('course_id')
-      })
+      });
+      mixpanel.people.increment({'Professor selected': 1});
     },
 
     saveComments: function(view, reviewType) {
@@ -234,6 +235,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         review_type: reviewType,
         course_id: this.userCourse.get('course_id')
       });
+      mixpanel.people.increment({'Reviewed': 1});
     },
 
     saveRatings: function(ratingType) {
@@ -244,6 +246,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         rating_type: ratingType,
         course_id: this.userCourse.get('course_id')
       });
+      mixpanel.people.increment({'Rated': 1});
     },
 
     save: function(attrs, options) {

@@ -60,11 +60,28 @@
         mixpanel.init("31525266c483a1eb7fdb9353474370c9");
       }
 
-      {# We want these "Super Properties" sent on every event #}
-      {# TODO(Sandy): What else do we want here? Sending more data is free for
-          Mixpanel, but will cause minimum overhead on each user request#}
       {% if current_user %}
+        {# We want these "Super Properties" sent on every event #}
+        {# TODO(Sandy): keep this for when we run out of users slots? verify #}
         mixpanel.register({user_id: '{{ current_user.id }}'});
+
+        mixpanel.people.identify({user_id: '{{ current_user.id }}'});
+        mixpanel.people.set({
+          $created: new Date(1000 * {{ current_user.join_date.strftime('%s') }}),
+          $email: {{ current_user.email|tojson|safe }},
+          $first_name: {{ current_user.first_name|tojson|safe }},
+          $last_name: {{ current_user.last_name|tojson|safe }},
+          $last_login: new Date(),
+          Courses: {{ current_user.course_history|length }},
+          Friends: {{ current_user.friend_ids|length }},
+          Gender: {{ current_user.gender|tojson|safe }},
+          Profile: {{ current_user.absolute_profile_url|tojson|safe }},
+          Program: {{ current_user.short_program_name|tojson|safe }},
+          Year: {{ current_user.last_program_year_id|tojson|safe }}
+        });
+        {% if current_user.name -%}
+          mixpanel.name_tag({{ current_user.name|tojson|safe }});
+        {%- endif %}
       {% endif %}
     </script>
   </head>
