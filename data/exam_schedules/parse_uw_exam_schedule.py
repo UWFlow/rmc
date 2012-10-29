@@ -44,7 +44,7 @@ def parse_exam_schedule():
     m.Exam.objects._collection.drop()
 
     # TODO(Sandy): Don't hardcode path. Look at example from crawler.py
-    exam_file = open('uw_oct_16_2012_good.txt')
+    exam_file = open('uw_oct_28_2012.txt')
 
 
     for line in exam_file:
@@ -64,7 +64,7 @@ def parse_exam_schedule():
         index = 2
         section_string = ''
         while not is_day_of_week(safe_list_get(tokens, index)):
-            section_string = safe_list_get(tokens, index) + ' '
+            section_string += safe_list_get(tokens, index) + ' '
             index += 1
 
         section_string = section_string.strip()
@@ -87,8 +87,8 @@ def parse_exam_schedule():
         # E.g. Tuesday December 11, 2012 7:30PM
         #      Tuesday December 11, 2012 10:00PM
         date_format = "%A %B %d, %Y %I:%M%p"
-        # TODO(sandy): See if timezone matters
 
+        # TODO(sandy): do timezones better
         try:
             start_date = datetime.fromtimestamp(mktime(
                     time.strptime(start_date_string, date_format)))

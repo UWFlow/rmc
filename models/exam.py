@@ -30,7 +30,7 @@ class Exam(me.Document):
 
     @property
     def location_known(self):
-        return self.location == 'See prof'
+        return self.location != 'See prof'
 
     def to_dict(self):
         return {
