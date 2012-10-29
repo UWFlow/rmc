@@ -69,7 +69,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     MAX_REVIEW_LEVEL: 4,
 
     template: _.template($('#course-tpl').html()),
-    className: 'course well',
+    className: 'course',
 
     initialize: function(attributes) {
       this.courseModel = attributes.courseModel;
@@ -187,7 +187,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         .tooltip('destroy')
         .tooltip({
           title: title,
-          placement: 'left'
+          placement: 'right',
+          animation: false
         });
     },
 
@@ -196,7 +197,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         .tooltip('destroy')
         .tooltip({
           title: 'Remove from profile',
-          placement: 'left'
+          placement: 'right',
+          animation: false
         });
     },
 

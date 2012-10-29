@@ -2,40 +2,58 @@
 
 {% call macros.us_template('course-tpl') %}
 {# TODO(mack): remove uc.term_id null checks #}
-<div class="visible-section">
-  <div class="course-code"><%- course.code %></div>
-  <div class="course-name"><%- course.name %></div>
-  <div class="ribbons">
-    {# TODO(mack): clean up the following line #}
-    <% if (user_course && user_course.term_id) { %>
-      <div class="current-user-ribbon reviewed-<%- user_course_review_level %>">
+<%
+var mode;
+if (other_profile) {
+  if (!user_course || !user_course.term_id) {
+    mode = 'add';
+  }
+} else {
+  if (user_course && user_course.term_id) {
+    mode = 'remove';
+  } else {
+    mode = 'add';
+  }
+}
+%>
+<% if (mode === 'add') { %>
+  <div class="shortlist-btn add-course-btn">
+    <div class="shortlist-btn-inner">
+      <i class="icon-plus"></i>
+    </div>
+  </div>
+<% } else if (mode === 'remove') { %>
+  <div class="shortlist-btn remove-course-btn">
+    <div class="shortlist-btn-inner">
+      <i class="icon-remove"></i>
+    </div>
+  </div>
+<% } %>
+<div class="course-content well">
+  <div class="visible-section">
+    <div class="course-code"><%- course.code %></div>
+    <div class="course-name"><%- course.name %></div>
+    <div class="ribbons">
+      {# TODO(mack): clean up the following line #}
+      <% if (user_course && user_course.term_id) { %>
+        <div class="current-user-ribbon reviewed-<%- user_course_review_level %>">
+          <i class="icon-pencil"></i>
+        </div>
+      <% } %>
+      <% if (other_profile && profile_user_course && profile_user_course.term_id) { %>
+      <div class="profile-user-ribbon reviewed-<%- profile_user_course_review_level %>">
         <i class="icon-pencil"></i>
       </div>
-    <% } %>
-    <% if (other_profile && profile_user_course && profile_user_course.term_id) { %>
-    <div class="profile-user-ribbon reviewed-<%- profile_user_course_review_level %>">
-      <i class="icon-pencil"></i>
+      <% } %>
     </div>
-    <% } %>
+    <div class="rating-box-placeholder"></div>
+    <div class="voting-placeholder"></div>
+    <div class="sample-friends-placeholder"></div>
+    {# TODO(david): This is really dumb. Fix in a better way. #}
+    <div style="clear: both; margin-bottom: -25px;"></div>
   </div>
-  <div class="rating-box-placeholder"></div>
-  <div class="voting-placeholder"></div>
-  <div class="sample-friends-placeholder"></div>
-  <% if (other_profile) { %>
-    <% if (!user_course || !user_course.term_id) { %>
-      <i class="add-course-btn icon-plus-sign"></i>
-    <% } %>
-  <% } else { %>
-    <% if (user_course && user_course.term_id) { %>
-      <i class="remove-course-btn icon-remove-sign"></i>
-    <% } else { %>
-      <i class="add-course-btn icon-plus-sign"></i>
-    <% } %>
-  <% } %>
-  {# TODO(david): This is really dumb. Fix in a better way. #}
-  <div style="clear: both; margin-bottom: -25px;"></div>
+  <div class="course-inner-placeholder"></div>
 </div>
-<div class="course-inner-placeholder"></div>
 {% endcall %}
 
 {% call macros.us_template('sample-friends-tpl') %}
