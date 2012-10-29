@@ -1,6 +1,6 @@
 define(
-['ext/jquery', 'ext/cookie', 'ext/facebook'],
-function($, __, FB) {
+['ext/jquery', 'ext/underscore', 'ext/cookie', 'ext/facebook'],
+function($, _, __, FB) {
 
   // This does not need to wait until DOMReady
   if (window.pageData.env === 'dev') {
@@ -8,7 +8,14 @@ function($, __, FB) {
   } else {
     var appId = '219309734863464';
   }
-  FB.init({appId: appId, status: true, cookie: true, xfbml: true});
+
+  var fbApiInit = false;
+  window.fbAsyncInit = function() {
+    FB.init({appId: appId, status: true, cookie: true, xfbml: true});
+    FB.getLoginStatus(function(response) {
+      fbApiInit = true;
+    });
+  };
 
   var login = function(authResp, params, source, nextUrl) {
     // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
@@ -130,10 +137,36 @@ function($, __, FB) {
       }, cb);
   };
 
-  return {
+  var methods = {
     initConnectButton: initConnectButton,
     logout: logout,
     showSendDialogProfile: showSendDialogProfile
   };
 
+
+  // Ensure FB is fully initialized before calling any of its APIs. Solution
+  // from http://stackoverflow.com/questions/3548493/how-to-detect-when-facebooks-fb-init-is-complete
+  // TODO(mack): ensure that callbacks to fbEnsureInit() are queued/handled in same
+  // order they come in
+  function fbEnsureInit(cb) {
+    if(!fbApiInit) {
+      window.setTimeout(function() {
+        fbEnsureInit(cb);
+      }, 50);
+    } else if(cb) {
+      cb();
+    }
+  }
+
+  // Ensure FB is initialized before calling any functions that require FB APIs
+  _.each(methods, function(method, name) {
+    methods[name] = function() {
+      var args = arguments;
+      fbEnsureInit(function() {
+        method.apply(this, args);
+      });
+    };
+  });
+
+  return methods;
 });
