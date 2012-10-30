@@ -130,3 +130,29 @@ if (other_profile) {
     src="<%- friend.fb_pic_url %>">
 </a>
 {% endcall %}
+
+{% call macros.us_template('course-confirm-remove-dialog-tpl') %}
+<div class="modal hide-initial fade" id="confirm-remove-modal" tabindex="-1"
+    role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal">×</button>
+    <h3 id="myModalLabel">Remove <%- course_code %> from profile</h3>
+  </div>
+  <div class="modal-body">
+    <p>
+      Your ratings and reviews for <%- course_code %> will also be removed. Are
+      you sure?
+    </p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" data-dismiss="modal"
+        id="confirm-remove-modal-button-yes">
+      Yes, remove it!
+    </button>
+    <button class="btn" data-dismiss="modal"
+        id="confirm-remove-modal-button-no">
+      No, don&apos;t remove it!
+    </button>
+  </div>
+</div>
+{% endcall %}

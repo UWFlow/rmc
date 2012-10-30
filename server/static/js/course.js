@@ -286,7 +286,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
     events: {
       'click .add-course-btn': 'addShortlistCourse',
-      'click .remove-course-btn': 'removeTranscriptCourse',
+      'click .remove-course-btn': 'confirmRemoveTranscriptCourse',
       // TODO(david): Figure out a nicer interaction without requiring click
       'click .visible-section': 'toggleCourse',
       'focus .new-review-input': 'expandNewReview'
@@ -338,7 +338,27 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       return false;
     },
 
+    confirmRemoveTranscriptCourse: function(evt) {
+      // Remove existing confirmation dialogs
+      $('#confirm-remove-modal').remove();
+
+      $('body').append(
+          _.template($('#course-confirm-remove-dialog-tpl').html(), {
+            course_code: this.courseModel.get('code')
+          }));
+      $('#confirm-remove-modal-button-yes').click(
+          _.bind(this.removeTranscriptCourse, this, evt));
+
+      $('#confirm-remove-modal').modal('show');
+
+      mixpanel.track('Removed transcript course intent', {
+        course_id: this.courseModel.id.$oid
+      });
+      mixpanel.people.increment({'Removed transcript course intent': 1});
+    },
+
     removeTranscriptCourse: function(evt) {
+      $('#confirm-remove-modal').modal('hide');
       var onSuccess = _.bind(function(resp) {
         toastr.info(
           _s.sprintf('%s was removed!', this.courseModel.get('name'))
