@@ -330,6 +330,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         mixpanel.track('Add to shortlist', {
           course_id: this.courseModel.id.$oid
         });
+        mixpanel.people.increment({'Add to shortlist': 1});
       }, this));
 
       return false;
@@ -344,6 +345,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         mixpanel.track('Removed transcript course', {
           course_id: this.courseModel.id.$oid
         });
+        mixpanel.people.increment({'Removed transcript course': 1});
 
         // TODO(mack): remove require()
         var _user_course = require('user_course');
