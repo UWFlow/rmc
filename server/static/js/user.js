@@ -19,14 +19,19 @@ function(RmcBackbone, _, _s, util, _course) {
       name: 'Mack Duan',
       last_term_name: 'Spring 2012',
       last_term_course_ids: [],
+      friend_ids: [],
       // If this user is a friend, mutual_courses will be stored
       // TODO(mack): maybe should have FriendModel as subclass of UserModel
-      mutual_course_ids: []
+      mutual_course_ids: [],
+      course_history: []
     },
 
-    referenceFields: {
-      'mutual_courses': ['mutual_course_ids', _course.CourseCollection],
-      'last_term_courses': ['last_term_course_ids', _course.CourseCollection]
+    referenceFields: function() {
+      return {
+        'mutual_courses': ['mutual_course_ids', _course.CourseCollection],
+        'last_term_courses': ['last_term_course_ids', _course.CourseCollection],
+        'friends': ['friend_ids', UserCollection]
+      }
     },
 
     initialize: function(attributes) { },

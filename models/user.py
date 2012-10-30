@@ -210,10 +210,6 @@ class User(me.Document):
     def to_dict(self, user_course_dicts={}):
         program_name = self.short_program_name
 
-        #last_term_name = None
-        #if self.last_term_id:
-        #    last_term_name = _term.Term(id=self.last_term_id).name
-
         return {
             'id': self.id,
             'fbid': self.fbid,
@@ -225,7 +221,7 @@ class User(me.Document):
             'program_name': program_name,
             #'last_term_name': last_term_name,
             #'last_program_year_id': self.last_program_year_id,
-            #'course_history': self.course_history,
+            'course_history': self.course_history,
         }
 
     # TODO(mack): make race condition safe?

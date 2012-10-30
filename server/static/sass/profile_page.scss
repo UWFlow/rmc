@@ -23,25 +23,3 @@ header {
   border-top: 1px solid #CCC;
   margin: 22px 0;
 }
-
-#transcript-container {
-  #transcript-instructions {
-    float: left;
-    text-align: right;
-    width: 300px;
-    margin-right: 40px;
-  }
-  #transcript-text {
-    width: 500px;
-    overflow: hidden;
-    height: 50px;
-  }
-
-  #transcript-remove-text {
-    float: right;
-  }
-
-  #transcript-error {
-    color: #ff0000;
-  }
-}

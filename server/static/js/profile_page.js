@@ -19,6 +19,7 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
 
   // Render friend sidebar
   (function() {
+    // TODO(mack): use profileUser.get('friends')
     var friendIds = profileUser.get('friend_ids');
     var friendObjs = [];
     _.each(friendIds, function(friendId) {
@@ -49,27 +50,6 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
       .html(termCollectionView.render().el)
       .prepend('<h1>Your courses</h1>')
       .show();
-
-    transcript_remove_text = $('#transcript-remove-text')
-      .html('<a id="remove-transcript-link">Remove my course history, ratings and reviews!</a>')
-      .show();
-    $('#remove-transcript-link').click(function(event) {
-      event.preventDefault();
-      // TODO(Sandy): Ask for confirmation?
-
-      $.post('/api/remove_transcript', {}, function(response) {
-        // TODO(Sandy: Make duration dependent on the # of courses the user has
-        duration = 1500;
-        term_collection_container = $('#term-collection-container')
-          .fancySlide('up', duration);
-        transcript_remove_text.fadeOut(duration);
-
-        setTimeout(function() {
-          term_collection_container.html('');
-          transcript_remove_text.html('');
-        }, duration);
-      });
-    });
   };
 
   // Render the transcript, if available

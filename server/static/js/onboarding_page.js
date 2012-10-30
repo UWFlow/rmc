@@ -1,105 +1,142 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'util'],
-function($, _, _s, transcript, util) {
+'util', 'rmc_backbone', 'user', 'ext/bootstrap'],
+function($, _, _s, transcript, util, RmcBackbone, _user, __) {
 
-  var $transcript = $('#transcript-text');
+  var AddTranscriptView = RmcBackbone.View.extend({
+    template: _.template($('#add-transcript-tpl').html()),
+    attributes: function() {
+      var klass = 'add-transcript';
+      if (!pageData.friendsTranscriptExp) {
+        klass += ' old';
+      }
 
-  // Log events for manually importing courses button clicks
-  $("#manual-course-import-button").click(function(evt) {
-    // TODO(Sandy): Add fbid as the label
-    _gaq.push([
-      '_trackEvent',
-      'USER_GENERIC',
-      'WANT_MANUAL_COURSE_IMPORTING'
-    ]);
-  });
+      return {
+        class: klass
+      }
+    },
 
-  $transcript.bind('input paste', function(evt) {
-    // Remove any old info from the page
-    $('#terms').empty();
-    $('#transcript-error').empty();
+    initialize: function(attributes) {
+      this.friends = attributes.friends;
+      this.user = attributes.user;
+      var friends = this.user.get('friends');
+      this.transcriptFriends = new _user.UserCollection();
+      friends.each(function(friend) {
+        if (friend.get('course_history').length) {
+          this.transcriptFriends.add(friend);
+        }
+      }, this);
+    },
 
-    // Store the transcript text
-    var data = $(evt.currentTarget).val();
-    if (!data) {
-      // If the text area has been emptied, exit immediately w/o
-      // showing error message for parse failure.
-      return;
-    }
+    render: function() {
+      this.$el.html(this.template({
+        transcript_friends: this.transcriptFriends
+      }));
 
-    addTranscriptData(data);
-  });
+      this.$('[rel="tooltip"]').tooltip();
 
-  var addTranscriptData = function(data) {
-    // Try/catch around parsing logic so that we show error message
-    // should anything go wrong
-    var transcriptData;
-    var coursesByTerm;
-    try {
-      transcriptData = transcript.parseTranscript(data);
-      coursesByTerm = transcriptData.coursesByTerm;
-    } catch (ex) {
-      console.warn('Could not parse transcript', ex);
-      $('#transcript-error').text(
-          'Uh oh. Could not parse your transcript :( ' +
-          'Please check that you\'ve pasted your transcript correctly.');
-      return;
-    }
-
-    // TODO(mack): fix confusing names between term/termObj and course/courseObj
-    var courseIds = [];
-    _.each(coursesByTerm, function(termObj) {
-      _.each(termObj.courseIds, function(courseId) {
-        courseIds.push(courseId);
-      });
-    });
-
-    // TODO(Sandy): This assumes the /transcript request will succeed and that
-    // google's servers are faster than ours, which may not be the case. But if
-    // we make this request in the success handler, it might not get logged at
-    // all (due to the redirect). We could setTimeout the redirect, but that
-    // would cause delay and also since /transcript should just be succesful,
-    // we'll do this for now. Maybe move to server side
-    _gaq.push([
-      '_trackEvent',
-      'USER_GENERIC',
-      'TRANSCRIPT_UPLOAD'
-    ]);
-    mixpanel.track('Transcript uploaded');
-    $.post(
-      '/api/transcript',
-      {
-        'transcriptData': JSON.stringify(transcriptData)
-      },
-      function() {
-        // TODO(mack): load and update page with js rather than reloading
-        // Fail safe to make sure at least we sent off the _gaq trackEvent
-        _gaq.push(function() {
-          var redirectUrl = util.getQueryParam('next');
-          if (redirectUrl) {
-            window.location.href = redirectUrl;
-          } else {
-            window.location.href = '/profile';
-          }
+      if (util.getQueryParam('test')) {
+        $.get('/static/sample_transcript.txt', function(data) {
+          this.addTranscriptData(data);
         });
-      },
-      'json'
-    );
-  };
+      }
 
-  // Handle the case that the user inputs into the transcript text area
-  // before the page has finished loading.
-  if ($transcript.val()) {
-    $transcript.trigger('input');
-  }
+      _.defer(_.bind(this.postRender, this));
+
+      return this;
+    },
+
+    postRender: function() {
+      this.$('.transcript-text').height(
+        this.$('.friends-added-transcript').height());
+    },
+
+    events: {
+      'input .transcript-text': 'inputTranscript',
+      'paste .transcript-text': 'inputTranscript'
+    },
+
+    inputTranscript: function(evt) {
+      this.$('.transcript-error').empty();
+
+      // Store the transcript text
+      var data = $(evt.currentTarget).val();
+      if (!data) {
+        // If the text area has been emptied, exit immediately w/o
+        // showing error message for parse failure.
+        return;
+      }
+
+      this.addTranscriptData(data);
+    },
+
+    addTranscriptData: function(data) {
+      // Try/catch around parsing logic so that we show error message
+      // should anything go wrong
+      var transcriptData;
+      var coursesByTerm;
+      try {
+        transcriptData = transcript.parseTranscript(data);
+        coursesByTerm = transcriptData.coursesByTerm;
+      } catch (ex) {
+        console.warn('Could not parse transcript', ex);
+        this.$('.transcript-error').text(
+            'Uh oh. Could not parse your transcript :( ' +
+            'Please check that you\'ve pasted your transcript correctly.');
+        return;
+      }
+
+      // TODO(mack): fix confusing names between term/termObj and course/courseObj
+      var courseIds = [];
+      _.each(coursesByTerm, function(termObj) {
+        _.each(termObj.courseIds, function(courseId) {
+          courseIds.push(courseId);
+        });
+      });
+
+      // TODO(Sandy): This assumes the /transcript request will succeed and that
+      // google's servers are faster than ours, which may not be the case. But if
+      // we make this request in the success handler, it might not get logged at
+      // all (due to the redirect). We could setTimeout the redirect, but that
+      // would cause delay and also since /transcript should just be succesful,
+      // we'll do this for now. Maybe move to server side
+      _gaq.push([
+        '_trackEvent',
+        'USER_GENERIC',
+        'TRANSCRIPT_UPLOAD'
+      ]);
+      mixpanel.track('Transcript uploaded');
+      $.post(
+        '/api/transcript',
+        {
+          'transcriptData': JSON.stringify(transcriptData)
+        },
+        function() {
+          // TODO(mack): load and update page with js rather than reloading
+          // Fail safe to make sure at least we sent off the _gaq trackEvent
+          _gaq.push(function() {
+            var redirectUrl = util.getQueryParam('next');
+            if (redirectUrl) {
+              window.location.href = redirectUrl;
+            } else {
+              window.location.href = '/profile';
+            }
+          });
+        },
+        'json'
+      );
+    }
+
+  });
 
   var init = function() {
-    if (util.getQueryParam('test')) {
-      $.get('/static/sample_transcript.txt', function(data) {
-        addTranscriptData(data);
-      });
-    }
+    _user.UserCollection.addToCache(pageData.userObjs);
+    var addTranscriptView = new AddTranscriptView({
+      user: _user.UserCollection.getFromCache(pageData.currentUserId.$oid)
+    });
+
+    $('#add-transcript-container')
+      .html(addTranscriptView.render().el);
   };
 
   init();

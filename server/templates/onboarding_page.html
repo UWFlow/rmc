@@ -8,11 +8,28 @@
 
 {% block page_title %}Welcome{% endblock %}
 
+{% block head_scripts %}
+<!-- Google Analytics Content Experiment code -->
+<script>function utmx_section(){}function utmx(){}(function(){var
+k='64363987-2',d=document,l=d.location,c=d.cookie;
+if(l.search.indexOf('utm_expid='+k)>0)return;
+function f(n){if(c){var i=c.indexOf(n+'=');if(i>-1){var j=c.
+indexOf(';',i);return escape(c.substring(i+n.length+1,j<0?c.
+length:j))}}}var x=f('__utmx'),xx=f('__utmxx'),h=l.hash;d.write(
+'<sc'+'ript src="'+'http'+(l.protocol=='https:'?'s://ssl':
+'://www')+'.google-analytics.com/ga_exp.js?'+'utmxkey='+k+
+'&utmx='+(x?x:'')+'&utmxx='+(xx?xx:'')+'&utmxtime='+new Date().
+valueOf()+(h?'&utmxhash='+escape(h.substr(1)):'')+
+'" type="text/javascript" charset="utf-8"><\/sc'+'ript>')})();
+</script><script>utmx('url','A/B');</script>
+<!-- End of Google Analytics Content Experiment code -->
+{% endblock %}
+
 {% block body %}
   <div class="row-fluid">
     <div class="span12" id="onboarding-container">
 
-      <div class="row-fluid">
+      <div class="row-fluid {% if friends_transcript_exp %} well {% endif %}">
         <div class="span3">
         <h2>Thanks for signing up!</h2>
           <p class="lead">
@@ -47,51 +64,9 @@
         </div>
       </div>
 
-      <div class="row-fluid">
-        <div class="span8">
-          <textarea id="transcript-text"
-            placeholder="Feed me a transcript! Mmm... transcripts...."></textarea>
-        </div>
-        <div class="span4">
-          <h3>We value your privacy</h3>
-          <p id="transcript-disclaimer">
-            We do not display or store any grades or other private information.
-            Flow only uses your transcript so you can easily <strong>import your
-              course history</strong> and share it with your friends.
-            <strong>Your trust is very important to us, so we take your privacy
-              very seriously!</strong> See our <a href="/privacy">privacy
-              policy</a> for more information.
-          </p>
-        </div>
+      <div id="add-transcript-container" class="row-fluid {% if friends_transcript_exp %} well {% endif %}">
       </div>
 
-      <p id="transcript-remove-text"></p>
-      <div id="transcript-error"></div>
-    {# Modal dialog for manually import courses coming soon #}
-      <div class="modal hide-initial fade" id="manual-course-import-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">×</button>
-          <h1 id="myModalLabel">Sorry...</h1>
-        </div>
-        <div class="modal-body">
-          <p>
-            We're still working on this feature, but check back soon!
-          </p>
-          <p>
-            For now, the only way to import your course history is by using your
-            Quest transcript.
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn" data-dismiss="modal">Okay</button>
-        </div>
-      </div>
-      <div id="manual-course-import-container">
-        <h2>Alternatively...</h2>
-        <a href="#manual-course-import-modal" role="button"
-          class="btn btn-large btn-primary" id="manual-course-import-button"
-          data-toggle="modal">Manually import courses</a>
-      </div>
     </div>
   </div>
 {% endblock %}
@@ -100,7 +75,67 @@
 {% endblock %}
 
 {% block templates %}
+
+{% call macros.us_template('add-transcript-tpl') %}
+
+  <% if (pageData.friendsTranscriptExp && !transcript_friends.length) { %>
+    <div class="span12">
+  <% } else { %>
+    <div class="span8">
+  <% } %>
+    <textarea class="transcript-text"
+      placeholder="Feed me a transcript! Mmm... transcripts...."></textarea>
+    <div class="transcript-error"></div>
+
+    <% if (pageData.friendsTranscriptExp) { %>
+      <p class="transcript-disclaimer">
+        <strong style="font-size: 22px">We do not store your grades</strong>.
+        Flow only uses your transcript so you can easily <strong>import your
+        course history</strong> and share it with friends.
+        See our <a href="/privacy">privacy policy</a> for more information.
+      </p>
+    <% } %>
+  </div>
+
+  <% if (pageData.friendsTranscriptExp && transcript_friends.length) { %>
+    <div class="span4">
+      <div class="friends-added-transcript">
+        <h3>
+          <%- transcript_friends.length %> <%- pluralize(transcript_friends.length, 'friend') %>
+          added their transcript
+        </h3>
+        <% transcript_friends.each(function(friend) { %>
+          <% friend = friend.toJSON(); %>
+          <img
+            data-title="<%- friend.first_name  %> added <%- friend.course_history.length %> courses"
+            rel="tooltip" class="friend-pic" src="<%= friend.fb_pic_url %>">
+        <% }); %>
+        <p class="mutual-course-text">
+          <i class="icon-star"></i> Add your transcript to see mutual courses!
+        </p>
+      </div>
+    </div>
+  <% } else if (!pageData.friendsTranscriptExp) { %>
+    <div class="span4">
+      <h3>We value your privacy</h3>
+      <p class="transcript-disclaimer">
+        We do not display or store any grades or other private information.
+        Flow only uses your transcript so you can easily <strong>import your
+          course history</strong> and share it with your friends.
+        <strong>Your trust is very important to us, so we take your privacy
+          very seriously!</strong> See our <a href="/privacy">privacy
+          policy</a> for more information.
+      </p>
+    </div>
+  <% } %>
+
+{% endcall %}
+
 {% endblock %}
 
 {% block scripts %}
+<script>
+  window.pageData.userObjs = {{ user_objs|tojson|safe }};
+  window.pageData.friendsTranscriptExp = {{ friends_transcript_exp|tojson|safe }};
+</script>
 {% endblock %}

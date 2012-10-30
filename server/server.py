@@ -565,14 +565,27 @@ def course_page(course_id):
 def onboarding():
     current_user = get_current_user()
 
+    friends_transcript_exp = 'k' not in flask.request.values
+
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
         rmclogger.LOG_EVENT_ONBOARDING,
         current_user.id,
     )
 
+    friends = m.User.objects(
+        id__in=current_user.friend_ids
+    ).only('first_name', 'last_name', 'course_history', 'fbid')
+
+    user_objs = []
+    for user in [current_user] + list(friends):
+        user_objs.append(user.to_dict())
+
     return flask.render_template('onboarding_page.html',
         page_script='onboarding_page.js',
+        current_user_id=current_user.id,
+        user_objs=user_objs,
+        friends_transcript_exp=friends_transcript_exp,
     )
 
 

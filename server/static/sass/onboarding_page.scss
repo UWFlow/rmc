@@ -5,6 +5,11 @@ header {
   margin-bottom: 40px;
 }
 
+.well {
+  padding: 40px;
+  box-sizing: border-box;
+}
+
 .personal-info {
   .name {
     margin-top: 15px;
@@ -33,21 +38,13 @@ header {
     text-align: left;
   }
 
-  #transcript-text {
-    width: 100%;
-    border-sizing: box-border;
-    height: 152px;
-    margin-top: 20px;
-    font-size: 20px;
-    resize: none;
-  }
-
   #laptop-container {
     position: relative;
     background: url(/static/img/mbp-880x559.png);
     width: 880px;
     height: 559px;
-    margin-left: -10px;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: -10px;
 
     #transcript-video {
@@ -73,21 +70,58 @@ header {
     }
   }
 
-  #transcript-disclaimer {
-    text-align: left;
-    font-size: 18px;
-    line-height: 20px;
+  .add-transcript {
+    @extend .clearfix;
+
+    .transcript-text {
+      // TODO(mack): kind of hacky solution to get width to look right
+      width: 99%;
+      border-sizing: box-border;
+      min-height: 130px;
+      font-size: 20px;
+      resize: none;
+    }
+
+    .transcript-disclaimer {
+      text-align: left;
+      font-size: 18px;
+      line-height: 20px;
+    }
+
+    .transcript-error {
+      color: #ff0000;
+    }
+
+    .friends-added-transcript {
+      margin-left: 15px;
+
+      h3 {
+        margin-top: 0;
+      }
+
+      .friend-pic {
+        margin-right: 5px;
+        margin-bottom: 7px;
+        width: 40px;
+        height: 40px;
+      }
+
+      .mutual-course-text {
+        margin-top: 10px;
+        font-size: 18px;
+      }
+    }
+
+    &.old {
+      .transcript-text {
+        margin-top: 20px;
+        height: 152px;
+        width: 100%;
+      }
+    }
   }
 
   #onboarding-skip-container {
     text-align: right;
-  }
-
-  #transcript-remove-text {
-    float: right;
-  }
-
-  #transcript-error {
-    color: #ff0000;
   }
 }
