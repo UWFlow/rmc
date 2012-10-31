@@ -789,7 +789,7 @@ def get_courses(course_ids):
 COURSES_SORT_MODES = [
     # TODO(mack): 'num_friends'
     # TODO(david): Usefulness
-    { 'value': 'num_ratings', 'name': 'popular', 'direction': pymongo.DESCENDING, 'field': 'overall.count' },
+    { 'value': 'num_ratings', 'name': 'popular', 'direction': pymongo.DESCENDING, 'field': 'interest.count' },
     { 'value': 'friends', 'name': 'friends taken' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
     # TODO(Sandy): Add alphabetaical back in? discuss with people
     # TODO(Sandy): Did we want to deprecate overall here?
