@@ -656,6 +656,7 @@ def login():
             'token': fb_access_token,
             'expiry': fb_access_token_expiry_date,
             'fb_data': fb_data,
+            'request_form': req.form,
         },
     )
 
