@@ -30,9 +30,11 @@ function($, course, tookThis, user, tips, prof, ratings, user_course, _review, _
   });
   $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
 
-  var tipsCollection = new _review.ReviewCollection(window.pageData.tipObjs);
-  var tipsView = new tips.ExpandableTipsView({ reviews: tipsCollection });
-  $('#tips-collection-container').replaceWith(tipsView.render().el);
+  if (window.pageData.tipObjs && pageData.tipObjs.length) {
+    var tipsCollection = new _review.ReviewCollection(window.pageData.tipObjs);
+    var tipsView = new tips.ExpandableTipsView({ reviews: tipsCollection });
+    $('#tips-collection-container').replaceWith(tipsView.render().el);
+  }
 
   // TODO(david): Handle no professors for course
   var profsCollection = courseModel.get('professors');
