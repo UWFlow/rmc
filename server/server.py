@@ -455,6 +455,7 @@ def profile_page(profile_user_id):
         own_profile=own_profile,
         has_courses=current_user.has_course_history,
         exam_objs=exam_dicts,
+        has_shortlisted=current_user.has_shortlisted,
     )
 
 

@@ -19,6 +19,22 @@ header {
   }
 }
 
+#shortlist-alert {
+  padding-bottom: 18px;
+
+  .shortlist-screenshot-wrap {
+    width: 288px;
+    height: 95px;
+  }
+
+  .shortlist-screenshot-img {
+    width: 288px;
+    height: 95px;
+    @include box-shadow(0 1px 0 rgba(255,255,255,.2), 0 4px 5px rgba(0,0,0,.3), 0 1px 0 rgba(0,0,0,.3));
+    @include border-radius(4px);
+  }
+}
+
 .divider {
   border-top: 1px solid #CCC;
   margin: 22px 0;

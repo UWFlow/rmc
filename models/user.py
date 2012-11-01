@@ -143,6 +143,14 @@ class User(me.Document):
         # importing courses and/or manually adding courses later
         return (self.course_history and len(self.course_history) > 3)
 
+    @property
+    def has_shortlisted(self):
+        print _term
+        for uc in self.get_user_courses():
+            if _term.Term.is_shortlist_term(uc.term_id):
+                return True
+        return False
+
     def get_user_courses(self):
         return _user_course.UserCourse.objects(id__in=self.course_history)
 
