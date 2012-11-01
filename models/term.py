@@ -26,7 +26,7 @@ class Term(me.Document):
     @property
     def name(self):
         if self.id == self.SHORTLIST_TERM_ID:
-            return 'My Shortlist'
+            return 'Shortlist'
         else:
             return '%s %d' % (self.season, self.year)
 
