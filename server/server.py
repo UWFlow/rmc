@@ -481,10 +481,6 @@ def courses():
         { 'value': '09', 'name': 'Fall' },
     ]
     sort_modes = map(clean_sort_modes, COURSES_SORT_MODES)
-    directions = [
-        { 'value': pymongo.ASCENDING, 'name': 'least' },
-        { 'value': pymongo.DESCENDING, 'name': 'most' },
-    ]
 
     current_user = get_current_user()
 
@@ -493,7 +489,6 @@ def courses():
         page_script='search_page.js',
         terms=terms,
         sort_modes=sort_modes,
-        directions=directions,
         current_user_id=current_user.id if current_user else None,
         user_objs=[current_user.to_dict()] if current_user else [],
     )
@@ -792,18 +787,17 @@ def get_courses(course_ids):
     })
 
 COURSES_SORT_MODES = [
-    # TODO(mack): 'num_friends'
     # TODO(david): Usefulness
     { 'value': 'num_ratings', 'name': 'popular', 'direction': pymongo.DESCENDING, 'field': 'interest.count' },
     { 'value': 'friends', 'name': 'friends taken' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
-    # TODO(Sandy): Add alphabetaical back in? discuss with people
-    # TODO(Sandy): Did we want to deprecate overall here?
     { 'value': 'interest', 'name': 'interesting', 'direction': pymongo.DESCENDING, 'field': 'interest.sorting_score' },
     { 'value': 'easiness', 'name': 'easy' , 'direction': pymongo.DESCENDING, 'field': 'easiness.sorting_score' },
+    { 'value': 'easiness', 'name': 'hard' , 'direction': pymongo.ASCENDING, 'field': 'easiness.sorting_score' },
+    { 'value': 'alphabetical', 'name': 'course code', 'direction': pymongo.ASCENDING, 'field': 'id'},
 ]
-COURSES_SORT_MODES_BY_VALUE = {}
+COURSES_SORT_MODES_BY_NAME = {}
 for sort_mode in COURSES_SORT_MODES:
-    COURSES_SORT_MODES_BY_VALUE[sort_mode['value']] = sort_mode
+    COURSES_SORT_MODES_BY_NAME[sort_mode['name']] = sort_mode
 
 # Special sort instructions are needed for these sort modes
 # TODO(Sandy): deprecate overall and add usefulness
@@ -822,7 +816,8 @@ def search_courses():
     keywords = request.values.get('keywords')
     term = request.values.get('term')
     sort_mode = request.values.get('sort_mode', 'num_ratings')
-    default_direction = COURSES_SORT_MODES_BY_VALUE[sort_mode]['direction']
+    name = request.values.get('name', 'popular')
+    default_direction = COURSES_SORT_MODES_BY_NAME[name]['direction']
     direction = int(request.values.get('direction', default_direction))
     count = int(request.values.get('count', 10))
     offset = int(request.values.get('offset', 0))
@@ -893,7 +888,7 @@ def search_courses():
             limited_courses.append(limited_courses_by_id[course_id])
 
     else:
-        sort_options = COURSES_SORT_MODES_BY_VALUE[sort_mode]
+        sort_options = COURSES_SORT_MODES_BY_NAME[name]
 
         if sort_mode in RATING_SORT_MODES:
             sort_instr = '-' + sort_options['field']

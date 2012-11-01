@@ -11,7 +11,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     timer: undefined,
     keywords: undefined,
     sortMode: undefined,
-    direction: undefined,
     count: 10,
     offset: 0,
     courses: undefined,
@@ -20,7 +19,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     initialize: function(options) {
       this.term = window.pageData.terms[0];
       this.sortMode = window.pageData.sortModes[0];
-      this.setDirection(this.sortMode.direction);
       this.courses = new _course.CourseCollection();
       $(window).scroll(_.bind(this.scrollWindow, this));
     },
@@ -38,10 +36,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       this.$el.html(_.template($('#search-form-tpl').html(), {
         terms: pageData.terms,
         sortModes: pageData.sortModes,
-        directions: pageData.directions,
         selectedTerm: this.term,
         selectedSortMode: this.sortMode,
-        selectedDirection: this.direction
       }));
 
       var $friendOption = this.$('.sort-mode-dropdown [data-value="friends"]');
@@ -75,8 +71,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
     events: {
       'click .term-dropdown .dropdown-menu li': 'changeTerm',
-      'click .sort-mode-dropdown .dropdown-menu li': 'changeSortMode',
-      'click .direction-dropdown .dropdown-menu li': 'changeDirection',
+      'click .sort-options .option': 'changeSortMode',
       'input .keywords': 'changeKeywords',
       'paste .keywords': 'changeKeywords'
     },
@@ -90,20 +85,16 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     },
 
     changeSortMode: function(evt) {
+      evt.preventDefault();
+
       var $target = $(evt.currentTarget);
       this.$('.selected-sort-mode').text($target.text());
       this.setSortMode($target.attr('data-value'));
-      this.setDirection(this.sortMode.direction);
-      this.$('.selected-direction').text(this.direction.name);
-
-      this.resetAndUpdate();
-    },
-
-    changeDirection: function(evt) {
-      var $target = $(evt.currentTarget);
-      this.$('.selected-direction').text($target.text());
-      var directionValue = window.parseInt($target.attr('data-value'), 10);
-      this.setDirection(directionValue);
+      $target
+        .siblings()
+          .removeClass('active')
+        .end()
+        .addClass('active');
 
       this.resetAndUpdate();
     },
@@ -130,9 +121,9 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       });
     },
 
-    setSortMode: function(sortValue) {
+    setSortMode: function(sortName) {
       this.sortMode = _.find(pageData.sortModes, function(sortMode) {
-        return sortValue === sortMode.value;
+        return sortName === sortMode.name;
       }, this);
     },
 
@@ -173,8 +164,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         offset: this.offset,
         count: this.count,
         term: this.term.value,
+        name: this.sortMode.name,
         sort_mode: this.sortMode.value,
-        direction: this.direction.value,
         keywords: this.keywords
       };
 

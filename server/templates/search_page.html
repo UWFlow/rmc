@@ -32,15 +32,17 @@
   {% include 'sign_in.html' %}
 
   <!-- TODO(mack): add to own file? -->
-  <script type="text/html" id="search-form-tpl">
+  {% call macros.us_template('search-form-tpl') %}
     <div class="row-fluid">
       <div class="span12">
         <input type="search" class="keywords search-query"
           placeholder='eg: AFM101, AFM, accounting'>
       </div>
     </div>
+
     <form class="course-search-form nav nav-pills">
       <!-- TODO(mack): add search icon -->
+
       Offered in
       <li class="term-dropdown dropdown">
         <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
@@ -55,52 +57,34 @@
         <% }); %>
         </ul>
       </li>
+
       sorted by
-      <li class="direction-dropdown dropdown">
-        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-          <span class="selected-direction"><%- selectedDirection.name %></span>
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-        <% _.each(directions, function(direction) { %>
-          <li data-value="<%- direction.value %>">
-            <a href="#"><%-direction.name %></a>
-          </li>
+      <span class="sort-options btn-group">
+        <% _.each(sortModes, function(sortMode, i) { %>
+          <button class="option btn <%- i === 0 ? 'active' : '' %>"
+              data-value="<%- sortMode.name %>">
+            <%-sortMode.name %>
+          </button>
         <% }); %>
-        </ul>
-      </li>
-      <li class="sort-mode-dropdown dropdown">
-        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-          <span class="selected-sort-mode"><%- selectedSortMode.name %></span>
-          <b class="caret"></b>
-        </a>
-        <ul class="dropdown-menu" role="menu">
-        <% _.each(sortModes, function(sortMode) { %>
-          <li data-value="<%- sortMode.value %>">
-            <a href="#"><%-sortMode.name %></a>
-          </li>
-        <% }); %>
-        </ul>
-      </li>
-      first
+      </span>
     </form>
+
     <div style="clear:both;"></div>
     <div class="loader-container">
-      <div class="loader hide" style="margin-top: -30px;"></div>
+      <div class="loader hide" style="margin-top: -20px;"></div>
     </div>
     <div class="course-collection-placeholder">
     </div>
     <div class="loader-container loader-bottom">
       <div class="loader hide" style="margin-top: 20px;"></div>
     </div>
-  </script>
+  {% endcall %}
 {% endblock %}
 
 {% block scripts %}
 <script>
   window.pageData.terms = {{ terms|tojson|safe }};
   window.pageData.sortModes = {{ sort_modes|tojson|safe }};
-  window.pageData.directions = {{ directions|tojson|safe }};
   window.pageData.userObjs = {{ user_objs|tojson|safe }};
 </script>
 {% endblock %}

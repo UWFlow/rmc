@@ -1,6 +1,7 @@
 @import 'base';
 @import 'course';
 @import 'sign_in';
+@import 'variables';
 
 header {
   padding-top: 15px;
@@ -18,7 +19,20 @@ header {
 
   .course-search-form {
     @extend .clearfix;
-    float: right;
+    margin-top: 10px;
+
+    .sort-options {
+      display: inline-block;
+      float: none;
+      margin-top: -5px;  // TODO(david): Don't hardcode this.
+      margin-left: 4px;
+    }
+
+    .nav.nav-pills > li > a {
+      padding-left: 7px;
+      padding-right: 7px;
+    }
+
     .dropdown {
       display: inline-block;
       float: none;
