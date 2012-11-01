@@ -944,6 +944,14 @@ def upload_transcript():
     user_id = user.id
     course_history_list = user.course_history
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_TRANSCRIPT, {
+            'user_id': user_id,
+            'requset_form': req.form,
+        },
+    )
+
     def get_term_id(term_name):
         season, year = term_name.split()
         return m.Term.get_id_from_year_season(year, season)
