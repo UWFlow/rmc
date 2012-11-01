@@ -23,6 +23,17 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       $(window).scroll(_.bind(this.scrollWindow, this));
     },
 
+    getIconForMode: function(name) {
+      return {
+        'popular': 'icon-signal',
+        'friends taken': 'icon-group',
+        'interesting': 'icon-heart',
+        'easy': 'icon-gift',
+        'hard': 'icon-warning-sign',
+        'course code': 'icon-list-ol'
+      }[name];
+    },
+
     scrollWindow: function(evt) {
       var loaderOffset = this.$('.loader-bottom').offset().top;
       var $window = $(window);
@@ -38,6 +49,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         sortModes: pageData.sortModes,
         selectedTerm: this.term,
         selectedSortMode: this.sortMode,
+        getIconForMode: this.getIconForMode
       }));
 
       var $friendOption = this.$('.sort-options [data-value="friends taken"]');

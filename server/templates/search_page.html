@@ -63,6 +63,7 @@
         <% _.each(sortModes, function(sortMode, i) { %>
           <button class="option btn <%- i === 0 ? 'active' : '' %>"
               data-value="<%- sortMode.name %>">
+            <i class="<%- getIconForMode(sortMode.name) %>"></i>
             <%-sortMode.name %>
           </button>
         <% }); %>
