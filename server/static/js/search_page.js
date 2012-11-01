@@ -40,7 +40,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         selectedSortMode: this.sortMode,
       }));
 
-      var $friendOption = this.$('.sort-mode-dropdown [data-value="friends"]');
+      var $friendOption = this.$('.sort-options [data-value="friends taken"]');
       $friendOption.click(function(evt) {
         if (!pageData.currentUserId) {
           _sign_in.renderModal({
