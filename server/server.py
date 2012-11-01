@@ -168,7 +168,7 @@ def index():
         rmclogger.LOG_EVENT_LANDING,
     )
 
-    in_pre_enroll_exp = 'k' not in flask.request.values
+    in_pre_enroll_exp = 'k' in flask.request.values
     return flask.render_template('index_page.html',
         page_script='index_page.js',
         in_pre_enroll_exp=in_pre_enroll_exp,
