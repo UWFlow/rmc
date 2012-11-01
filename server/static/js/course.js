@@ -403,12 +403,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         this.$('.course-inner-placeholder').replaceWith($inner);
       }
 
-      this.courseInnerView.$el.fancySlide('down', 300);
+      this.courseInnerView.$el.show();
       this.courseInnerView.animateBars(0);
     },
 
     collapseCourse: function(evt) {
-      this.$('.course-inner').fancySlide('up');
+      this.$('.course-inner').hide();
     },
 
     expandNewReview: function(evt) {
