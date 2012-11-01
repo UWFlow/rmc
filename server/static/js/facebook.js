@@ -90,7 +90,6 @@ function($, _, __) {
 
   // TODO(mack): this should be moved into its own backbone view
   var initConnectButton = function(attributes) {
-    console.log('here!!!');
     attributes = _.extend({
       source: 'UNKNOWN',
       nextUrl: undefined
