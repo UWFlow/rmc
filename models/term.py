@@ -41,10 +41,10 @@ class Term(me.Document):
         if month == Term.INVALID_TERM_MONTH:
             print "Term: Invalid seasons '%s'. Using month %d in term id" % (season, Term.INVALID_TERM_MONTH)
 
+        return ('%s %02d' % (year, month)).replace(' ', '_')
+
     @classmethod
     def is_shortlist_term(cls, term_id):
         if term_id == Term.SHORTLIST_TERM_ID:
             return True
         return False
-
-        return ('%s %02d' % (year, month)).replace(' ', '_')
