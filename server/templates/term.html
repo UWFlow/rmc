@@ -7,12 +7,12 @@
   <% } else { %>
     <i class="arrow icon-caret-right"></i>
   <% } %>
-  <%- name %> &nbsp;
   <% if (program_year_id) { %>
-  <span class="muted">
-    <%- program_year_id %>
-  </span>
+    <span class="bold"><%- program_year_id %></span>&nbsp;
   <% } %>
+  <span class="<%- program_year_id ? 'light muted' : 'bold'%>">
+    <%- name %>
+  </span>
 </div>
 <div class="course-collection-placeholder"></div>
 {% endcall %}

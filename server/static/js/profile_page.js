@@ -48,7 +48,7 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
     });
     $('#term-collection-container')
       .html(termCollectionView.render().el)
-      .prepend('<h1>Your courses</h1>')
+      .prepend('<h1>Courses</h1>')  // TODO(david): This should be in HTML
       .show();
   };
 
