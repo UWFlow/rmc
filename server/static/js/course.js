@@ -181,7 +181,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       if (pageData.currentUserId) {
         title = 'Add to my shortlist';
       } else {
-        title = 'You must be logged in to add courses to your profile';
+        title = 'Log in to add courses to your profile';
       }
       this.$('.add-course-btn')
         .tooltip('destroy')
