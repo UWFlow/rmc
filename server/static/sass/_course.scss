@@ -13,10 +13,6 @@
     top: 5px;
     opacity: 0.0;
     position: absolute;
-    @include transition-property(opacity, left);
-    @include transition-timing-function(cubic-bezier(0.51, 0.01, 0.37, 0.98));
-    @include transition-duration(200ms);
-    @include transition-delay(200ms);
 
     &.add-course-btn {
       .shortlist-btn-inner {
@@ -37,19 +33,18 @@
       height: $height;
 
       .icon-plus, .icon-remove {
-        line-height: $height;
+        margin-top: 16px;
         color: #fff;
-        @include text-shadow(1px -1px 0 rgba(0, 0, 0, 0.2));
       }
 
       .icon-plus {
-        margin-left: -2px;
-        font-size: 35px;
+        margin-left: 1px;
+        font-size: 30px;
       }
 
       .icon-remove {
-        margin-left: 2px;
-        font-size: 30px;
+        margin-left: 4px;
+        font-size: 27px;
       }
     }
   }
