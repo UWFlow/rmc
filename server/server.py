@@ -1052,6 +1052,14 @@ def add_course_to_shortlist():
 def remove_course():
     current_user = get_current_user()
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_REMOVE_COURSE, {
+            'request_form': flask.request.form,
+            'user_id': current_user.id,
+        },
+    )
+
     user_course = m.UserCourse.objects(
         user_id=current_user.id,
         course_id=flask.request.form.get('course_id'),
