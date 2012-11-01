@@ -23,7 +23,16 @@ function($, _, RmcBackbone, _facebook) {
     },
 
     postRender: function() {
-      _facebook.initConnectButton(this.source, window.location.href);
+      // If facebook is already initialized, gotta reinitialize to render the
+      // facepile that was just added to the page
+      if (_facebook.initializedFacebook()) {
+        _facebook.initFacebook(true);
+      }
+
+      _facebook.initConnectButton({
+        source: this.source,
+        nextUrl: window.location.href
+      });
     }
   });
 
@@ -100,9 +109,6 @@ function($, _, RmcBackbone, _facebook) {
         })
       );
 
-      // TODO(mack): this causes _facebook.initConnectButton() to execute
-      // again,triggering FB.init() which is causes facepile of sign in
-      // banner to render again. Maybe should make it not do this
       this.$('.fb-login-placeholder').replaceWith(
         this.fbLoginView.render().el);
 

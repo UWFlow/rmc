@@ -42,9 +42,6 @@ require.config({
       exports: function(_) {
         return _.string;
       }
-    },
-    'ext/facebook': {
-      exports: 'FB'
     }
   },
 
@@ -62,17 +59,15 @@ require.config({
     'ext/jqueryui': 'ext/jquery-ui-1.8.23.custom.min',
     'ext/toastr': 'ext/toastr',
     'ext/underscore': 'ext/underscore-1.3.3',
-    'ext/underscore.string': 'ext/underscore.string-2.0.0',
-    // TODO(mack): host locally?
-    'ext/facebook': 'http://connect.facebook.net/en_US/all'
+    'ext/underscore.string': 'ext/underscore.string-2.0.0'
     //'main': 'main.js?v=' + pageData.version
   }
 });
 
 require(['ext/jquery', 'ext/underscore', 'ext/underscore.string',
     'ext/backbone', 'util', 'ext/moment', 'ext/bootstrap', 'ext/cookie',
-    'facebook', 'ext/toastr'],
-function($, _, _s, Backbone, util, moment, __, __, _facebook, toastr) {
+    'ext/toastr'],
+function($, _, _s, Backbone, util, moment, __, __, toastr) {
   // Set defaults for toastr notifications
   toastr.options = {
     timeOut: 3000

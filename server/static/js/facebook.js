@@ -1,21 +1,41 @@
 define(
-['ext/jquery', 'ext/underscore', 'ext/cookie', 'ext/facebook'],
-function($, _, __, FB) {
-
-  // This does not need to wait until DOMReady
-  if (window.pageData.env === 'dev') {
-    var appId = '289196947861602';
-  } else {
-    var appId = '219309734863464';
-  }
+['ext/jquery', 'ext/underscore', 'ext/cookie'],
+function($, _, __) {
 
   var fbApiInit = false;
+  if (window.pageData.env === 'dev') {
+    var fbAppId = '289196947861602';
+  } else {
+    var fbAppId = '219309734863464';
+  }
+
+  var _initializedFacebook = false;
+  var initializedFacebook = function() {
+    return _initializedFacebook;
+  };
+
+  var initFacebook = function(force) {
+    if (force || !_initializedFacebook) {
+      FB.init({appId: fbAppId, status: true, cookie: true, xfbml: true});
+      _initializedFacebook = true;
+    }
+  };
+
   window.fbAsyncInit = function() {
-    FB.init({appId: appId, status: true, cookie: true, xfbml: true});
+    initFacebook();
     FB.getLoginStatus(function(response) {
       fbApiInit = true;
     });
   };
+
+  // Load the SDK's source Asynchronously
+  (function(d){
+    var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+    if (d.getElementById(id)) {return;}
+    js = d.createElement('script'); js.id = id; js.async = true;
+    js.src = '//connect.facebook.net/en_US/all.js';
+    ref.parentNode.insertBefore(js, ref);
+  }(document));
 
   var login = function(authResp, params, source, nextUrl) {
     // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
@@ -69,18 +89,17 @@ function($, _, __, FB) {
 
 
   // TODO(mack): this should be moved into its own backbone view
-  var initConnectButton = function(source, nextUrl) {
-    // Set the app_id on Facepile before we call FB.init
-    $('.fb-facepile').attr('data-app-id', appId);
-
-    // TODO(mack): This is being again because the facepil element might have
-    // been added to the page after page load (i.e. via backbone view). Should
-    // figure out better way to do it without calling this again.
-    FB.init({appId: appId, status: true, cookie: true, xfbml: true});
+  var initConnectButton = function(attributes) {
+    console.log('here!!!');
+    attributes = _.extend({
+      source: 'UNKNOWN',
+      nextUrl: undefined
+    }, attributes);
 
     // Facebook Connect button
     $('.fb-login-button').click(function() {
       // TODO(Sandy): Put up drip loader here
+
       FB.login(function(response) {
         if (response.status !== 'connected') {
           // TODO(Sandy): Handle what happens when they don't login?
@@ -110,7 +129,7 @@ function($, _, __, FB) {
             'email': me.email,
             'gender': me.gender
           };
-          login(authResponse, params, source, nextUrl);
+          login(authResponse, params, attributes.source, attributes.nextUrl);
         });
       }, {scope: 'email'});
     });
@@ -129,12 +148,6 @@ function($, _, __, FB) {
       }, cb);
   };
 
-  var methods = {
-    initConnectButton: initConnectButton,
-    showSendDialogProfile: showSendDialogProfile
-  };
-
-
   // Ensure FB is fully initialized before calling any of its APIs. Solution
   // from http://stackoverflow.com/questions/3548493/how-to-detect-when-facebooks-fb-init-is-complete
   // TODO(mack): ensure that callbacks to fbEnsureInit() are queued/handled in same
@@ -149,9 +162,14 @@ function($, _, __, FB) {
     }
   }
 
+  // These methods require that the FB api is fully initialized
+  var ensureInitMethods = {
+    initConnectButton: initConnectButton,
+    showSendDialogProfile: showSendDialogProfile
+  };
   // Ensure FB is initialized before calling any functions that require FB APIs
-  _.each(methods, function(method, name) {
-    methods[name] = function() {
+  _.each(ensureInitMethods, function(method, name) {
+    ensureInitMethods[name] = function() {
       var args = arguments;
       fbEnsureInit(function() {
         method.apply(this, args);
@@ -159,5 +177,8 @@ function($, _, __, FB) {
     };
   });
 
-  return methods;
+  return _.extend(ensureInitMethods, {
+    initFacebook: initFacebook,
+    initializedFacebook: initializedFacebook
+  });
 });
