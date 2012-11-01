@@ -31,7 +31,9 @@ if (other_profile) {
 <% } %>
 <div class="course-content well">
   <div class="visible-section">
-    <div class="course-code"><%- course.code %></div>
+    <a href="/course/cs241" class="course-code" title="Go to course details page">
+      <%- course.code %>
+    </a>
     <div class="course-name"><%- course.name %></div>
     <div class="ribbons">
       {# TODO(mack): clean up the following line #}

@@ -383,6 +383,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     toggleCourse: function(evt) {
+      if ($(evt.target).hasClass('course-code')) {
+        return;
+      }
       if (this.$('.course-inner').is(':visible')) {
         this.collapseCourse(evt);
       } else {
