@@ -214,6 +214,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         other_profile: this.otherProfile
       }));
 
+      this.$('[title]').tooltip();
+
       var overallRating = this.courseModel.getOverallRating();
       this.ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
 
