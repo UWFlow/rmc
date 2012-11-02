@@ -81,7 +81,7 @@ def import_courses():
             return None
 
         name = course['name'].strip()
-        return {
+        course_obj = {
             'id': '%s%s' % (dep, number),
             'department_id': dep,
             'number': number,
@@ -89,6 +89,15 @@ def import_courses():
             'description': course['description'].strip(),
             '_keywords': build_keywords(dep, number, name),
         }
+        for note in course['notes']:
+            if re.findall('^Antireq: ', note):
+                course_obj['antireqs'] = re.sub('^Antireq: ', '', note)
+            elif re.findall('^Coreq: ', note):
+                course_obj['coreqs'] = re.sub('^Coreq: ', '', note)
+            elif re.findall('^Prereq: ', note):
+                course_obj['prereqs'] = re.sub('^Prereq: ', '', note)
+
+        return course_obj
 
     def clean_opendata_course(dep, course):
         number = course['Number'].lower()

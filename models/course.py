@@ -44,6 +44,10 @@ class Course(me.Document):
 
     professor_ids = me.ListField(me.StringField())
 
+    antireqs = me.StringField()
+    coreqs = me.StringField()
+    prereqs = me.StringField()
+
     # NOTE: The word term is overloaded based on where it's used. Here, it mean
     # which terms of the year is the course being offered?
     # e.g. ['01', '05', '09']
