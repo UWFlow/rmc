@@ -51,8 +51,6 @@ def html_parse(url, num_tries=5, parsers=[soupparser]):
 # TODO(mack): add to text file rather than directly to mongo
 def get_departments():
 
-    count = 0
-
     departments = []
 
     # Beautifulsoup parser apparently doesn't work while default parser does.
@@ -78,14 +76,13 @@ def get_departments():
             'faculty_id': faculty_id,
         })
 
-        count += 1
 
     file_name = os.path.join(
         sys.path[0], '%s/ucalendar_departments.txt' % c.DEPARTMENTS_DATA_DIR)
     with open(file_name, 'w') as f:
         json.dump(departments, f)
 
-    print 'found: %d departments' % count
+    print 'found: %d departments' % len(departments)
 
 
 def get_data_from_url(url, num_tries=5):
@@ -113,15 +110,6 @@ def get_data_from_url(url, num_tries=5):
             time.sleep(wait)
 
     return None
-
-def get_department_codes():
-    all_deps = set()
-    f = open(os.path.join(sys.path[0], '%s/departments.txt' % c.DEPARTMENTS_DATA_DIR))
-    data = json.load(f)
-    f.close()
-    for result in data:
-        all_deps.add(result['Acronym'].strip().lower())
-    return all_deps
 
 
 def file_exists(path):
@@ -183,7 +171,6 @@ def get_ucalendar_courses():
 
 
 def get_uwdata_courses():
-    deps = get_department_codes()
     api_keys = [
         '66e3d70ec73751bc2c97e5ed0928d540',
         '29d72333db3101ba4116f8f53a43ec1a',
@@ -200,7 +187,8 @@ def get_uwdata_courses():
         '344e78663dc05056da366dc30bb7a272',
     ]
 
-    for idx, dep in enumerate(deps):
+    for idx, department in enumerate(m.Department.objects):
+        dep = department.id
         try:
             file_path = os.path.join(
                 sys.path[0], '%s/%s.txt' % (c.UWDATA_COURSES_DATA_DIR, dep))
@@ -224,8 +212,6 @@ def get_uwdata_courses():
         time.sleep(3)
 
 def get_opendata_courses():
-    deps = get_department_codes()
-
     courses = {}
     file_names = glob.glob(os.path.join(sys.path[0], '%s/*.txt' % c.REVIEWS_DATA_DIR))
     for file_name in file_names:
@@ -241,7 +227,7 @@ def get_opendata_courses():
             if len(matches) != 1 or len(matches[0]) != 2:
                 continue
             dep = matches[0][0]
-            if dep not in deps:
+            if not m.Department.objects.with_id(dep):
                 continue
             if not dep in courses:
                 courses[dep] = set()

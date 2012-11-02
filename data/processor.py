@@ -13,7 +13,7 @@ def import_departments():
 
     m.Department.objects._collection.drop()
 
-    def clean_department(department):
+    def clean_uwdata_department(department):
         return {
             'id': department['Acronym'].lower(),
             'name': department['Name'],
@@ -21,14 +21,37 @@ def import_departments():
             'url': department['CoursesURL'],
         }
 
-    for file_name in glob.glob(
-            os.path.join(sys.path[0], c.DEPARTMENTS_DATA_DIR, '*.txt')):
-        f = open(file_name, 'r')
-        data = json.load(f)
-        f.close()
+    def clean_ucalendar_department(department):
+        return department
+
+
+    sources = [
+        {
+            'name': 'ucalendar',
+            'clean_fn': clean_ucalendar_department,
+            'file_name': 'ucalendar_departments.txt',
+        },
+        {
+            'name': 'uwdata',
+            'clean_fn': clean_uwdata_department,
+            'file_name': 'uwdata_departments.txt',
+        },
+    ]
+
+    for source in sources:
+        file_name = os.path.join(
+                sys.path[0], c.DEPARTMENTS_DATA_DIR, source['file_name'])
+
+        with open(file_name, 'r') as f:
+            data = json.load(f)
+
         for department in data:
-            department = clean_department(department)
+            department = source['clean_fn'](department)
+            if m.Department.objects.with_id(department['id']):
+                continue
+
             m.Department(**department).save()
+
     print 'imported departments:', m.Department.objects.count()
 
 def import_courses():
