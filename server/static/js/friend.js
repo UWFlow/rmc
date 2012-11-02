@@ -165,8 +165,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
 
       return new FriendView({
         friendModel: model,
-        isFriendClickable: isFriendClickable,
-        profileUser: itemAttributes.profileUser
+        isFriendClickable: isFriendClickable
       });
     }
   });
@@ -177,8 +176,6 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
     initialize: function(attributes) {
       this.currentUser = attributes.currentUser;
       this.friendCollection = attributes.friendCollection;
-      // TODO(Sandy): seems like profilerUser doesn't get used anymore. clenaup?
-      this.profileUser = attributes.profileUser;
     },
 
     render: function() {
@@ -189,7 +186,6 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
       var collectionView = new FriendCollectionView({
         collection: this.friendCollection,
         itemAttributes: {
-          profileUser: this.profileUser,
           currentUser: this.currentUser
         }
       });
