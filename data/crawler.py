@@ -4,6 +4,7 @@ import mongoengine as me;
 
 import argparse
 import glob
+import lxml.html
 from lxml.html import soupparser
 import json
 import os
@@ -21,10 +22,11 @@ me.connect(c.MONGO_DB_RMC)
 errors = []
 
 
-def html_parse(url, num_tries=5):
+def html_parse(url, num_tries=5, parsers=[soupparser]):
     # TODO(mack): should also try lxml.html parser since soupparser could also
     # potentially not parse correctly
-    for parser in [soupparser]:
+    #for parser in [soupparser]:
+    for parser in parsers:
         tries = 0
         while True:
             try:
@@ -48,39 +50,42 @@ def html_parse(url, num_tries=5):
 
 # TODO(mack): add to text file rather than directly to mongo
 def get_departments():
-    faculties = {
-        'ahs': 'Applied Health Sciences',
-        'art': 'Arts',
-        'eng': 'Engineering',
-        'env': 'Environment',
-        'mat': 'Mathematics',
-        'sci': 'Science',
-    }
+
     count = 0
-    for faculty_id, faculty_name in faculties.items():
-        url = 'http://ugradcalendar.uwaterloo.ca/group/Courses-Faculty-of-{0}'.format(
-                faculty_name.replace(' ', '-'))
-        tree = html_parse(url)
-        for e_department in tree.xpath('.//span[@id="ctl00_contentMain_lblContent"]/ul/ul/li/a'):
-            count += 1
 
-            reg = re.compile(r'^(.*?)\s+\((\w+)\).*$')
-            matches = re.findall(reg, e_department.text_content())[0]
-            dep_name = matches[0]
-            dep_id = matches[1].lower()
-            dep_url = 'http://ugradcalendar.uwaterloo.ca/courses/%s' % matches[1]
+    departments = []
 
-            # TODO(mack): should be doing this in processor.py
-            if not m.Department.objects.with_id(dep_id):
-                print 'did not find %s, saving..' % dep_id
-                m.Department(
-                    id=dep_id,
-                    name=dep_name,
-                    faculty_id=faculty_id,
-                    url=dep_url,
-                ).save()
+    # Beautifulsoup parser apparently doesn't work while default parser does.
+    # Fucking waterloo and their broken markup.
+    url = 'http://ugradcalendar.uwaterloo.ca/page/Course-Descriptions-Index'
+    tree = html_parse(url, parsers=[lxml.html])
+    for e_department in tree.xpath('.//span[@id="ctl00_contentMain_lblContent"]/table[1]/tbody/tr'):
+        e_row = e_department.xpath('.//td')
+        department_name = e_row[0].text_content().strip()
 
-    print 'found: {0} departments'.format(count)
+        if 'Back to top' in department_name:
+            continue
+
+        department_id = e_row[1].text_content().lower().strip()
+        department_url = 'http://ugradcalendar.uwaterloo.ca/courses/%s' % department_id
+        faculty_id = e_row[2].text_content().lower().strip()
+
+        print department_name, department_id, faculty_id, department_url
+        departments.append({
+            'id': department_id,
+            'name': department_name,
+            'url': department_url,
+            'faculty_id': faculty_id,
+        })
+
+        count += 1
+
+    file_name = os.path.join(
+        sys.path[0], '%s/ucalendar_departments.txt' % c.DEPARTMENTS_DATA_DIR)
+    with open(file_name, 'w') as f:
+        json.dump(departments, f)
+
+    print 'found: %d departments' % count
 
 
 def get_data_from_url(url, num_tries=5):
