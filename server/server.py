@@ -564,8 +564,6 @@ def course_page(course_id):
 def onboarding():
     current_user = get_current_user()
 
-    friends_transcript_exp = 'k' not in flask.request.values
-
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
         rmclogger.LOG_EVENT_ONBOARDING,
@@ -584,7 +582,6 @@ def onboarding():
         page_script='onboarding_page.js',
         current_user_id=current_user.id,
         user_objs=user_objs,
-        friends_transcript_exp=friends_transcript_exp,
     )
 
 

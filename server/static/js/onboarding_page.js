@@ -5,16 +5,7 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __) {
 
   var AddTranscriptView = RmcBackbone.View.extend({
     template: _.template($('#add-transcript-tpl').html()),
-    attributes: function() {
-      var klass = 'add-transcript';
-      if (!pageData.friendsTranscriptExp) {
-        klass += ' old';
-      }
-
-      return {
-        class: klass
-      }
-    },
+    className: 'add-transcript',
 
     initialize: function(attributes) {
       this.friends = attributes.friends;

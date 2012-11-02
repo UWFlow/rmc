@@ -8,25 +8,6 @@
 
 {% block page_title %}Welcome{% endblock %}
 
-{% block head_scripts %}
-{% if env != 'dev' %}
-  <!-- Google Analytics Content Experiment code -->
-  <script>function utmx_section(){}function utmx(){}(function(){var
-  k='64363987-2',d=document,l=d.location,c=d.cookie;
-  if(l.search.indexOf('utm_expid='+k)>0)return;
-  function f(n){if(c){var i=c.indexOf(n+'=');if(i>-1){var j=c.
-  indexOf(';',i);return escape(c.substring(i+n.length+1,j<0?c.
-  length:j))}}}var x=f('__utmx'),xx=f('__utmxx'),h=l.hash;d.write(
-  '<sc'+'ript src="'+'http'+(l.protocol=='https:'?'s://ssl':
-  '://www')+'.google-analytics.com/ga_exp.js?'+'utmxkey='+k+
-  '&utmx='+(x?x:'')+'&utmxx='+(xx?xx:'')+'&utmxtime='+new Date().
-  valueOf()+(h?'&utmxhash='+escape(h.substr(1)):'')+
-  '" type="text/javascript" charset="utf-8"><\/sc'+'ript>')})();
-  </script><script>utmx('url','A/B');</script>
-  <!-- End of Google Analytics Content Experiment code -->
-{% endif %}
-{% endblock %}
-
 {% block body %}
   <div class="row-fluid">
     <div class="span12" id="onboarding-container">
@@ -81,7 +62,7 @@
 
 {% call macros.us_template('add-transcript-tpl') %}
 
-  <% if (pageData.friendsTranscriptExp && !transcript_friends.length) { %>
+  <% if (!transcript_friends.length) { %>
     <div class="span12">
   <% } else { %>
     <div class="span8">
@@ -90,17 +71,15 @@
       placeholder="Feed me a transcript! Mmm... transcripts...."></textarea>
     <div class="transcript-error"></div>
 
-    <% if (pageData.friendsTranscriptExp) { %>
-      <p class="transcript-disclaimer">
-        <strong style="font-size: 22px">We do not store your grades</strong>.
-        Flow only uses your transcript so you can easily <strong>import your
-        course history</strong> and share it with friends.
-        See our <a href="/privacy">privacy policy</a> for more information.
-      </p>
-    <% } %>
+    <p class="transcript-disclaimer">
+      <strong style="font-size: 22px">We do not store your grades</strong>.
+      Flow only uses your transcript so you can easily <strong>import your
+      course history</strong> and share it with friends.
+      See our <a href="/privacy">privacy policy</a> for more information.
+    </p>
   </div>
 
-  <% if (pageData.friendsTranscriptExp && transcript_friends.length) { %>
+  <% if (transcript_friends.length) { %>
     <div class="span4">
       <div class="friends-added-transcript">
         <h3>
@@ -118,20 +97,7 @@
         </p>
       </div>
     </div>
-  <% } else if (!pageData.friendsTranscriptExp) { %>
-    <div class="span4">
-      <h3>We value your privacy</h3>
-      <p class="transcript-disclaimer">
-        We do not display or store any grades or other private information.
-        Flow only uses your transcript so you can easily <strong>import your
-          course history</strong> and share it with your friends.
-        <strong>Your trust is very important to us, so we take your privacy
-          very seriously!</strong> See our <a href="/privacy">privacy
-          policy</a> for more information.
-      </p>
-    </div>
   <% } %>
-
 {% endcall %}
 
 {% endblock %}
@@ -139,6 +105,5 @@
 {% block scripts %}
 <script>
   window.pageData.userObjs = {{ user_objs|tojson|safe }};
-  window.pageData.friendsTranscriptExp = {{ friends_transcript_exp|tojson|safe }};
 </script>
 {% endblock %}
