@@ -72,8 +72,14 @@ def import_courses():
     # TODO(mack): rs215 seems to be duplicated. see,
     # http://www.ucalendar.uwaterloo.ca/1213/COURSE/course-RS.html
     def clean_ucalendar_course(dep, course):
-        number = re.findall(
+        try:
+            # Fails on courses from:
+            # http://www.ucalendar.uwaterloo.ca/1213/COURSE/course-BUS.html
+            number = re.findall(
                 r'^.*? (\d+[A-Za-z]*?) .*$', course['intro'])[0].lower()
+        except:
+            return None
+
         name = course['name'].strip()
         return {
             'id': '%s%s' % (dep, number),
@@ -148,7 +154,7 @@ def import_courses():
                 courses = courses.values()
             for course in courses:
                 course = source['clean_fn'](dep_name, course)
-                if not m.Course.objects.with_id(course['id']):
+                if course and not m.Course.objects.with_id(course['id']):
                     m.Course(**course).save()
                     source['added'] += 1
                 else:
