@@ -6,18 +6,11 @@
     <title>{% block page_title %}{% endblock %}{{ ' - ' if self.page_title() else '' }} Flow</title>
     <meta name="description" content="Plan your university courses with friends in mind.">
     <meta name="author" content="Flow">
-    {# TODO(Sandy): OG stuff to fix for FB:
-    Inferred Property:  The 'og:url' property should be explicitly provided,
-      even if a value can be inferred from other tags.
-    Inferred Property:  The 'og:title' property should be explicitly provided,
-      even if a value can be inferred from other tags.
-    Inferred Property:  The 'og:description' property should be explicitly
-      provided, even if a value can be inferred from other tags.
-    Small og:image: All the images referenced by og:image should be at least
-      200px in both dimensions. Please check all the images with tag og:image in
-      the given url and ensure that it meets the recommended specification.
-    https://developers.facebook.com/tools/debug/og/object?q=uwflow.com #}
-    <meta property="og:image" content="http://uwflow.com/static/img/logo/flow_128x128.png">
+    {# Test with https://developers.facebook.com/tools/debug/og/object?q=uwflow.com #}
+    <meta property="og:url" content="http://uwflow.com/">
+    <meta property="og:title" content="Flow">
+    <meta property="og:description" content="Plan your university courses with friends in mind.">
+    <meta property="og:image" content="http://uwflow.com/static/img/logo/flow_og_200x200.png">
 
     <!-- CSS stylesheets -->
     <link rel="stylesheet"
