@@ -73,6 +73,16 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
     timeOut: 3000
   };
 
+  (function() {
+    // Override bootstrap with saner defaults
+    var overrides = {
+      animation: false,
+      delay: { show: 150 }
+    };
+    _.extend($.fn.tooltip.defaults, overrides);
+    _.extend($.fn.popover.defaults, overrides);
+  })();
+
   // Add helpers functions to all templates
   (function() {
     var template = _.template;
