@@ -3,7 +3,7 @@
 //     and I have to get up for SE Open House tomorrow so I don't have time to
 //     figure out Require.js.)
 
-define(['ext/jquery', 'ext/underscore', 'ext/bootstrap'],
+require(['ext/jquery', 'ext/underscore', 'ext/bootstrap'],
 function($, _, _bootstrap) {
 
   $('.navbar .signout-btn').tooltip({

@@ -60,16 +60,14 @@ require.config({
     'ext/toastr': 'ext/toastr',
     'ext/underscore': 'ext/underscore-1.3.3',
     'ext/underscore.string': 'ext/underscore.string-2.0.0',
-    // TODO(david): This is a workaround for main.js not updating on deploy
-    'base': 'base.js?v=' + pageData.version
     //'main': 'main.js?v=' + pageData.version
   }
 });
 
 require(['ext/jquery', 'ext/underscore', 'ext/underscore.string',
     'ext/backbone', 'util', 'ext/moment', 'ext/bootstrap', 'ext/cookie',
-    'ext/toastr', 'base'],
-function($, _, _s, Backbone, util, moment, __, __, toastr, _base) {
+    'ext/toastr'],
+function($, _, _s, Backbone, util, moment, __, __, toastr) {
   // Set defaults for toastr notifications
   toastr.options = {
     timeOut: 3000
@@ -118,7 +116,10 @@ function($, _, _s, Backbone, util, moment, __, __, toastr, _base) {
     // TODO(mack): investigate if there's a faster/better way of doing this
     // than after DOMReady
     $(function() {
-      require([window.pageData.pageScript]);
+      // TODO(david): base.js is a workaround for main.js not updating on
+      //     deploy
+      require([window.pageData.pageScript,
+          '/static/js/base.js?v=' + window.pageData.version]);
     });
   }
 });
