@@ -30,11 +30,13 @@
         window.pageData.currentUserId = {{ current_user_id|tojson|safe }};
       {% endif %}
       {% if page_script %}
-        window.pageData.pageScript = '{{ ('/static/%s/%s' % (js_dir, page_script))|version }}';
+        window.pageData.pageScript = '{{ ('/static/%s/%s' % (js_dir, page_script)) }}';
       {% endif %}
+      // Query params that require.js fetches scripts with
+      var require = { urlArgs: '{{ VERSION }}' };
     </script>
 
-    <script async data-main="{{ '/static/%s/main.js' % js_dir }}" src="{{ ('/static/%s/ext/require-2.0.6.js' % js_dir)|version }}">
+    <script async data-main="{{ '/static/%s/main.js' % js_dir }}" src="{{ '/static/%s/ext/require-2.0.6.js' % js_dir }}">
     </script>
 
     {# Google Analytics #}

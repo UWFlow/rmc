@@ -35,7 +35,7 @@ flask_render_template = flask.render_template
 def render_template(*args, **kwargs):
     kwargs.update({
         'env': app.config['ENV'],
-        'version': VERSION,
+        'VERSION': VERSION,
         'js_dir': app.config['JS_DIR'],
         'ga_property_id': app.config['GA_PROPERTY_ID'],
         'current_user': get_current_user(),
