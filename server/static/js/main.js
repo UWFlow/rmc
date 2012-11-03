@@ -122,14 +122,6 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
       $.removeCookie('fb_access_token_expires_in', { path: '/' });
       window.location.href = '/?logout=1';
     });
-
-    // Async-load footer background image
-    var $footer = $('footer');
-    if ($footer.length && window.location.pathname !== '/') {
-      // TODO(david): Use jpg and have it fade out into bg color
-      $footer.css('background',
-        'url(/static/img/footer_background_2000_min.png) center center no-repeat');
-    }
   });
 
   if (window.pageData.pageScript) {
@@ -139,4 +131,15 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
       require([window.pageData.pageScript]);
     });
   }
+
+  $(function() {
+    // Async-load footer background image
+    var $footer = $('footer');
+    if ($footer.length && window.location.pathname !== '/') {
+      // TODO(david): Use jpg and have it fade out into bg color
+      $footer.css('background',
+        'url(/static/img/footer_uw_sphere.jpg) left top no-repeat');
+        //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
+    }
+  });
 });

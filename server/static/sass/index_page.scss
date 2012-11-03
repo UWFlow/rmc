@@ -89,44 +89,23 @@ body {
 
 footer {
   $footer-text-color: #CCC;
-  $footer-hover-color: #999;
+  $footer-main-color: #888;
 
   // TODO(david): Don't hardcode nav bar height
   margin-top: $header-height - 54px;
   height: auto;
   text-align: center;
-  padding-top: 20px;
+  padding-top: 50px;
 
-  .fade-to-footer {
-    $gradient-height: 80px;
-    position: absolute;
-    top: $header-height - $gradient-height;
-    height: $gradient-height;
-    display: block;
-    width: 100%;
-    @include background(linear-gradient(top, rgba(255, 255, 255, 0.0), rgba(255, 255, 255, 1.0)));
-  }
-
-  .footer-text {
+  #footer-text {
     position: relative;
 
-    color: $footer-text-color;
     padding-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     font-size: 14px;
-    @include transition(all 0.2s ease-out);
-
-    &:hover {
-      @include transition(all 0.2s ease-out);
-      color: $footer-hover-color;
-      a {
-        color: $footer-hover-color;
-        @include transition(all 0.2s ease-out);
-      }
-    }
 
     a {
-      color: $footer-text-color;
+      color: $footer-main-color;
       @include transition(all 0.2s ease-out);
       &:hover {
         @include transition(all 0.2s ease-out);
@@ -141,7 +120,7 @@ footer {
         list-style-image: none;
         list-style-type: none;
         display: inline-block;
-        border-right: 1px solid $footer-text-color;
+        border-right: 1px solid #CCC;
         padding-right: 10px;
         margin-right: 10px;
 
@@ -156,18 +135,13 @@ footer {
       }
     }
 
-    p {
-      font-weight: lighter;
-    }
-
-    // TODO(mack): might want to move out of the footer since using position:absolute
-    // to attach the logo to the bottom right corner is only possible because there's
-    // no position:relative on the footer
     .mixpanel-logo {
       position: absolute;
-      top: 25px;
-      right: 40px;
-      opacity: 0.4;
+      top: 12px;
+      right: 50px;
+      img {
+        opacity: 0.4;
+      }
     }
   }
 }

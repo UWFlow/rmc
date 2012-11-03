@@ -134,6 +134,27 @@
 
     <footer>
       {% block footer %}
+        <div id="footer-text">
+          <ul id="main-links">
+            <li><a href="/about">
+                <i class="icon-info-sign"></i> About
+            </a></li>
+            <li><a target="_blank" href="https://twitter.com/useflow">
+              <i class="icon-twitter"></i> Twitter
+            </a></li>
+            <li><a target="_blank" href="http://facebook.com/planyourflow">
+                <i class="icon-facebook"></i> Facebook
+            </a></li>
+          </ul>
+          <a target="_blank" class="mixpanel-logo" href="https://mixpanel.com/f/partner">
+            <img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png"
+                  alt="Mobile Analytics" />
+          </a>
+          <ul id="footer-fine-print">
+              <a href="/privacy">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">Terms of Service</a>
+              <p id="affiliated">We're not affiliated with the University of Waterloo.</p>
+          </ul>
+        </div>
       {% endblock %}
     </footer>
 

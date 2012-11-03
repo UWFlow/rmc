@@ -184,10 +184,81 @@ a:hover {
 footer {
   // TODO(david): Figure out background-size: cover instead of height
   // TODO(david): FIgure out empty gap on Sandy's computer
-  height: 388px;
-  margin-top: 200px;
-  #landing-footer-text {
-    padding-top: 30px;
-    text-align: center;
+  $gradient-height: 80px;
+  //margin-top: $gradient-height;
+  height: 1000px;
+  position: relative;
+
+  &:before {
+    z-index: -1;
+    content: ' ';
+    position: absolute;
+    top: -$gradient-height;
+    height: $gradient-height;
+    display: block;
+    width: 100%;
+    @include background(linear-gradient(top, rgba(248, 248, 248, 0.0), rgba(248, 248, 248, 1.0)));
+  }
+
+  #footer-text {
+    position: absolute;
+    left: 0;
+    bottom: 32px;
+    padding-left: 50px;
+
+    a {
+      color: rgba(40, 40, 40, 0.8);
+      // TODO(david): Dupe code with index_page.scss
+      @include transition(all 0.2s ease-out);
+      &:hover {
+        @include transition(all 0.2s ease-out);
+        color: $flowBlue;
+        text-decoration: none;
+      }
+    }
+
+    ul {
+      list-style: none;
+      margin: 0;
+      li {
+        list-style-image: none;
+        list-style-type: none;
+        margin-bottom: 10px;
+
+        &:last-child {
+          margin-right: 0;
+          padding-right: 0;
+          border-right: none;
+        }
+      }
+    }
+
+    #main-links {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .mixpanel-logo img {
+      margin-top: 50px;
+      opacity: 0.6;
+    }
+
+    #footer-fine-print {
+      $footer-text-color: rgba(40, 40, 40, 0.4);
+      font-size: 13px;
+      margin-top: 10px;
+      color: $footer-text-color;
+
+      a {
+        color: $footer-text-color;
+        &:hover {
+          color: $flowBlue;
+        }
+      }
+
+      #affiliated {
+        margin-top: 4px;
+      }
+    }
   }
 }
