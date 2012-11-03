@@ -59,7 +59,7 @@ require.config({
     'ext/jqueryui': 'ext/jquery-ui-1.8.23.custom.min',
     'ext/toastr': 'ext/toastr',
     'ext/underscore': 'ext/underscore-1.3.3',
-    'ext/underscore.string': 'ext/underscore.string-2.0.0',
+    'ext/underscore.string': 'ext/underscore.string-2.0.0'
     //'main': 'main.js?v=' + pageData.version
   }
 });
@@ -112,14 +112,34 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
     };
   })();
 
+  $(function() {
+    $('.navbar .signout-btn').tooltip({
+      title: 'Sign out',
+      placement: 'bottom'
+    }).click(function() {
+      $.removeCookie('fbid', { path: '/' });
+      $.removeCookie('fb_access_token', { path: '/' });
+      $.removeCookie('fb_access_token_expires_in', { path: '/' });
+      window.location.href = '/?logout=1';
+    });
+  });
+
   if (window.pageData.pageScript) {
     // TODO(mack): investigate if there's a faster/better way of doing this
     // than after DOMReady
     $(function() {
-      // TODO(david): base.js is a workaround for main.js not updating on
-      //     deploy
-      require([window.pageData.pageScript,
-          '/static/js/base.js?v=' + window.pageData.version]);
+      require([window.pageData.pageScript]);
     });
   }
+
+  $(function() {
+    // Async-load footer background image
+    var $footer = $('footer');
+    if ($footer.length && window.location.pathname !== '/') {
+      // TODO(david): Use jpg and have it fade out into bg color
+      $footer.css('background',
+        'url(/static/img/footer_uw_sphere.jpg) left top no-repeat');
+        //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
+    }
+  });
 });

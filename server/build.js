@@ -1,11 +1,8 @@
 {
   appDir: 'static/js',
   baseUrl: '.',
-  mainConfigFile: 'static/js/main2.js',
+  mainConfigFile: 'static/js/main.js',
   dir: 'static/js_prod',
-  paths: {
-    main: 'static/js/main2.js'
-  },
 
   // Removes uncessary licensing comments
   preserveLicenseComments: false,

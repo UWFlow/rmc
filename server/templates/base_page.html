@@ -26,7 +26,6 @@
     <script>
       window.pageData = {};
       window.pageData.env = '{{ env }}';
-      window.pageData.version = '{{ version }}';
       {% if current_user_id %}
         window.pageData.currentUserId = {{ current_user_id|tojson|safe }};
       {% endif %}
@@ -35,7 +34,7 @@
       {% endif %}
     </script>
 
-    <script async data-main="{{ '/static/%s/main2.js' % js_dir }}" src="{{ ('/static/%s/ext/require-2.0.6.js' % js_dir)|version }}">
+    <script async data-main="{{ '/static/%s/main.js' % js_dir }}" src="{{ ('/static/%s/ext/require-2.0.6.js' % js_dir)|version }}">
     </script>
 
     {# Google Analytics #}
