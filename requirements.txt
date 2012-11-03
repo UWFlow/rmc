@@ -12,3 +12,6 @@ requests==0.14.1
 BeautifulSoup==3.2.1
 boto==2.6.0
 Jinja2==2.6
+
+# Useful for local development, e.g. by tools/devshell.py
+ipython
