@@ -26,6 +26,7 @@
     <script>
       window.pageData = {};
       window.pageData.env = '{{ env }}';
+      window.pageData.version = '{{ version }}';
       {% if current_user_id %}
         window.pageData.currentUserId = {{ current_user_id|tojson|safe }};
       {% endif %}
