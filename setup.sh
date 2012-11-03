@@ -10,4 +10,4 @@ echo "Setup bundle"
 ( cd server && bundle install )
 
 echo "Install pip requirements"
-( /bin/pip install -r requirements.txt )
+( pip install -r requirements.txt )
