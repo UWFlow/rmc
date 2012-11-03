@@ -181,26 +181,25 @@ a:hover {
   }
 }
 
+// NOTE: When changing this, make sure the homepage also looks OK, whose footers
+//      uses the same HTML but overrides some CSS
 footer {
-  // TODO(david): Figure out background-size: cover instead of height
-  // TODO(david): FIgure out empty gap on Sandy's computer
-  $gradient-height: 80px;
-  //margin-top: $gradient-height;
+  margin-top: 50px;
   height: 1000px;
   position: relative;
 
   &:before {
-    z-index: -1;
     content: ' ';
     position: absolute;
-    top: -$gradient-height;
-    height: $gradient-height;
+    top: -10px;
+    height: 10px;
     display: block;
     width: 100%;
-    @include background(linear-gradient(top, rgba(248, 248, 248, 0.0), rgba(248, 248, 248, 1.0)));
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
   #footer-text {
+    // TODO(david): Fix text positioning on search page
     position: absolute;
     left: 0;
     bottom: 32px;
@@ -208,7 +207,6 @@ footer {
 
     a {
       color: rgba(40, 40, 40, 0.8);
-      // TODO(david): Dupe code with index_page.scss
       @include transition(all 0.2s ease-out);
       &:hover {
         @include transition(all 0.2s ease-out);
