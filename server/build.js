@@ -3,6 +3,9 @@
   baseUrl: '.',
   mainConfigFile: 'static/js/main2.js',
   dir: 'static/js_prod',
+  paths: {
+    main: 'static/js/main2.js'
+  },
 
   // Removes uncessary licensing comments
   preserveLicenseComments: false,
