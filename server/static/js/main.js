@@ -59,8 +59,8 @@ require.config({
     'ext/jqueryui': 'ext/jquery-ui-1.8.23.custom.min',
     'ext/toastr': 'ext/toastr',
     'ext/underscore': 'ext/underscore-1.3.3',
-    'ext/underscore.string': 'ext/underscore.string-2.0.0'
-    //'main': 'main.js?v=' + pageData.version
+    'ext/underscore.string': 'ext/underscore.string-2.0.0',
+    'main': 'main.js?v=' + pageData.version
   }
 });
 
@@ -139,7 +139,6 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
       // TODO(david): Use jpg and have it fade out into bg color
       $footer.css('background',
         'url(/static/img/footer_uw_sphere.jpg) left top no-repeat');
-        //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
     }
   });
 });
