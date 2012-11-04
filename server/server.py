@@ -367,12 +367,12 @@ def profile_page(profile_user_id):
     def get_latest_program_year_id(uc_dict_list, user_id):
         latest_term_uc = None
         for uc_dict in uc_dict_list:
-            if uc_dict['user_id'] != user_id:
+            if (uc_dict['user_id'] != user_id or
+                    uc_dict['term_id'] > LAST_TERM_ID):
                 continue
             elif not latest_term_uc:
                 latest_term_uc = uc_dict
-            elif (uc_dict['term_id'] > latest_term_uc['term_id']
-                    and uc_dict['term_id'] <= LAST_TERM_ID):
+            elif uc_dict['term_id'] > latest_term_uc['term_id']:
                 latest_term_uc = uc_dict
 
         if latest_term_uc:
