@@ -27,7 +27,7 @@ echo "Starting flask server"
 FLASK_CONFIG=../config/flask_dev.py \
   PARENT_DIR=$(dirname `pwd`) \
   PYTHONPATH="${PARENT_DIR}" \
-  python server/server.py &
+  python server/server.py
 
 # Only exit on terminate or interrupt signal
 while true; do
