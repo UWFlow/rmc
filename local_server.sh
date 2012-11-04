@@ -4,12 +4,13 @@
 set -e
 
 function clean_up() {
+  set +e
   kill 0
   exit
 }
 
 # Kill all child processes on script abort
-trap clean_up SIGTERM SIGINT
+trap clean_up SIGTERM SIGINT ERR
 
 # TODO(mack): Could move to setup script
 # First, make the necessary directory if it doesn't exist
