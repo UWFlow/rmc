@@ -263,3 +263,6 @@ class User(me.Document):
             return {
                 'program_name': self.short_program_name
             }
+
+    def __repr__(self):
+        return "<User: %s>" % self.name

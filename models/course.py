@@ -191,3 +191,6 @@ class Course(me.Document):
             'overall': self.overall.to_dict(),
             'professor_ids': self.professor_ids,
         }
+
+    def __repr__(self):
+        return "<Course: %s>" % self.code
