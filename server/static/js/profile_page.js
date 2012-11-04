@@ -27,10 +27,18 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
       friendObjs.push(friendObj);
     });
     var userCollection = new user.UserCollection(friendObjs);
+
+    userCollection.comparator = function(user) {
+      return -user.get('mutual_courses').length;
+    };
+
+    userCollection.sort();
+
     var friendSidebarView = new friend.FriendSidebarView({
       currentUser: currentUser,
       friendCollection: userCollection
     });
+
     $('#friend-sidebar-container').html(friendSidebarView.render().el);
   })();
 

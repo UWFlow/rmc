@@ -170,7 +170,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
     }
   });
 
-  FriendSidebarView = RmcBackbone.View.extend({
+  var FriendSidebarView = RmcBackbone.View.extend({
     className: 'friend-sidebar',
 
     initialize: function(attributes) {
