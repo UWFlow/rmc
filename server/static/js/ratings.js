@@ -42,16 +42,6 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
               placeholder) + (this.get('count') ? '%' : '');
     },
 
-    // TODO(david): This shouldn't be here. Refactor this away.
-    getClass: function() {
-      return {
-        'interest': 'progress-info',
-        'easiness': 'progress-warning',
-        'passion': 'progress-danger',
-        'clarity': 'progress-success'
-      }[this.get('name')];
-    },
-
     getLikes: function() {
       return Math.round(this.get('rating') * this.get('count'));
     },
@@ -85,8 +75,12 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
       this.$('[title]').tooltip();
 
       // Set the width here instead of in the template for animations
-      this.$('.shown-rating .bar').each(function(i, elem) {
-        $(elem).css('width', ratings.at(i).getPercent() + '%');
+      this.$('.shown-rating .rating-progress').each(function(i, elem) {
+        var percent = ratings.at(i).getPercent();
+        $(elem)
+          .find('.positive').css('width', percent + '%')
+          .end()
+          .find('.negative').css('width', (100 - percent) + '%');
       });
 
       return this;

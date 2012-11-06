@@ -28,9 +28,10 @@ $cell-height: 28px;
       margin-top: $cell-height / 2 - $bar-height / 2;
 
       .rating-bar.bar {
-        @include transition(width 0.3s ease);
-        @include border-radius(0 4px 4px 0);
         @include force-height($bar-height);
+        &:last-child {
+          @include border-radius(0 4px 4px 0);
+        }
       }
     }
   }
