@@ -65,9 +65,9 @@ function(_, _s) {
     return _.first(randItems, num);
   };
 
-  var getDisplayRating = function(rating, count) {
+  var getDisplayRating = function(rating, count, placeholder) {
     if (count !== undefined && count === 0) {
-      return '-';
+      return placeholder === undefined ? '-' : placeholder;
     }
     return Math.round(rating * 100);
   };

@@ -3,20 +3,24 @@
 {% call macros.us_template('ratings-tpl') %}
 <div class="ratings">
   <% ratings.each(function(rating) { %>
-    <div class="row-fluid">
-      <div class="rating-name span3">
+    <div class="row-fluid"
+        title="<%- rating.getLikes() %> of <%- rating.get('count') %> think this <%- subject %> was <%- rating.getDisplayName() %>">
+      <div class="rating-name span2">
         <%- capitalize(rating.getDisplayName()) %>
       </div>
-      <div class="rating-bar-span span8"
-        title="<%- rating.getLikes() %> of <%- rating.get('count') %> think this <%- subject %> was <%- rating.getDisplayName() %>">
+      <div class="rating-bar-span span6">
         <div class="shown-rating">
           <div class="rating-progress progress <%- rating.getClass() %>">
             <div class="rating-bar bar active" style="width: 0%;"></div>
           </div>
         </div>
       </div>
-      <div class="shown-rating-num rating-num-span span1">
-        <%- rating.getDisplayRating() %>
+      <div class="span1 rating-num-span">
+        <%- rating.getDisplayRating('') %>
+      </div>
+      <div class="shown-rating-num rating-count-span span3">
+        <span class="muted"><%- rating.get('count') %> <%-
+          pluralize(rating.get('count'), 'rating') %></span>
       </div>
     </div>
     <% }); %>

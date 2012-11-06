@@ -37,9 +37,9 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
       return this.getAverage() * 100;
     },
 
-    getDisplayRating: function() {
-      return util.getDisplayRating(this.get('rating'), this.get('count')) +
-          (this.get('count') ? '%' : '');
+    getDisplayRating: function(placeholder) {
+      return util.getDisplayRating(this.get('rating'), this.get('count'),
+              placeholder) + (this.get('count') ? '%' : '');
     },
 
     // TODO(david): This shouldn't be here. Refactor this away.

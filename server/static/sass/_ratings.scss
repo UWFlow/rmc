@@ -37,6 +37,11 @@ $cell-height: 28px;
 
   .row-fluid .rating-num-span {
     @include force-height($cell-height);
+    text-align: left;
+  }
+
+  .row-fluid .rating-count-span {
+    @include force-height($cell-height);
     font-weight: lighter;
     text-align: right;
   }
