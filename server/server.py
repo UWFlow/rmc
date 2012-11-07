@@ -622,18 +622,20 @@ def login():
     # https://developers.facebook.com/docs/authentication/signed_request/
     fb_access_token = req.cookies.get('fb_access_token')
     # Compensate for network latency by subtracting 10 seconds
-    fb_access_token_expiry_date = int(time.time()) + int(req.cookies.get('fb_access_token_expires_in')) - 10;
-    fb_access_token_expiry_date = datetime.fromtimestamp(fb_access_token_expiry_date)
+    fb_access_token_expires_in = req.cookies.get('fb_access_token_expires_in')
     fbsr = req.form.get('fb_signed_request')
 
     if (fbid is None or
         fb_access_token is None or
-        fb_access_token_expiry_date is None or
+        fb_access_token_expires_in is None or
         fbsr is None):
             # TODO(Sandy): redirect to landing page, or nothing
             # Shouldn't happen normally, user probably manually requested this page
             logging.warn('No fbid/access_token specified')
             return 'Error'
+
+    fb_access_token_expiry_date = datetime.fromtimestamp(
+            int(time.time()) + int(fb_access_token_expires_in) - 10)
 
     # Validate against Facebook's signed request
     if app.config['ENV'] == 'dev':
@@ -650,8 +652,10 @@ def login():
         rmclogger.LOG_EVENT_LOGIN, {
             'fbid': fbid,
             'token': fb_access_token,
+            'expires_in': fb_access_token_expires_in,
             'expiry': fb_access_token_expiry_date,
             'fb_data': fb_data,
+            'fbsr': fbsr,
             'request_form': req.form,
         },
     )
