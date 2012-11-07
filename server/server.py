@@ -625,6 +625,17 @@ def login():
     fb_access_token_expires_in = req.cookies.get('fb_access_token_expires_in')
     fbsr = req.form.get('fb_signed_request')
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_LOGIN, {
+            'fbid': fbid,
+            'token': fb_access_token,
+            'expires_in': fb_access_token_expires_in,
+            'fbsr': fbsr,
+            'request_form': req.form,
+        },
+    )
+
     if (fbid is None or
         fb_access_token is None or
         fb_access_token_expires_in is None or
@@ -646,19 +657,6 @@ def login():
     if fb_data is None or fb_data['user_id'] != fbid:
         # Data is invalid
         return 'Error'
-
-    rmclogger.log_event(
-        rmclogger.LOG_CATEGORY_API,
-        rmclogger.LOG_EVENT_LOGIN, {
-            'fbid': fbid,
-            'token': fb_access_token,
-            'expires_in': fb_access_token_expires_in,
-            'expiry': fb_access_token_expiry_date,
-            'fb_data': fb_data,
-            'fbsr': fbsr,
-            'request_form': req.form,
-        },
-    )
 
     # FIXME[uw](mack): Someone could pass fake fb_access_token for an fbid, need to
     # validate on facebook before creating the user. (Sandy): See the note above on using signed_request
