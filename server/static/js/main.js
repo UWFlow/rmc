@@ -125,11 +125,20 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
   });
 
   if (window.pageData.pageScript) {
-    // TODO(mack): investigate if there's a faster/better way of doing this
-    // than after DOMReady
-    $(function() {
+    // IF the dom ready event has already occurred, binding to jQuery's dom
+    // ready listener seems to wait until the loaded event before firing.
+    // So manually check if domready has occurred, and if it has execute
+    // right away.
+    // TODO(mack): investigate why jQuery's dom ready doesn't fire immediately
+    // when dom is already ready
+    var state = document.readyState;
+    if (state === 'interactive' || state === 'complete') {
       require([window.pageData.pageScript]);
-    });
+    } else {
+      $(function() {
+        require([window.pageData.pageScript]);
+      });
+    }
   }
 
   $(function() {
