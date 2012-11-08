@@ -76,8 +76,7 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
   (function() {
     // Override bootstrap with saner defaults
     var overrides = {
-      animation: false,
-      delay: { show: 150 }
+      animation: false
     };
     _.extend($.fn.tooltip.defaults, overrides);
     _.extend($.fn.popover.defaults, overrides);
