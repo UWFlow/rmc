@@ -1,45 +1,34 @@
 @import 'base';
 @import 'sign_in';
 
-$header-height: 668px;
-
 #landing-header {
   width: 100%;
   position: absolute;
   top: 0;
-  height: $header-height;
+  height: 100%;
   overflow: hidden;
   padding: 0;
   background-color: white;
-  //@include box-shadow(0 3px 9px -2px rgba(0, 0, 0, 0.5));
   min-width: 700px;
 
   .header-bg {
     opacity: 0;
-    @include background(url(/static/img/slc-header-lens.jpg));
-    position: absolute;
-    width: 2452px;
-    height: $header-height;
-    top: 0;
-    right: 0;
-    background-repeat: no-repeat;
-    -webkit-transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98);
-    -webkit-transition-delay: 100ms;
-    -moz-transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
-    -o-transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
-    transition: opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms;
+    @include background(url(/static/img/header_uw_entrance.jpg) no-repeat top right fixed);
+    background-size: cover;
+    display: block;
+    height: 100%;
+    @include transition(opacity 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms);
     @include transform(translate3d(0, 0, 0));
   }
 
   .sign-up-box {
     z-index: 10;
-    top: 150px;
     position: absolute;
-    top: 200px;
+    top: 180px;
     padding: 20px 40px;
     padding-bottom: 25px;
     right: 0;
-    width: 620px;
+    width: 500px;
     opacity: 0;
     color: #333;
 
@@ -70,12 +59,12 @@ $header-height: 668px;
     &.animated {
       opacity: 1;
       z-index: 3;
-      background: rgba(255, 255, 255, 0.65);
-      @include transition(all 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98));
+      background: rgba(255, 255, 255, 0.6);
+      @include transition(all 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms);
 
       .sign-up-content {
         @include transform(translate3d(0, 0, 0));
-        @include transition(all 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98));
+        @include transition(all 800ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 100ms);
       }
     }
   }
@@ -88,14 +77,17 @@ body {
 
 
 footer {
-  $footer-text-color: #CCC;
-  $footer-main-color: #888;
+  $footer-width: 376px;
 
-  // TODO(david): Don't hardcode nav bar height
-  margin-top: $header-height - 54px;
-  height: auto;
+  display: block;
+  position: fixed;
+  width: $footer-width;
+  left: 50%;
+  margin-left: -$footer-width / 2;
+  bottom: 0;
   text-align: center;
-  padding-top: 50px;
+  background-color: rgba(255, 255, 255, 0.6);
+  height: auto;
 
   &:before {
     display: none;
@@ -104,18 +96,10 @@ footer {
   #footer-text {
     position: relative;
 
-    padding-top: 20px;
+    padding-top: 13px;
+    padding-left: 0;
     font-size: 14px;
-
-    a {
-      color: $footer-main-color;
-      @include transition(all 0.2s ease-out);
-      &:hover {
-        @include transition(all 0.2s ease-out);
-        color: $flowBlue;
-        text-decoration: none;
-      }
-    }
+    bottom: 0;
 
     ul {
       list-style: none;
@@ -123,11 +107,9 @@ footer {
         list-style-image: none;
         list-style-type: none;
         display: inline-block;
-        border-right: 1px solid #CCC;
+        border-right: 1px solid rgba(40, 40, 40, 0.6);
         padding-right: 10px;
         margin-right: 10px;
-
-        text-transform: uppercase;
         letter-spacing: 3px;
 
         &:last-child {
@@ -139,12 +121,24 @@ footer {
     }
 
     .mixpanel-logo {
-      position: absolute;
-      top: 12px;
-      right: 50px;
-      img {
-        opacity: 0.4;
-      }
+      position: fixed;
+      right: 10px;
+      bottom: 27px;
+      text-align: right;
+    }
+
+    #footer-fine-print {
+      display: none;
     }
   }
+}
+
+#photo-credit {
+  position: fixed;
+  bottom: 5px;
+  right: 10px;
+  display: block;
+  color: rgba(#FFF, 0.6);
+  margin-top: 5px;
+  font-size: 12px;
 }

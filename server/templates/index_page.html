@@ -23,7 +23,7 @@
   </script><script>utmx('url','A/B');</script>
   <!-- End of Google Analytics Content Experiment code -->
 {% endif %}
-{% endblock %}
+{% endblock head_scripts %}
 
 {% block header %}
 <div id="landing-header">
@@ -64,4 +64,8 @@
   </div>
   <i class="header-bg"></i>
 </div>
-{% endblock %}
+{% endblock header %}
+
+{% block body %}
+<div id="photo-credit">Photo credit: Paulom Shah</div>
+{% endblock body %}
