@@ -116,29 +116,32 @@ class Course(me.Document):
             else:
                 return course_dicts, []
 
+        ucs = []
+        if include_all_users or include_friends:
+            query = {
+                'course_id__in': course_ids,
+            }
 
-        query = {
-            'course_id__in': course_ids,
-        }
-        if not include_all_users and include_friends:
-            query['user_id__in'] = current_user.friend_ids
-
-        if full_user_courses:
+            # If we're just including friends
             if not include_all_users:
-                query.setdefault('user_id__in', []).append(current_user.id)
-            ucs = _user_course.UserCourse.objects(**query)
-            ucs = list(ucs)
-        else:
-            ucs = _user_course.UserCourse.objects(**query).only(
-                    *limited_user_course_fields)
+                query['user_id__in'] = current_user.friend_ids
 
-            # TODO(mack): optimize to not always get full user course
-            # for current_user
-            current_uc = _user_course.UserCourse.objects(
-                user_id=current_user.id,
-                course_id__in=course_ids,
-            )
-            ucs = list(ucs) + list(current_uc)
+            if full_user_courses:
+                if not include_all_users:
+                    query.setdefault('user_id__in', []).append(current_user.id)
+                ucs = _user_course.UserCourse.objects(**query)
+                ucs = list(ucs)
+            else:
+                ucs = _user_course.UserCourse.objects(**query).only(
+                        *limited_user_course_fields)
+
+        # TODO(mack): optimize to not always get full user course
+        # for current_user
+        current_uc = _user_course.UserCourse.objects(
+            user_id=current_user.id,
+            course_id__in=course_ids,
+        )
+        ucs = list(ucs) + list(current_uc)
 
         current_user_course_ids = set(current_user.course_history)
 
