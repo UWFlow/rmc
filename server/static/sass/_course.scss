@@ -187,10 +187,10 @@ $inner-padding: 18px;
 
     .rating-box {
       float: right;
-      top: -$inner-padding - $vert-padding;
-      padding-top: 10px;
-      padding-left: 16px;
+      top: -10px;  // TODO(david): Compute this
+      padding: 0 0 10px 16px;
       border-left: 1px solid $grid-color;
+      margin-bottom: -1px;
     }
 
     .voting {
@@ -198,7 +198,7 @@ $inner-padding: 18px;
       float: right;
       top: $top;
       position: relative;
-      margin-right: 5px;
+      margin-right: 11px;
     }
     &:hover .voting {
       visibility: visible;
@@ -307,14 +307,10 @@ $inner-padding: 18px;
 
     .review-box-row {
       border-top: 1px solid $grid-color;
-      padding-left: $inner-padding;
-      padding-right: $inner-padding;
-      @include box-sizing(border-box);
     }
 
     .user-review-box {
       margin-top: 10px;
-      padding-right: 15px;
     }
 
   }
@@ -356,31 +352,34 @@ $inner-padding: 18px;
   }
 }
 
+.course .course-inner {
+  top: -10px;
+  margin: 0 $inner-padding -14px $inner-padding;
+}
+
 .course-inner {
   @extend .clearfix;
-  margin-bottom: 0;
   clear: both;
-  padding-bottom: 0;
-  border-top: 1px solid $grid-color;
   position: relative;
-  top: -9px;
+  padding: 0;
+  margin: 0;
+  border-top: 1px solid $grid-color;
 
   .left-col {
     border-right: 1px solid $grid-color;
     margin-top: 0;
-    padding: ($inner-padding - 7px) $inner-padding;
+    padding: 12px $inner-padding 12px 0;
+    min-height: 105px;
   }
 
   .right-col {
-    // TODO(david): This should ideally use padding-right: $inner-padding;
-    width: 48%;
-    padding-top: 5px;
+    padding-top: $inner-padding;
   }
 
   .more-info {
     margin: 0;
-    margin-bottom: -8px;
-    padding: 12px 0 0 $inner-padding;
+    margin-bottom: 10px;
+    padding-top: 12px;
     border-top: 1px solid #DDD;
     @include box-sizing(border-box);
 
