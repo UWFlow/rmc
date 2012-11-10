@@ -5,41 +5,74 @@
 
 header {
   padding-top: 15px;
+  h1 {
+    margin-left: 35px;
+  }
 }
 
 #course-search-container {
-  .keywords {
-    @include box-sizing(border-box);
-    width: 100%;
+  .course-search-options {
+
+    margin-left: 35px;
+    border: 1px solid #DDD;
+    background-color: rgba(0, 0, 0, 0.03);
     padding-bottom: 0;
-    line-height: 60px;
-    height: 60px;
-    font-size: 40px;
-  }
+    margin-top: 15px;
+    margin-bottom: 30px;
+    padding: 15px ;
 
-  .course-search-form {
-    @extend .clearfix;
-    margin-top: 10px;
+    .keywords-container {
+      position: relative;
 
-    .sort-options {
-      display: inline-block;
-      float: none;
-      margin-top: -5px;  // TODO(david): Don't hardcode this.
-      margin-left: 4px;
+      .keywords {
+        @include box-sizing(border-box);
+        width: 100%;
+        padding-bottom: 0;
+        padding-left: 42px;
+        line-height: 44px;
+        height: 60px;
+        font-size: 40px;
+        border-radius: 0;
+      }
+
+      .icon-search {
+        position: absolute;
+        color: rgba(0, 0, 0, 0.38);
+        font-size: 35px;
+        left: 10px;
+        top: 24px;
+      }
     }
 
-    .nav.nav-pills > li > a {
-      padding-left: 7px;
-      padding-right: 7px;
-    }
+    .course-search-form {
+      @extend .clearfix;
+      margin-top: 10px;
+      margin-bottom: 0;
 
-    .dropdown {
-      display: inline-block;
-      float: none;
-      .dropdown-toggle {
-        $side-padding: 3px;
-        padding-left: $side-padding;
-        padding-right: $side-padding;
+      .sort-options {
+        display: inline-block;
+        float: none;
+        margin-top: -5px;  // TODO(david): Don't hardcode this.
+        margin-left: 4px;
+
+        .btn {
+          border-radius: 0;
+        }
+      }
+
+      .nav.nav-pills > li > a {
+        padding-left: 7px;
+        padding-right: 7px;
+      }
+
+      .dropdown {
+        display: inline-block;
+        float: none;
+        .dropdown-toggle {
+          $side-padding: 3px;
+          padding-left: $side-padding;
+          padding-right: $side-padding;
+        }
       }
     }
   }
