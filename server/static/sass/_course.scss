@@ -10,12 +10,10 @@ $inner-padding: 18px;
 .course {
   position: relative;
   width: 100%;
-  //@include transition(all 0.2s ease-out);
 
   &.expanded {
     width: 102%;
     left: -1%;
-    //@include transition(all 0.2s ease-out);
   }
 
   .shortlist-btn {
@@ -299,22 +297,8 @@ $inner-padding: 18px;
         }
       }
     }
-
-    .ratings {
-      margin-top: 10px;
-      margin-bottom: 20px;
-    }
-
-    .review-box-row {
-      border-top: 1px solid $grid-color;
-    }
-
-    .user-review-box {
-      margin-top: 10px;
-    }
-
   }
-}
+}  // lol... should reduce the nesting here a bit
 
 .terms-offered {
 
@@ -369,11 +353,19 @@ $inner-padding: 18px;
     border-right: 1px solid $grid-color;
     margin-top: 0;
     padding: 12px $inner-padding 12px 0;
-    min-height: 105px;
+    min-height: 92px;
   }
 
   .right-col {
     padding-top: $inner-padding;
+  }
+
+  .review-box-row {
+    border-top: 1px solid $grid-color;
+  }
+
+  .user-review-box {
+    margin-top: 10px;
   }
 
   .more-info {
