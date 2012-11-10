@@ -2,20 +2,6 @@
 
 {% call macros.us_template('course-tpl') %}
 {# TODO(mack): remove uc.term_id null checks #}
-<%
-var mode;
-if (other_profile) {
-  if (!user_course || !user_course.term_id) {
-    mode = 'add';
-  }
-} else {
-  if (user_course && user_course.term_id) {
-    mode = 'remove';
-  } else {
-    mode = 'add';
-  }
-}
-%>
 <% if (mode === 'add') { %>
   <div class="shortlist-btn add-course-btn">
     <div class="shortlist-btn-inner">
@@ -114,15 +100,24 @@ if (other_profile) {
   </div>
 <% } %>
 
-<% if (more_details) { %>
-  <div class="row-fluid more-info">
-    <div class="span12">
-      {# See what your friends are saying about <%- course.get('code') %>! #}
-      <a href="/course/<%- course.get('id') %>">
-        <i class="icon-info-sign"></i> Show Details
-    </div>
+<div class="row-fluid more-info">
+  <div class="span12">
+    <% if (more_details) { %>
+      {# See what your friends are saying about <%- course.code %>! #}
+      {# TODO(david): Wrap with <li>s #}
+      <a href="/course/<%- course.id %>">
+        <i class="icon-info-sign"></i> More Info</a>
+    <% } %>
+
+    <% if (mode === 'add') { %>
+      <a class="add-course-btn">
+        <i class="icon-plus-sign"></i> Add to shortlist</a>
+    <% } else if (mode === 'remove') { %>
+      <a class="remove-course-btn">
+        <i class="icon-remove-sign"></i> Remove from profile</a>
+    <% } %>
   </div>
-<% } %>
+</div>
 {% endcall %}
 
 {% call macros.us_template('course-friends-hovercard-tpl') %}

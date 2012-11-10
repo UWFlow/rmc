@@ -91,7 +91,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var newSplits = [];
       _.each(splits, function(split) {
         var matchesCourseId = !!split.match(/^[A-Z]{2,}\d{3}[A-Z]?$/);
-        var newSplit = split
+        var newSplit;
         if (matchesCourseId) {
           var splitLower = split.toLowerCase();
 
@@ -108,17 +108,154 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         newSplits.push(newSplit);
       });
 
-      return newSplits.join('')
+      return newSplits.join('');
+    },
+
+    /**
+     * Can the user add or remove the course to/from her profile?
+     * @return {string|undefined} A string "add" or "remove" if interactable.
+     */
+    getInteractMode: function() {
+      var userCourse = this.get('user_course');
+      if (window.pageData.ownProfile === false) {
+        if (!userCourse || !userCourse.term_id) {
+          return 'add';
+        }
+      } else {
+        return userCourse && userCourse.get('term_id') ? 'remove' : 'add';
+      }
     }
   });
 
-  var CourseView = RmcBackbone.View.extend({
+  /**
+   * A base interactable course view supporting add/remove courses.
+   */
+  var BaseCourseView = RmcBackbone.View.extend({
+
+    initialize: function(attributes) {
+      this.courseModel = attributes.courseModel;
+      this.userCourse = attributes.userCourse;
+    },
+
+    onCourseAdd: function(callback) {
+      var self = this;
+
+      var onSuccess = function(resp) {
+        //TODO(mack): consider alternative placement of toast so that it
+        // doesn't potentially cover up the main nav
+        toastr.success(
+          _s.sprintf('%s was added to your shortlist!',
+              self.courseModel.get('name'))
+        );
+
+        // TODO(mack): remove require()
+        var _user_course = require('user_course');
+        // Add the new user course to the collection cache
+        _user_course.UserCourses.addToCache(resp.user_course);
+        self.userCourse = _user_course.UserCourses.getFromCache(
+          resp.user_course.id.$oid);
+        self.courseModel.set('user_course_id', self.userCourse.id);
+
+        self.$('.add-course-btn').tooltip('destroy');
+
+        if (self.courseAdded) self.courseAdded();
+      };
+
+      $.ajax(
+        '/api/user/add_course_to_shortlist',
+        {
+          type: 'POST',
+          data: { course_id: this.courseModel.id },
+          dataType: 'json',
+          success: onSuccess
+        }
+      ).done(function() {
+        mixpanel.track('Add to shortlist', {
+          course_id: self.courseModel.id.$oid
+        });
+        mixpanel.people.increment({'Add to shortlist': 1});
+      });
+
+      return false;
+    },
+
+    onCourseRemove: function(evt) {
+      // Remove existing confirmation dialogs
+      $('#confirm-remove-modal').remove();
+
+      $('body').append(
+          _.template($('#course-confirm-remove-dialog-tpl').html(), {
+            course_code: this.courseModel.get('code')
+          }));
+      $('#confirm-remove-modal-button-yes').click(
+          _.bind(this.removeCourse, this));
+
+      $('#confirm-remove-modal').modal('show');
+
+      mixpanel.track('Removed transcript course intent', {
+        course_id: this.courseModel.id.$oid
+      });
+      mixpanel.people.increment({'Removed transcript course intent': 1});
+
+      return false;
+    },
+
+    removeCourse: function() {
+      $('#confirm-remove-modal').modal('hide');
+      var onSuccess = _.bind(function(resp) {
+        toastr.info(
+          _s.sprintf('%s was removed!', this.courseModel.get('name'))
+        );
+
+        mixpanel.track('Removed transcript course', {
+          course_id: this.courseModel.id.$oid
+        });
+        mixpanel.people.increment({'Removed transcript course': 1});
+
+        // TODO(mack): remove require()
+        var _user_course = require('user_course');
+        // Remove the user course from the collection cache
+        _user_course.UserCourses.removeFromCache(this.userCourse);
+        this.courseModel.set('user_course_id', undefined);
+        this.userCourse = undefined;
+
+        this.$('.remove-course-btn').tooltip('destroy');
+        if (pageData.ownProfile) {
+          // We should only be removing the course card if the user is on their
+          // own profile
+          var onHide = _.bind(function() {
+            // TODO(mack): properly destory subviews
+            this.close();
+          }, this);
+
+          this.$el.slideUp(200, onHide);
+        } else {
+          this.render();
+        }
+
+      }, this);
+
+      $.post(
+        '/api/user/remove_course',
+        {
+          course_id: this.userCourse.get('course_id'),
+          term_id: this.userCourse.get('term_id')
+        },
+        onSuccess
+      );
+    }
+
+  });
+
+  var CourseView = BaseCourseView.extend({
     MAX_REVIEW_LEVEL: 4,
 
     template: _.template($('#course-tpl').html()),
     className: 'course',
 
     initialize: function(attributes) {
+      this._super('initialize', [attributes]);
+
       this.courseModel = attributes.courseModel;
       this.userCourse = this.courseModel.get('user_course');
       // TODO(mack): remove hardcode of '9999_99'
@@ -258,7 +395,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         profile_user_course: this.profileUserCourse && this.profileUserCourse.toJSON(),
         profile_user_course_review_level:
           this.profileUserCourse && this.getReviewLevel(this.profileUserCourse),
-        other_profile: this.otherProfile
+        other_profile: this.otherProfile,
+        mode: this.courseModel.getInteractMode()
       }));
 
       this.$('[title]').tooltip();
@@ -277,7 +415,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       this.courseInnerView = new CourseInnerView({
         courseModel: this.courseModel,
         userCourse: this.userCourse,
-        canShowAddReview: this.canShowAddReview
+        canShowAddReview: this.canShowAddReview,
+        courseView: this
       });
 
       var friendUserCourses = this.courseModel.get('friend_user_courses');
@@ -332,123 +471,16 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     events: {
-      'click .add-course-btn': 'addShortlistCourse',
-      'click .remove-course-btn': 'confirmRemoveTranscriptCourse',
+      'click .add-course-btn': 'onCourseAdd',
+      'click .remove-course-btn': 'onCourseRemove',
       // TODO(david): Figure out a nicer interaction without requiring click
       'click .visible-section': 'toggleCourse',
       'focus .new-review-input': 'expandNewReview'
     },
 
-    addShortlistCourse: function(evt) {
-      // Adds course to shortlist
-
-      var onSuccess = _.bind(function(resp) {
-        //TODO(mack): consider alternative placement of toast so that it
-        // doesn't potentially cover up the main nav
-        toastr.success(
-          _s.sprintf('%s was added to your shortlist!',
-            this.courseModel.get('name'))
-        );
-
-        // TODO(mack): remove require()
-        var _user_course = require('user_course');
-        // Add the new user course to the collection cache
-        _user_course.UserCourses.addToCache(resp.user_course);
-        this.userCourse = _user_course.UserCourses.getFromCache(
-          resp.user_course.id.$oid);
-        this.courseModel.set('user_course_id', this.userCourse.id);
-
-        this.$('.add-course-btn')
-          .removeClass('add-course-btn icon-plus-sign')
-          .addClass('remove-course-btn icon-remove-sign');
-        this.updateRemoveCourseTooltip();
-
-        // TODO(mack): properly update this.userCourse in child views, and call
-        this.render();
-      }, this);
-
-      $.ajax(
-        '/api/user/add_course_to_shortlist',
-        {
-          type: 'POST',
-          data: { course_id: this.courseModel.id },
-          dataType: 'json',
-          success: onSuccess
-        }
-      ).done(_.bind(function() {
-        mixpanel.track('Add to shortlist', {
-          course_id: this.courseModel.id.$oid
-        });
-        mixpanel.people.increment({'Add to shortlist': 1});
-      }, this));
-
-      return false;
-    },
-
-    confirmRemoveTranscriptCourse: function(evt) {
-      // Remove existing confirmation dialogs
-      $('#confirm-remove-modal').remove();
-
-      $('body').append(
-          _.template($('#course-confirm-remove-dialog-tpl').html(), {
-            course_code: this.courseModel.get('code')
-          }));
-      $('#confirm-remove-modal-button-yes').click(
-          _.bind(this.removeTranscriptCourse, this, evt));
-
-      $('#confirm-remove-modal').modal('show');
-
-      mixpanel.track('Removed transcript course intent', {
-        course_id: this.courseModel.id.$oid
-      });
-      mixpanel.people.increment({'Removed transcript course intent': 1});
-    },
-
-    removeTranscriptCourse: function(evt) {
-      $('#confirm-remove-modal').modal('hide');
-      var onSuccess = _.bind(function(resp) {
-        toastr.info(
-          _s.sprintf('%s was removed!', this.courseModel.get('name'))
-        );
-
-        mixpanel.track('Removed transcript course', {
-          course_id: this.courseModel.id.$oid
-        });
-        mixpanel.people.increment({'Removed transcript course': 1});
-
-        // TODO(mack): remove require()
-        var _user_course = require('user_course');
-        // Remove the user course from the collection cache
-        _user_course.UserCourses.removeFromCache(this.userCourse);
-        this.courseModel.set('user_course_id', undefined);
-        this.userCourse = undefined;
-
-        this.$('.remove-course-btn').tooltip('destroy');
-        if (pageData.ownProfile) {
-          // We should only be removing the course card if the user is on their
-          // own profile
-          var onHide = _.bind(function() {
-            // TODO(mack): properly destory subviews
-            this.close();
-          }, this);
-
-          this.$el.slideUp(200, onHide);
-        } else {
-          this.render();
-        }
-
-      }, this);
-
-      $.post(
-        '/api/user/remove_course',
-        {
-          course_id: this.userCourse.get('course_id'),
-          term_id: this.userCourse.get('term_id')
-        },
-        onSuccess
-      );
-
-      return false;
+    courseAdded: function() {
+      this.updateRemoveCourseTooltip();
+      this.render();
     },
 
     toggleCourse: function(evt) {
@@ -488,7 +520,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
   });
 
   // TODO(david): Refactor things to use implicit "model" on views
-  var CourseInnerView = RmcBackbone.View.extend({
+  var CourseInnerView = BaseCourseView.extend({
     template: _.template($('#course-inner-tpl').html()),
     className: 'course-inner',
 
@@ -499,6 +531,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
       this.canReview = this.userCourse && this.userCourse.get('term_id') !== '9999_99' &&
           this.canShowAddReview && this.userCourse.has('term_id');
+      this.courseView = attributes.courseView;  // optional
 
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
@@ -524,7 +557,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         course: this.courseModel,
         user_course: this.userCourse,
         user: this.userCourse && this.userCourse.get('user'),
-        can_review: this.canReview
+        mode: this.courseModel.getInteractMode()
       }));
 
       if (this.userCourseView) {
@@ -537,6 +570,17 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       return this;
     },
 
+    events: function() {
+      if (this.courseView) {
+        return {};
+      } else {
+        return {
+          'click .add-course-btn': 'onCourseAdd',
+          'click .remove-course-btn': 'onCourseRemove'
+        };
+      }
+    },
+
     animateBars: function(pause) {
       pause = pause === undefined ? 0 : pause;
       this.ratingsView.removeBars();
@@ -546,6 +590,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       }, this), pause);
 
       return this;
+    },
+
+    courseAdded: function() {
+      this.render();
     }
   });
 

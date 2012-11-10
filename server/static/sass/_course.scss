@@ -5,6 +5,7 @@
 // TODO(david): Convert more parts of the site to use grid formatting then move
 //     this to _variables.scss
 $grid-color: #DDD;
+$inner-padding: 18px;
 
 .course {
   position: relative;
@@ -85,7 +86,6 @@ $grid-color: #DDD;
   }
 
   .course-content {
-    $inner-padding: 18px;
     $vert-padding: 5px;
 
     margin-left: 35px;
@@ -300,28 +300,6 @@ $grid-color: #DDD;
       }
     }
 
-    .course-inner {
-      @extend .clearfix;
-      margin-bottom: 0;
-      clear: both;
-      padding-bottom: 0;
-      border-top: 1px solid $grid-color;
-      position: relative;
-      top: -9px;
-
-      .left-col {
-        border-right: 1px solid $grid-color;
-        margin-top: 0;
-        padding: ($inner-padding - 7px) $inner-padding;
-      }
-
-      .right-col {
-        // TODO(david): This should ideally use padding-right: $inner-padding;
-        width: 48%;
-        padding-top: 5px;
-      }
-    }
-
     .ratings {
       margin-top: 10px;
       margin-bottom: 20px;
@@ -339,28 +317,6 @@ $grid-color: #DDD;
       padding-right: 15px;
     }
 
-    .more-info {
-      margin: 0;
-      margin-bottom: -8px;
-      padding: 10px 0 0 $inner-padding;
-      border-top: 1px solid #DDD;
-      @include box-sizing(border-box);
-
-      [class^="span"] {
-        min-height: 0;
-      }
-
-      a {
-        color: #777;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        &:hover {
-          color: $flowBlue;
-          text-decoration: none;
-          border-bottom: 1px solid $flowBlue;
-        }
-      }
-    }
   }
 }
 
@@ -396,6 +352,52 @@ $grid-color: #DDD;
     color: $grayLight;
     &.taken {
       color: $green;
+    }
+  }
+}
+
+.course-inner {
+  @extend .clearfix;
+  margin-bottom: 0;
+  clear: both;
+  padding-bottom: 0;
+  border-top: 1px solid $grid-color;
+  position: relative;
+  top: -9px;
+
+  .left-col {
+    border-right: 1px solid $grid-color;
+    margin-top: 0;
+    padding: ($inner-padding - 7px) $inner-padding;
+  }
+
+  .right-col {
+    // TODO(david): This should ideally use padding-right: $inner-padding;
+    width: 48%;
+    padding-top: 5px;
+  }
+
+  .more-info {
+    margin: 0;
+    margin-bottom: -8px;
+    padding: 12px 0 0 $inner-padding;
+    border-top: 1px solid #DDD;
+    @include box-sizing(border-box);
+
+    [class^="span"] {
+      min-height: 0;
+    }
+
+    a {
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      &:hover {
+        color: $flowBlue;
+        text-decoration: none;
+        border-bottom: 1px solid $flowBlue;
+      }
+      margin-right: 20px;
     }
   }
 }
