@@ -61,23 +61,27 @@
     }
   }
 
-  .course-content.well {
+  .course-content {
+    border: 1px solid #DDD;
+    border-top: 0;
+  }
+  &:first-child .course-content {
+    border-top: 1px solid #DDD;
+  }
+
+  .course-content {
     margin-left: 35px;
 
     position: relative;
-    padding: 0;
+    padding: 5px 0px;
 
     $inner-padding: 18px;
 
-    margin-bottom: 10px;
-    @include box-shadow(0 0 0 rgba(0, 0, 0, 0.0));
+    @include background(linear-gradient(top, #FFFFFF, #FDFDFD));
 
     &:hover {
       // TODO(david): More crap on hover
-      @include box-shadow(0 0 10px rgba(0, 0, 0, 0.1));
-      // TODO(david): Should not hardcode #F7F7F7
-      @include background(linear-gradient(top, #FCFCFC, #F2F2F2));
-      border-color: darken($wellBorderColor, 10%);
+      @include background(linear-gradient(top, #FCFCFC, #F6F6F6));
     }
 
     .visible-section {
