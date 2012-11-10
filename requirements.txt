@@ -14,4 +14,4 @@ boto==2.6.0
 Jinja2==2.6
 
 # Useful for local development, e.g. by tools/devshell.py
-ipython
+ipython==0.13.1
