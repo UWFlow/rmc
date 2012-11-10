@@ -557,6 +557,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         course: this.courseModel,
         user_course: this.userCourse,
         user: this.userCourse && this.userCourse.get('user'),
+        can_review: this.canReview,
         mode: this.courseModel.getInteractMode()
       }));
 
