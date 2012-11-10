@@ -3,10 +3,11 @@ define(
 function($, _, __) {
 
   var fbApiInit = false;
+  var fbAppId;
   if (window.pageData.env === 'dev') {
-    var fbAppId = '289196947861602';
+    fbAppId = '289196947861602';
   } else {
-    var fbAppId = '219309734863464';
+    fbAppId = '219309734863464';
   }
 
   var _initializedFacebook = false;
@@ -21,10 +22,18 @@ function($, _, __) {
     }
   };
 
+  var fbSignedRequest;
   window.fbAsyncInit = function() {
     initFacebook();
     FB.getLoginStatus(function(response) {
       fbApiInit = true;
+      if (response.status === 'connected') {
+        fbSignedRequest = response.authResponse.signedRequest;
+      } else if (response.status === 'not_authorized') {
+        // the user is logged in to Facebook, but didn't auth yet
+      } else {
+        // the user isn't logged in to Facebook.
+      }
     });
   };
 
@@ -37,6 +46,18 @@ function($, _, __) {
     ref.parentNode.insertBefore(js, ref);
   }(document));
 
+  var setFBToken = function(data) {
+    $.cookie('fb_access_token',
+        data.fb_access_token, { expires: 365, path: '/' });
+    $.cookie('fb_access_token_expires_on',
+        data.fb_access_token_expires_on, { expires: 365, path: '/' });
+  };
+
+  var removeFBToken = function() {
+    $.removeCookie('fb_access_token', { path: '/' });
+    $.removeCookie('fb_access_token_expires_on', { path: '/' });
+  };
+
   var login = function(authResp, params, source, nextUrl) {
     // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
     // others to hijack someonne's session. We should probably look into
@@ -46,10 +67,6 @@ function($, _, __) {
     // TODO(Sandy): When switching over to Flask sessions be sure to remove
     // these old cookies
     $.cookie('fbid', authResp.userID, { expires: 365, path: '/' });
-    $.cookie('fb_access_token', authResp.accessToken,
-        { expires: 365, path: '/' });
-    $.cookie('fb_access_token_expires_in', authResp.expiresIn,
-        { expires: 365, path: '/' });
     // TODO(Sandy): This assumes the /login request will succeed, which may not
     // be the case. But if we make this request in the success handler, it might
     // not get logged at all (due to redirect). We could setTimeout it, but that
@@ -67,8 +84,10 @@ function($, _, __) {
 
     $.ajax('/login', {
       data: params,
+      dataType: 'json',
       type: 'POST',
       success: function(data) {
+        setFBToken(data);
         // Fail safe to make sure at least we sent off the _gaq trackEvent
         _gaq.push(function() {
           if (nextUrl) {
@@ -80,9 +99,8 @@ function($, _, __) {
         });
       },
       error: function(xhr) {
-        FB.logout(function() {
-          window.location.href = '/';
-        });
+        removeFBToken();
+        window.location.href = '/';
       }
     });
   };
@@ -161,10 +179,36 @@ function($, _, __) {
     }
   }
 
+  var renewAccessToken = function() {
+    if (fbSignedRequest) {
+      $.ajax('/api/renew-fb', {
+        data: { fb_signed_request: fbSignedRequest },
+        dataType: 'json',
+        success: function(data) {
+          setFBToken(data);
+        },
+        type: 'POST',
+        error: function(xhr) {
+          // TODO(Sandy): Maybe code here to delay the next renew request? The
+          // reason being that if facebook ever breaks down, then we'll
+          // a warning logged to HipChat for every page-visit of a logged in
+          // user...that's a lot.
+        }
+      });
+    }
+  };
+
+  var checkAccessToken = function() {
+    if (window.pageData.should_renew_fb_token) {
+        renewAccessToken();
+    }
+  };
+
   // These methods require that the FB api is fully initialized
   var ensureInitMethods = {
     initConnectButton: initConnectButton,
-    showSendDialogProfile: showSendDialogProfile
+    showSendDialogProfile: showSendDialogProfile,
+    checkAccessToken: checkAccessToken
   };
   // Ensure FB is initialized before calling any functions that require FB APIs
   _.each(ensureInitMethods, function(method, name) {
@@ -175,6 +219,8 @@ function($, _, __) {
       });
     };
   });
+
+  $(ensureInitMethods.checkAccessToken);
 
   return _.extend(ensureInitMethods, {
     initFacebook: initFacebook,

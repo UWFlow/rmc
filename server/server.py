@@ -21,6 +21,7 @@ import rmc.server.view_helpers as view_helpers
 import base64
 import hashlib
 import hmac
+import rmc.shared.facebook as facebook
 
 VERSION = int(time.time())
 
@@ -36,12 +37,18 @@ me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
 flask_render_template = flask.render_template
 def render_template(*args, **kwargs):
+    current_user = view_helpers.get_current_user()
+    should_renew_fb_token = False
+    if current_user:
+        should_renew_fb_token = current_user.should_renew_fb_token
+
     kwargs.update({
         'env': app.config['ENV'],
         'VERSION': VERSION,
         'js_dir': app.config['JS_DIR'],
         'ga_property_id': app.config['GA_PROPERTY_ID'],
-        'current_user': view_helpers.get_current_user(),
+        'current_user': current_user,
+        'should_renew_fb_token': should_renew_fb_token,
     })
     return flask_render_template(*args, **kwargs)
 flask.render_template = render_template
@@ -78,6 +85,20 @@ def tojson(obj):
 @app.template_filter()
 def version(file_name):
     return '%s?v=%s' % (file_name, VERSION)
+
+# TODO(Sandy): Unused right now, but remove in a separate diff for future
+# reference
+def after_this_request(f):
+    if not hasattr(flask.g, 'after_request_callbacks'):
+        flask.g.after_request_callbacks = []
+    flask.g.after_request_callbacks.append(f)
+    return f
+
+@app.after_request
+def call_after_request_callbacks(response):
+    for callback in getattr(flask.g, 'after_request_callbacks', ()):
+        response = callback(response)
+    return response
 
 class ApiError(Exception):
     """
@@ -255,76 +276,34 @@ def onboarding():
 
 @app.route('/login', methods=['POST'])
 def login():
-    # TODO(Sandy): move this to a more appropriate place
-    def base64_url_decode(inp):
-        padding_factor = (4 - len(inp) % 4) % 4
-        inp += "="*padding_factor
-        return base64.b64decode(unicode(inp).translate(dict(zip(map(ord, u'-_'), u'+/'))))
-
-    def parse_signed_request(signed_request, secret):
-
-        l = signed_request.split('.', 2)
-        encoded_sig = l[0]
-        payload = l[1]
-
-        sig = base64_url_decode(encoded_sig)
-        data = util.json_loads(base64_url_decode(payload))
-
-        if data.get('algorithm').upper() != 'HMAC-SHA256':
-            logging.error('Unknown algorithm during fbsr decode')
-            return None
-
-        expected_sig = hmac.new(secret, msg=payload, digestmod=hashlib.sha256).digest()
-
-        if sig != expected_sig:
-            return None
-
-        return data
-
     req = flask.request
 
     # TODO(Sandy): Use Flask Sessions instead of raw cookie
+    # http://flask.pocoo.org/docs/quickstart/#sessions
 
+    # TODO(Sandy): No need to send fbid either. fbsr is all we need!
     fbid = req.cookies.get('fbid')
-    # FIXME[uw](Sandy): No need to pass the fb_access_token up, we can just exchange fb_data.code for the token from FB
-    # https://developers.facebook.com/docs/authentication/signed_request/
-    fb_access_token = req.cookies.get('fb_access_token')
-    # Compensate for network latency by subtracting 10 seconds
-    fb_access_token_expires_in = req.cookies.get('fb_access_token_expires_in')
     fbsr = req.form.get('fb_signed_request')
 
+    # TODO(Sandy): Change log category because this isn't API?
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_API,
         rmclogger.LOG_EVENT_LOGIN, {
             'fbid': fbid,
-            'token': fb_access_token,
-            'expires_in': fb_access_token_expires_in,
             'fbsr': fbsr,
             'request_form': req.form,
         },
     )
 
     if (fbid is None or
-        fb_access_token is None or
-        fb_access_token_expires_in is None or
         fbsr is None):
-            # TODO(Sandy): redirect to landing page, or nothing
-            # Shouldn't happen normally, user probably manually requested this page
-            logging.warn('No fbid/access_token specified')
-            return 'Error'
+            logging.warn('No fbsr set')
+            raise ApiError('No fbsr set')
 
-    fb_access_token_expiry_date = datetime.fromtimestamp(
-            int(time.time()) + int(fb_access_token_expires_in) - 10)
-
-    # Validate against Facebook's signed request
-    if app.config['ENV'] == 'dev':
-        fb_data = parse_signed_request(fbsr, s.FB_APP_SECRET_DEV)
-    else:
-        fb_data = parse_signed_request(fbsr, s.FB_APP_SECRET_PROD)
-
-    if fb_data is None or fb_data['user_id'] != fbid:
-        # Data is invalid
-        return 'Error'
+    fb_data = facebook.get_fb_data(fbsr, app)
+    fbid = fb_data['fbid']
+    fb_access_token= fb_data['access_token']
+    fb_access_token_expiry_date = fb_data['expires_on']
 
     # FIXME[uw](mack): Someone could pass fake fb_access_token for an fbid, need to
     # validate on facebook before creating the user. (Sandy): See the note above on using signed_request
@@ -332,7 +311,9 @@ def login():
     if user:
         user.fb_access_token = fb_access_token
         user.fb_access_token_expiry_date = fb_access_token_expiry_date
+        current_user.fb_access_token_expired = False
         user.save()
+
         rmclogger.log_event(
             rmclogger.LOG_CATEGORY_IMPRESSION,
             rmclogger.LOG_EVENT_LOGIN, {
@@ -340,7 +321,13 @@ def login():
                 'user_id': user.id,
             },
         )
-        return ''
+
+        expiry_date_timestamp = time.mktime(
+                fb_access_token_expiry_date.timetuple())
+        return util.json_dumps({
+            'fb_access_token_expires_on': expiry_date_timestamp,
+            'fb_access_token': fb_access_token,
+        })
 
     # TODO(Sandy): Can remove the try except now becaues we're uisng form.get, same for all the other lines
     try:
@@ -371,6 +358,7 @@ def login():
         }
         user = m.User(**user_obj)
         user.save()
+
         rmclogger.log_event(
             rmclogger.LOG_CATEGORY_IMPRESSION,
             rmclogger.LOG_EVENT_LOGIN, {
@@ -378,6 +366,13 @@ def login():
                 'user_id': user.id,
             },
         )
+
+        expiry_date_timestamp = time.mktime(
+                fb_access_token_expiry_date.timetuple())
+        return util.json_dumps({
+            'fb_access_token_expires_on': expiry_date_timestamp,
+            'fb_access_token': fb_access_token,
+        })
     except KeyError as ex:
         # Invalid key (shouldn't be happening)
 # TODO(Sandy): redirect to landing page, or nothing
@@ -658,6 +653,48 @@ def search_courses():
         'has_more': has_more,
     })
 
+@app.route('/api/renew-fb', methods=['POST'])
+@view_helpers.login_required
+def renew_fb():
+    '''
+    Renews the current user's Facebook access token.
+
+    Takes {'fb_signed_request': obj} from post parameters.
+    '''
+    req = flask.request
+    current_user = view_helpers.get_current_user()
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_RENEW_FB, {
+            'user_id': current_user.id,
+            'request_form': req.form,
+        }
+    )
+
+    fbsr = req.form.get('fb_signed_request')
+    if fbsr is None:
+        logging.warn('No fbsr set')
+        raise ApiError('No fbsr set')
+
+    fb_data = facebook.get_fb_data(fbsr, app)
+    access_token = fb_data['access_token']
+    expires_on = fb_data['expires_on']
+
+    if expires_on > current_user.fb_access_token_expiry_date:
+        # Only use the new token if it expires later. It might be the case that
+        # get_fb_data failed to grab a new token
+        current_user.fb_access_token_expiry_date = expires_on
+        current_user.fb_access_token = access_token
+        current_user.fb_access_token_expired = False
+        current_user.save()
+
+    expiry_date_timestamp = time.mktime(
+            expires_on.timetuple())
+    return util.json_dumps({
+        'fb_access_token_expires_on': expiry_date_timestamp,
+        'fb_access_token': access_token,
+    })
 
 @app.route('/api/transcript', methods=['POST'])
 @view_helpers.login_required
