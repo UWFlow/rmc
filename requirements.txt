@@ -15,3 +15,6 @@ Jinja2==2.6
 
 # Useful for local development, e.g. by tools/devshell.py
 ipython==0.13.1
+
+# Useful for profiling and debugging
+Flask-DebugToolbar==2.7.1
