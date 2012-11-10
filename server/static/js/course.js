@@ -91,7 +91,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var newSplits = [];
       _.each(splits, function(split) {
         var matchesCourseId = !!split.match(/^[A-Z]{2,}\d{3}[A-Z]?$/);
-        var newSplit;
+        var newSplit = split;
         if (matchesCourseId) {
           var splitLower = split.toLowerCase();
 
