@@ -204,10 +204,12 @@ $inner-padding: 18px;
 
     .sample-friends {
       opacity: 0.7;
+      @include filter(grayscale(1.0));
     }
 
     &:hover .sample-friends {
       opacity: 1.0;
+      @include filter(none);
     }
 
     .sample-friends {
@@ -224,7 +226,7 @@ $inner-padding: 18px;
 
       display: inline-block;
       float: right;
-      margin-top: -3px;
+      margin-top: -1px;
       margin-right: 10px;
 
       .friends-taken-title {
