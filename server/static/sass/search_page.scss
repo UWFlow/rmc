@@ -20,15 +20,41 @@ header {
     margin-top: 15px;
     margin-bottom: 30px;
     padding: 15px ;
+    position: relative;
+    height: 100px;
 
     .keywords-container {
-      position: relative;
+      position: absolute;
+      left: -8px;
+      right: -8px;
+      width: auto;
+      @include box-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+
+      &:before {
+        border-left: 7px solid transparent;
+        left: 0;
+      }
+
+      &:after {
+        border-right: 7px solid transparent;
+        right: 0;
+      }
+
+      &:before, &:after {
+        content: " ";
+        display: block;
+        border-bottom: 8px solid #CCC;
+        width: 0;
+        height: 15px;
+        position: absolute;
+        top: -22px;
+      }
 
       .keywords {
         @include box-sizing(border-box);
         width: 100%;
         padding-bottom: 0;
-        padding-left: 42px;
+        padding-left: 52px;
         line-height: 44px;
         height: 60px;
         font-size: 40px;
@@ -39,14 +65,14 @@ header {
         position: absolute;
         color: rgba(0, 0, 0, 0.38);
         font-size: 35px;
-        left: 10px;
+        left: 15px;
         top: 24px;
       }
     }
 
     .course-search-form {
       @extend .clearfix;
-      margin-top: 10px;
+      margin-top: 70px;
       margin-bottom: 0;
 
       .sort-options {
