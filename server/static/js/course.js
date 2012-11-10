@@ -412,13 +412,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         });
       }
 
-      this.courseInnerView = new CourseInnerView({
-        courseModel: this.courseModel,
-        userCourse: this.userCourse,
-        canShowAddReview: this.canShowAddReview,
-        courseView: this
-      });
-
       var friendUserCourses = this.courseModel.get('friend_user_courses');
       if (friendUserCourses) {
         this.sampleFriendsView = new SampleFriendsView({
@@ -452,6 +445,13 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       if (this.sampleFriendsView) {
         this.$('.sample-friends-placeholder').replaceWith(
           this.sampleFriendsView.render().$el);
+      }
+
+      if (this.courseInnerView) {
+        delete this.courseInnerView;
+        if (this.$el.hasClass('expanded')) {
+          this.expandCourse();
+        }
       }
 
       if (!this.resizeBounded) {
@@ -495,8 +495,13 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     expandCourse: function(evt) {
-      if (!this.innerRendered) {
-        this.innerRendered = true;
+      if (!this.courseInnerView) {
+        this.courseInnerView = new CourseInnerView({
+          courseModel: this.courseModel,
+          userCourse: this.userCourse,
+          canShowAddReview: this.canShowAddReview,
+          courseView: this
+        });
 
         // TODO(david): Neaten this jQuery
         var $inner = this.courseInnerView.render(/* moreDetails */ true).$el;
