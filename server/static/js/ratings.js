@@ -94,7 +94,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
   var RatingBoxView = RmcBackbone.View.extend({
     template: _.template($('#rating-box-tpl').html()),
-    className: 'rating-box badge badge-inverse',
+    className: 'rating-box',
 
     render: function() {
       this.$el
@@ -102,7 +102,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
         .tooltip({
           title: this.model.getLikes() + ' likes, ' + this.model.getDislikes() +
               ' dislikes',
-          placement: 'in top'
+          placement: 'top'
         });
       return this;
     }

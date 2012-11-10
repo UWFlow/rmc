@@ -52,7 +52,7 @@ if (other_profile) {
     <div class="voting-placeholder"></div>
     <div class="sample-friends-placeholder"></div>
     {# TODO(david): This is really dumb. Fix in a better way. #}
-    <div style="clear: both; margin-bottom: -25px;"></div>
+    <div style="clear: both; margin-bottom: -32px;"></div>
   </div>
   <div class="course-inner-placeholder"></div>
 </div>
@@ -71,7 +71,7 @@ if (other_profile) {
 
 {% call macros.us_template('course-inner-tpl') %}
 <div class="row-fluid">
-  <div class="span6">
+  <div class="span6 left-col">
     <p class="description"><%- course.description %></p>
     <% if (course.terms_offered.length) { %>
       <div class="terms-offered">
@@ -93,15 +93,15 @@ if (other_profile) {
       </div>
     <% } %>
   </div>
-  <div class="span6">
+  <div class="span6 right-col">
     <div class="ratings-placeholder"></div>
   </div>
 </div>
 
 <% if (can_review) { %>
-  <div class="row-fluid">
+  <div class="row-fluid review-box-row">
     <div class="span12">
-      <div class="alert alert-info user-review-box">
+      <div class="user-review-box">
         <div class="review-placeholder"></div>
       </div>
     </div>
@@ -109,10 +109,11 @@ if (other_profile) {
 <% } %>
 
 <% if (more_details) { %>
-  <div class="row-fluid">
-    <div class="span12 more-info">
+  <div class="row-fluid more-info">
+    <div class="span12">
+      {# See what your friends are saying about <%- course.code %>! #}
       <a href="/course/<%- course.id %>">
-        See what your friends are saying about <%- course.code %>!
+        <i class="icon-info-sign"></i> Show Details
       </a>
     </div>
   </div>

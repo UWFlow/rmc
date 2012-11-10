@@ -1,8 +1,21 @@
 @import 'ratings';
 @import 'user_course';
+@import 'variables';
+
+// TODO(david): Convert more parts of the site to use grid formatting then move
+//     this to _variables.scss
+$grid-color: #DDD;
 
 .course {
   position: relative;
+  width: 100%;
+  //@include transition(all 0.2s ease-out);
+
+  &.expanded {
+    width: 102%;
+    left: -1%;
+    //@include transition(all 0.2s ease-out);
+  }
 
   .shortlist-btn {
 
@@ -10,7 +23,7 @@
 
     width: $width;
     left: $width;
-    top: 5px;
+    top: 10px;
     opacity: 0.0;
     position: absolute;
 
@@ -63,19 +76,21 @@
 
   .course-content {
     border: 1px solid #DDD;
-    border-top: 0;
+    margin-top: -1px;
   }
-  &:first-child .course-content {
-    border-top: 1px solid #DDD;
+
+  &.expanded .course-content {
+    margin-top: 10px;
+    margin-bottom: 10px;
   }
 
   .course-content {
-    margin-left: 35px;
-
-    position: relative;
-    padding: 5px 0px;
-
     $inner-padding: 18px;
+    $vert-padding: 5px;
+
+    margin-left: 35px;
+    position: relative;
+    padding: $vert-padding 0px;
 
     @include background(linear-gradient(top, #FFFFFF, #FDFDFD));
 
@@ -85,8 +100,6 @@
     }
 
     .visible-section {
-      // TODO(david): Fix up CSS so visible section is enclosing more (reduce
-      //     padding of well as well).
       &:hover {
         cursor: pointer;
       }
@@ -174,7 +187,10 @@
 
     .rating-box {
       float: right;
-      top: $top;
+      top: -$inner-padding - $vert-padding;
+      padding-top: 10px;
+      padding-left: 16px;
+      border-left: 1px solid $grid-color;
     }
 
     .voting {
@@ -288,8 +304,22 @@
       @extend .clearfix;
       margin-bottom: 0;
       clear: both;
-      padding: $inner-padding;
-      padding-top: 0;
+      padding-bottom: 0;
+      border-top: 1px solid $grid-color;
+      position: relative;
+      top: -9px;
+
+      .left-col {
+        border-right: 1px solid $grid-color;
+        margin-top: 0;
+        padding: ($inner-padding - 7px) $inner-padding;
+      }
+
+      .right-col {
+        // TODO(david): This should ideally use padding-right: $inner-padding;
+        width: 48%;
+        padding-top: 5px;
+      }
     }
 
     .ratings {
@@ -297,9 +327,11 @@
       margin-bottom: 20px;
     }
 
-    // TODO(david): Use speech bubble for these pull quotes.
-    .course-tip {
-      margin-right: 2%;
+    .review-box-row {
+      border-top: 1px solid $grid-color;
+      padding-left: $inner-padding;
+      padding-right: $inner-padding;
+      @include box-sizing(border-box);
     }
 
     .user-review-box {
@@ -308,34 +340,49 @@
     }
 
     .more-info {
-      margin-top: 10px;
-      margin-bottom: 0;
-      min-height: 0;
+      margin: 0;
+      margin-bottom: -8px;
+      padding: 10px 0 0 $inner-padding;
+      border-top: 1px solid #DDD;
+      @include box-sizing(border-box);
+
+      [class^="span"] {
+        min-height: 0;
+      }
+
+      a {
+        color: #777;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        &:hover {
+          color: $flowBlue;
+          text-decoration: none;
+          border-bottom: 1px solid $flowBlue;
+        }
+      }
     }
   }
 }
 
-.course-inner {
-  .terms-offered {
-    .fall {
-      background-color: $orange;
-    }
-    .winter {
-      background-color: $blue;
-    }
-    .spring {
-      background-color: $green;
-    }
-
-    .fall, .winter, .spring {
-      opacity: 0.2;
-      -webkit-filter: grayscale(1.0);
-      &.offered {
-        opacity: 1.0;
-        -webkit-filter: none;
-      }
-    }
-
-    margin-bottom: 5px;
+.terms-offered {
+  .fall {
+    background-color: $orange;
   }
+  .winter {
+    background-color: $blue;
+  }
+  .spring {
+    background-color: $green;
+  }
+
+  .fall, .winter, .spring {
+    opacity: 0.2;
+    -webkit-filter: grayscale(1.0);
+    &.offered {
+      opacity: 1.0;
+      -webkit-filter: none;
+    }
+  }
+
+  margin-bottom: 5px;
 }

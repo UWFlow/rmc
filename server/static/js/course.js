@@ -425,12 +425,14 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         this.$('.course-inner-placeholder').replaceWith($inner);
       }
 
+      this.$el.addClass('expanded');
       this.courseInnerView.$el.show();
       this.courseInnerView.animateBars(0);
     },
 
     collapseCourse: function(evt) {
       this.$('.course-inner').hide();
+      this.$el.removeClass('expanded');
     },
 
     expandNewReview: function(evt) {
