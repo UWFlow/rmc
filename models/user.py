@@ -215,8 +215,12 @@ class User(me.Document):
         return pipe.execute()
 
 
-    def to_dict(self, user_course_dicts={}):
+    def to_dict(self, include_course_ids=False):
         program_name = self.short_program_name
+        if include_course_ids:
+            course_ids = self.course_ids
+        else:
+            course_ids = []
 
         return {
             'id': self.id,
@@ -230,6 +234,7 @@ class User(me.Document):
             #'last_term_name': last_term_name,
             #'last_program_year_id': self.last_program_year_id,
             'course_history': self.course_history,
+            'course_ids': course_ids,
         }
 
     # TODO(mack): make race condition safe?

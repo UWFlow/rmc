@@ -193,6 +193,7 @@ class Course(me.Document):
             'ratings': util.dict_to_list(self.get_ratings()),
             'overall': self.overall.to_dict(),
             'professor_ids': self.professor_ids,
+            'prereqs': self.prereqs,
         }
 
     def __repr__(self):

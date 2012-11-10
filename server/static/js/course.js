@@ -23,7 +23,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       user_course_id: undefined,
       profile_user_course_id: undefined,
       friend_user_course_ids: [],
-      professor_ids: []
+      professor_ids: [],
+      prereqs: undefined
     },
 
     referenceFields: function() {
@@ -62,6 +63,52 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         var isOverall = function(rating) { return rating.name === 'interest'; };
         return _.find(attributes.ratings, isOverall);
       }
+    },
+
+    /**
+     * Returns the html representation of pre-req str with proper linking
+     * of courses. Mark courses that the current user has taken with a
+     * special class
+     *
+     * TODO(mack): Show course name on hover, and for courses you've taken
+     * show what term you took it.
+     */
+    getReqsHtml: function(reqsStr) {
+
+      var takenCourseIds = {};
+      if (pageData.currentUserId) {
+        // TODO(mack): remove require() call
+        var _user = require('user');
+        var userId = pageData.currentUserId.$oid;
+        var user = _user.UserCollection.getFromCache(userId);
+        _.each(user.get('course_ids'), function(courseId) {
+          takenCourseIds[courseId] = true;
+        });
+      }
+
+      // TODO(mack): highlight courses you've taken
+      var splits = reqsStr.split(/(\W+)/);
+      var newSplits = [];
+      _.each(splits, function(split) {
+        var matchesCourseId = !!split.match(/^[A-Z]{2,}\d{3}[A-Z]?$/);
+        var newSplit = split
+        if (matchesCourseId) {
+          var splitLower = split.toLowerCase();
+
+          // TODO(mack): use html elements rather than string concatentation
+          if (_.has(takenCourseIds, splitLower)) {
+            // If you've taken the course, add the css class 'taken'
+            newSplit = _s.sprintf(
+              '<a class="req taken" href="/course/%s">%s</a>', split.toLowerCase(), split);
+          } else {
+            newSplit = _s.sprintf(
+              '<a class="req" href="/course/%s">%s</a>', split.toLowerCase(), split);
+          }
+        }
+        newSplits.push(newSplit);
+      });
+
+      return newSplits.join('')
     }
   });
 
@@ -474,8 +521,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     render: function(moreDetails) {
       this.$el.html(this.template({
         more_details: moreDetails,
-        course: this.courseModel.toJSON(),
+        course: this.courseModel,
         user_course: this.userCourse,
+        user: this.userCourse && this.userCourse.get('user'),
         can_review: this.canReview
       }));
 

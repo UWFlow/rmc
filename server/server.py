@@ -383,7 +383,7 @@ def profile_page(profile_user_id):
     # Convert profile user to dict
     # TODO(mack): This must be after friend user dicts since it can override
     # data in it. Remove this restriction
-    profile_dict = profile_user.to_dict()
+    profile_dict = profile_user.to_dict(include_course_ids=True)
     profile_dict.update({
         'last_program_year_id': get_latest_program_year_id(
             user_course_dict_list, profile_user.id),
@@ -394,8 +394,8 @@ def profile_page(profile_user_id):
     # TODO(mack): This must be after friend user dicts since it can override
     # data in it. Remove this restriction
     if not own_profile:
-        user_dicts.setdefault(
-                current_user.id, {}).update(current_user.to_dict())
+        user_dicts.setdefault(current_user.id, {}).update(
+                current_user.to_dict(include_course_ids=True))
 
     def get_ordered_transcript(profile_uc_dict_list):
         transcript_by_term = {}
@@ -490,7 +490,8 @@ def courses():
         terms=terms,
         sort_modes=sort_modes,
         current_user_id=current_user.id if current_user else None,
-        user_objs=[current_user.to_dict()] if current_user else [],
+        user_objs=[current_user.to_dict(
+            include_course_ids=True)] if current_user else [],
     )
 
 
@@ -529,7 +530,8 @@ def course_page(course_id):
 
         for friend in friends:
             user_dicts[friend.id] = friend.to_dict()
-        user_dicts[current_user.id] = current_user.to_dict()
+        user_dicts[current_user.id] = current_user.to_dict(
+                include_course_ids=True)
 
     def tip_from_uc(uc_dict):
         # TODO(david): Don't instantiate a class just to call a method on it

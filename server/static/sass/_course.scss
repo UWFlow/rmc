@@ -365,6 +365,9 @@ $grid-color: #DDD;
 }
 
 .terms-offered {
+
+  margin-bottom: 5px;
+
   .fall {
     background-color: $orange;
   }
@@ -384,5 +387,15 @@ $grid-color: #DDD;
     }
   }
 
-  margin-bottom: 5px;
+  .prereqs {
+    margin-top: 20px;
+
+    .req {
+      font-weight: bold;
+      color: $grayLight;
+      &.taken {
+        color: $green;
+      }
+    }
+  }
 }

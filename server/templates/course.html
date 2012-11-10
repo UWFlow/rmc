@@ -72,12 +72,12 @@ if (other_profile) {
 {% call macros.us_template('course-inner-tpl') %}
 <div class="row-fluid">
   <div class="span6 left-col">
-    <p class="description"><%- course.description %></p>
-    <% if (course.terms_offered.length) { %>
+    <p class="description"><%- course.get('description') %></p>
+    <% if (course.get('terms_offered').length) { %>
       <div class="terms-offered">
         <%
           var offered = function(term) {
-            var offered_in_term = _.any(course.terms_offered, function(term_offered) {
+            var offered_in_term = _.any(course.get('terms_offered'), function(term_offered) {
               return term === term_offered;
             });
 
@@ -91,6 +91,12 @@ if (other_profile) {
         <span class="label winter <%- offered('01') %>">Winter</span>
         <span class="label spring <%- offered('05') %>">Spring</span>
       </div>
+    <% } %>
+    <% if (course.has('prereqs')) { %>
+      <p class="prereqs">
+        <strong>Prereqs:</strong>
+        <%= course.getReqsHtml(course.get('prereqs')) %>
+      </p>
     <% } %>
   </div>
   <div class="span6 right-col">
@@ -111,10 +117,9 @@ if (other_profile) {
 <% if (more_details) { %>
   <div class="row-fluid more-info">
     <div class="span12">
-      {# See what your friends are saying about <%- course.code %>! #}
-      <a href="/course/<%- course.id %>">
+      {# See what your friends are saying about <%- course.get('code') %>! #}
+      <a href="/course/<%- course.get('id') %>">
         <i class="icon-info-sign"></i> Show Details
-      </a>
     </div>
   </div>
 <% } %>
