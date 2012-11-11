@@ -1,5 +1,8 @@
 SHELL=/bin/bash
 
+.PHONY: local setup import_menlo import_critiques aggregate_data init_data \
+        prod_import prod_import_mongo deploy clean
+
 local:
 	./local_server.sh
 
@@ -16,6 +19,12 @@ aggregate_data:
 	PYTHONPATH=.. python data/aggregator.py all
 
 init_data: import_menlo aggregate_data
+
+prod_import: prod_import_mongo aggregate_data
+
+prod_import_mongo:
+	rsync -avz rmc:~/dump .
+	mongorestore --drop dump
 
 deploy:
 	@if [ `whoami` = 'rmc' ]; then \
