@@ -167,9 +167,15 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
           // Select2 is weird
         },
         allowClear: true,
-        data: this.courseModel.get('professors').map(function(prof) {
-          return { id: prof.id, text: prof.get('name') };
-        })
+        data: this.courseModel.get('professors')
+          .chain()
+          .sortBy(function(prof) {
+            return prof.get('name');
+          })
+          .map(function(prof) {
+            return { id: prof.id, text: prof.get('name') };
+          })
+          .value()
       });
 
       if (this.userCourse.has('professor_id')) {
