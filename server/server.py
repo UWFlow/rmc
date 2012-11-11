@@ -18,6 +18,7 @@ import rmc.shared.rmclogger as rmclogger
 import base64
 import hashlib
 import hmac
+import flask_debugtoolbar
 
 VERSION = int(time.time())
 
@@ -27,6 +28,7 @@ VERSION = int(time.time())
 MIN_REVIEW_LENGTH = 15
 
 app = flask.Flask(__name__)
+
 app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
@@ -1178,5 +1180,11 @@ def user_course():
 
 
 if __name__ == '__main__':
-  app.debug = True
-  app.run()
+    app.debug = True
+    app.config.update({
+        'SECRET_KEY' : 'TODO(jlfwong)',
+        'DEBUG_TB_INTERCEPT_REDIRECTS' : False,
+        'DEBUG_TB_PROFILER_ENABLED' : True
+    })
+    toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
+    app.run()
