@@ -6,3 +6,4 @@ server/static/js_prod/
 server/Gemfile.lock
 dump.rdb
 secrets.py
+dump
