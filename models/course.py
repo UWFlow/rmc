@@ -1,5 +1,7 @@
-import mongoengine as me
 import re
+
+from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
+import mongoengine as me
 
 import professor
 import rating
@@ -91,6 +93,7 @@ class Course(me.Document):
     # TODO(mack): this function is way too overloaded, even to separate into
     # multiple functions based on usage
     @classmethod
+    @line_profile
     def get_course_and_user_course_dicts(cls, courses, current_user,
             include_friends=False, include_all_users=False,
             full_user_courses=False):
@@ -98,11 +101,8 @@ class Course(me.Document):
         limited_user_course_fields = [
                 'program_year_id', 'term_id', 'user_id', 'course_id']
 
-        course_dicts = []
-        for course in courses:
-            course_dicts.append(course.to_dict())
-
-        course_ids = [c.id for c in courses]
+        course_dicts = [course.to_dict() for course in courses]
+        course_ids = [c['id'] for c in course_dicts]
 
         if not current_user:
             if include_all_users:
@@ -147,6 +147,7 @@ class Course(me.Document):
 
         current_user_course_by_course = {}
         friend_user_courses_by_course = {}
+        current_friends_set = set(current_user.friend_ids)
 
         user_course_dict_list = []
         for uc in ucs:
@@ -155,7 +156,7 @@ class Course(me.Document):
             if uc.id in current_user_course_ids:
                 current_user_course_by_course[uc.course_id] = user_course_dict
             elif include_friends:
-                if uc.user_id in current_user.friend_ids:
+                if uc.user_id in current_friends_set:
                     friend_user_courses_by_course.setdefault(
                             uc.course_id, []).append(user_course_dict)
 
