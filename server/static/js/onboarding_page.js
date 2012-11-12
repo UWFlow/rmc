@@ -74,6 +74,8 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __) {
         this.$('.transcript-error').text(
             'Uh oh. Could not parse your transcript :( ' +
             'Please check that you\'ve pasted your transcript correctly.');
+
+        mixpanel.track('Transcript parse error', { error_msg: ex.toString() });
         return;
       }
 
