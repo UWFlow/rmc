@@ -10,7 +10,6 @@ import re
 import redis
 import time
 
-
 import rmc.shared.constants as c
 import rmc.shared.secrets as s
 import rmc.models as m
@@ -269,7 +268,7 @@ def profile_page(profile_user_id):
 
     # Fetch courses for transcript, which need more detailed information
     # than other courses (such as mutual and last term courses for friends)
-    transcript_courses = m.Course.objects(id__in=profile_course_ids)
+    transcript_courses = list(m.Course.objects(id__in=profile_course_ids))
 
     # Fetch remainining courses that need less data. This will be mutual
     # and last term courses for profile user's friends
