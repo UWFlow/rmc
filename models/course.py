@@ -1,6 +1,5 @@
 import re
 
-from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
 import mongoengine as me
 
 import professor
@@ -93,7 +92,6 @@ class Course(me.Document):
     # TODO(mack): this function is way too overloaded, even to separate into
     # multiple functions based on usage
     @classmethod
-    @line_profile
     def get_course_and_user_course_dicts(cls, courses, current_user,
             include_friends=False, include_all_users=False,
             full_user_courses=False):
