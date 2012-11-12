@@ -100,7 +100,7 @@ class UserCourse(me.Document):
 
     @property
     def term_name(self):
-        return term.Term(self.term_id).name
+        return term.Term.name_from_id(self.term_id)
 
     @property
     def has_reviewed(self):
@@ -118,7 +118,7 @@ class UserCourse(me.Document):
             'user_id': self.user_id,
             # TODO(Sandy): We probably don't need to pass down term_id
             'term_id': self.term_id,
-            'term_name': term.Term(id=self.term_id).name,
+            'term_name': self.term_name,
             'course_id': self.course_id,
             'professor_id': self.professor_id,
             'course_review': self.course_review.to_dict(),

@@ -11,24 +11,36 @@ class Term(me.Document):
     # eg. 2011_05 => term that began May, 2011 => Spring 2011
     id = me.StringField(primary_key=True)
 
-    @property
-    def year(self):
-        return int(self.id[:4])
+    @staticmethod
+    def year_from_id(tid):
+        return int(tid[:4])
 
     @property
-    def season(self):
+    def year(self):
+        return Term.year_from_id(self.id)
+
+    @staticmethod
+    def season_from_id(tid):
         # currently specific to waterloo
-        month = int(self.id[5:])
+        month = int(tid[5:])
         if (month == Term.INVALID_TERM_MONTH):
             return ''
         return Term.SEASONS[(month-1) / 4]
 
     @property
-    def name(self):
-        if self.id == self.SHORTLIST_TERM_ID:
+    def season(self):
+        return Term.season_from_id(self.id)
+
+    @staticmethod
+    def name_from_id(tid):
+        if tid == Term.SHORTLIST_TERM_ID:
             return 'Shortlist'
         else:
-            return '%s %d' % (self.season, self.year)
+            return '%s %d' % (Term.season_from_id(tid), Term.year_from_id(tid))
+
+    @property
+    def name(self):
+        return Term.name_from_id(self.id)
 
     @classmethod
     def get_id_from_year_season(cls, year, season):
