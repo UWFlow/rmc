@@ -92,6 +92,19 @@ class UserCourse(me.Document):
     course_review = me.EmbeddedDocumentField(review.CourseReview, default=review.CourseReview())
     professor_review = me.EmbeddedDocumentField(review.ProfessorReview, default=review.ProfessorReview())
 
+    DEFAULT_TO_DICT_FIELDS = [
+        'id',
+        'user_id',
+        'term_id',
+        'term_name',
+        'course_id',
+        'professor_id',
+        'course_review',
+        'professor_review',
+        'has_reviewed',
+        'program_year_id',
+    ]
+
     # TODO(mack): add section_id
     # section_id = StringField()
 
@@ -112,20 +125,16 @@ class UserCourse(me.Document):
             or self.professor_review.passion is not None
         )
 
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'user_id': self.user_id,
-            # TODO(Sandy): We probably don't need to pass down term_id
-            'term_id': self.term_id,
-            'term_name': self.term_name,
-            'course_id': self.course_id,
-            'professor_id': self.professor_id,
-            'course_review': self.course_review.to_dict(),
-            'professor_review': self.professor_review.to_dict(),
-            'has_reviewed': self.has_reviewed,
-            'program_year_id': self.program_year_id,
-        }
+    def to_dict(self, fields=DEFAULT_TO_DICT_FIELDS):
+        # NOTE: DO NOT MODIFY parameter `fields` in this fn, because it's
+        #     statically initialized with a non-primitive default.
+
+        # TODO(david): Reuse code below for other to_dict() methods
+        def map_field(prop):
+            val = getattr(self, prop)
+            return val.to_dict() if hasattr(val, 'to_dict') else val
+
+        return { f: map_field(f) for f in fields }
 
     def save(self, *args, **kwargs):
         # TODO(Sandy): Use transactions

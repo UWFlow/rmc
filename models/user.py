@@ -145,7 +145,6 @@ class User(me.Document):
 
     @property
     def has_shortlisted(self):
-        print _term
         for uc in self.get_user_courses():
             if _term.Term.is_shortlist_term(uc.term_id):
                 return True
