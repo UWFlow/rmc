@@ -18,3 +18,7 @@ ipython==0.13.1
 
 # Useful for profiling and debugging
 Flask-DebugToolbar==0.7.1
+
+# NOTE(jlfwong): Since I *just* started working on this, version might fluctuate
+# a lot, so please do not hardcode a version number here
+Flask-DebugToolbar-LineProfilerPanel
