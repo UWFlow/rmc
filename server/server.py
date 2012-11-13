@@ -1,6 +1,8 @@
 from datetime import datetime
 import bson
 import flask
+from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
+assert line_profile  # silence pyflakes
 import functools
 import logging
 import mongoengine as me
