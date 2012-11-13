@@ -59,6 +59,12 @@
 <div class="row-fluid">
   <div class="span6 left-col">
     <p class="description"><%- course.get('description') %></p>
+    <% if (course.has('prereqs')) { %>
+      <p class="prereqs">
+        <strong>Prereqs:</strong>
+        <%= course.getReqsHtml(course.get('prereqs')) %>
+      </p>
+    <% } %>
     <% if (course.get('terms_offered').length) { %>
       <div class="terms-offered">
         <%
@@ -77,12 +83,6 @@
         <span class="label winter <%- offered('01') %>">Winter</span>
         <span class="label spring <%- offered('05') %>">Spring</span>
       </div>
-    <% } %>
-    <% if (course.has('prereqs')) { %>
-      <p class="prereqs">
-        <strong>Prereqs:</strong>
-        <%= course.getReqsHtml(course.get('prereqs')) %>
-      </p>
     <% } %>
   </div>
   <div class="span6 right-col">
@@ -127,7 +127,7 @@
 {# TODO(mack): remove harcode by storing attributes in User rather than
   stashing in UserCourse #}
 <a href="<%- friend.profile_url %>">
-  <img class="friend-pic-img img-rounded"
+  <img class="friend-pic-img"
     src="<%- friend.fb_pic_url %>">
 </a>
 {% endcall %}

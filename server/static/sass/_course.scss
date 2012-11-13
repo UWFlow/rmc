@@ -204,16 +204,19 @@ $inner-padding: 18px;
 
     .sample-friends {
       opacity: 0.7;
-      @include filter(grayscale(1.0));
+      > .friend-collection {
+        @include filter(grayscale(0.6));
+      }
     }
 
     &:hover .sample-friends {
       opacity: 1.0;
-      @include filter(none);
+      > .friend-collection {
+        @include filter(none);
+      }
     }
 
     .sample-friends {
-
       $friend-pic-size: 30px;
       $friend-pic-margin: 3px;
       $friend-info-width: 120px;
