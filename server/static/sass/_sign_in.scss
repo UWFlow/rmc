@@ -66,10 +66,6 @@
 
     // TODO(mack): investigate why position:absolute doesn't work here
     position: absolute;
-    &.affix {
-      position: fixed;
-      top: 0px;
-    }
 
     opacity: 0.9;
     &:hover {
