@@ -34,6 +34,12 @@ sudo apt-get install -y unzip
 sudo apt-get install -y ruby rubygems
 sudo REALLY_GEM_UPDATE_SYSTEM=1 gem update --system
 
+sudo pip install virtualenv
+mkdir -p /home/rmc/.virtualenvs
+RMC_VIRTUALENV_DIR=/home/rmc/.virtualenvs/rmc
+virtualenv --no-site-packages "$RMC_VIRTUALENV_DIR"
+source "$RMC_VIRTUALENV_DIR"/bin/activate
+
 echo "Prepping EBS mount points"
 sudo mkdir -p /ebs/data
 sudo chown $USER /ebs/data
