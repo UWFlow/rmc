@@ -83,7 +83,7 @@ sudo rm -rf /etc/apt/sources.list.d/10gen.list
 sudo /bin/sh -c 'echo "deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen" > /etc/apt/sources.list.d/10gen.list'
 sudo apt-get update
 sudo apt-get install -y mongodb-10gen
-sudo killall -q mongod
+sudo killall mongod || true
 sudo rm -f /etc/init/mongodb.conf  # Remove annoying upstart daemon to install ours
 sudo update-rc.d -f mongo_daemon remove
 sudo ln -sfnv $CONFIG_DIR/etc/init.d/mongo_daemon /etc/init.d
@@ -98,6 +98,7 @@ sudo apt-get install -y redis-server
 mkdir -p /home/rmc/data/redis/
 # TODO(david): Do this better (redis daemon changes user to redis)
 chmod a+w /home/rmc/data/redis/
+chmod a+w /home/rmc/data/logs/
 sudo rm -f /etc/init/redis-server.conf  # Remove annoying upstart daemon
 sudo service redis-server stop  # Stop so we can start redis using our config
 sudo update-rc.d -f redis-server remove
@@ -115,7 +116,9 @@ sudo service nginx restart
 
 echo "Installing node and npm"
 sudo apt-get install -y nodejs
-curl https://npmjs.org/install.sh | sudo sh
+# TODO(mack): currently fails w/: cannot open /dev/tty: No such device or address
+# So just running manually on server for now
+#curl https://npmjs.org/install.sh | sudo sh
 
 echo "Setting up rmc and dependencies"
 # TODO(david): Call setup_ubuntu.sh
@@ -125,11 +128,12 @@ sudo apt-get install -y libxml2-dev libxslt-dev
 sudo gem install compass
 ( cd rmc/server && compass init --config config.rb )
 # Setup bundle
+sudo gem install rdoc
 sudo gem install bundle
 sudo gem install rdoc-data; sudo rdoc-data --install
 ( cd rmc/server && bundle install )
 # Install pip requirements: sudo because we don't set up virtualenv
-( cd rmc && sudo pip install -r requirements.txt )
+( cd rmc && pip install -r requirements.txt )
 # Import data from various text files
 ( cd rmc && make init_data )
 mkdir -p /home/rmc/logs/server

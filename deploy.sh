@@ -17,7 +17,7 @@ cd $HOME/rmc
 git pull
 
 echo "Installing requirements"
-sudo pip install -r requirements.txt
+pip install -r requirements.txt
 
 echo "Compiling compass"
 compass compile server --output-style compressed --force
