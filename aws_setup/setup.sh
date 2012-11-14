@@ -115,10 +115,10 @@ sudo ln -sfnv /etc/nginx/sites-available/rmc /etc/nginx/sites-enabled/rmc
 sudo service nginx restart
 
 echo "Installing node and npm"
-sudo apt-get install -y nodejs
-# TODO(mack): currently fails w/: cannot open /dev/tty: No such device or address
-# So just running manually on server for now
-#curl https://npmjs.org/install.sh | sudo sh
+sudo apt-get install -y python-software-properties
+sudo add-apt-repository -y ppa:chris-lea/node.js
+sudo apt-get update -y
+sudo apt-get install -y nodejs npm
 
 echo "Setting up rmc and dependencies"
 # TODO(david): Call setup_ubuntu.sh
@@ -145,5 +145,5 @@ sudo update-rc.d rmc_daemon defaults
 sudo service rmc_daemon start
 
 echo "Installing crontab"
-crontab $CONFIG_DIR/crontab
 sudo apt-get install -y mailutils
+crontab $CONFIG_DIR/crontab
