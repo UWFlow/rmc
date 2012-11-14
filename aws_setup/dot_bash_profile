@@ -8,3 +8,4 @@ fi
 export HISTFILESIZE=20000
 # show timestamps with history command
 export HISTTIMEFORMAT="%F %T "
+. /home/rmc/.virtualenvs/rmc/bin/activate
