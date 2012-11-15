@@ -4,6 +4,10 @@
   <link rel="stylesheet" href="{{ '/static/css/index_page.css'|version }}">
 {% endblock %}
 
+{% block head_misc %}
+  <link rel="prerender" href="/courses">
+{% endblock %}
+
 {% set nav_item = "landing" %}
 
 {% block head_scripts %}
