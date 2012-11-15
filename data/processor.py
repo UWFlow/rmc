@@ -65,6 +65,8 @@ def import_courses():
         number = str(number)
         course_title = course_title.lower()
         course_title = re.sub(r'\s+', ' ', course_title)
+        # Separate on hypens in title for keywords list
+        course_title = re.sub(r'-', ' ', course_title)
         keywords = [department, number, department + number]
         keywords.extend(course_title.split(' '))
         return keywords
