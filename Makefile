@@ -33,6 +33,9 @@ deploy:
 		cat deploy.sh | ssh rmc DEPLOYER=`whoami` sh; \
 	fi
 
+stats:
+	PYTHONPATH=.. python analytics/stats.py
+
 clean:
 	find . -name '*.pyc' -delete
 	rm -rf server/static/css
