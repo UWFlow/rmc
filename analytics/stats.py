@@ -32,11 +32,17 @@ def print_generic_stats():
         pr = uc.professor_review
         if cr.comment:
             uc_cr += 1
-        if cr.interest or cr.easiness or cr.usefulness:
+        if cr.interest:
+            uc_crat += 1
+        if cr.easiness:
+            uc_crat += 1
+        if cr.usefulness:
             uc_crat += 1
         if pr.comment:
             uc_pr += 1
-        if pr.clarity or pr.passion:
+        if pr.clarity:
+            uc_prat += 1
+        if pr.passion:
             uc_prat += 1
 
     print "Total UserCourse Course reviews"
@@ -81,14 +87,20 @@ def ratings_given(user):
     rating_count = 0
     for uc in ucs:
 	cr = uc.course_review
-        if cr.interest or cr.easiness or cr.usefulness:
+        if cr.interest:
+            rating_count += 1
+        if cr.easiness:
+            rating_count += 1
+        if cr.usefulness:
             rating_count += 1
         pr = uc.professor_review
-        if pr.clarity or pr.passion:
+        if pr.clarity:
+            rating_count += 1
+        if pr.passion:
             rating_count += 1
     return rating_count
 
-def print_users_who_reviewed():
+def print_users_rr_counts():
     users = m.User.objects()
     user_review_count = 0
     user_rating_count = 0
@@ -106,9 +118,11 @@ def print_users_who_reviewed():
             user_rating_count += 1
     print "Users who reviewed"
     print user_review_count
+    print "Total reviews (course + prof)"
     print total_reviews
     print "Users who rated"
     print user_rating_count
+    print "Total ratings (of any kind)"
     print total_ratings
 
 
@@ -169,8 +183,8 @@ if __name__ == '__main__':
     courses = m.User.objects()
     ucs = m.User.objects()
 
-    print_program_names(users)
+    print_generic_stats()
+    print_users_rr_counts()
+    #print_program_names(users)
     #print_exam_collection()
-    #print_generic_stats()
     #print users_as_of(datetime(2012, 10, 19))
-    #print_users_who_reviewed()
