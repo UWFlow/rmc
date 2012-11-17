@@ -330,6 +330,11 @@ def profile_page(profile_user_id):
             profile_uc_dict = profile_user_course_by_course.get(course.id)
             profile_user_course_id = profile_uc_dict['id']
             user_course_dicts[profile_user_course_id] = profile_uc_dict
+
+            # Since we only fetched the user courses of the logged in user in
+            # m.Course.get_course_and_user_course_dicts() above, gotta also
+            # add the user courses of the profile user here
+            user_course_dict_list.append(profile_uc_dict)
         else:
             profile_user_course_id = course_dict.get('user_course_id')
             if profile_user_course_id:
