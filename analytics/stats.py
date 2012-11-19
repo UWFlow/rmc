@@ -153,6 +153,91 @@ def print_program_names(users):
         if user.program_name:
             print user.program_name
 
+def print_ratings_count_histogram():
+    '''
+    Print the count of ratings for each UserCourse for course/prof reviews
+    '''
+    ucs = m.UserCourse.objects()
+    cr_hist = []
+    pr_hist = []
+    for i in range(0, 4):
+        cr_hist.append(0)
+    for i in range(0, 3):
+        pr_hist.append(0)
+    for uc in ucs:
+        cr_count = 0
+        pr_count = 0
+        cr = uc.course_review
+        pr = uc.professor_review
+        if cr.interest:
+            cr_count += 1
+        if cr.easiness:
+            cr_count += 1
+        if cr.usefulness:
+            cr_count += 1
+        if pr.clarity:
+            pr_count += 1
+        if pr.passion:
+            pr_count += 1
+        cr_hist[cr_count] += 1
+        pr_hist[pr_count] += 1
+    print "UserCourse (Course Review) Rating Count Histogram"
+    print cr_hist
+    sanity_check_count = 0
+    for i in range(0, 4):
+        sanity_check_count += cr_hist[i]
+    print "Sum of indices for Course Reviews:"
+    print sanity_check_count
+
+    print "(Sanity) UserCourse (Prof Review) Rating Count Histogram"
+    print pr_hist
+    sanity_check_count = 0
+    for i in range(0, 3):
+        sanity_check_count += pr_hist[i]
+    print "(Sanity) Sum of indices for Prof Reviews:"
+    print sanity_check_count
+
+def print_ratings_histogram():
+    '''
+    Prints a historgram of each rating.
+    TODO(Sandy): Don't hardcode rating names and indices. headache right now.
+    want sleep
+    '''
+    hist = {}
+    hist['i'] = 0
+    hist['e'] = 0
+    hist['u'] = 0
+    hist['c'] = 0
+    hist['p'] = 0
+    total_ratings_count = 0
+    ucs = m.UserCourse.objects()
+    for uc in ucs:
+        cr = uc.course_review
+        pr = uc.professor_review
+        if cr.interest:
+            hist['i'] += 1
+            total_ratings_count += 1
+        if cr.easiness:
+            hist['e'] += 1
+            total_ratings_count += 1
+        if cr.usefulness:
+            hist['u'] += 1
+            total_ratings_count += 1
+        if pr.clarity:
+            hist['c'] += 1
+            total_ratings_count += 1
+        if pr.passion:
+            hist['p'] += 1
+            total_ratings_count += 1
+    print "Ratings histogram"
+    print "Interest: %d" % hist['i']
+    print "Easiness: %d" % hist['e']
+    print "Usefulness: %d" % hist['u']
+    print "Clarity: %d" % hist['c']
+    print "Passion: %d" % hist['p']
+    print "(Sanity) Rating count"
+    print total_ratings_count
+
 def has_user_taken_cid(user, course_id):
     return course_id in user.course_ids
 
@@ -183,6 +268,8 @@ if __name__ == '__main__':
     courses = m.User.objects()
     ucs = m.User.objects()
 
+    #print_ratings_histogram()
+    #print_ratings_count_histogram()
     print_generic_stats()
     print_users_rr_counts()
     #print_program_names(users)
