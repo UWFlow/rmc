@@ -2,6 +2,8 @@ import mongoengine as me
 import rmc.models as m
 from datetime import datetime
 from datetime import timedelta
+import time
+from collections import defaultdict
 
 me.connect('rmc', host='localhost', port=27017)
 
@@ -259,6 +261,25 @@ def cid(course_id):
 def uid(user_id):
     return m.User.objects.with_id(get_user)
 
+# CSV dumps
+def csv_user_growth():
+    users = m.User.objects()
+    hist = defaultdict(int)
+    for u in users:
+        jd = u.join_date
+        jd -= timedelta(
+                hours=jd.hour,
+                minutes=jd.minute,
+                seconds=jd.second,
+                microseconds=jd.microsecond)
+        timestamp = time.mktime(jd.timetuple())
+        # TODO(sandy): Change timestamp to nicer format
+        hist[timestamp] += 1
+    csv_result = "\"Date\", \"User Objects\"\n"
+    for key, val in hist.iteritems():
+        csv_result += "%d, %d\n" % (key, val)
+    return csv_result
+
 # TODO(Sandy): cleanup this file overtime
 # The basic idea is to add queries to this file whenever we want to know
 # something, we should never directly do it in ipython. This way, we can reuse
@@ -268,6 +289,11 @@ if __name__ == '__main__':
     courses = m.User.objects()
     ucs = m.User.objects()
 
+    # CSV Dumps
+    #csv = csv_user_growth()
+    #print csv
+
+    # Ratings/Reviews histograms
     #print_ratings_histogram()
     #print_ratings_count_histogram()
     print_generic_stats()
