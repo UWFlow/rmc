@@ -461,7 +461,7 @@ def unsubscribe_user():
     unsubscribe_user_id = req.form.get('pasta')
 
     if not unsubscribe_user_id:
-        logging.warn('Missing user_id (%s)' % user_id)
+        logging.warn('Missing user_id (%s)' % unsubscribe_user_id)
         return flask.redirect('/')
 
     try:
@@ -494,7 +494,7 @@ def unsubscribe_user():
             },
         )
     else:
-        logging.warn('User object (%s) not found' % user_id)
+        logging.warn('User object (%s) not found' % unsubscribe_user_id)
         return flask.redirect('/')
 
     return flask.redirect('/')
