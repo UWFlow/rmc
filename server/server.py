@@ -458,29 +458,39 @@ def unsubscribe_page():
 def unsubscribe_user():
     current_user = view_helpers.get_current_user()
     req = flask.request
-    user_id = req.form.get('pasta')
+    unsubscribe_user_id = req.form.get('pasta')
 
-    if not user_id:
+    if not unsubscribe_user_id:
         logging.warn('Missing user_id (%s)' % user_id)
         return flask.redirect('/')
 
     try:
-        user_id = bson.ObjectId(user_id)
+        unsubscribe_user_id = bson.ObjectId(unsubscribe_user_id)
     except:
-        logging.warn('Invalid user_id (%s)' % user_id)
+        logging.warn('Invalid user_id (%s)' % unsubscribe_user_id)
         return flask.redirect('/')
 
-    user = m.User.objects.with_id(user_id)
+    user = m.User.objects.with_id(unsubscribe_user_id)
     if user:
         user.email_unsubscribed = True
         user.save()
+
+        # TODO(Sandy): Temporary until we enforce logged in unsub's or just
+        # generate and send out a hash next time
+        notes = "Legit unsub"
+        if current_user:
+            if current_user.id != unsubscribe_user_id:
+                notes = "Suspicious: Non-matching logged in user_id/unsub_id"
+        else:
+            notes = "Suspicious: No logged in user_id"
 
         rmclogger.log_event(
             rmclogger.LOG_CATEGORY_API,
             rmclogger.LOG_EVENT_UNSUBSCRIBE_USER, {
                 'current_user': current_user.id if current_user else None,
-                'unsubscribe_user': user_id,
+                'unsubscribe_user': unsubscribe_user_id,
                 'request_form': req.form,
+                'notes': notes,
             },
         )
     else:
