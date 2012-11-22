@@ -117,12 +117,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
      */
     getInteractMode: function() {
       var userCourse = this.get('user_course');
-      if (window.pageData.ownProfile === false) {
-        if (!userCourse || !userCourse.term_id) {
-          return 'add';
-        }
+      var mode = userCourse && userCourse.get('term_id') ? 'remove' : 'add';
+      if (window.pageData.ownProfile === false && mode === 'remove') {
+        return null;
       } else {
-        return userCourse && userCourse.get('term_id') ? 'remove' : 'add';
+        return mode;
       }
     }
   });
