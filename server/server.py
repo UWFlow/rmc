@@ -432,18 +432,21 @@ def login_as_demo_user():
 def unsubscribe_page():
     current_user = view_helpers.get_current_user()
     req = flask.request
-    user_id = req.args.get('pasta')
+    unsubscribe_user_id = req.args.get('pasta')
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
         rmclogger.LOG_EVENT_UNSUBSCRIBE, {
             'current_user': current_user.id if current_user else None,
-            'unsubscribe_user': user_id,
+            'unsubscribe_user': unsubscribe_user_id,
             'request_args': req.args,
         },
     )
 
-    return flask.render_template('unsubscribe_page.html')
+    return flask.render_template('unsubscribe_page.html',
+        page_script='unsubscribe_page.js',
+        unsubscribe_user=unsubscribe_user_id,
+    )
 
 # TODO(mack): move API's to separate file
 # TODO(mack): add security measures (e.g. require auth, xsrf cookie)
@@ -451,23 +454,14 @@ def unsubscribe_page():
 ######## API ##################
 ###############################
 
-# TODO(Sandy): not being called yet
 @app.route('/api/user/unsubscribe', methods=['POST'])
 def unsubscribe_user():
     current_user = view_helpers.get_current_user()
     req = flask.request
     user_id = req.form.get('pasta')
 
-    rmclogger.log_event(
-        rmclogger.LOG_CATEGORY_IMPRESSION,
-        rmclogger.LOG_EVENT_UNSUBSCRIBE, {
-            'current_user': current_user.id if current_user else None,
-            'unsubscribe_user': user_id,
-            'request_form': req.form,
-        },
-    )
-
     if not user_id:
+        logging.warn('Missing user_id (%s)' % user_id)
         return flask.redirect('/')
 
     try:
@@ -475,13 +469,25 @@ def unsubscribe_user():
     except:
         logging.warn('Invalid user_id (%s)' % user_id)
         return flask.redirect('/')
+
     user = m.User.objects.with_id(user_id)
     if user:
         user.email_unsubscribed = True
         user.save()
+
+        rmclogger.log_event(
+            rmclogger.LOG_CATEGORY_API,
+            rmclogger.LOG_EVENT_UNSUBSCRIBE_USER, {
+                'current_user': current_user.id if current_user else None,
+                'unsubscribe_user': user_id,
+                'request_form': req.form,
+            },
+        )
     else:
-        logging.warn('user_id (%s) not found' % user_id)
+        logging.warn('User object (%s) not found' % user_id)
         return flask.redirect('/')
+
+    return flask.redirect('/')
 
 @app.route('/api/courses/<string:course_ids>', methods=['GET'])
 # TODO(mack): find a better name for function
