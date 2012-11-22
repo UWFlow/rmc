@@ -22,7 +22,7 @@ CURRENT_TERM_ID = '2012_09'
 
 RATINGS_CONFIDENCE = 0.95
 
-EMAIL_SENDER = 'Flow Developers <flow@uwflow.com>'
+EMAIL_SENDER = 'UW Flow <flow@uwflow.com>'
 
 # Demo accounts
 # TODO(Sandy): Have multiple demo accounts?
