@@ -1,0 +1,36 @@
+{% extends 'base_page.html' %}
+
+{% import 'macros.html' as macros %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ '/static/css/unsubscribe_page.css'|version }}">
+{% endblock %}
+
+{% block page_title %}About{% endblock %}
+
+{% block body %}
+<div id="about-container">
+  <div class="row-fluid">
+    <div class="span12">
+      <p class="lead">
+        If you really want to say goodbye...forever...just click below :'(
+      </p>
+
+      <button class="unsubscribe_button btn">
+        Unsubscribe
+      </button>
+    </div>
+  </div>
+
+</div>
+
+
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.pageData.unsubscriber_id = {{ unsubscriber_id|tojson|safe }};
+</script>
+{% endblock %}
