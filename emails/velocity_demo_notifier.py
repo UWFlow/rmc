@@ -43,7 +43,9 @@ P.S. We're working on getting some amazing prizes to give out. Stay updated by..
 Liking us on Facebook: www.fb.com/planyourflow
 Following us on Twitter: www.twitter.com/useflow
 
-P.P.S. Come out for a chance to win a pair of Dr. Dre headphones! Just tweet with #UWDemoDay and @uwVeloCity (oh and @useflow wouldn't hurt either)."""
+P.P.S. Come out for a chance to win a pair of Dr. Dre headphones! Just tweet with #UWDemoDay and @uwVeloCity (oh and @useflow wouldn't hurt either).
+
+Are we annoying you? Sorry :( Feel free to unsubscribe at http://uwflow.com/unsubscribe?pasta=%(user_id)s"""
 
     # TODO(mack): should not show num_friends if it's 0
     html_email_body = \
@@ -65,7 +67,7 @@ P.P.S. Come out for a chance to win a pair of Dr. Dre headphones! Just tweet wit
 
 <p>P.P.S. Come out for a chance to <b>win a pair of Dr. Dre headphones!</b> Just tweet with #UWDemoDay and @uwVeloCity (oh and <a href="http://twitter.com/useflow">@useflow</a> wouldn't hurt either).</p>
 
-<p style="border-top: 1px solid #CCC; padding-top: 10px; margin-top: 50px;"><small style="color:#999">Are we annoying you? Sorry :( Feel free to <a style="color:#999" href="http://uwflow.com/unsubscribe?pasta=%(user_id)s">unsubscribe</a></small></p>"""
+<p style="border-top: 1px solid #CCC; padding-top: 10px; margin-top: 50px;"><small style="color:#999">Are we annoying you? Sorry :( Feel free to <a style="color:#999" href="http://uwflow.com/unsubscribe?pasta=%(user_id)s">unsubscribe</a>.</small></p>"""
 
     # TODO(mack): .only()
     # TODO(mack): Inspect why sent_exam_schedule_notifier_email=False doesn't work
