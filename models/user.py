@@ -82,6 +82,8 @@ class User(me.Document):
     sent_exam_schedule_notifier_email = me.BooleanField(default=False)
     sent_velocity_demo_notifier_email = me.BooleanField(default=False)
 
+    email_unsubscribed = me.BooleanField(default=False)
+
     @property
     def name(self):
         return '%s %s' % (self.first_name , self.last_name)

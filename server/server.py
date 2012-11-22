@@ -1,4 +1,5 @@
 from datetime import datetime
+import bson
 import flask
 from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
 assert line_profile  # silence pyflakes
@@ -427,11 +428,60 @@ def login_as_demo_user():
     resp.set_cookie('fb_access_token', user.fb_access_token)
     return resp
 
+@app.route('/unsubscribe', methods=['GET'])
+def unsubscribe_page():
+    current_user = view_helpers.get_current_user()
+    req = flask.request
+    user_id = req.args.get('pasta')
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_UNSUBSCRIBE, {
+            'current_user': current_user.id if current_user else None,
+            'unsubscribe_user': user_id,
+            'request_args': req.args,
+        },
+    )
+
+    return flask.render_template('unsubscribe_page.html')
+
 # TODO(mack): move API's to separate file
 # TODO(mack): add security measures (e.g. require auth, xsrf cookie)
 ###############################
 ######## API ##################
 ###############################
+
+# TODO(Sandy): not being called yet
+@app.route('/api/user/unsubscribe', methods=['POST'])
+def unsubscribe_user():
+    current_user = view_helpers.get_current_user()
+    req = flask.request
+    user_id = req.form.get('pasta')
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_UNSUBSCRIBE, {
+            'current_user': current_user.id if current_user else None,
+            'unsubscribe_user': user_id,
+            'request_form': req.form,
+        },
+    )
+
+    if not user_id:
+        return flask.redirect('/')
+
+    try:
+        user_id = bson.ObjectId(user_id)
+    except:
+        logging.warn('Invalid user_id (%s)' % user_id)
+        return flask.redirect('/')
+    user = m.User.objects.with_id(user_id)
+    if user:
+        user.email_unsubscribed = True
+        user.save()
+    else:
+        logging.warn('user_id (%s) not found' % user_id)
+        return flask.redirect('/')
 
 @app.route('/api/courses/<string:course_ids>', methods=['GET'])
 # TODO(mack): find a better name for function
@@ -862,5 +912,5 @@ if __name__ == '__main__':
         ]
     })
 
-    toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
+    #toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
     app.run()
