@@ -101,20 +101,24 @@
          http://twitter.github.com/bootstrap/scaffolding.html#responsive #}
     <div id="fb-root"></div>
 
-    <div class="navbar navbar-static-top">
+    <div class="navbar navbar-fixed-top">
       <div class="container-fluid">
-        <a class="brand" href="/">
+        <a class="brand nav-item" href="/">
           <i class="logo logo-no-color"></i>
           <i class="logo logo-color"></i>
           <span class="beta">UW Beta</span>
         </a>
         <ul class="nav pull-right">
           <li class="{{ 'active' if nav_item == 'courses' else '' }}">
-            <a href="/courses"><i class="icon-reorder"></i> Search Courses</a>
+            <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Search Courses</a>
           </li>
           {% if current_user %}
             <li class="{{ 'active' if nav_item == 'profile' else '' }}">
-              <a href="/profile"><i class="icon-user"></i> Profile</a>
+              <a class="nav-item" href="/profile">
+                <img class="img img-rounded user-pic" width="30" height="30"
+                    src="{{ current_user.fb_pic_url }}?type=square">
+                  <span class="user-points badge">2300</span>
+              </a>
             </li>
             <li class="divider-vertical"></li>
             <li>
