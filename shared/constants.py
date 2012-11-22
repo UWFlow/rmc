@@ -22,8 +22,6 @@ CURRENT_TERM_ID = '2012_09'
 
 RATINGS_CONFIDENCE = 0.95
 
-EMAIL_SENDER = 'UW Flow <flow@uwflow.com>'
-
 # Demo accounts
 # TODO(Sandy): Have multiple demo accounts?
 DEMO_ACCOUNT_FBID = '100004384843130'
