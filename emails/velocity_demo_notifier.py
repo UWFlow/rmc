@@ -75,7 +75,7 @@ Are we annoying you? Sorry :( Feel free to unsubscribe at http://uwflow.com/unsu
     #    email__exists=True,
     #)
     users = m.User.objects(
-        fbid__in=['1647810326'],
+        fbid__in=['1647810326', '541400376', '1643490055', '504457208', '518430508'],
         email__exists=True,
     )
 
