@@ -112,10 +112,8 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
   })();
 
   $(function() {
-    $('.navbar .signout-btn').tooltip({
-      title: 'Sign out',
-      placement: 'bottom'
-    }).click(function() {
+    $('.navbar [title]').tooltip({ placement: 'bottom' });
+    $('.navbar .signout-btn').click(function() {
       $.removeCookie('fbid', { path: '/' });
       $.removeCookie('fb_access_token', { path: '/' });
       $.removeCookie('fb_access_token_expires_in', { path: '/' });

@@ -1,6 +1,11 @@
 @import 'base';
 @import 'sign_in';
 
+
+.navbar {
+  background: rgba(250, 250, 250, 0.6);
+}
+
 #landing-header {
   width: 100%;
   position: absolute;
@@ -10,6 +15,7 @@
   padding: 0;
   background-color: white;
   min-width: 700px;
+
 
   .header-bg {
     opacity: 0;

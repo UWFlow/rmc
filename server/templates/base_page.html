@@ -112,17 +112,31 @@
           <li class="{{ 'active' if nav_item == 'courses' else '' }}">
             <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Search Courses</a>
           </li>
+
           {% if current_user %}
-            <li class="{{ 'active' if nav_item == 'profile' else '' }}">
-              <a class="nav-item" href="/profile">
+            <li class="divider-vertical"></li>
+
+            <li class="{{ 'active' if own_profile else '' }}">
+              <a title="Go to profile" class="nav-item" href="/profile">
                 <img class="img img-rounded user-pic" width="30" height="30"
                     src="{{ current_user.fb_pic_url }}?type=square">
                   <span class="user-points badge">2300</span>
               </a>
             </li>
+
             <li class="divider-vertical"></li>
-            <li>
-              <a class="signout-btn" href="#"><i class="icon-signout"></i></a>
+
+            <li class="dropdown">
+              <a class="nav-item dropdown-toggle" data-toggle="dropdown">
+                <i class="icon-caret-down"></i>
+              </a>
+              <ul class="dropdown-menu">
+                <li>
+                  <a class="signout-btn">
+                    <i class="icon-signout"></i> Sign out
+                  </a>
+                </li>
+              </ul>
             </li>
           {% endif %}
         </ul>

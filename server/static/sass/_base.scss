@@ -114,8 +114,6 @@ a:hover {
 
 .navbar {
   z-index: 100;
-  //position: relative;
-  //background: rgba(250, 250, 250, 0.75);
   background: rgb(250, 250, 250);
   @include box-shadow(0 1px 4px rgba(0, 0, 0, 0.2));
   height: $navbar-height;
