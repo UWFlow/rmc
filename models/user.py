@@ -185,14 +185,6 @@ class User(me.Document):
         return mutual_course_ids_by_friend
 
     def cache_mutual_course_ids(self, redis):
-        courses_by_user = {}
-        for user in User.objects.only('friend_ids', 'course_history'):
-            friend_ids = [str(friend_id) for friend_id in user.friend_ids]
-            ucs = _user_course.UserCourse.objects(
-                    id__in=user.course_history).only('course_id')
-            course_ids = [uc.course_id for uc in ucs]
-            courses_by_user[str(user.id)] = [friend_ids, set(course_ids)]
-
         friends = User.objects(id__in=self.friend_ids).only('course_history')
         friend_map = {}
         for friend in friends:
