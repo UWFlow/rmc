@@ -77,10 +77,10 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
       // Set the width here instead of in the template for animations
       this.$('.shown-rating .rating-progress').each(function(i, elem) {
         var percent = ratings.at(i).getPercent();
-        $(elem)
-          .find('.positive').css('width', percent + '%')
-          .end()
-          .find('.negative').css('width', (100 - percent) + '%');
+        $(elem).find('.positive').css('width', percent + '%');
+        if (ratings.at(i).get('count') === 0) {
+          $(elem).hide();
+        }
       });
 
       return this;
