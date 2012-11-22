@@ -152,17 +152,29 @@ function($, _, __) {
     });
   };
 
-  var showSendDialogProfile = function(cb) {
-    // TODO(Sandy): Don't hardcode link?
-    var sendDialogLink = 'http://uwflow.com';
+  // TODO(Sandy): Don't hardcode this?
+  var dialogBaseUrl = 'http://uwflow.com';
+  var logoPath = '/static/img/logo/flow_75x75.png';
 
+  var showSendDialogProfile = function(cb) {
     FB.ui({
-        method: 'send',
-        name: 'Flow',
-        link: sendDialogLink,
-        picture: sendDialogLink + '/static/img/logo/flow_75x75.png',
-        description: 'Plan your courses with friends in mind!'
-      }, cb);
+      method: 'send',
+      name: 'Flow',
+      link: dialogBaseUrl,
+      picture: dialogBaseUrl + logoPath,
+      description: 'Plan your courses with friends in mind!'
+    }, cb);
+  };
+
+  var showFeedDialog = function(name, caption, description, cb) {
+    FB.ui({
+      method: 'feed',
+      link: dialogBaseUrl,
+      picture: dialogBaseUrl + logoPath,
+      name: name,
+      caption: caption,
+      description: description
+    }, cb);
   };
 
   // Ensure FB is fully initialized before calling any of its APIs. Solution
@@ -208,7 +220,8 @@ function($, _, __) {
   var ensureInitMethods = {
     initConnectButton: initConnectButton,
     showSendDialogProfile: showSendDialogProfile,
-    checkAccessToken: checkAccessToken
+    checkAccessToken: checkAccessToken,
+    showFeedDialog: showFeedDialog
   };
   // Ensure FB is initialized before calling any functions that require FB APIs
   _.each(ensureInitMethods, function(method, name) {

@@ -114,6 +114,10 @@ function(_, _s) {
     return retVal;
   };
 
+  var truncatePreviewString = function(str, n) {
+    return str.substr(0, n-1) + (str.length > n ? '&hellip;' : '');
+  }
+
   return {
     getQueryParam: getQueryParam,
     capitalize: capitalize,
@@ -123,6 +127,7 @@ function(_, _s) {
     getDisplayRating: getDisplayRating,
     getHashCode: getHashCode,
     toDate: toDate,
-    userCourseTermIdComparator: userCourseTermIdComparator
+    userCourseTermIdComparator: userCourseTermIdComparator,
+    truncatePreviewString: truncatePreviewString
   };
 });

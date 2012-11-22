@@ -1,8 +1,9 @@
 define(
-['rmc_backbone', 'ext/jquery', 'ext/jqueryui', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/select2', 'ext/autosize', 'course', 'user', 'ext/bootstrap', 'prof'],
-function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course, _user,
-  _bootstrap, _prof) {
+['rmc_backbone', 'ext/jquery', 'ext/jqueryui', 'ext/underscore',
+'ext/underscore.string', 'ratings', 'ext/select2', 'ext/autosize', 'course',
+'user', 'ext/bootstrap', 'prof', 'facebook', 'util'],
+function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
+    _course, _user, _bootstrap, _prof, _facebook, _util) {
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
@@ -24,7 +25,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
     referenceFields: function() {
       return {
         'user': [ 'user_id', _user.UserCollection ],
-        'course': [ 'course_id', _course.CourseCollection ]
+        'course': [ 'course_id', _course.CourseCollection ],
+        'professor': [ 'professor_id', _prof.ProfCollection ]
       };
     },
 
@@ -79,6 +81,35 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       return this.get('course_review').get('ratings').find(function(rating) {
         return rating.get('name') === 'interest';
       });
+    },
+
+    promptPostToFacebook: function(reviewType) {
+      var name = '';
+      var description = '';
+      var caption = 'on Flow';
+
+      var courseCode = this.get('course').get('code');
+      // TODO(Sandy): Turn these into enums or something?
+      if (reviewType === 'COURSE') {
+        name = 'I reviewed ' + courseCode;
+        description = this.get('course_review').get('comment');
+      } else if (reviewType === 'PROFESSOR') {
+        name = 'I commented on my ' + courseCode + ' professor ' +
+            this.get('professor').get('name');
+        description = this.get('professor_review').get('comment');
+      }
+      description = _util.truncatePreviewString(description, 50);
+
+      var callback = function(response) {
+        // response.post_id is returned on success
+        // response === null on "Cancel"
+        if (response && response.post_id) {
+          // Award points!
+        }
+      };
+
+      // TODO(Sandy): Pass in proper link instead of just uwflow.com
+      _facebook.showFeedDialog(name, caption, description, callback);
     }
   });
 
@@ -234,7 +265,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
     saveComments: function(view, reviewType) {
       this.logToGA(reviewType, 'REVIEW');
       this.save()
-        .done(_.bind(view.saveSuccess, view))
+        .done(_.bind(view.saveSuccess, view, this.userCourse))
         .error(_.bind(view.saveError, view));
 
       mixpanel.track('Reviewing: Save comments', {
@@ -301,7 +332,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       _.defer(function() { $comments.trigger('input'); });
 
       if (this.review.get('comment')) {
-        this.saveSuccess();
+        this.showSaved();
         this.onFocus();
       }
 
@@ -344,13 +375,17 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         .html('<i class="icon-save"></i> Update!');
     },
 
-    saveSuccess: function() {
+    showSaved: function() {
       this.saving = false;
       this.$('.save-review')
         .removeClass('btn-warning btn-danger btn-primary')
         .addClass('btn-success')
         .prop('disabled', true)
         .html('<i class="icon-ok"></i> Posted.');
+    },
+
+    saveSuccess: function(userCourse) {
+      this.showSaved();
     },
 
     saveError: function() {
