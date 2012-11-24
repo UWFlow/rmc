@@ -202,8 +202,8 @@ def update_all_fb_friend_list():
         # TODO(Sandy): Batch requests when we need to
         if not user.is_fb_token_expired:
             try:
-                fbids = facebook.get_friend_list(user.fb_access_token)
-                user.friend_fbids = fbids
+                user.update_fb_friends(
+                        facebook.get_friend_list(user.fb_access_token))
                 user.save()
             except facebook.FacebookOAuthException as e:
                 user.fb_access_token_invalid = True

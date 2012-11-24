@@ -279,5 +279,11 @@ class User(me.Document):
                 'program_name': self.short_program_name
             }
 
+    def update_fb_friends(self, fbids):
+        self.friend_fbids = fbids
+        fb_friends = User.objects(fbid__in=self.friend_fbids).only('id', 'friend_ids')
+        # We only have friends from Facebook right now, so just set it
+        self.friend_ids = [f.id for f in fb_friends]
+
     def __repr__(self):
         return "<User: %s>" % self.name
