@@ -6,6 +6,7 @@ import mongoengine as me
 import term as _term
 import user_course as _user_course
 from rmc.shared import constants
+from rmc.shared import facebook
 
 class User(me.Document):
 
@@ -160,7 +161,7 @@ class User(me.Document):
     def should_renew_fb_token(self):
         # Should renew FB token if it expired or will expire "soon".
         future_date = datetime.datetime.now() + datetime.timedelta(
-                days=constants.FB_FORCE_TOKEN_EXPIRATION_DAYS)
+                days=facebook.FB_FORCE_TOKEN_EXPIRATION_DAYS)
         return (self.fb_access_token_expiry_date < future_date or
                 self.fb_access_token_invalid)
 

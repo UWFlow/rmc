@@ -10,6 +10,10 @@ import urlparse
 import rmc.shared.constants as c
 import rmc.shared.util as util
 
+FB_NO_ACCESS_TOKEN = 'NO_ACCESS_TOKEN'
+# A long token normally lasts for 60 days
+FB_FORCE_TOKEN_EXPIRATION_DAYS = 57
+
 def code_for_token(code, app):
     """
     Returns a dictionary containing the user's Facebook access token and seconds
@@ -125,7 +129,7 @@ def get_fb_data(signed_request, app):
 
     # Fetch long token from Facebook
     # TODO(Sandy): Migrate to Flask sessions so null tokens won't be a problem
-    fb_access_token = c.FB_NO_ACCESS_TOKEN
+    fb_access_token = FB_NO_ACCESS_TOKEN
     fb_access_token_expiry_date = datetime.now()
     code = fbsr_data.get('code')
     if code:
