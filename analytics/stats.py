@@ -1,11 +1,11 @@
-import mongoengine as me
-import rmc.models as m
+from collections import defaultdict
 from datetime import datetime
 from datetime import timedelta
+import mongoengine as me
+import rmc.models as m
+import rmc.shared.constants as c
+import sys
 import time
-from collections import defaultdict
-
-me.connect('rmc', host='localhost', port=27017)
 
 def print_generic_stats():
     #today = datetime.now() - timedelta(hours=4)
@@ -295,11 +295,21 @@ def csv_user_growth():
         csv_result += "%d, %d\n" % (key, val)
     return csv_result
 
+# TODO(Sandy): More help info
+def stats_help():
+    '''
+    Print help for stats module
+    '''
+    for val in dir(sys.modules[__name__]):
+        print val
+
 # TODO(Sandy): cleanup this file overtime
 # The basic idea is to add queries to this file whenever we want to know
 # something, we should never directly do it in ipython. This way, we can reuse
 # existing queries and avoid mistakes
 if __name__ == '__main__':
+    me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+
     users = m.User.objects()
     courses = m.User.objects()
     ucs = m.User.objects()

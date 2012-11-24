@@ -8,3 +8,5 @@ import rmc.shared.rmclogger as rmclogger
 
 import mongoengine as me
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+
+from rmc.analytics.stats import *
