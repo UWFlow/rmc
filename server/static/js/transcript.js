@@ -87,7 +87,20 @@ function($, _, _s) {
     };
   }
 
+  /**
+   * Removes grades from transcript
+   */
+  function removeGrades(data) {
+    data = data || '';
+    // '(?!^\s*![A-Z]+\s)' ensures we are not matching the number portion
+    // of the code code
+    // '\d{1,2}|100' matches the actual grade
+    return data.replace(/(?!^\s*![A-Z]+\s)\s+(\d{1,2}|100)\s/g, '');
+  }
+
+
   return {
-    parseTranscript: parseTranscript
+    parseTranscript: parseTranscript,
+    removeGrades: removeGrades
   };
 });

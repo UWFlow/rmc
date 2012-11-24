@@ -15,6 +15,7 @@ trap clean_up SIGTERM SIGINT ERR
 # TODO(mack): Could move to setup script
 # First, make the necessary directory if it doesn't exist
 mkdir -p mongodb
+mkdir -p logs
 echo "Starting mongodb"
 mongod --config config/mongodb_local.conf &
 

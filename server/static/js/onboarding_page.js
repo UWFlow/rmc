@@ -27,9 +27,9 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __) {
       this.$('[rel="tooltip"]').tooltip();
 
       if (util.getQueryParam('test')) {
-        $.get('/static/sample_transcript.txt', function(data) {
+        $.get('/static/sample_transcript.txt', _.bind(function(data) {
           this.addTranscriptData(data);
-        });
+        }, this));
       }
 
       _.defer(_.bind(this.postRender, this));
@@ -70,6 +70,17 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __) {
         transcriptData = transcript.parseTranscript(data);
         coursesByTerm = transcriptData.coursesByTerm;
       } catch (ex) {
+        console.log('data', transcript.removeGrades(data));
+        $.ajax('/api/transcript/log', {
+          data: {
+            transcript: transcript.removeGrades(data)
+          },
+          type: 'POST',
+          success: function(data) {
+            console.log('in success');
+          }
+        });
+
         console.warn('Could not parse transcript', ex);
         this.$('.transcript-error').text(
             'Uh oh. Could not parse your transcript :( ' +

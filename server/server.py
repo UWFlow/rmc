@@ -5,6 +5,7 @@ from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
 assert line_profile  # silence pyflakes
 import logging
 import mongoengine as me
+import os
 import pymongo
 import re
 import time
@@ -742,7 +743,6 @@ def upload_transcript():
     )
     return ''
 
-
 @app.route('/api/remove_transcript', methods=['POST'])
 @view_helpers.login_required
 def remove_transcript():
@@ -764,6 +764,22 @@ def remove_transcript():
         current_user.id
     )
     return ''
+
+
+# Create the directory for storing transcripts if it does not exist
+TRANSCRIPT_DIR = os.path.join(app.config['LOG_DIR'], 'transcripts')
+if not os.path.exists(TRANSCRIPT_DIR):
+    os.makedirs(TRANSCRIPT_DIR)
+
+@app.route('/api/transcript/log', methods=['POST'])
+def transcript_log():
+    file_name = '%d.txt' % int(time.time())
+    file_path = os.path.join(TRANSCRIPT_DIR, file_name)
+    with open(file_path, 'w') as f:
+        f.write(flask.request.form['transcript'])
+
+    return ''
+
 
 @app.route('/api/user/add_course_to_shortlist', methods=['POST'])
 @view_helpers.login_required
