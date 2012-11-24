@@ -199,7 +199,7 @@ function($, _, __) {
   };
 
   var checkAccessToken = function() {
-    if (window.pageData.should_renew_fb_token) {
+    if (window.pageData.shouldRenewFbToken) {
         renewAccessToken();
     }
   };
