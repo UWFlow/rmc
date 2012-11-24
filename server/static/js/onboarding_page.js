@@ -70,15 +70,11 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __) {
         transcriptData = transcript.parseTranscript(data);
         coursesByTerm = transcriptData.coursesByTerm;
       } catch (ex) {
-        console.log('data', transcript.removeGrades(data));
         $.ajax('/api/transcript/log', {
           data: {
             transcript: transcript.removeGrades(data)
           },
-          type: 'POST',
-          success: function(data) {
-            console.log('in success');
-          }
+          type: 'POST'
         });
 
         console.warn('Could not parse transcript', ex);

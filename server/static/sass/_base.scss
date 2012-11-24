@@ -6,6 +6,7 @@
 @import 'variables';
 @import 'compass/css3';
 @import 'compass/utilities/general/clearfix';
+@import 'raffle_unlock';
 
 
 /*****************************
@@ -103,7 +104,7 @@ body {
 // TODO(mack): move landing page stuff into separate file
 
 .container-fluid {
-  min-width: 1000px;
+  min-width: 968px;
   max-width: 1300px;
   margin-left: auto;
   margin-right: auto;
@@ -120,7 +121,7 @@ a:hover {
   height: $navbar-height;
 
   .container-fluid {
-    min-width: 200px;
+    position: relative;
 
     .brand {
       .logo {

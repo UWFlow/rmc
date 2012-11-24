@@ -1,0 +1,126 @@
+.navbar {
+
+  //.raffle-unlock-cover {
+  //  position: absolute;
+  //  left: 296px;
+  //  width: 608px;
+  //  height: 54px;
+  //  background-color: #fafafa;
+  //}
+
+  .raffle-unlock {
+    @include box-sizing(border-box);
+    overflow: hidden;
+    position: absolute;
+    // TODO(mack): move positioning into navbar's css
+    left: 22%;
+    width: 40%;
+
+    height: 50px;
+    background-color: #fafafa;
+    padding: 5px 15px;
+
+    .unlock-requirements {
+      font-size: 14px;
+      text-align: right;
+      margin-bottom: 2px;
+    }
+
+    &:hover {
+      height: auto;
+      background-color: #fff;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+
+      .details {
+        visibility: visible;
+      }
+    }
+
+    $innerWidth: auto;
+
+    .progress-container {
+      position: relative;
+
+      .progress {
+        position: relative;
+        margin-bottom: 0;
+        width: $innerWidth;
+
+        .bar {
+          width: 0;
+          @include transition(width 2.0 linear 0);
+        }
+
+        .bar-incomplete {
+          top: 0;
+          height: 100%;
+          position: absolute;
+          background-color: rgba(255, 255, 255, 0.5);
+        }
+      }
+
+      .tick {
+        position: absolute;
+        border-right: 1px #DDD solid;
+        height: 25px;
+        top: 0;
+        z-index: 1;
+
+        &.initial {
+          top: -6px;
+          height: 30px;
+        }
+      }
+
+      .curr-points {
+        position: absolute;
+        top: 0;
+        right: 10px;
+        font-size: 14px;
+      }
+    }
+
+    .details {
+      visibility: hidden;
+      position: relative;
+      margin-top: 5px;
+
+      .prizes {
+        height: 80px;
+
+        .prize {
+          position: absolute;
+          height: 60px;
+
+          .name {
+            font-size: 14px;
+            color: #aaa;
+            margin-bottom: 10px;
+          }
+
+          &.card .pic {
+            background: url("http://www.shopnaturalegreenonline.ca/v/vspfiles/assets/images/gift-card.jpg");
+            background-size: 50px 32px;
+            width: 50px;
+            height: 32px;
+          }
+
+          &.dre .pic {
+            background: url("http://landmarkreport.com/wp-content/uploads/2012/09/Beats-Dr.-Dre.jpg");
+            background-size: 46px 42px;
+            width: 46px;
+            height: 42px;
+          }
+        }
+      }
+
+      .description {
+        width: $innerWidth;
+      }
+
+      .learn-more {
+        float: right;
+      }
+    }
+  }
+}

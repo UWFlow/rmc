@@ -1,0 +1,67 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('raffle-unlock-tpl') %}
+<div class="unlock-requirements">
+  <% if (next_unlock_prize) { %>
+    Waterloo is <strong><%- next_unlock_prize.get('points_to_unlock') - curr_points %> points</strong>
+    away from unlocking <strong><%- next_unlock_prize.get('name') %></strong>!
+  <% } else { %>
+    Congrats on unlocking all prizes for the upcoming raffle!
+  <% } %>
+</div>
+<div class="progress-container">
+  <div class="progress progress-info">
+    <div class="bar"></div>
+    <div class="bar-incomplete"></div>
+  </div>
+  <div class="ticks">
+    <div class="tick initial"></div>
+  <% prizes.each(function(prize) { %>
+    <% var tick_percent = 100 * prize.get('points_to_unlock') / max_points_scale; %>
+    <div class="tick <%- prize.id %>"
+        style="left: <%- tick_percent %>%; margin-left: -1px;"></div>
+  <% }); %>
+  </div>
+  <div class="curr-points">
+    <strong><%- curr_points %> points</strong>
+  </div>
+</div>
+<div class="details">
+  <div class="prizes">
+    <% prizes.each(function(prize) { %>
+      <% var tick_percent = 100 * prize.get('points_to_unlock') / max_points_scale; %>
+      <% var unlocked = curr_points >= prize.get('points_to_unlock'); %>
+      <div style="left: <%- tick_percent %>%;"
+          class="prize
+            <%- prize.id %>
+            <% if (unlocked) { %>
+              unlocked
+            <% } else { %>
+              locked
+            <% } %>">
+        <div class="name <%- prize.id %>">
+          <% if (unlocked) { %>
+            <i class="icon-unlock"></i>
+          <% } else { %>
+            <i class="icon-lock"></i>
+          <% } %>
+          <%- prize.get('name') %>
+        </div>
+        <div class="pic" rel="tooltip"
+            title="
+              <% if (unlocked) { %>
+                Unlocked!
+              <% } else { %>
+                <%- prize.get('points_to_unlock') - curr_points %>
+                more points to unlock.
+              <% } %>">
+        </div>
+      </div>
+    <% }); %>
+  </div>
+  <p class="description">
+    We are currently running a raffle. Review more courses to unlock better raffle prizes!
+  </p>
+  <a class="learn-more" target="_blank" href="#">Learn more &raquo;</a>
+</div>
+{% endcall %}

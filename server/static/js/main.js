@@ -66,8 +66,8 @@ require.config({
 
 require(['ext/jquery', 'ext/underscore', 'ext/underscore.string',
     'ext/backbone', 'util', 'ext/moment', 'ext/bootstrap', 'ext/cookie',
-    'ext/toastr'],
-function($, _, _s, Backbone, util, moment, __, __, toastr) {
+    'ext/toastr', 'raffle_unlock'],
+function($, _, _s, Backbone, util, moment, __, __, toastr, _raffle_unlock) {
   // Set defaults for toastr notifications
   toastr.options = {
     timeOut: 3000
@@ -111,7 +111,8 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
     };
   })();
 
-  $(function() {
+  // TODO(mack): separate code inside into functions
+  var onDomReady = function() {
     $('.navbar [title]').tooltip({ placement: 'bottom' });
     $('.navbar .signout-btn').click(function() {
       $.removeCookie('fbid', { path: '/' });
@@ -119,28 +120,15 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
       $.removeCookie('fb_access_token_expires_in', { path: '/' });
       window.location.href = '/?logout=1';
     });
-  });
 
-  if (window.pageData.pageScript) {
-    // IF the dom ready event has already occurred, binding to jQuery's dom
-    // ready listener waits until the loaded event before firing.
-    // So manually check if domready has occurred, and if it has execute
-    // right away. In IE, gotta wait for state === 'complete' since
-    // state === 'interactive' could fire before dom is ready. See
-    // https://github.com/divad12/rmc/commit/56af16db497db5b8d4e210e784e9f63051fcce32
-    // for more info.
-    var state = document.readyState;
-    if (document.attachEvent ? state === 'complete' : state !== 'loading' ) {
+    var raffleUnlockView = new _raffle_unlock.RaffleUnlockView({});
+    $('.navbar #raffle-unlock-placeholder')
+      .replaceWith(raffleUnlockView.render().$el);
+
+    if (window.pageData.pageScript) {
       require([window.pageData.pageScript]);
-    } else {
-      $(function() {
-        require([window.pageData.pageScript]);
-      });
     }
-  }
 
-  $(function() {
-    // Async-load footer background image
     var $footer = $('footer');
     if ($footer.length && window.location.pathname !== '/') {
       // TODO(david): Use jpg and have it fade out into bg color
@@ -148,5 +136,20 @@ function($, _, _s, Backbone, util, moment, __, __, toastr) {
         'url(/static/img/footer_uw_sphere.jpg) left top no-repeat');
         //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
     }
-  });
+  };
+
+
+  // IF the dom ready event has already occurred, binding to jQuery's dom
+  // ready listener waits until the loaded event before firing.
+  // So manually check if domready has occurred, and if it has execute
+  // right away. In IE, gotta wait for state === 'complete' since
+  // state === 'interactive' could fire before dom is ready. See
+  // https://github.com/divad12/rmc/commit/56af16db497db5b8d4e210e784e9f63051fcce32
+  // for more info.
+  var state = document.readyState;
+  if (document.attachEvent ? state === 'complete' : state !== 'loading' ) {
+    onDomReady();
+  } else {
+    $(onDomReady);
+  }
 });
