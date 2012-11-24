@@ -174,7 +174,7 @@ def get_friend_list(token):
     resp_dict = util.json_loads(resp.text)
 
     if 'error' in resp_dict:
-        if resp_dict['type'] == 'OAuthException':
+        if resp_dict.get('error').get('type') == 'OAuthException':
             raise FacebookOAuthException()
         raise Exception(resp.text)
 
