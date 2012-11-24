@@ -687,6 +687,17 @@ def renew_fb():
         current_user.fb_access_token_expiry_date = expires_on
         current_user.fb_access_token = access_token
         current_user.fb_access_token_invalid = False
+
+        # Update the user's fb friend list, since it's likely outdated by now
+        try:
+            current_user.update_fb_friends(
+                    facebook.get_friend_list(access_token))
+        except:
+            # Not sure why this would happen. Usually it's due to invalid
+            # access_token, but we JUST got the token, so it should be valid
+            logging.warn("/api/renew-fb: get_friend_list failed with token (%s)"
+                    % access_token)
+
         current_user.save()
 
     expiry_date_timestamp = time.mktime(
