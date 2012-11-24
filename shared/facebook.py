@@ -30,13 +30,14 @@ def code_for_token(code, app):
     }
     """
     # Since we're exchanging a client-side token, redirect_uri should be ''
-    token_url = ("https://graph.facebook.com/oauth/access_token?"
-            "client_id=%s&"
-            "redirect_uri=%s&"
-            "client_secret=%s&"
-            "code=%s"
-            % (app.config['FB_APP_ID'], '', app.config['FB_APP_SECRET'], code))
-    resp = requests.get(token_url)
+    params = {
+        'client_id': app.config['FB_APP_ID'],
+        'redirect_uri': '',
+        'client_secret': app.config['FB_APP_SECRET'],
+        'code': code,
+    }
+    resp = requests.get('https://graph.facebook.com/oauth/access_token',
+            params=params)
     result = dict(urlparse.parse_qsl(resp.text))
     return result
 
@@ -58,13 +59,14 @@ def token_for_long_token(short_token, app):
     }
     """
     # Since we're exchanging a client-side token, redirect_uri should be ''
-    exchange_url = ("https://graph.facebook.com/oauth/access_token?"
-            "grant_type=fb_exchange_token&"
-            "client_id=%s&"
-            "client_secret=%s&"
-            "fb_exchange_token=%s"
-            % (app.config['FB_APP_ID'], app.config['FB_APP_SECRET'], short_token))
-    resp = requests.get(exchange_url)
+    params = {
+        'grant_type': 'fb_exchange_token',
+        'client_id': app.config['FB_APP_ID'],
+        'client_secret': app.config['FB_APP_SECRET'],
+        'fb_exchange_token': short_token,
+    }
+    resp = requests.get('https://graph.facebook.com/oauth/access_token',
+            params=params)
     result = dict(urlparse.parse_qsl(resp.text))
     return result
 
@@ -84,7 +86,7 @@ def get_fb_data(signed_request, app):
     """
     def base64_url_decode(inp):
         padding_factor = (4 - len(inp) % 4) % 4
-        inp += "="*padding_factor
+        inp += '='*padding_factor
         return base64.b64decode(unicode(inp).translate(dict(zip(map(ord, u'-_'), u'+/'))))
 
     def parse_signed_request(signed_request, secret):
@@ -116,9 +118,9 @@ def get_fb_data(signed_request, app):
     # TODO(Sandy): Maybe move the validation somewhere else since it can raise
     # an Exception
     if fbsr_data is None or not fbsr_data.get('user_id'):
-        logging.warn("Could not parse Facebook signed request (%s)"
+        logging.warn('Could not parse Facebook signed request (%s)'
                 % signed_request)
-        raise Exception("Could not parse Facebook signed request (%s)"
+        raise Exception('Could not parse Facebook signed request (%s)'
                 % signed_request)
 
     # Fetch long token from Facebook
@@ -153,3 +155,34 @@ def get_fb_data(signed_request, app):
         'expires_on': fb_access_token_expiry_date,
         'fbid': fbsr_data['user_id'],
     }
+
+class FacebookOAuthException(Exception):
+    '''
+        Invalid Facebook token (expired or just plain invalid):
+        https://developers.facebook.com/blog/post/2011/05/13/how-to--handle-expired-access-tokens/
+    '''
+    pass
+
+def get_friend_list(token):
+    '''
+    Return a list of fbids for the Facebook user associated with token
+    '''
+    params = {
+        'access_token': token,
+    }
+    resp = requests.get('https://graph.facebook.com/me/friends', params=params)
+    resp_dict = util.json_loads(resp.text)
+
+    if 'error' in resp_dict:
+        if resp_dict['type'] == 'OAuthException':
+            raise FacebookOAuthException()
+        raise Exception(resp.text)
+
+    fbid_list = []
+    if 'data' in resp_dict:
+        for entry in resp_dict['data']:
+            fbid_list.append(entry['id'])
+    else:
+        raise Exception('"data" not in dict (%s)' % resp_dict)
+
+    return fbid_list

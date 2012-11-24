@@ -43,7 +43,8 @@ class User(me.Document):
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
     fb_access_token = me.StringField(max_length=255, required=True, unique=True)
     fb_access_token_expiry_date = me.DateTimeField(required=True)
-    fb_access_token_expired = me.BooleanField(default=False)
+    # The token expired due to de-auth, logging out, etc (ie. not time expired)
+    fb_access_token_invalid = me.BooleanField(default=False)
 
     email = me.EmailField()
 
@@ -161,7 +162,12 @@ class User(me.Document):
         future_date = datetime.datetime.now() + datetime.timedelta(
                 days=constants.FB_FORCE_TOKEN_EXPIRATION_DAYS)
         return (self.fb_access_token_expiry_date < future_date or
-            self.fb_access_token_expired)
+                self.fb_access_token_invalid)
+
+    @property
+    def is_fb_token_expired(self):
+        return (self.fb_access_token_expiry_date < datetime.datetime.now() or
+                self.fb_access_token_invalid)
 
     def get_user_courses(self):
         return _user_course.UserCourse.objects(id__in=self.course_history)

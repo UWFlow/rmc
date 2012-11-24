@@ -311,7 +311,7 @@ def login():
     if user:
         user.fb_access_token = fb_access_token
         user.fb_access_token_expiry_date = fb_access_token_expiry_date
-        user.fb_access_token_expired = False
+        user.fb_access_token_invalid = False
         user.save()
 
         rmclogger.log_event(
@@ -686,7 +686,7 @@ def renew_fb():
         # get_fb_data failed to grab a new token
         current_user.fb_access_token_expiry_date = expires_on
         current_user.fb_access_token = access_token
-        current_user.fb_access_token_expired = False
+        current_user.fb_access_token_invalid = False
         current_user.save()
 
     expiry_date_timestamp = time.mktime(
