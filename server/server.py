@@ -311,7 +311,7 @@ def login():
     if user:
         user.fb_access_token = fb_access_token
         user.fb_access_token_expiry_date = fb_access_token_expiry_date
-        current_user.fb_access_token_expired = False
+        user.fb_access_token_expired = False
         user.save()
 
         rmclogger.log_event(
