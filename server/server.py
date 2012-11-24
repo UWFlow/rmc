@@ -776,7 +776,7 @@ def transcript_log():
     file_name = '%d.txt' % int(time.time())
     file_path = os.path.join(TRANSCRIPT_DIR, file_name)
     with open(file_path, 'w') as f:
-        f.write(flask.request.form['transcript'])
+        f.write(flask.request.form['transcript'].encode('utf-8'))
 
     return ''
 
