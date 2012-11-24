@@ -219,8 +219,9 @@ def import_redis_friend_mutual_courses():
     # TODO(Sandy): Use friend real time updates after it. There's a fb updates
     # branch for this, pending on:
     # https://developers.facebook.com/bugs/374296595988186?browse=search_50990ddb8a19d9316431973
-    # Not sure if FB will rate limit us, so don't run this automatically for now
-    #update_all_fb_friend_list()
+    # Rate limit is 600 calls / 600 seconds / token:
+    # http://stackoverflow.com/questions/8805316/facebook-graph-api-rate-limit-and-batch-requests
+    update_all_fb_friend_list()
 
     courses_by_user = {}
     for user in m.User.objects.only('friend_ids', 'course_history'):
