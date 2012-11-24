@@ -251,6 +251,21 @@ def users_who_took(course_id):
             users_taken.append(user)
     return users_taken
 
+def print_users_gender_count():
+    users = m.User.objects()
+    print users[0].gender
+    gender_counts = {
+        'male': 0,
+        'female': 0,
+        'none': 0,
+    }
+    for u in users:
+        if u.gender:
+            gender_counts[u.gender] += 1
+        else:
+            gender_counts['none'] += 1
+    print gender_counts
+
 # Shorthands for common query operations
 def ucs_for_cid(course_id):
     return m.UserCourse.objects(course_id=course_id)
