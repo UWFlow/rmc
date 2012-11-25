@@ -1,9 +1,9 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/jqueryui', 'ext/underscore',
 'ext/underscore.string', 'ratings', 'ext/select2', 'ext/autosize', 'course',
-'user', 'ext/bootstrap', 'prof', 'facebook', 'util'],
+'user', 'ext/bootstrap', 'prof', 'facebook', 'util', 'ext/toastr'],
 function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
-    _course, _user, _bootstrap, _prof, _facebook, _util) {
+    _course, _user, _bootstrap, _prof, _facebook, _util, _toastr) {
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
@@ -100,18 +100,30 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       }
       description = _util.truncatePreviewString(description, 50);
 
-      var callback = function(response) {
+      var callback = _.bind(function(response) {
         // response.post_id is returned on success
         // response === null on "Cancel"
         if (response && response.post_id) {
-          // Award points!
+          // TODO(sandy): Award points!
+          // Give UI feedback with toastr
+          var msg = '';
+          if (reviewType === 'COURSE') {
+            msg = _s.sprintf('Shared review for %s on Facebook!',
+                this.get('course').get('code'));
+          } else if (reviewType === 'PROFESSOR') {
+            msg = _s.sprintf('Shared comment on %s for %s on Facebook!',
+                this.get('professor').get('name'),
+                this.get('course').get('code'));
+          }
+          toastr.success(msg);
+
           // Facebook engagement completed
           mixpanel.track('Facebook share review completed', {
             ReviewType: reviewType
           });
           mixpanel.people.increment({'Facebook share review completed': 1});
         }
-      };
+      }, this);
 
       // TODO(Sandy): Implement proper review showing, if people actually share
       var link = 'http://uwflow.com/course/' + this.get('course').get('id');
@@ -141,13 +153,15 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         review: courseReview,
         userCourse: this.userCourse,
         className: 'user-comment course-comment',
-        placeholder: 'Any tips or comments?'
+        placeholder: 'Any tips or comments?',
+        reviewType: 'COURSE'
       });
       this.profCommentView = new UserCommentView({
         review: profReview,
         userCourse: this.userCourse,
         className: 'user-comment prof-comment',
-        placeholder: 'Comment about the professor...'
+        placeholder: 'Comment about the professor...',
+        reviewType: 'PROFESSOR'
       });
 
       courseReview.on('change:comment', _.bind(this.saveComments, this,
@@ -276,7 +290,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     saveComments: function(view, reviewType) {
       this.logToGA(reviewType, 'REVIEW');
       this.save()
-        .done(_.bind(view.saveSuccess, view, this.userCourse))
+        .done(_.bind(view.saveSuccess, view))
         .error(_.bind(view.saveError, view));
 
       mixpanel.track('Reviewing: Save comments', {
@@ -327,6 +341,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.review = options.review;
       this.userCourse = options.userCourse;
       this.placeholder = options.placeholder;
+      this.reviewType = options.reviewType;
     },
 
     render: function() {
@@ -343,7 +358,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       _.defer(function() { $comments.trigger('input'); });
 
       if (this.review.get('comment')) {
-        this.showSaved();
+        this.showShare();
         this.onFocus();
       }
 
@@ -355,6 +370,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     events: {
       'focus .comments': 'onFocus',
       'click .save-review': 'onSave',
+      'click .share-review': 'onShare',
       'keyup .comments': 'allowSave',
       'click .privacy-tip .dropdown-menu li': 'onPrivacySelect'
     },
@@ -376,27 +392,46 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.saving = true;
     },
 
+    onShare: function() {
+      this.userCourse.promptPostToFacebook(this.reviewType);
+    },
+
     allowSave: function() {
       if (this.saving || !this.review.get('comment')) return;
 
+      this.$('.share-review')
+        .removeClass('share-review')
+        .addClass('save-review');
+
       this.$('.save-review')
-        .removeClass('btn-success btn-warning btn-danger')
+        .removeClass('btn-info btn-warning btn-danger')
         .addClass('btn-primary')
         .prop('disabled', false)
         .html('<i class="icon-save"></i> Update!');
     },
 
-    showSaved: function() {
+    showShare: function() {
       this.saving = false;
       this.$('.save-review')
-        .removeClass('btn-warning btn-danger btn-primary')
-        .addClass('btn-success')
-        .prop('disabled', true)
-        .html('<i class="icon-ok"></i> Posted.');
+        .removeClass('btn-warning btn-danger btn-primary save-review')
+        .addClass('btn-info share-review')
+        .prop('disabled', false)
+        .html('<i class="icon-share"></i> Share');
     },
 
-    saveSuccess: function(userCourse) {
-      this.showSaved();
+    saveSuccess: function() {
+      this.showShare();
+      // Give UI feedback with toastr
+      var msg = '';
+      if (this.reviewType === 'COURSE') {
+        msg = _s.sprintf('Review for %s was saved!',
+            this.userCourse.get('course').get('code'));
+      } else if (this.reviewType === 'PROFESSOR') {
+        msg = _s.sprintf('Comments on %s for %s was saved!',
+            this.userCourse.get('professor').get('name'),
+            this.userCourse.get('course').get('code'));
+      }
+      toastr.success(msg);
     },
 
     saveError: function() {
