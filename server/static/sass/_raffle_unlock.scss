@@ -9,7 +9,6 @@
     width: 40%;
 
     height: 50px;
-    background-color: #fafafa;
     padding: 5px 15px;
 
     .unlock-requirements {
@@ -22,6 +21,9 @@
       height: auto;
       background-color: #fff;
       box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      padding-bottom: 15px;
+      border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
 
       .details {
         visibility: visible;
@@ -73,6 +75,7 @@
     }
 
     .details {
+      @extend .clearfix;
       visibility: hidden;
       position: relative;
       margin-top: 5px;
@@ -91,6 +94,7 @@
           }
 
           &.card .pic {
+            // TODO(mack): host image locally
             background: url("http://www.shopnaturalegreenonline.ca/v/vspfiles/assets/images/gift-card.jpg");
             background-size: 50px 32px;
             width: 50px;
@@ -98,6 +102,7 @@
           }
 
           &.dre .pic {
+            // TODO(mack): host image locally
             background: url("http://landmarkreport.com/wp-content/uploads/2012/09/Beats-Dr.-Dre.jpg");
             background-size: 46px 42px;
             width: 46px;
