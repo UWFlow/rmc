@@ -276,15 +276,19 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     onSaveUserReview: function() {
-      // Remove any old review-* class
-      this.$('.current-user-ribbon').removeClass(function(idx, cls) {
-        var matches = cls.match(/reviewed-\d+/g) || [];
-        return matches.join(' ');
-      })
-      .addClass('reviewed-' + this.getReviewLevel(this.userCourse));
-
-      this.updateRibbonTooltip(
-          this.$('.current-user-ribbon'), this.userCourse, true);
+      // TODO(david): Dedupe this code
+      if (this.userCourse.hasRatedCourse()) {
+        this.$('.sash .rated-course').addClass('done');
+      }
+      if (this.userCourse.hasReviewedCourse()) {
+        this.$('.sash .reviewed-course').addClass('done');
+      }
+      if (this.userCourse.hasRatedProf()) {
+        this.$('.sash .rated-prof').addClass('done');
+      }
+      if (this.userCourse.hasReviewedProf()) {
+        this.$('.sash .reviewed-prof').addClass('done');
+      }
     },
 
     getReviewLevel: function(userCourse) {
@@ -298,10 +302,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         if (review.get('comment')) {
           count += 1;
         }
-        var anyRating = review.get('ratings').any(function(rating) {
-          return _.isNumber(rating.get('rating'));
-        });
-        if (anyRating) {
+        if (review.get('ratings').hasRated()) {
           count += 1;
         }
       };
@@ -310,53 +311,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       countReview(userCourse.get('professor_review'));
 
       return count;
-    },
-
-    updateRibbonTooltip: function($ribbon, userCourse, own) {
-      var termTookName = userCourse.get('term_name');
-      var inShortlist = userCourse.get('term_id') === '9999_99';
-
-      var title;
-      if (own) {
-        if (inShortlist) {
-          title = 'In my shortlist';
-        } else {
-          title = _s.sprintf('Taken in %s.', termTookName);
-        }
-      } else {
-        var user = userCourse.get('user');
-        if (inShortlist) {
-          title = _s.sprintf('In %s\'s shortlist', user.get('first_name'));
-        } else {
-          title = _s.sprintf('%s took in %s.', user.get('first_name'), termTookName);
-        }
-      }
-
-      if (!inShortlist) {
-        var currReviewLevel = this.getReviewLevel(userCourse);
-        if (currReviewLevel === 0) {
-          if (own) {
-            title += ' Please review?';
-          } else {
-            title += ' Not reviewed.';
-          }
-        } else if ( currReviewLevel === this.MAX_REVIEW_LEVEL) {
-          if (own) {
-            title += ' Thanks for reviewing :)';
-          } else {
-            title += ' Reviewed.';
-          }
-        } else {
-          title += ' Partially reviewed.';
-        }
-      }
-
-      $ribbon
-        .tooltip('destroy')
-        .tooltip({
-          title: title,
-          placement: 'top'
-        });
     },
 
     updateAddCourseTooltip: function() {
@@ -388,10 +342,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     render: function() {
       this.$el.html(this.template({
         course: this.courseModel.toJSON(),
-        user_course: this.userCourse && this.userCourse.toJSON(),
+        user_course: this.userCourse,
+        //star_uc: window.pageData.ownProfile ? this.userCourse : this.profileUserCourse
         user_course_review_level:
           this.userCourse && this.getReviewLevel(this.userCourse),
-        profile_user_course: this.profileUserCourse && this.profileUserCourse.toJSON(),
+        profile_user_course: this.profileUserCourse,
         profile_user_course_review_level:
           this.profileUserCourse && this.getReviewLevel(this.profileUserCourse),
         other_profile: this.otherProfile,
@@ -425,17 +380,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var termTookName = '';
 
       if (this.userCourse) {
-        this.updateRibbonTooltip(
-            this.$('.current-user-ribbon'), this.userCourse, true);
-
         if (this.canShowAddReview) {
           this.$('.voting-placeholder').replaceWith(this.votingView.render().el);
         }
-      }
-
-      if (this.otherProfile) {
-        this.updateRibbonTooltip(
-            this.$('.profile-user-ribbon'), this.profileUserCourse, false);
       }
 
       this.$('.rating-box-placeholder').replaceWith(

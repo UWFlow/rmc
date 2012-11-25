@@ -181,7 +181,13 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
   });
 
   var RatingChoiceCollection = RmcBackbone.Collection.extend({
-    model: RatingChoice
+    model: RatingChoice,
+
+    hasRated: function() {
+      return this.any(function(rating) {
+        return _.isNumber(rating.get('rating'));
+      });
+    }
   });
 
   var RatingChoiceCollectionView = RmcBackbone.CollectionView.extend({

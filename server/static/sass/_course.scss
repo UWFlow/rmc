@@ -137,54 +137,67 @@ $inner-padding: 18px;
       color: #555;
     }
 
-    .ribbons {
-      $ribbon-width: 30px;
-      $margin-width: 5px;
-
-      @extend .clearfix;
+    .sash {
+      width: 66px;
       position: absolute;
       right: 240px;
       top: 0;
-      height: 40px;
+      text-align: left; // TODO(david): Figure out why text-align: center screws alignment
+      padding-left: 8px;
+      height: 60px;
+      padding-top: 2px;
+      font-size: 24px;
+      @include box-sizing(border-box);
+      // TODO(david): Show a sash/large ribbon after all stars filled in, or
+      //     always show
 
-      .current-user-ribbon {
-        @include background(image-url('/static/img/ribbon_green.png'));
-        margin-right: $margin-width;
-      }
-
-      .profile-user-ribbon {
-        @include background(image-url('/static/img/ribbon_blue.png'));
-      }
-
-      .current-user-ribbon, .profile-user-ribbon {
+      .badge-holder {
         display: inline-block;
-        margin-top: -1px;
-        background-repeat: no-repeat;
-        background-position: 0 -15px;
-        width: $ribbon-width;
-        height: 40px;
+        width: 16px;
+        margin-top: 7px;
+        margin-right: 7px;
 
-        // TODO(mack): apply non-linear change to ribbon color as we change
-        // review level
-        $num-review-levels: 5;
-        $base-opacity: 0.3;
-        @for $i from 0 through $num-review-levels - 1 {
-          &.reviewed-#{$i} {
-            $curr-grayscale: 1.0 - $i/($num-review-levels - 1);
-            $curr-opacity: $base-opacity + (1.0 - $base-opacity) * $i/($num-review-levels - 1);
-
-            // TODO(mack): remove -webkite prefix
-            -webkit-filter: grayscale($curr-grayscale);
-            opacity: $curr-opacity;
-          }
+        &:after {
+          content: "\f006";
+          font-style: normal;
+          color: rgba(100, 100, 100, 0.2);
+          font-family: FontAwesome;
         }
 
         i {
-          font-size: 16px;
-          color: #FFF;
-          margin: 5px;
+            font-style: normal;
+            color: $yellow;
+            font-family: FontAwesome;
+            position: absolute;
+            opacity: 0.0;
+            @include transform(scale(10.0));
+
+            // Hack for bootstrap tooltip having too large hover target
+            z-index: -1;
+
+            // Hack for top of star being cut off at large font sizes
+            padding-top: 10px;
+            margin-top: -9px;
+
+            // Gradient text from http://css-tricks.com/snippets/css/gradient-text/
+            background: -webkit-gradient(linear, left top, right bottom, from(#FEFE57), to(#FAD24F));
+            //background: -webkit-gradient(linear, left top, right bottom, from(lighten($flowBlue, 10%)), to(darken($flowBlue, 5%)));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+
+          &.done {
+            display: inline-block;
+            opacity: 1.0;
+            @include transform(scale(1.0));
+            @include transition(transform 0.3s ease-out,
+                                opacity 1s ease-out,
+                                text-shadow 1s ease-out);
+            z-index: 1;
+          }
         }
       }
+
     }
 
     .rating-box {

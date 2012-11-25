@@ -5,6 +5,10 @@ define(
 function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     _course, _user, _bootstrap, _prof, _facebook, _util, _toastr) {
 
+  // TODO(david): This should probably go in term.js (but circular dep) and also
+  //     leaky abstraction from server.
+  var SHORTLIST_TERM_ID = '9999_99';
+
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
   var UserCourse = RmcBackbone.Model.extend({
@@ -133,6 +137,30 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         ReviewType: reviewType
       });
       mixpanel.people.increment({'Facebook share review intent': 1});
+    },
+
+    hasTaken: function() {
+      return this.get('term_id') && this.get('term_id') !== SHORTLIST_TERM_ID;
+    },
+
+    // TODO(david): Properly determine if user ever has rated/commented by using
+    //     date
+    // TODO(david): Factor out star into its own Backbone view+model
+    hasRatedCourse: function() {
+      // TODO(david): Law of demeter-ize this and rest of similar functions
+      return this.get('course_review').get('ratings').hasRated();
+    },
+
+    hasRatedProf: function() {
+      return this.get('professor_review').get('ratings').hasRated();
+    },
+
+    hasReviewedCourse: function() {
+      return this.get('course_review').get('comment');
+    },
+
+    hasReviewedProf: function() {
+      return this.get('professor_review').get('comment');
     }
   });
 
