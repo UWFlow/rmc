@@ -170,6 +170,10 @@ class User(me.Document):
         return (self.fb_access_token_expiry_date < datetime.datetime.now() or
                 self.fb_access_token_invalid)
 
+    @property
+    def is_demo_account(self):
+        return self.fbid == constants.DEMO_ACCOUNT_FBID
+
     def get_user_courses(self):
         return _user_course.UserCourse.objects(id__in=self.course_history)
 

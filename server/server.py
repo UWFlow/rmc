@@ -39,7 +39,7 @@ flask_render_template = flask.render_template
 def render_template(*args, **kwargs):
     current_user = view_helpers.get_current_user()
     should_renew_fb_token = False
-    if current_user:
+    if current_user and not current_user.is_demo_account:
         should_renew_fb_token = current_user.should_renew_fb_token
 
     kwargs.update({
