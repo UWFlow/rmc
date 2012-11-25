@@ -117,14 +117,6 @@ $inner-padding: 18px;
       letter-spacing: -1px;
       font-weight: lighter;
       color: $textColor;
-
-      // This is to offset the bootstrap tooltip a little
-      line-height: 30px;
-      margin-top: -6px;
-
-      &:hover {
-        color: $flowBlue;
-      }
     }
 
     .course-name {
