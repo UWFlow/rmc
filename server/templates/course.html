@@ -22,7 +22,11 @@
     </a>
     <div class="course-name"><%- course.name %></div>
 
-    {# TODO(david): Update tooltips #}
+    <div class="rating-box-placeholder"></div>
+    <div class="voting-placeholder"></div>
+    <div class="sample-friends-placeholder"></div>
+
+    {# TODO(david): Separate this out into its own view+model #}
     <% if (profile_user_course && profile_user_course.hasTaken()) { %>
       <div class="sash">
         {# Using HTML entities instead of CSS pseudo-elements because
@@ -43,9 +47,6 @@
       </div>
     <% } %>
 
-    <div class="rating-box-placeholder"></div>
-    <div class="voting-placeholder"></div>
-    <div class="sample-friends-placeholder"></div>
     {# TODO(david): This is really dumb. Fix in a better way. #}
     <div style="clear: both; margin-bottom: -32px;"></div>
   </div>

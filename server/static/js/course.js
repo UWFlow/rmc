@@ -413,7 +413,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       // TODO(david): Try to do this in CSS
       var codeWidth = this.$('.course-code').width();
       var barWidth = this.$('.visible-section').width();
-      this.$('.course-name').width(Math.min(300, barWidth - 270 - codeWidth));
+      this.$('.course-name').width(Math.min(300, barWidth - 310 - codeWidth));
     },
 
     events: {
