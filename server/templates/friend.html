@@ -6,10 +6,13 @@
 </div>
 <% if (own_profile) { %>
   <button class="invite-friends-btn btn btn-large btn-primary">
+    <i class="icon-facebook"></i>
     Invite more friends!
-    <i
+    <i rel="tooltip"
       <% if (!invited_before) { %>
-        rel="tooltip" title="Invite a friend to earn <%- first_invite_points %> points!"
+        title="Invite a friend to earn <%- first_invite_points %> points!"
+      <% } else { %>
+        title="You've earned <%- first_invite_points %> points for inviting a friend!"
       <% } %>
         class="icon-star
       <% if (invited_before) { %>

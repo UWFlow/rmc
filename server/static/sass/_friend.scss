@@ -10,7 +10,13 @@
     }
 
     .invite-friends-btn {
+      .icon-facebook {
+        padding: 0 4px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        margin-right: 3px;
+      }
       .icon-star {
+        margin-left: 7px;
         color: #444;
         @include text-shadow(1px 1px 0 rgba(255, 255, 255, 0.5));
         &.fill {
