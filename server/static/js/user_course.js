@@ -452,10 +452,10 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       // Give UI feedback with toastr
       var msg = '';
       if (this.reviewType === 'COURSE') {
-        msg = _s.sprintf('Review for %s was saved!',
+        msg = _s.sprintf('Comments on %s saved!',
             this.userCourse.get('course').get('code'));
       } else if (this.reviewType === 'PROFESSOR') {
-        msg = _s.sprintf('Comments on %s for %s was saved!',
+        msg = _s.sprintf('Comments on %s for %s saved!',
             this.userCourse.get('professor').get('name'),
             this.userCourse.get('course').get('code'));
       }
