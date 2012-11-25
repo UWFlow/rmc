@@ -166,10 +166,10 @@ function($, _, __) {
     }, cb);
   };
 
-  var showFeedDialog = function(name, caption, description, cb) {
+  var showFeedDialog = function(link, name, caption, description, cb) {
     FB.ui({
       method: 'feed',
-      link: dialogBaseUrl,
+      link: link,
       picture: dialogBaseUrl + logoPath,
       name: name,
       caption: caption,

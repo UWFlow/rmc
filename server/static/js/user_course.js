@@ -105,11 +105,22 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         // response === null on "Cancel"
         if (response && response.post_id) {
           // Award points!
+          // Facebook engagement completed
+          mixpanel.track('Facebook share review completed', {
+            ReviewType: reviewType
+          });
+          mixpanel.people.increment({'Facebook share review completed': 1});
         }
       };
 
-      // TODO(Sandy): Pass in proper link instead of just uwflow.com
-      _facebook.showFeedDialog(name, caption, description, callback);
+      // TODO(Sandy): Implement proper review showing, if people actually share
+      var link = 'http://uwflow.com/course/' + this.get('course').get('id');
+      _facebook.showFeedDialog(link, name, caption, description, callback);
+      // Facebook engagement intent
+      mixpanel.track('Facebook share review intent', {
+        ReviewType: reviewType
+      });
+      mixpanel.people.increment({'Facebook share review intent': 1});
     }
   });
 
