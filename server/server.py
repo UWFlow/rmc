@@ -919,9 +919,25 @@ def user_course():
     return util.json_dumps({
         'professor_review.comment_date': uc['professor_review'][
             'comment_date'],
-        'course_review.comment_date': uc['course_review'][ 'comment_date'],
+        'course_review.comment_date': uc['course_review']['comment_date'],
     })
 
+@app.route('/api/invite_friend', methods=['POST'])
+@view_helpers.login_required
+def invite_friend():
+    current_user = view_helpers.get_current_user()
+
+    before_points = current_user.num_points
+    first_invite = not current_user.num_invites
+    if first_invite:
+        current_user.award_first_invite()
+        current_user.save()
+    points_gained = current_user.num_points - before_points
+
+    return util.json_dumps({
+        'num_invites': current_user.num_invites,
+        'points_gained': points_gained,
+    })
 
 if __name__ == '__main__':
     # Late import since this isn't used on production

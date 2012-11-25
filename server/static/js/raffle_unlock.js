@@ -72,17 +72,10 @@ function(RmcBackbone, $, _, _s, __, util) {
     }
   });
 
-  /**
-   * A Dropbox spacerace-like bar to show in navbar
-   */
-  var RaffleUnlockView = RmcBackbone.View.extend({
-    MAX_POINTS_RATIO: 1.25,
-
-    template: _.template($('#raffle-unlock-tpl').html()),
-    className: 'raffle-unlock',
-
-    initialize: function(attributes) {
-
+  // Singleton raffle supervisor
+  var raffleSupervisor;
+  function getRaffleSupervisor() {
+    if (!raffleSupervisor) {
       var giftCardPrize = new RafflePrize({
         id: 'card',
         name: '$50 gift card',
@@ -99,10 +92,30 @@ function(RmcBackbone, $, _, _s, __, util) {
         giftCardPrize,
         dreBeatsPrize
       ]);
-      this.raffleSupervisor = new RaffleSupervisor({
+
+      raffleSupervisor = new RaffleSupervisor({
         curr_points: 0,
         raffle_prizes: rafflePrizes
       });
+    }
+
+    return raffleSupervisor;
+  }
+
+
+  /**
+   * A Dropbox spacerace-like bar to show in navbar
+   */
+  var RaffleUnlockView = RmcBackbone.View.extend({
+    MAX_POINTS_RATIO: 1.25,
+
+    template: _.template($('#raffle-unlock-tpl').html()),
+    className: 'raffle-unlock',
+
+    initialize: function(attributes) {
+      this.raffleSupervisor = getRaffleSupervisor();
+      this.raffleSupervisor.on(
+        'change:curr_points', _.bind(this.render, this));
 
       var lastPrize = this.raffleSupervisor.get('last_unlock_prize');
       var lastPrizePoints = lastPrize.get('points_to_unlock');
@@ -153,14 +166,11 @@ function(RmcBackbone, $, _, _s, __, util) {
       this.$('.bar').css({
         width: totalPercent + '%'
       });
-
-      this.raffleSupervisor.incrementPoints(600);
-      _.delay(_.bind(this.render, this), 5000);
     }
   });
 
-
   return {
-    RaffleUnlockView: RaffleUnlockView
+    RaffleUnlockView: RaffleUnlockView,
+    getRaffleSupervisor: getRaffleSupervisor
   };
 });

@@ -176,13 +176,19 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
     initialize: function(attributes) {
       this.currentUser = attributes.currentUser;
       this.friendCollection = attributes.friendCollection;
+      this.raffleSupervisor = attributes.raffleSupervisor;
     },
 
     render: function() {
       this.$el.html(_.template($('#friend-sidebar-tpl').html(), {
         num_friends: this.friendCollection.length,
-        own_profile: pageData.ownProfile
+        own_profile: pageData.ownProfile,
+        invited_before: !!this.currentUser.get('num_invites'),
+        // TODO(mack): get the points for first invite action from server
+        first_invite_points: 200
       }));
+      this.$('[rel="tooltip"]').tooltip();
+
       var collectionView = new FriendCollectionView({
         collection: this.friendCollection,
         itemAttributes: {
@@ -192,29 +198,62 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
       this.$('.friend-collection-placeholder').replaceWith(
         collectionView.render().$el);
 
+      var self = this;
+
       // Setup up FB Invite Friends buttons
-      this.$('.invite-friends-btn').click(function() {
-        // Facebook engagement intent
-        mixpanel.track('Facebook invite friends intent', {
+      return this;
+    },
+
+    events: {
+      'click .invite-friends-btn': 'onClickInviteFriendsBtn'
+    },
+
+    onClickInviteFriendsBtn: function(evt) {
+      // Facebook engagement intent
+      mixpanel.track('Facebook invite friends intent', {
+        method: 'send',
+        type: 'invite_friends',
+        from_page: 'profile'
+      });
+      mixpanel.people.increment({'Facebook invite friends intent': 1});
+
+      _facebook.showSendDialogProfile(
+          _.bind(this.onSendDialogCallback, this));
+    },
+
+    onSendDialogCallback: function(response) {
+      if (response && response.success) {
+        // Facebook engagement completed
+        mixpanel.track('Facebook invite friends completed', {
           method: 'send',
           type: 'invite_friends',
           from_page: 'profile'
         });
-        mixpanel.people.increment({'Facebook invite friends intent': 1});
+        mixpanel.people.increment({'Facebook invite friends completed': 1});
+        this.onInviteSuccess();
+      }
+    },
 
-        _facebook.showSendDialogProfile(function(response) {
-          if (response && response.success) {
-            // Facebook engagement completed
-            mixpanel.track('Facebook invite friends completed', {
-              method: 'send',
-              type: 'invite_friends',
-              from_page: 'profile'
-            });
-            mixpanel.people.increment({'Facebook invite friends completed': 1});
-          }
-        });
+    onInviteSuccess: function() {
+      $.ajax('/api/invite_friend', {
+        type: 'POST',
+        dataType: 'json',
+        success: _.bind(this.onInviteSuccessResponse, this)
       });
-      return this;
+    },
+
+    // TODO(mack): think of a better name
+    onInviteSuccessResponse: function(resp) {
+      this.currentUser.set({
+        num_invites: resp.num_invites,
+        num_points: this.currentUser.get('num_points') + resp.points_gained
+      });
+      this.raffleSupervisor.incrementPoints(resp.points_gained);
+
+      // TODO(mack): maybe should call self.render() to update the star
+      this.$('.invite-friends-btn .icon-star')
+        .addClass('fill')
+        .tooltip('destroy');
     }
   });
 

@@ -6,7 +6,15 @@
 </div>
 <% if (own_profile) { %>
   <button class="invite-friends-btn btn btn-large btn-primary">
-    <i class="icon-plus"></i> Invite more friends!
+    Invite more friends!
+    <i
+      <% if (!invited_before) { %>
+        rel="tooltip" title="Invite a friend to earn <%- first_invite_points %> points!"
+      <% } %>
+        class="icon-star
+      <% if (invited_before) { %>
+        fill
+      <% } %>"></i>
   </button>
 <% } %>
 <div class="friend-collection-placeholder"></div>

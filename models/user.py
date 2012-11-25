@@ -11,6 +11,9 @@ class User(me.Document):
     class JoinSource(object):
         FACEBOOK = 1
 
+    class PointSource(object):
+        FIRST_INVITE = 200
+
     meta = {
         'indexes': [
             'fb_access_token',
@@ -75,6 +78,15 @@ class User(me.Document):
     last_term_id = me.StringField()
     # Deprecated
     last_program_year_id = me.StringField()
+
+    # Track the number of times the user has invited friends
+    # (So we can award points if they have)
+    num_invites = me.IntField(min_value=0, default=0)
+
+    # The number of points this user has. Point are awarded for a number of
+    # actions such as reviewing courses, inviting friends. This is a cached
+    # point total. It will be calculated once a day with aggregator.py
+    num_points = me.IntField(min_value=0, default=0)
 
     is_admin = me.BooleanField(default=False)
 
@@ -229,6 +241,8 @@ class User(me.Document):
             #'last_program_year_id': self.last_program_year_id,
             'course_history': self.course_history,
             'course_ids': course_ids,
+            'num_invites': self.num_invites,
+            'num_points': self.num_points,
         }
 
     # TODO(mack): make race condition safe?
@@ -265,3 +279,7 @@ class User(me.Document):
 
     def __repr__(self):
         return "<User: %s>" % self.name
+
+    def award_first_invite(self):
+        self.num_invites += 1
+        self.num_points += self.PointSource.FIRST_INVITE

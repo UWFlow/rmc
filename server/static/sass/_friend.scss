@@ -9,6 +9,16 @@
       font-weight: bold;
     }
 
+    .invite-friends-btn {
+      .icon-star {
+        color: #444;
+        @include text-shadow(1px 1px 0 rgba(255, 255, 255, 0.5));
+        &.fill {
+          color: #ffff00;
+        }
+      }
+    }
+
     .friend-collection {
       list-style: none;
       margin: 15px 0px;
