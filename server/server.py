@@ -36,12 +36,14 @@ me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
 flask_render_template = flask.render_template
 def render_template(*args, **kwargs):
+    redis = view_helpers.get_redis_instance()
     kwargs.update({
         'env': app.config['ENV'],
         'VERSION': VERSION,
         'js_dir': app.config['JS_DIR'],
         'ga_property_id': app.config['GA_PROPERTY_ID'],
         'current_user': view_helpers.get_current_user(),
+        'total_points': redis.get('total_points') or 0
     })
     return flask_render_template(*args, **kwargs)
 flask.render_template = render_template
@@ -930,7 +932,7 @@ def invite_friend():
     before_points = current_user.num_points
     first_invite = not current_user.num_invites
     if first_invite:
-        current_user.award_first_invite()
+        current_user.award_first_invite(view_helpers.get_redis_instance())
         current_user.save()
     points_gained = current_user.num_points - before_points
 

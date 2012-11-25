@@ -3,7 +3,7 @@
 {% call macros.us_template('raffle-unlock-tpl') %}
 <div class="unlock-requirements">
   <% if (next_unlock_prize) { %>
-    Waterloo is <strong><%- next_unlock_prize.get('points_to_unlock') - curr_points %> points</strong>
+    Waterloo is <strong><%- next_unlock_prize.get('points_to_unlock') - total_points %> points</strong>
     away from unlocking <strong><%- next_unlock_prize.get('name') %></strong>!
   <% } else { %>
     Congrats on unlocking all prizes for the upcoming raffle!
@@ -22,15 +22,15 @@
         style="left: <%- tick_percent %>%; margin-left: -1px;"></div>
   <% }); %>
   </div>
-  <div class="curr-points">
-    <strong><%- curr_points %> points</strong>
+  <div class="total-points">
+    <strong><%- total_points %> points</strong>
   </div>
 </div>
 <div class="details">
   <div class="prizes">
     <% prizes.each(function(prize) { %>
       <% var tick_percent = 100 * prize.get('points_to_unlock') / max_points_scale; %>
-      <% var unlocked = curr_points >= prize.get('points_to_unlock'); %>
+      <% var unlocked = total_points >= prize.get('points_to_unlock'); %>
       <div style="left: <%- tick_percent %>%;"
           class="prize
             <%- prize.id %>
@@ -52,7 +52,7 @@
               <% if (unlocked) { %>
                 Unlocked!
               <% } else { %>
-                <%- prize.get('points_to_unlock') - curr_points %>
+                <%- prize.get('points_to_unlock') - total_points %>
                 more points to unlock.
               <% } %>">
         </div>

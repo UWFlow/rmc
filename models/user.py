@@ -280,6 +280,7 @@ class User(me.Document):
     def __repr__(self):
         return "<User: %s>" % self.name
 
-    def award_first_invite(self):
+    def award_first_invite(self, redis):
         self.num_invites += 1
         self.num_points += self.PointSource.FIRST_INVITE
+        redis.incr('total_points', self.PointSource.FIRST_INVITE)

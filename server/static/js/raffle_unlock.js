@@ -23,7 +23,7 @@ function(RmcBackbone, $, _, _s, __, util) {
 
   var RaffleSupervisor = RmcBackbone.Model.extend({
     defaults: {
-      curr_points: null,
+      total_points: null,
       raffle_prizes: null,
       prev_unlock_prize: null,
       next_unlock_prize: null,
@@ -35,20 +35,20 @@ function(RmcBackbone, $, _, _s, __, util) {
     },
 
     incrementPoints: function(amount) {
-      var currPoints = this.get('curr_points');
-      this.set('curr_points', currPoints + amount);
+      var totalPoints = this.get('total_points');
+      this.set('total_points', totalPoints + amount);
       this.updateUnlockPrizes();
     },
 
     updateUnlockPrizes: function() {
-      var currPoints = this.get('curr_points');
+      var totalPoints = this.get('total_points');
       var rafflePrizes = this.get('raffle_prizes');
       var prevUnlockPrize = null;
       var nextUnlockPrize = null;
       rafflePrizes.every(function(rafflePrize) {
         // We're iterating until we encounter the first raffle prize that
         // requires more points than we currently have to unlock.
-        if (currPoints >= rafflePrize.get('points_to_unlock')) {
+        if (totalPoints >= rafflePrize.get('points_to_unlock')) {
           prevUnlockPrize = rafflePrize;
           return true;
         }
@@ -94,7 +94,7 @@ function(RmcBackbone, $, _, _s, __, util) {
       ]);
 
       raffleSupervisor = new RaffleSupervisor({
-        curr_points: 0,
+        total_points: pageData.totalPoints,
         raffle_prizes: rafflePrizes
       });
     }
@@ -115,7 +115,7 @@ function(RmcBackbone, $, _, _s, __, util) {
     initialize: function(attributes) {
       this.raffleSupervisor = getRaffleSupervisor();
       this.raffleSupervisor.on(
-        'change:curr_points', _.bind(this.render, this));
+        'change:total_points', _.bind(this.render, this));
 
       var lastPrize = this.raffleSupervisor.get('last_unlock_prize');
       var lastPrizePoints = lastPrize.get('points_to_unlock');
@@ -125,7 +125,7 @@ function(RmcBackbone, $, _, _s, __, util) {
     render: function() {
       var params = {
         prizes: this.raffleSupervisor.get('raffle_prizes'),
-        curr_points: this.raffleSupervisor.get('curr_points'),
+        total_points: this.raffleSupervisor.get('total_points'),
         prev_unlock_points: this.raffleSupervisor.getPrevUnlockPoints(),
         next_unlock_prize: this.raffleSupervisor.get('next_unlock_prize'),
         max_points_scale: this.maxPointsScale
@@ -140,7 +140,7 @@ function(RmcBackbone, $, _, _s, __, util) {
     },
 
     postRender: function() {
-      var currPoints = this.raffleSupervisor.get('curr_points');
+      var totalPoints = this.raffleSupervisor.get('total_points');
       var prevUnlockPrize = this.raffleSupervisor.get('prev_unlock_prize');
 
       var completePercent = 0;
@@ -150,7 +150,7 @@ function(RmcBackbone, $, _, _s, __, util) {
       }
 
       // Always show a little bit of the colored bar
-      var totalPercent = Math.max(100 * currPoints / this.maxPointsScale, 1);
+      var totalPercent = Math.max(100 * totalPoints / this.maxPointsScale, 1);
 
       var extraPercents = 2;
       var maxPercentRender = Math.round(100/this.MAX_POINTS_RATIO + extraPercents);
