@@ -14,7 +14,7 @@ FB_NO_ACCESS_TOKEN = 'NO_ACCESS_TOKEN'
 # A long token normally lasts for 60 days
 FB_FORCE_TOKEN_EXPIRATION_DAYS = 57
 
-def code_for_token(code, app):
+def code_for_token(code, app, cmd_line_debug=False):
     """
     Returns a dictionary containing the user's Facebook access token and seconds
     until it expires from now
@@ -42,11 +42,23 @@ def code_for_token(code, app):
     }
     resp = requests.get('https://graph.facebook.com/oauth/access_token',
             params=params)
+
+    if resp.status_code != 200:
+        # TODO(Sandy): See if this is too verbose
+        logging.warning('code_for_token failed (%d) with text:\n%s' % (
+                resp.status_code, resp.text))
+
     result = dict(urlparse.parse_qsl(resp.text))
+
+    if cmd_line_debug:
+        print "result dict:"
+        print result
+        return resp
+
     return result
 
 # TODO(Sandy): Find out how often a new token is issued
-def token_for_long_token(short_token, app):
+def token_for_long_token(short_token, app, cmd_line_debug=False):
     """
     Returns a dictionary containing the user's long Facebook access token and
     seconds until it expires from now
@@ -71,8 +83,48 @@ def token_for_long_token(short_token, app):
     }
     resp = requests.get('https://graph.facebook.com/oauth/access_token',
             params=params)
+
+    if resp.status_code != 200:
+        # TODO(Sandy): See if this is too verbose
+        logging.warning('code_for_token failed (%d) with text:\n%s' % (
+                resp.status_code, resp.text))
+
     result = dict(urlparse.parse_qsl(resp.text))
+
+    if cmd_line_debug:
+        print "result dict:"
+        print result
+        return resp
+
     return result
+
+def base64_url_decode(inp):
+    padding_factor = (4 - len(inp) % 4) % 4
+    inp += '='*padding_factor
+    return base64.b64decode(unicode(inp).translate(dict(zip(map(ord, u'-_'), u'+/'))))
+
+def parse_signed_request(signed_request, secret):
+    """
+    Returns a dict of the the Facebook signed request object
+    See https://developers.facebook.com/docs/authentication/signed_request/
+    """
+    l = signed_request.split('.', 2)
+    encoded_sig = l[0]
+    payload = l[1]
+
+    sig = base64_url_decode(encoded_sig)
+    data = util.json_loads(base64_url_decode(payload))
+
+    if data.get('algorithm').upper() != 'HMAC-SHA256':
+        logging.error('Unknown algorithm during signed request decode')
+        return None
+
+    expected_sig = hmac.new(secret, msg=payload, digestmod=hashlib.sha256).digest()
+
+    if sig != expected_sig:
+        return None
+
+    return data
 
 # TODO(Sandy): Remove app parameter when Flask re-factoring is done
 def get_fb_data(signed_request, app):
@@ -88,34 +140,6 @@ def get_fb_data(signed_request, app):
         'fbid': 123456789,
     }
     """
-    def base64_url_decode(inp):
-        padding_factor = (4 - len(inp) % 4) % 4
-        inp += '='*padding_factor
-        return base64.b64decode(unicode(inp).translate(dict(zip(map(ord, u'-_'), u'+/'))))
-
-    def parse_signed_request(signed_request, secret):
-        """
-        Returns a dict of the the Facebook signed request object
-        See https://developers.facebook.com/docs/authentication/signed_request/
-        """
-        l = signed_request.split('.', 2)
-        encoded_sig = l[0]
-        payload = l[1]
-
-        sig = base64_url_decode(encoded_sig)
-        data = util.json_loads(base64_url_decode(payload))
-
-        if data.get('algorithm').upper() != 'HMAC-SHA256':
-            logging.error('Unknown algorithm during signed request decode')
-            return None
-
-        expected_sig = hmac.new(secret, msg=payload, digestmod=hashlib.sha256).digest()
-
-        if sig != expected_sig:
-            return None
-
-        return data
-
     # Validate against Facebook's signed request
     fbsr_data = parse_signed_request(signed_request, app.config['FB_APP_SECRET'])
 
