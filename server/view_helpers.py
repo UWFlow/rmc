@@ -38,6 +38,7 @@ def get_current_user():
             try:
                 as_user = m.User.objects.with_id(oid)
                 req.current_user = as_user
+                req.as_user_override = True
             except:
                 logging.warn("Bad as_oid (%s) in get_current_user()" % oid)
         elif fbid:
@@ -46,6 +47,7 @@ def get_current_user():
                 logging.warn("Bad as_fbid (%s) in get_current_user()" % fbid)
             else:
                 req.current_user = as_user
+                req.as_user_override = True
 
     return req.current_user
 
