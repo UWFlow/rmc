@@ -14,7 +14,7 @@ FB_NO_ACCESS_TOKEN = 'NO_ACCESS_TOKEN'
 # A long token normally lasts for 60 days
 FB_FORCE_TOKEN_EXPIRATION_DAYS = 57
 
-def code_for_token(code, app, cmd_line_debug=False):
+def code_for_token(code, config, cmd_line_debug=False):
     """
     Returns a dictionary containing the user's Facebook access token and seconds
     until it expires from now
@@ -35,9 +35,9 @@ def code_for_token(code, app, cmd_line_debug=False):
     """
     # Since we're exchanging a client-side token, redirect_uri should be ''
     params = {
-        'client_id': app.config['FB_APP_ID'],
+        'client_id': config['FB_APP_ID'],
         'redirect_uri': '',
-        'client_secret': app.config['FB_APP_SECRET'],
+        'client_secret': config['FB_APP_SECRET'],
         'code': code,
     }
     resp = requests.get('https://graph.facebook.com/oauth/access_token',
@@ -58,7 +58,7 @@ def code_for_token(code, app, cmd_line_debug=False):
     return result
 
 # TODO(Sandy): Find out how often a new token is issued
-def token_for_long_token(short_token, app, cmd_line_debug=False):
+def token_for_long_token(short_token, config, cmd_line_debug=False):
     """
     Returns a dictionary containing the user's long Facebook access token and
     seconds until it expires from now
@@ -77,8 +77,8 @@ def token_for_long_token(short_token, app, cmd_line_debug=False):
     # Since we're exchanging a client-side token, redirect_uri should be ''
     params = {
         'grant_type': 'fb_exchange_token',
-        'client_id': app.config['FB_APP_ID'],
-        'client_secret': app.config['FB_APP_SECRET'],
+        'client_id': config['FB_APP_ID'],
+        'client_secret': config['FB_APP_SECRET'],
         'fb_exchange_token': short_token,
     }
     resp = requests.get('https://graph.facebook.com/oauth/access_token',
@@ -126,8 +126,8 @@ def parse_signed_request(signed_request, secret):
 
     return data
 
-# TODO(Sandy): Remove app parameter when Flask re-factoring is done
-def get_fb_data(signed_request, app):
+# TODO(Sandy): Remove config parameter when Flask re-factoring is done
+def get_fb_data(signed_request, config):
     """
     Get FB access token and expiry information from the Facebook signed request
 
@@ -141,7 +141,7 @@ def get_fb_data(signed_request, app):
     }
     """
     # Validate against Facebook's signed request
-    fbsr_data = parse_signed_request(signed_request, app.config['FB_APP_SECRET'])
+    fbsr_data = parse_signed_request(signed_request, config['FB_APP_SECRET'])
 
     # TODO(Sandy): Maybe move the validation somewhere else since it can raise
     # an Exception
@@ -157,11 +157,11 @@ def get_fb_data(signed_request, app):
     fb_access_token_expiry_date = datetime.now()
     code = fbsr_data.get('code')
     if code:
-        result_dict = code_for_token(code, app)
+        result_dict = code_for_token(code, config)
 
         short_access_token = result_dict.get('access_token')
         if short_access_token:
-            result_dict = token_for_long_token(short_access_token, app)
+            result_dict = token_for_long_token(short_access_token, config)
 
             long_access_token = result_dict.get('access_token')
             token_expires_in = result_dict.get('expires')

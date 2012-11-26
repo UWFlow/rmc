@@ -302,7 +302,7 @@ def login():
             logging.warn('No fbsr set')
             raise ApiError('No fbsr set')
 
-    fb_data = facebook.get_fb_data(fbsr, app)
+    fb_data = facebook.get_fb_data(fbsr, app.config)
     fbid = fb_data['fbid']
     fb_access_token= fb_data['access_token']
     fb_access_token_expiry_date = fb_data['expires_on']
@@ -679,7 +679,7 @@ def renew_fb():
         logging.warn('No fbsr set')
         raise ApiError('No fbsr set')
 
-    fb_data = facebook.get_fb_data(fbsr, app)
+    fb_data = facebook.get_fb_data(fbsr, app.config)
     access_token = fb_data['access_token']
     expires_on = fb_data['expires_on']
 
