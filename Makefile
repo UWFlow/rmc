@@ -23,8 +23,12 @@ init_data: import_menlo aggregate_data
 prod_import: prod_import_mongo aggregate_data
 
 prod_import_mongo:
-	rsync -avz rmc:~/dump .
-	mongorestore --drop dump
+	@if [ `whoami` = 'rmc' ]; then \
+		echo "You're in prod!!! Don't dump our data :("; \
+	else \
+		rsync -avz rmc:~/rmc/dump .; \
+		mongorestore --drop dump; \
+	fi
 
 deploy:
 	@if [ `whoami` = 'rmc' ]; then \
