@@ -51,7 +51,6 @@ class MenloCourse(me.Document):
     professor_review = me.EmbeddedDocumentField(review.ProfessorReview)
 
 
-# TODO(mack): should be UserCourseOffering?
 class UserCourse(me.Document):
 
     meta = {

@@ -1,7 +1,7 @@
 from course import Course
 from department import Department
 from exam import Exam
-from offering import CourseOffering
+from schedule_item import ScheduleItem
 from professor import Professor
 from rating import AggregateRating
 from review import CourseReview, ProfessorReview
