@@ -284,7 +284,8 @@ def ga_date(date_val):
 
 def csv_user_growth(file_name='stats.tmp'):
     users = m.User.objects()
-    hist = defaultdict(int)
+    signups = defaultdict(int)
+    transcripts = defaultdict(int)
     for u in users:
         jd = u.join_date
         jd -= timedelta(
@@ -292,14 +293,20 @@ def csv_user_growth(file_name='stats.tmp'):
                 minutes=jd.minute,
                 seconds=jd.second,
                 microseconds=jd.microsecond)
-        hist[jd] += 1
+
+        if u.has_course_history:
+            transcripts[jd] += 1
+
+        signups[jd] += 1
 
     with open(file_name, 'w+') as csv_file:
         writer = csv.writer(csv_file)
 
-        writer.writerow(['Date', 'Sign ups'])
-        for key, val in iter(sorted(hist.items())):
-            writer.writerow([ga_date(key), val])
+        writer.writerow(['Date', 'Users signed up',
+                'Users imported transcript'])
+        for key, s_count in iter(sorted(signups.items())):
+            t_count = transcripts[key] if key in transcripts else 0
+            writer.writerow([ga_date(key), s_count, t_count])
 
         csv_file.seek(0);
         return csv_file.read()
