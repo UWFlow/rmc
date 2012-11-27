@@ -152,5 +152,41 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
 
   init();
 
+  // Render the schedule if possible
+  if (pageData.scheduleItemObjs.length > 0) {
+    var scheduleItems = new _schedule.ScheduleItemCollection(
+      pageData.scheduleItemObjs);
+
+    window.x = scheduleItems;
+
+    var scheduleView = new _schedule.ScheduleView({
+      startHour: 8,
+      endHour: 18,
+      scheduleItems: scheduleItems
+    });
+
+    scheduleView
+      .render()
+      .resize({
+        headerHeight: 30,
+        height: 800,
+
+        hourLabelWidth: 100,
+        width: $("#class-schedule-placeholder").outerWidth()
+      });
+
+    $(window).resize(function() {
+      scheduleView.resize({
+        headerHeight: 30,
+        height: 800,
+
+        hourLabelWidth: 100,
+        width: scheduleView.$el.outerWidth()
+      });
+    });
+
+    $("#class-schedule-placeholder").replaceWith(scheduleView.el);
+  }
+
   mixpanel.track('Impression: Profile page');
 });

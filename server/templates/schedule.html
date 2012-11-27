@@ -1,7 +1,10 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('schedule-item-tpl') %}
-<%= item.content %>
+<%= course_id.toUpperCase() %>: <%= section %>
+<br/>
+<%= start_time %> - <%= end_time %>
+(<%= building %><%= room %>)
 {% endcall %}
 
 {% call macros.us_template('schedule-day-tpl') %}
