@@ -6,8 +6,9 @@ regular python REPL.
 """
 
 import os
-import rootdir
 import sys
+
+import rootdir
 
 sys.path.insert(0, os.path.dirname(rootdir.project_rootdir()))
 
