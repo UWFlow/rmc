@@ -5,8 +5,8 @@
     overflow: hidden;
     position: absolute;
     // TODO(mack): move positioning into navbar's css
-    left: 22%;
-    width: 40%;
+    left: 20%;
+    width: 45%;
 
     height: 50px;
     padding: 5px 15px;
@@ -97,19 +97,26 @@
           }
 
           &.card .pic {
-            // TODO(mack): host image locally
-            background: url("http://www.shopnaturalegreenonline.ca/v/vspfiles/assets/images/gift-card.jpg");
+            // TODO(mack): Resize image
+            background: url("/static/img/gift_card.jpg");
             background-size: 50px 32px;
             width: 50px;
             height: 32px;
           }
 
-          &.dre .pic {
+          &.kindle .pic {
             // TODO(mack): host image locally
-            background: url("http://landmarkreport.com/wp-content/uploads/2012/09/Beats-Dr.-Dre.jpg");
-            background-size: 46px 42px;
-            width: 46px;
-            height: 42px;
+            background: url("/static/img/kindle.jpg");
+            background-size: 32px 46px;
+            width: 32px;
+            height: 46px;
+          }
+
+          &.nexus-7 .pic {
+            background: url("/static/img/nexus_7.png");
+            background-size: 28px 46px;
+            width: 28px;
+            height: 46px;
           }
         }
       }

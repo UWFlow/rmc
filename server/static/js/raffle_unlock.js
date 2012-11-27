@@ -16,7 +16,7 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
 
   var RafflePrizes = RmcBackbone.Collection.extend({
     model: RafflePrize,
-    compator: function(rafflePrize) {
+    comparator: function(rafflePrize) {
       return rafflePrize.get('points_to_unlock');
     }
   });
@@ -42,6 +42,11 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
           this.incrementPoints(numPoints - model.previous('num_points'));
         }, this));
       }
+
+      window.setInterval(_.bind(function() {
+        this.set('num_points', this.get('num_points') + 1000);
+        this.updateUnlockPrizes();
+      }, this), 1000);
     },
 
     incrementPoints: function(amount) {
@@ -89,18 +94,25 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
       var giftCardPrize = new RafflePrize({
         id: 'card',
         name: '$50 gift card',
-        points_to_unlock: 1000
+        points_to_unlock: 100000
       });
 
-      var dreBeatsPrize = new RafflePrize({
-        id: 'dre',
-        name: 'Dre beats',
-        points_to_unlock: 2000
+      var kindlePrize = new RafflePrize({
+        id: 'kindle',
+        name: 'Kindle',
+        points_to_unlock: 150000
+      });
+
+      var nexus7Prize = new RafflePrize({
+        id: 'nexus-7',
+        name: 'Nexus 7',
+        points_to_unlock: 200000
       });
 
       var rafflePrizes = new RafflePrizes([
         giftCardPrize,
-        dreBeatsPrize
+        kindlePrize,
+        nexus7Prize
       ]);
 
       raffleSupervisor = new RaffleSupervisor({
@@ -162,6 +174,7 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
       // Always show a little bit of the colored bar
       var totalPercent = Math.max(100 * totalPoints / this.maxPointsScale, 1);
 
+      // How much extra colored bar to show past the right-most prize tick
       var extraPercents = 2;
       var maxPercentRender = Math.round(100/this.MAX_POINTS_RATIO + extraPercents);
 
