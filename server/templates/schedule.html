@@ -1,8 +1,7 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('schedule-item-tpl') %}
-<%= item.start[0] %>:<%= item.start[1] %> -
-<%= item.end[0] %>:<%= item.end[1] %>
+<%= item.content %>
 {% endcall %}
 
 {% call macros.us_template('schedule-day-tpl') %}
