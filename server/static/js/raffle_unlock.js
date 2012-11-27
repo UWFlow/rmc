@@ -46,7 +46,7 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
 
     incrementPoints: function(amount) {
       var totalPoints = this.get('total_points');
-      this.set('total_points', totalPoints + amount);
+      this.set('total_points', (+totalPoints) + (+amount));
       this.updateUnlockPrizes();
     },
 

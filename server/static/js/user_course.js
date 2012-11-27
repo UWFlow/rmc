@@ -63,9 +63,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
     },
 
     onSync: function(model, response, options) {
-      // XXX hardcode for testing
-      response.points_gained = [10, 50, 100][Math.floor(Math.random() * 3)];
-
       this.get('user').gainPoints(response.points_gained);
     },
 
