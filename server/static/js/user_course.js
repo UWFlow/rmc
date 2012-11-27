@@ -48,6 +48,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       this.get('course_review').set('ratings',
         new ratings.RatingChoiceCollection(
           this.get('course_review').get('ratings')));
+
+      this.on('sync', _.bind(this.onSync, this));
     },
 
     parse: function(attrs) {
@@ -58,6 +60,13 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       // We return nothing because we have a nested collection which can't be
       // just replaced over because it has event handlers.
       return {};
+    },
+
+    onSync: function(model, response, options) {
+      // XXX hardcode for testing
+      response.points_gained = [10, 50, 100][Math.floor(Math.random() * 3)];
+
+      this.get('user').gainPoints(response.points_gained);
     },
 
     getReviewJson: function(reviewType) {

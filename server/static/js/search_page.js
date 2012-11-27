@@ -4,8 +4,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
   var FETCH_DELAY_MS = 300;
 
-  user.UserCollection.addToCache(pageData.userObjs);
-
   var CourseSearchView = RmcBackbone.View.extend({
     className: 'course-search',
     timer: undefined,

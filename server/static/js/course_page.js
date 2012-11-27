@@ -4,7 +4,6 @@ require(
 function($, course, tookThis, user, tips, prof, ratings, user_course, _review, _sign_in) {
 
   course.CourseCollection.addToCache(pageData.courseObj);
-  user.UserCollection.addToCache(pageData.userObjs);
   user_course.UserCourses.addToCache(pageData.userCourseObjs);
   prof.ProfCollection.addToCache(pageData.professorObjs);
 

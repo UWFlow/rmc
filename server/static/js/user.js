@@ -1,6 +1,7 @@
 define(
-['rmc_backbone', 'ext/underscore', 'ext/underscore.string', 'util', 'course'],
-function(RmcBackbone, _, _s, util, _course) {
+['rmc_backbone', 'ext/underscore', 'ext/underscore.string', 'util', 'course',
+'points'],
+function(RmcBackbone, _, _s, util, _course, _points) {
 
   var getShortProgramName = function(programName) {
     programName = programName || '';
@@ -60,6 +61,11 @@ function(RmcBackbone, _, _s, util, _course) {
         fb_pic_url: this.getFbPicUrl(),
         short_program_name: this.getShortProgramName()
       });
+    },
+
+    gainPoints: function(numPoints) {
+      if (numPoints <= 0) return;
+      this.set('num_points', this.get('num_points') + numPoints);
     }
   });
 
@@ -137,9 +143,15 @@ function(RmcBackbone, _, _s, util, _course) {
     return new UserCollection(util.randomItems(usersData, num));
   };
 
+  var getCurrentUser = function() {
+    // TODO(david): Cache this
+    return UserCollection.getFromCache(window.pageData.currentUserId.$oid);
+  };
+
   return {
     UserModel: UserModel,
     UserCollection: UserCollection,
-    getShortProgramName: getShortProgramName
+    getShortProgramName: getShortProgramName,
+    getCurrentUser: getCurrentUser
   };
 });
