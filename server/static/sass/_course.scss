@@ -248,7 +248,7 @@ $inner-padding: 18px;
       float: right;
       margin-top: -10px;
       margin-right: 10px;
-      width: 110px;
+      width: 125px;
       text-align: right;
 
       .friends-taken-title {
@@ -272,16 +272,13 @@ $inner-padding: 18px;
       }
 
       .remaining-friends {
+
         clear: both;
         display: block;
-        margin-left: 3px;
+        padding-top: 2px;
         font-size: 15px;
         line-height: 15px;
         position: relative;
-      }
-
-      .remaining-friends {
-
         color: #333;
 
         // TODO(mack): make width dependent on number of friends, probably gotta do in js
