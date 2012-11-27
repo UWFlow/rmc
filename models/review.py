@@ -2,8 +2,6 @@ from datetime import datetime
 import mongoengine as me
 import logging
 
-import professor as _professor
-
 
 class Privacy(object):
     ME = 0
@@ -35,6 +33,9 @@ class Privacy(object):
 class BaseReview(me.EmbeddedDocument):
     comment = me.StringField(default='', max_length=4096)
     comment_date = me.DateTimeField()
+    # The time that any rating for this review was changed
+    # (either created, modified, or deleted)
+    rating_change_date = me.DateTimeField()
     privacy = me.IntField(choices=Privacy.choices(), default=Privacy.FRIENDS)
 
     # Minimum number of characters for a review to pass
@@ -55,14 +56,31 @@ class BaseReview(me.EmbeddedDocument):
     def rating_fields(self):
         raise NotImplementedError("return a list of rating field names")
 
+    @property
+    # Has this review ever been rated in the past?
+    def has_been_rated(self):
+        if self.rating_change_date:
+            return True
+
+        for rating_name in self.rating_fields():
+            if getattr(self, rating_name) is not None:
+                return True
+
+        return False
+
     def get_ratings_array(self):
         return [{'name': r, 'rating': getattr(self, r)}
                 for r in self.rating_fields()]
 
     def update_ratings(self, ratings_dict):
         for rating_name in self.rating_fields():
-            setattr(self, 'old_%s' % rating_name, getattr(self, rating_name))
-            setattr(self, rating_name, ratings_dict.get(rating_name))
+            old_rating = getattr(self, rating_name)
+            new_rating = ratings_dict.get(rating_name)
+            setattr(self, 'old_%s' % rating_name, old_rating)
+            setattr(self, rating_name, new_rating)
+
+            if new_rating != old_rating:
+                self.rating_change_date = datetime.now()
 
     def update(self, **kwargs):
         if 'ratings' in kwargs:
@@ -135,7 +153,6 @@ class CourseReview(BaseReview):
         if hasattr(self, 'old_usefulness'):
             cur_course.usefulness.update_aggregate_after_replacement(
                 self.old_usefulness, self.usefulness)
-
 
 class ProfessorReview(BaseReview):
     clarity = me.FloatField(min_value=0.0, max_value=1.0, default=None)

@@ -2,6 +2,7 @@ import itertools
 
 import mongoengine as me
 
+import points as _points
 import term as _term
 import user_course as _user_course
 from rmc.shared import constants
@@ -10,9 +11,6 @@ class User(me.Document):
 
     class JoinSource(object):
         FACEBOOK = 1
-
-    class PointSource(object):
-        FIRST_INVITE = 200
 
     meta = {
         'indexes': [
@@ -277,10 +275,14 @@ class User(me.Document):
                 'program_name': self.short_program_name
             }
 
+    def invite_friend(self, redis):
+        self.num_invites += 1
+        if self.num_invites == 1:
+            self.award_points(_points.PointsSource.FIRST_INVITE, redis)
+
+    def award_points(self, points, redis):
+        self.num_points += points
+        redis.incr('total_points', points)
+
     def __repr__(self):
         return "<User: %s>" % self.name
-
-    def award_first_invite(self, redis):
-        self.num_invites += 1
-        self.num_points += self.PointSource.FIRST_INVITE
-        redis.incr('total_points', self.PointSource.FIRST_INVITE)

@@ -3,6 +3,7 @@ import itertools
 import mongoengine as me
 
 import course
+import points as _points
 import professor
 import rating
 import review
@@ -124,6 +125,21 @@ class UserCourse(me.Document):
             or self.professor_review.clarity is not None
             or self.professor_review.passion is not None
         )
+
+    @property
+    def num_points(self):
+        points = 0
+
+        if self.course_review.comment_date:
+            points += _points.PointSource.COURSE_COMMENT
+        if self.course_review.has_been_rated:
+            points += _points.PointSource.COURSE_RATING
+        if self.professor_review.comment_date:
+            points += _points.PointSource.PROFESSOR_COMMENT
+        if self.professor_review.has_been_rated:
+            points += _points.PointSource.PROFESSOR_RATING
+
+        return points
 
     def to_dict(self, fields=DEFAULT_TO_DICT_FIELDS):
         # NOTE: DO NOT MODIFY parameter `fields` in this fn, because it's

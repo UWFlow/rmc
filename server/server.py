@@ -872,6 +872,9 @@ def user_course():
         # returns a 400
         raise ApiError('No user course found')
 
+
+    orig_points = uc.num_points
+
     # TODO(Sandy): Consider the case where the user picked a professor and rates
     # them, but then changes the professor. We need to remove the ratings from
     # the old prof's aggregated ratings and add them to the new prof's
@@ -918,23 +921,27 @@ def user_course():
 
     uc.save()
 
+    points_gained = uc.num_points - orig_points
+    user.award_points(points_gained, view_helpers.get_redis_instance())
+    user.save()
+
     return util.json_dumps({
         'professor_review.comment_date': uc['professor_review'][
             'comment_date'],
         'course_review.comment_date': uc['course_review']['comment_date'],
+        'points_gained': points_gained,
     })
 
 @app.route('/api/invite_friend', methods=['POST'])
 @view_helpers.login_required
 def invite_friend():
     current_user = view_helpers.get_current_user()
+    orig_points  = current_user.num_points
 
-    before_points = current_user.num_points
-    first_invite = not current_user.num_invites
-    if first_invite:
-        current_user.award_first_invite(view_helpers.get_redis_instance())
-        current_user.save()
-    points_gained = current_user.num_points - before_points
+    current_user.invite_friend(view_helpers.get_redis_instance())
+    current_user.save()
+
+    points_gained = current_user.num_points - orig_points
 
     return util.json_dumps({
         'num_invites': current_user.num_invites,

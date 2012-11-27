@@ -1,0 +1,7 @@
+class PointSource(object):
+    FIRST_INVITE = 200
+    COURSE_COMMENT = 50
+    COURSE_RATING = 50
+    PROFESSOR_COMMENT = 50
+    PROFESSOR_RATING = 50
+
