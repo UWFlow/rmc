@@ -282,8 +282,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
   // models instead of arguments passed directly to the view
 
   var scheduleView = new ScheduleView({
-    startHour: 6,
-    endHour: 22,
+    startHour: 8,
+    endHour: 18,
 
     schedule: {
       days: [{
