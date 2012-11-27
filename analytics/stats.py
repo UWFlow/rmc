@@ -274,7 +274,7 @@ def cid(course_id):
     return m.Course.objects.with_id(course_id)
 
 def uid(user_id):
-    return m.User.objects.with_id(get_user)
+    return m.User.objects.with_id(user_id)
 
 # CSV dumps
 def csv_user_growth():

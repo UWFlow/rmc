@@ -5,6 +5,7 @@ import sys
 
 import rmc.models as m
 import rmc.shared.constants as c
+import rmc.shared.facebook as facebook
 
 # TODO(mack): remove duplication of fields throughout code
 # TODO(mack): deprecate overall rating
@@ -196,10 +197,31 @@ def update_redis_course_professor_rating():
     set_course_professor_ratings_in_redis(courses)
     print 'set %d course professor rating keys in redis' % count[0]
 
+def update_all_fb_friend_list():
+    for user in m.User.objects():
+        # TODO(Sandy): Batch requests when we need to
+        if not user.is_fb_token_expired:
+            try:
+                user.update_fb_friends(
+                        facebook.get_friend_list(user.fb_access_token))
+                user.save()
+            except facebook.FacebookOAuthException as e:
+                user.fb_access_token_invalid = True
+                user.save()
+            except Exception as e:
+                print "get_friend_list failed for %s with: %s" % (user.id,
+                e.message)
 
 # TODO(mack): test it when we get data to test with
 # TODO(mack): currently sort of duplicate logic in User.cache_mutual_course_ids()
 def update_redis_friend_mutual_courses():
+
+    # TODO(Sandy): Use friend real time updates after it. There's a fb updates
+    # branch for this, pending on:
+    # https://developers.facebook.com/bugs/374296595988186?browse=search_50990ddb8a19d9316431973
+    # Rate limit is 600 calls / 600 seconds / token:
+    # http://stackoverflow.com/questions/8805316/facebook-graph-api-rate-limit-and-batch-requests
+    update_all_fb_friend_list()
 
     courses_by_user = {}
     for user in m.User.objects.only('friend_ids', 'course_history'):

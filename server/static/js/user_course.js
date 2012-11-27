@@ -1,8 +1,13 @@
 define(
-['rmc_backbone', 'ext/jquery', 'ext/jqueryui', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/select2', 'ext/autosize', 'course', 'user', 'ext/bootstrap', 'prof'],
-function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course, _user,
-  _bootstrap, _prof) {
+['rmc_backbone', 'ext/jquery', 'ext/jqueryui', 'ext/underscore',
+'ext/underscore.string', 'ratings', 'ext/select2', 'ext/autosize', 'course',
+'user', 'ext/bootstrap', 'prof', 'facebook', 'util', 'ext/toastr'],
+function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
+    _course, _user, _bootstrap, _prof, _facebook, _util, _toastr) {
+
+  // TODO(david): This should probably go in term.js (but circular dep) and also
+  //     leaky abstraction from server.
+  var SHORTLIST_TERM_ID = '9999_99';
 
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
@@ -24,7 +29,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
     referenceFields: function() {
       return {
         'user': [ 'user_id', _user.UserCollection ],
-        'course': [ 'course_id', _course.CourseCollection ]
+        'course': [ 'course_id', _course.CourseCollection ],
+        'professor': [ 'professor_id', _prof.ProfCollection ]
       };
     },
 
@@ -85,6 +91,82 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       return this.get('course_review').get('ratings').find(function(rating) {
         return rating.get('name') === 'interest';
       });
+    },
+
+    promptPostToFacebook: function(reviewType) {
+      var name = '';
+      var description = '';
+      var caption = 'on Flow';
+
+      var courseCode = this.get('course').get('code');
+      // TODO(Sandy): Turn these into enums or something?
+      if (reviewType === 'COURSE') {
+        name = 'I reviewed ' + courseCode;
+        description = this.get('course_review').get('comment');
+      } else if (reviewType === 'PROFESSOR') {
+        name = 'I commented on my ' + courseCode + ' professor ' +
+            this.get('professor').get('name');
+        description = this.get('professor_review').get('comment');
+      }
+      description = _util.truncatePreviewString(description, 50);
+
+      var callback = _.bind(function(response) {
+        // response.post_id is returned on success
+        // response === null on "Cancel"
+        if (response && response.post_id) {
+          // TODO(sandy): Award points!
+          // Give UI feedback with toastr
+          var msg = '';
+          if (reviewType === 'COURSE') {
+            msg = _s.sprintf('Shared review for %s on Facebook!',
+                this.get('course').get('code'));
+          } else if (reviewType === 'PROFESSOR') {
+            msg = _s.sprintf('Shared comment on %s for %s on Facebook!',
+                this.get('professor').get('name'),
+                this.get('course').get('code'));
+          }
+          toastr.success(msg);
+
+          // Facebook engagement completed
+          mixpanel.track('Facebook share review completed', {
+            ReviewType: reviewType
+          });
+          mixpanel.people.increment({'Facebook share review completed': 1});
+        }
+      }, this);
+
+      // TODO(Sandy): Implement proper review showing, if people actually share
+      var link = 'http://uwflow.com/course/' + this.get('course').get('id');
+      _facebook.showFeedDialog(link, name, caption, description, callback);
+      // Facebook engagement intent
+      mixpanel.track('Facebook share review intent', {
+        ReviewType: reviewType
+      });
+      mixpanel.people.increment({'Facebook share review intent': 1});
+    },
+
+    hasTaken: function() {
+      return this.get('term_id') && this.get('term_id') !== SHORTLIST_TERM_ID;
+    },
+
+    // TODO(david): Properly determine if user ever has rated/commented by using
+    //     date
+    // TODO(david): Factor out star into its own Backbone view+model
+    hasRatedCourse: function() {
+      // TODO(david): Law of demeter-ize this and rest of similar functions
+      return this.get('course_review').get('ratings').hasRated();
+    },
+
+    hasRatedProf: function() {
+      return this.get('professor_review').get('ratings').hasRated();
+    },
+
+    hasReviewedCourse: function() {
+      return this.get('course_review').get('comment');
+    },
+
+    hasReviewedProf: function() {
+      return this.get('professor_review').get('comment');
     }
   });
 
@@ -105,13 +187,15 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
         review: courseReview,
         userCourse: this.userCourse,
         className: 'user-comment course-comment',
-        placeholder: 'Any tips or comments?'
+        placeholder: 'Any tips or comments?',
+        reviewType: 'COURSE'
       });
       this.profCommentView = new UserCommentView({
         review: profReview,
         userCourse: this.userCourse,
         className: 'user-comment prof-comment',
-        placeholder: 'Comment about the professor...'
+        placeholder: 'Comment about the professor...',
+        reviewType: 'PROFESSOR'
       });
 
       courseReview.on('change:comment', _.bind(this.saveComments, this,
@@ -291,6 +375,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       this.review = options.review;
       this.userCourse = options.userCourse;
       this.placeholder = options.placeholder;
+      this.reviewType = options.reviewType;
     },
 
     render: function() {
@@ -307,7 +392,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       _.defer(function() { $comments.trigger('input'); });
 
       if (this.review.get('comment')) {
-        this.saveSuccess();
+        this.showShare();
         this.onFocus();
       }
 
@@ -319,6 +404,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
     events: {
       'focus .comments': 'onFocus',
       'click .save-review': 'onSave',
+      'click .share-review': 'onShare',
       'keyup .comments': 'allowSave',
       'click .privacy-tip .dropdown-menu li': 'onPrivacySelect'
     },
@@ -340,23 +426,46 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize, _course
       this.saving = true;
     },
 
+    onShare: function() {
+      this.userCourse.promptPostToFacebook(this.reviewType);
+    },
+
     allowSave: function() {
       if (this.saving || !this.review.get('comment')) return;
 
+      this.$('.share-review')
+        .removeClass('share-review')
+        .addClass('save-review');
+
       this.$('.save-review')
-        .removeClass('btn-success btn-warning btn-danger')
+        .removeClass('btn-info btn-warning btn-danger')
         .addClass('btn-primary')
         .prop('disabled', false)
         .html('<i class="icon-save"></i> Update!');
     },
 
-    saveSuccess: function() {
+    showShare: function() {
       this.saving = false;
       this.$('.save-review')
-        .removeClass('btn-warning btn-danger btn-primary')
-        .addClass('btn-success')
-        .prop('disabled', true)
-        .html('<i class="icon-ok"></i> Posted.');
+        .removeClass('btn-warning btn-danger btn-primary save-review')
+        .addClass('btn-info share-review')
+        .prop('disabled', false)
+        .html('<i class="icon-share"></i> Share');
+    },
+
+    saveSuccess: function() {
+      this.showShare();
+      // Give UI feedback with toastr
+      var msg = '';
+      if (this.reviewType === 'COURSE') {
+        msg = _s.sprintf('Comments on %s saved!',
+            this.userCourse.get('course').get('code'));
+      } else if (this.reviewType === 'PROFESSOR') {
+        msg = _s.sprintf('Comments on %s for %s saved!',
+            this.userCourse.get('professor').get('name'),
+            this.userCourse.get('course').get('code'));
+      }
+      toastr.success(msg);
     },
 
     saveError: function() {

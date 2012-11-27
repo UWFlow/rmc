@@ -49,22 +49,6 @@ function($, _, RmcBackbone, _facebook) {
         fbConnectText: this.fbConnectText,
         source: attributes.source
       });
-
-      $(window).scroll(_.bind(this.scrollWindow, this));
-    },
-
-    scrollWindow: function(evt) {
-      // TODO(mack): Switch to using boostrap's affix after figuring out
-      // why passing a top offset to it doesn't work
-      var offsetTop = $('.navbar').height();
-      if ($(window).scrollTop() > offsetTop) {
-        // Fix the position of the sign in banner at the top of the page
-        this.$el.css({ 'top': 0, 'position': 'fixed'});
-      } else {
-        // Remove inline styles so that banner gets positioned right underneath
-        // the navbar
-        this.$el.css({ 'top': '', 'position': ''});
-      }
     },
 
     render: function() {

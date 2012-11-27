@@ -63,9 +63,8 @@
 
   .sign-in-banner {
     display: inline-block;
-
-    // TODO(mack): investigate why position:absolute doesn't work here
-    position: absolute;
+    position: fixed;
+    top: $navbar-height;
 
     opacity: 0.9;
     &:hover {

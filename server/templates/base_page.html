@@ -13,8 +13,6 @@
     <meta property="og:image" content="http://uwflow.com/static/img/logo/flow_og_200x200.png">
 
     <!-- CSS stylesheets -->
-    <link rel="stylesheet"
-    href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600">
     <link rel="stylesheet" href="{{ '/static/css/ext.css'|version }}">
     {% block stylesheets %}
     {% endblock %}
@@ -33,6 +31,8 @@
         window.pageData.pageScript = '{{ ('/static/%s/%s' % (js_dir, page_script)) }}';
       {% endif %}
       window.pageData.totalPoints = {{ total_points|tojson|safe }};
+      window.pageData.shouldRenewFbToken =
+          {{ should_renew_fb_token|tojson|safe }};
       // Query params that require.js fetches scripts with
       var require = { urlArgs: '{{ VERSION }}' };
     </script>

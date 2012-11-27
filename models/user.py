@@ -1,3 +1,4 @@
+import datetime
 import itertools
 
 import mongoengine as me
@@ -6,6 +7,7 @@ import points as _points
 import term as _term
 import user_course as _user_course
 from rmc.shared import constants
+from rmc.shared import facebook
 
 class User(me.Document):
 
@@ -43,6 +45,8 @@ class User(me.Document):
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
     fb_access_token = me.StringField(max_length=255, required=True, unique=True)
     fb_access_token_expiry_date = me.DateTimeField(required=True)
+    # The token expired due to de-auth, logging out, etc (ie. not time expired)
+    fb_access_token_invalid = me.BooleanField(default=False)
 
     email = me.EmailField()
 
@@ -162,6 +166,23 @@ class User(me.Document):
             if _term.Term.is_shortlist_term(uc.term_id):
                 return True
         return False
+
+    @property
+    def should_renew_fb_token(self):
+        # Should renew FB token if it expired or will expire "soon".
+        future_date = datetime.datetime.now() + datetime.timedelta(
+                days=facebook.FB_FORCE_TOKEN_EXPIRATION_DAYS)
+        return (self.fb_access_token_expiry_date < future_date or
+                self.fb_access_token_invalid)
+
+    @property
+    def is_fb_token_expired(self):
+        return (self.fb_access_token_expiry_date < datetime.datetime.now() or
+                self.fb_access_token_invalid)
+
+    @property
+    def is_demo_account(self):
+        return self.fbid == constants.DEMO_ACCOUNT_FBID
 
     def get_user_courses(self):
         return _user_course.UserCourse.objects(id__in=self.course_history)
@@ -283,6 +304,12 @@ class User(me.Document):
     def award_points(self, points, redis):
         self.num_points += points
         redis.incr('total_points', points)
+
+    def update_fb_friends(self, fbids):
+        self.friend_fbids = fbids
+        fb_friends = User.objects(fbid__in=self.friend_fbids).only('id', 'friend_ids')
+        # We only have friends from Facebook right now, so just set it
+        self.friend_ids = [f.id for f in fb_friends]
 
     def __repr__(self):
         return "<User: %s>" % self.name

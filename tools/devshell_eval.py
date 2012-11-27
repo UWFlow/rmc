@@ -5,6 +5,7 @@ import rmc.shared.secrets as s
 import rmc.models as m
 import rmc.shared.util as util
 import rmc.shared.rmclogger as rmclogger
+import rmc.shared.facebook as f
 
 import mongoengine as me
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
