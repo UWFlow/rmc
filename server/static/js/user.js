@@ -145,7 +145,10 @@ function(RmcBackbone, _, _s, util, _course, _points) {
 
   var getCurrentUser = function() {
     // TODO(david): Cache this
-    return UserCollection.getFromCache(window.pageData.currentUserId.$oid);
+    if (window.pageData.currentUserId) {
+      return UserCollection.getFromCache(window.pageData.currentUserId.$oid);
+    }
+    return null;
   };
 
   return {
