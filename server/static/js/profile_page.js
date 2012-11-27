@@ -1,8 +1,9 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam'],
+'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
+'raffle_unlock', 'schedule'],
 function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
-    _exam) {
+    _exam, _raffle_unlock, _schedule) {
 
   course.CourseCollection.addToCache(pageData.courseObjs);
   uc.UserCourses.addToCache(pageData.userCourseObjs);
