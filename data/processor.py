@@ -1,6 +1,7 @@
 import rmc.shared.constants as c
 import rmc.models as m
 
+import argparse
 from datetime import datetime
 import glob
 import json
@@ -367,9 +368,130 @@ def import_reviews():
 
     print 'imported reviews:', m.MenloCourse.objects.count()
 
+def import_schedule_items():
+
+    # TODO(jlfwong): Consolidate with get_prof_name above
+    # Note that opendata has no space following the ,
+    def get_prof_name_opendata(prof_name_open_data):
+        matches = re.findall(r'^(.+?),(.+)$', prof_name_open_data)[0]
+        return {
+            'first_name': matches[1],
+            'last_name': matches[0],
+        }
+
+    def clean_schedule_item(schedule_item_json):
+        try:
+            if schedule_item_json['Instructor']:
+                prof_name = get_prof_name_opendata(schedule_item_json['Instructor'])
+
+                prof_id = m.Professor.get_id_from_name(**prof_name)
+            else:
+                prof_id = None
+        except TypeError:
+            print schedule_item_json
+
+        course_id = ('%s%s' % (schedule_item_json['Subject'],
+            schedule_item_json['Number'])).lower()
+
+        opendata_term = int(schedule_item_json['Term'])
+
+        # 1129 -> (1900 + 112, 9) -> 2012_09
+        term_id = '%04d_%02d' % (
+            1900 + (opendata_term / 10),
+            opendata_term % 10
+        )
+
+        days = re.findall(r'[A-Z][a-z]?', schedule_item_json['Days'])
+
+        return {
+            'id': schedule_item_json['ID'],
+            'building': schedule_item_json['Building'],
+            'room': schedule_item_json['Room'],
+            'section': schedule_item_json['Section'],
+            'start_time': schedule_item_json['StartTime'],
+            'end_time': schedule_item_json['EndTime'],
+            'course_id': course_id,
+            'prof_id': prof_id,
+            'term_id': term_id,
+            'days': days
+        }
+
+    file_names = glob.glob(os.path.join(sys.path[0],
+            c.OPENDATA_SCHEDULE_ITEM_DATA_DIR, '*.txt'))
+
+    schedule_items_json = []
+
+    bad_files = []
+
+    for file_name in file_names:
+        with open(file_name, 'r') as f:
+            data = json.load(f)
+
+            try:
+                result = data['response']['data']['result']
+            except KeyError:
+                bad_files.append(file_name)
+                continue
+
+            if isinstance(result, list):
+                schedule_items_json += result
+            else:
+                bad_files.append(file_name)
+
+    # TODO(jlfwong): A bunch of the departments are returning garbage for their
+    # schedules - they're returning dicts instead of giving real results.
+    # I left a message with Kartik to see if he can fix it.
+    print 'Bad Files: ', [os.path.basename(x) for x in bad_files]
+
+    schedule_items_clean = [clean_schedule_item(it) for it in
+        schedule_items_json]
+
+    num_added = 0
+    num_updated = 0
+
+    for si_data in schedule_items_clean:
+        si = m.ScheduleItem.objects.with_id(si_data['id'])
+
+        if si:
+            for key in si_data:
+                if key == 'id':
+                    continue
+                si[key] = si_data[key]
+            num_updated += 1
+        else:
+            si = m.ScheduleItem(**si_data)
+            num_added += 1
+
+        si.save()
+
+    print 'added schedule items: ', num_added
+    print 'updated schedule items: ', num_updated
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    supported_modes = ['professors', 'departments',
+            'courses', 'reviews', 'schedule_items', 'all']
+
+    parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
+    args = parser.parse_args()
+
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
-    import_professors()
-    import_departments()
-    import_courses() # must be after departments
-    import_reviews() # must be after courses
+
+    if args.mode == 'professors':
+        import_professors()
+    elif args.mode == 'departments':
+        import_departments()
+    elif args.mode == 'courses':
+        import_courses()
+    elif args.mode == 'reviews':
+        import_reviews()
+    elif args.mode == 'schedule_items':
+        import_schedule_items()
+    elif args.mode == 'all':
+        import_professors()
+        import_departments()
+        import_courses() # must be after departments
+        import_reviews() # must be after courses
+        import_schedule_items()
+    else:
+        sys.exit('The mode %s is not supported' % args.mode)
