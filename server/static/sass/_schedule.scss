@@ -1,31 +1,34 @@
 .class-schedule {
-    .week {
-        background: #ccc;
-    }
+  background: #ccc;
 
-    .times, .day {
-        height: 100%;
-        float: left;
-    }
+  .times, .day {
+    height: 100%;
+    float: left;
+  }
 
-    .times {
-        background: blue;
-    }
+  .day-container {
+    height: 100%;
+  }
 
-    .times .hour-label {
-        background: -webkit-linear-gradient(top, #87e0fd 0%,#53cbf1 40%,#05abe0 100%);
-    }
+  .times {
+    background: blue;
+  }
 
-    .header {
-        background: green;
-    }
+  .times .hour-label {
+    background: -webkit-linear-gradient(top, #87e0fd 0%,#53cbf1 40%,#05abe0 100%);
+  }
 
-    .schedule-item {
-        background: red;
-        position: absolute;
-    }
+  .header {
+    background: green;
+  }
 
-    .schedule-item-container {
-        position: relative;
-    }
+  .schedule-item {
+    background: red;
+    position: absolute;
+  }
+
+  .schedule-item-container {
+    position: relative;
+    height: 100%;
+  }
 }
