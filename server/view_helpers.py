@@ -54,7 +54,9 @@ def get_current_user():
 def login_required(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
-        if not get_current_user():
+        current_user = get_current_user()
+        logging.info("login_required: current_user (%s)" % current_user)
+        if not current_user:
             resp = flask.make_response(flask.redirect('/'))
             resp.set_cookie('fbid', None)
             resp.set_cookie('fb_access_token', None)
