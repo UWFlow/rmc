@@ -18,9 +18,6 @@ import rmc.shared.rmclogger as rmclogger
 import rmc.server.profile as profile
 import rmc.server.view_helpers as view_helpers
 
-import base64
-import hashlib
-import hmac
 import rmc.shared.facebook as facebook
 
 VERSION = int(time.time())
@@ -52,7 +49,7 @@ def render_template(*args, **kwargs):
         'js_dir': app.config['JS_DIR'],
         'ga_property_id': app.config['GA_PROPERTY_ID'],
         'current_user': view_helpers.get_current_user(),
-        'total_points': int(redis.get('total_points')) or 0,
+        'total_points': int(redis.get('total_points') or 0),
         'current_user': current_user,
         'should_renew_fb_token': should_renew_fb_token,
     })
