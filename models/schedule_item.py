@@ -32,6 +32,20 @@ class ScheduleItem(me.Document):
     # eg. ['T', 'Th']
     days = me.ListField(me.StringField())
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'building': self.building,
+            'room': self.room,
+            'section': self.section,
+            'start_time': self.start_time,
+            'end_time': self.end_time,
+            'course_id': self.course_id,
+            'prof_id': self.prof_id,
+            'term_id': self.term_id,
+            'days': self.days
+        }
+
     def __repr__(self):
         return "<ScheduleItem: %s, %s, %s-%s, %s>" % (
             self.course_id,

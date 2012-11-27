@@ -248,16 +248,18 @@ def render_profile_page(profile_user_id):
     ordered_transcript, transcript_by_term = get_ordered_transcript(
             profile_uc_dict_list)
 
-    # Fetch exam schedules
+    # Fetch exam schedules and schedule items
     # TODO(david): 2013
     if transcript_by_term.get('2012_09'):
         current_course_ids = [c['course_id'] for c in transcript_by_term['2012_09']]
-        print current_course_ids
         exam_objs = m.Exam.objects(course_id__in=current_course_ids)
         exam_dicts = [e.to_dict() for e in exam_objs]
+
+        schedule_item_objs = m.ScheduleItem.objects(course_id__in=current_course_ids)
+        schedule_item_dicts = [si.to_dict() for si in schedule_item_objs]
     else:
         exam_dicts = []
-
+        schedule_item_dicts = []
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
@@ -282,5 +284,6 @@ def render_profile_page(profile_user_id):
         own_profile=own_profile,
         has_courses=current_user.has_course_history,
         exam_objs=exam_dicts,
+        schedule_item_objs=schedule_item_dicts,
         has_shortlisted=current_user.has_shortlisted,
     )

@@ -3,32 +3,47 @@ define(
 'ratings', 'ext/bootstrap', 'util', 'ext/toastr'],
 function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
+  var strTimeToMinutes = function(strTime) {
+    // Given a string in 24 hour HH:MM format, returns the corresponding number
+    // of minutes since the beginning of the day
+    var x = strTime.split(':');
+    return parseInt(x[0], 10) * 60 + parseInt(x[1], 10);
+  };
+
   // TODO(jlfwong): Integrate models somehow
   var ScheduleItem = RmcBackbone.Model.extend({
-    start: function() {
-      var x = this.get('time').split(' - ');
-      var start = x[0];
-      return start.split(':');
+    startMinutes: function() {
+      return strTimeToMinutes(this.get('start_time'));
     },
 
-    end: function() {
-      var x = this.get('time').split(' - ');
-      var end = x[1];
-      return end.split(':');
+    endMinutes: function() {
+      return strTimeToMinutes(this.get('end_time'));
     }
   });
 
-  var ScheduleDay = RmcBackbone.Collection.extend({
-  });
+  var ScheduleItemCollection = RmcBackbone.Collection.extend({
+    model: ScheduleItem,
 
-  var Schedule = RmcBackbone.Collection.extend({
-  });
+    forDay: function(day) {
+      return new ScheduleItemCollection(this.filter(function(x) {
+        return _.indexOf(x.get('days'), day) !== -1;
+      }));
+    },
 
+    byDay: function() {
+      return [
+        this.forDay('M'),
+        this.forDay('T'),
+        this.forDay('W'),
+        this.forDay('Th'),
+        this.forDay('F')
+      ];
+    }
+  });
 
   // CSS constants
   var headerPadding = 8;
   var headerBorderHeight = 0;
-
 
   var ScheduleItemView = RmcBackbone.View.extend({
     template: _.template($("#schedule-item-tpl").html()),
@@ -36,16 +51,16 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     className: 'schedule-item',
 
     initialize: function(options) {
-      this.item = options.item;
+      this.scheduleItem = options.scheduleItem;
       this.width = options.width;
       this.scheduleView = options.scheduleView;
       this.scheduleDayView = options.scheduleDayView;
     },
 
     render: function() {
-      this.$el.html(this.template({
-        item: this.item
-      })).addClass('well');
+      this.$el
+        .html(this.template(this.scheduleItem.toJSON()))
+        .addClass('well');
 
       return this;
     },
@@ -59,11 +74,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var minuteHeight = hourHeight / 60.0;
       var startOffset = sv.startHour * hourHeight;
 
-      var start = this.item.start;
-      var end = this.item.end;
+      var startMinutes = this.scheduleItem.startMinutes();
+      var endMinutes = this.scheduleItem.endMinutes();
 
-      var startTop = (start[0] * 60 + start[1]) * minuteHeight - startOffset;
-      var endTop = (end[0] * 60 + end[1]) * minuteHeight - startOffset;
+      var startTop = startMinutes * minuteHeight - startOffset;
+      var endTop = endMinutes * minuteHeight - startOffset;
 
       // NOTE: Not a real CSS margin since the item is absolutely positioned
       var margin = 2;
@@ -88,6 +103,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
     initialize: function(options) {
       this.day = options.day;
+      this.scheduleItems = options.scheduleItems;
       this.scheduleView = options.scheduleView;
 
       this.itemViews = [];
@@ -98,13 +114,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         day: this.day
       }));
 
-
       var $scheduleItemContainer = this.$(".schedule-item-container");
 
       var self = this;
-      _.each(this.day.items, function(item) {
+      this.scheduleItems.each(function(scheduleItem) {
         var itemView = new ScheduleItemView({
-          item: item,
+          scheduleItem: scheduleItem,
           scheduleDayView: self,
           scheduleView: self.scheduleView
         });
@@ -182,10 +197,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     className: 'class-schedule',
 
     initialize: function(options) {
-      this.scheduleWeek = options.scheduleWeek;
-      this.schedule = options.schedule;
       this.startHour = options.startHour;
       this.endHour = options.endHour;
+
+      this.scheduleItems = options.scheduleItems;
 
       this.dayViews = [];
       this.hourLabelViews = [];
@@ -208,10 +223,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       ];
 
       var self = this;
-      _.each(this.schedule.days, function(day, i) {
-        day.name = dayNames[i];
+      _.each(this.scheduleItems.byDay(), function(itemsForDay, i) {
         var dayView = new ScheduleDayView({
-          day: day,
+          day: {
+            name: dayNames[i]
+          },
+          scheduleItems: itemsForDay,
           scheduleView: self
         });
         $dayContainer.append(dayView.render().el);
@@ -254,8 +271,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
             height: headerHeight - 2 * headerPadding - headerBorderHeight
           });
 
-      var nDays = this.schedule.days.length;
-
+      // TODO(jlfwong): Don't know if we need to support weekends anytime
+      // soon...
+      var nDays = 5;
 
       // TODO(jlfwong): Rounding error's a bitch. Figure out a cleaner way of
       // dealing with this (pad days until they fill the full space)
@@ -281,62 +299,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
   // TODO(jlfwong): Remove me - move to profile.js and make data come from
   // models instead of arguments passed directly to the view
 
-  var scheduleView = new ScheduleView({
-    startHour: 8,
-    endHour: 18,
-
-    schedule: {
-      days: [{
-        items: [
-          {
-            start: [14, 30],
-            end: [15, 50],
-            content: "14:30 - 15:50"
-          },
-          {
-            start: [16, 0],
-            end: [17, 20],
-            content: "16:00 - 17:20"
-          }
-        ]
-      }, {
-        items: [
-        ]
-      }, {
-        items: [
-          {
-            start: [8, 30],
-            end: [9, 20],
-            content: "8:30 - 9:20"
-          }
-        ]
-      }, {
-        items: [
-        ]
-      }, {
-        items: [
-        ]
-      }]
-    }
-  })
-  .render()
-  .resize({
-    headerHeight: 30,
-    height: 800,
-
-    hourLabelWidth: 100,
-    width: $("#class-schedule-placeholder").outerWidth()
-  });
-
-  $(window).resize(function() {
-    scheduleView.resize({
-      headerHeight: 30,
-      height: 800,
-
-      hourLabelWidth: 100,
-      width: scheduleView.$el.outerWidth()
-    });
-  });
-
-  $("#class-schedule-placeholder").replaceWith(scheduleView.el);
+  return {
+    ScheduleItem: ScheduleItem,
+    ScheduleItemCollection: ScheduleItemCollection,
+    ScheduleView: ScheduleView
+  };
 });
