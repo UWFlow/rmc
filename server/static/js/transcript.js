@@ -24,7 +24,11 @@ function($, _, _s) {
 
     // TODO(mack): utilize studentId and program information
     var matches = data.match(/Student ID: (\d+)/);
-    var studentId = parseInt(matches[1], 10);
+    var studentId;
+    if (matches) {
+      studentId = parseInt(matches[1], 10);
+    }
+
     matches = data.match(/Program: (.*?)[\n]/);
     var programName = _s.trim(matches[1]);
 

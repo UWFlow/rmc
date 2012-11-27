@@ -781,7 +781,11 @@ def upload_transcript():
         user.last_term_id = term_id
         user.last_program_year_id = last_term['programYearId']
     user.program_name = transcript_data['programName']
-    user.student_id = str(transcript_data['studentId'])
+
+    student_id = transcript_data.get('studentId')
+    if student_id:
+        user.student_id = str(student_id)
+
     user.course_history = course_history_list
     user.cache_mutual_course_ids(view_helpers.get_redis_instance())
     user.save()
