@@ -24,6 +24,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
   var Schedule = RmcBackbone.Collection.extend({
   });
 
+
+  // CSS constants
+  var headerPadding = 8;
+  var headerBorderHeight = 0;
+
+
   var ScheduleItemView = RmcBackbone.View.extend({
     template: _.template($("#schedule-item-tpl").html()),
 
@@ -39,7 +45,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     render: function() {
       this.$el.html(this.template({
         item: this.item
-      }));
+      })).addClass('well');
 
       return this;
     },
@@ -59,10 +65,16 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var startTop = (start[0] * 60 + start[1]) * minuteHeight - startOffset;
       var endTop = (end[0] * 60 + end[1]) * minuteHeight - startOffset;
 
+      // NOTE: Not a real CSS margin since the item is absolutely positioned
+      var margin = 2;
+      var borderWidth = 1;
+      var padding = 8;
+
       this.$el.css({
-        width: width,
-        top: startTop,
-        height: endTop - startTop
+        width: width - 2 * margin - 2 * borderWidth - 2 * padding,
+        left: margin,
+        top: Math.floor(startTop),
+        height: Math.floor(endTop - startTop) - 2 * borderWidth - 2 * padding
       });
 
       return this;
@@ -109,18 +121,21 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var headerHeight = options.headerHeight;
       var hourHeight = options.hourHeight;
 
+      var borderWidth = 1;
+
       this.$el.css({
-        width: width
+        width: width - borderWidth,
+        height: height
       });
 
       this.$('.header').css({
-        height: headerHeight
+        height: headerHeight - 2 * headerPadding - headerBorderHeight
       });
 
       _.each(this.itemViews, function(itemView) {
         itemView.resize({
           hourHeight: hourHeight,
-          width: width
+          width: width - borderWidth
         });
       });
 
@@ -148,8 +163,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     resize: function(options) {
       var height = options.height;
 
+      var borderHeight = 1;
+      var padding = 8;
+
       this.$el.css({
-        height: height
+        height: height - 2 * padding - borderHeight
       });
 
       return this;
@@ -220,7 +238,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var hourLabelWidth = options.hourLabelWidth;
 
       var nHours = this.endHour - this.startHour + 1;
-      var hourHeight = (height - headerHeight) / nHours;
+      var hourHeight = Math.floor((height - headerHeight) / nHours);
 
       this.$el.css({
         width: this.width,
@@ -233,11 +251,15 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         })
         .find('.header')
           .css({
-            height: headerHeight
+            height: headerHeight - 2 * headerPadding - headerBorderHeight
           });
 
       var nDays = this.schedule.days.length;
-      var dayWidth = (width - hourLabelWidth) / nDays;
+
+
+      // TODO(jlfwong): Rounding error's a bitch. Figure out a cleaner way of
+      // dealing with this (pad days until they fill the full space)
+      var dayWidth = Math.floor((width - hourLabelWidth) / nDays);
 
       _.each(this.dayViews, function(dayView) {
         dayView.resize({
@@ -268,11 +290,13 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         items: [
           {
             start: [14, 30],
-            end: [15, 50]
+            end: [15, 50],
+            content: "14:30 - 15:50"
           },
           {
             start: [16, 0],
-            end: [17, 20]
+            end: [17, 20],
+            content: "16:00 - 17:20"
           }
         ]
       }, {
@@ -282,7 +306,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         items: [
           {
             start: [8, 30],
-            end: [9, 20]
+            end: [9, 20],
+            content: "8:30 - 9:20"
           }
         ]
       }, {
@@ -297,10 +322,20 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
   .render()
   .resize({
     headerHeight: 30,
-    height: 600,
+    height: 800,
 
     hourLabelWidth: 100,
-    width: 968
+    width: $("#class-schedule-placeholder").outerWidth()
+  });
+
+  $(window).resize(function() {
+    scheduleView.resize({
+      headerHeight: 30,
+      height: 800,
+
+      hourLabelWidth: 100,
+      width: scheduleView.$el.outerWidth()
+    });
   });
 
   $("#class-schedule-placeholder").replaceWith(scheduleView.el);
