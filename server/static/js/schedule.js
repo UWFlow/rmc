@@ -3,6 +3,7 @@ define(
 'ratings', 'ext/bootstrap', 'util', 'ext/toastr'],
 function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
+  // TODO(jlfwong): Integrate models somehow
   var ScheduleItem = RmcBackbone.Model.extend({
     start: function() {
       var x = this.get('time').split(' - ');
@@ -36,16 +37,21 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     render: function() {
-      var sv = this.scheduleView;
-
-      var nHours = sv.endHour - sv.startHour + 1;
-      var hourHeight = (sv.height - sv.headerHeight) / nHours;
-      var minuteHeight = hourHeight / 60.0;
-      var startOffset = sv.startHour * hourHeight;
-
       this.$el.html(this.template({
         item: this.item
       }));
+
+      return this;
+    },
+
+    resize: function(options) {
+      var width = options.width;
+      var hourHeight = options.hourHeight;
+
+      var sv = this.scheduleView;
+
+      var minuteHeight = hourHeight / 60.0;
+      var startOffset = sv.startHour * hourHeight;
 
       var start = this.item.start;
       var end = this.item.end;
@@ -54,7 +60,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var endTop = (end[0] * 60 + end[1]) * minuteHeight - startOffset;
 
       this.$el.css({
-        width: this.width,
+        width: width,
         top: startTop,
         height: endTop - startTop
       });
@@ -70,8 +76,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
     initialize: function(options) {
       this.day = options.day;
-      this.width = options.width;
       this.scheduleView = options.scheduleView;
+
+      this.itemViews = [];
     },
 
     render: function() {
@@ -80,22 +87,41 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       }));
 
 
-      var width = this.width;
+      var $scheduleItemContainer = this.$(".schedule-item-container");
+
+      var self = this;
+      _.each(this.day.items, function(item) {
+        var itemView = new ScheduleItemView({
+          item: item,
+          scheduleDayView: self,
+          scheduleView: self.scheduleView
+        });
+        $scheduleItemContainer.append(itemView.render().el);
+        self.itemViews.push(itemView);
+      });
+
+      return this;
+    },
+
+    resize: function(options) {
+      var width = options.width;
+      var height = options.height;
+      var headerHeight = options.headerHeight;
+      var hourHeight = options.hourHeight;
 
       this.$el.css({
         width: width
       });
 
-      var $scheduleItemContainer = this.$(".schedule-item-container");
+      this.$('.header').css({
+        height: headerHeight
+      });
 
-      var self = this;
-      _.each(this.day.items, function(item) {
-        $scheduleItemContainer.append(new ScheduleItemView({
-          item: item,
-          width: width,
-          scheduleDayView: self,
-          scheduleView: self.scheduleView
-        }).render().el);
+      _.each(this.itemViews, function(itemView) {
+        itemView.resize({
+          hourHeight: hourHeight,
+          width: width
+        });
       });
 
       return this;
@@ -109,7 +135,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
     initialize: function(options) {
       this.hour = options.hour;
-      this.height = options.height;
     },
 
     render: function() {
@@ -117,8 +142,14 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         hour: this.hour
       }));
 
+      return this;
+    },
+
+    resize: function(options) {
+      var height = options.height;
+
       this.$el.css({
-        height: this.height
+        height: height
       });
 
       return this;
@@ -137,21 +168,15 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       this.schedule = options.schedule;
       this.startHour = options.startHour;
       this.endHour = options.endHour;
-      this.width = options.width;
-      this.height = options.height;
-      this.headerHeight = options.headerHeight;
-      this.hourLabelWidth = options.hourLabelWidth;
+
+      this.dayViews = [];
+      this.hourLabelViews = [];
     },
 
     render: function() {
       this.$el.html(this.template({
         schedule: this.schedule
       }));
-
-      this.$el.css({
-        width: this.width,
-        height: this.height
-      });
 
       var $dayContainer = this.$(".day-container");
 
@@ -164,83 +189,119 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         "Friday"
       ];
 
-      var nDays = this.schedule.days.length;
-      var dayWidth = (this.width - this.hourLabelWidth) / nDays;
-
       var self = this;
       _.each(this.schedule.days, function(day, i) {
         day.name = dayNames[i];
-        $dayContainer.append(new ScheduleDayView({
+        var dayView = new ScheduleDayView({
           day: day,
-          width: dayWidth,
           scheduleView: self
-        }).render().el);
+        });
+        $dayContainer.append(dayView.render().el);
+        self.dayViews.push(dayView);
       });
 
       var $hourLabelContainer = this.$(".hour-label-container");
 
-      var nHourLabels = this.endHour - this.startHour + 1;
-      var hourLabelHeight = (this.height - this.headerHeight) / nHourLabels;
-
       for (var i = this.startHour; i <= this.endHour; i++) {
-        $hourLabelContainer.append(new ScheduleHourLabelView({
-          hour: i,
-          height: hourLabelHeight
-        }).render().el);
+        var hourLabelView = new ScheduleHourLabelView({
+          hour: i
+        });
+        $hourLabelContainer.append(hourLabelView.render().el);
+        this.hourLabelViews.push(hourLabelView);
       }
 
-      this.$('.header').css({
-        height: this.headerHeight
+      return this;
+    },
+
+    resize: function(options) {
+      var height = options.height;
+      var width = options.width;
+      var headerHeight = options.headerHeight;
+      var hourLabelWidth = options.hourLabelWidth;
+
+      var nHours = this.endHour - this.startHour + 1;
+      var hourHeight = (height - headerHeight) / nHours;
+
+      this.$el.css({
+        width: this.width,
+        height: this.height
       });
 
-      this.$('.times').css({
-        width: this.hourLabelWidth
+      this.$('.times')
+        .css({
+          width: hourLabelWidth
+        })
+        .find('.header')
+          .css({
+            height: headerHeight
+          });
+
+      var nDays = this.schedule.days.length;
+      var dayWidth = (width - hourLabelWidth) / nDays;
+
+      _.each(this.dayViews, function(dayView) {
+        dayView.resize({
+          width: dayWidth,
+          height: height,
+          headerHeight: headerHeight,
+          hourHeight: hourHeight
+        });
+      });
+
+      _.each(this.hourLabelViews, function(hourLabelView) {
+        hourLabelView.resize({height: hourHeight});
       });
 
       return this;
     }
   });
 
-  // TODO: Remove me
-    $("#class-schedule-placeholder").replaceWith(new ScheduleView({
-      startHour: 6,
-      endHour: 22,
+  // TODO(jlfwong): Remove me - move to profile.js and make data come from
+  // models instead of arguments passed directly to the view
 
-      headerHeight: 30,
-      height: 600,
+  var scheduleView = new ScheduleView({
+    startHour: 6,
+    endHour: 22,
 
-      hourLabelWidth: 100,
-      width: 968,
+    schedule: {
+      days: [{
+        items: [
+          {
+            start: [14, 30],
+            end: [15, 50]
+          },
+          {
+            start: [16, 0],
+            end: [17, 20]
+          }
+        ]
+      }, {
+        items: [
+        ]
+      }, {
+        items: [
+          {
+            start: [8, 30],
+            end: [9, 20]
+          }
+        ]
+      }, {
+        items: [
+        ]
+      }, {
+        items: [
+        ]
+      }]
+    }
+  })
+  .render()
+  .resize({
+    headerHeight: 30,
+    height: 600,
 
-      schedule: {
-        days: [{
-          items: [
-            {
-              start: [14, 30],
-              end: [15, 50]
-            },
-            {
-              start: [16, 00],
-              end: [17, 20]
-            }
-          ]
-        }, {
-          items: [
-          ]
-        }, {
-          items: [
-            {
-              start: [8, 30],
-              end: [9, 20]
-            }
-          ]
-        }, {
-          items: [
-          ]
-        }, {
-          items: [
-          ]
-        }]
-      }
-    }).render().el);
+    hourLabelWidth: 100,
+    width: 968
+  });
+
+  $("#class-schedule-placeholder").replaceWith(scheduleView.el);
 });
