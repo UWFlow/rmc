@@ -1,0 +1,29 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('schedule-item-tpl') %}
+<%= item.start[0] %>:<%= item.start[1] %> -
+<%= item.end[0] %>:<%= item.end[1] %>
+{% endcall %}
+
+{% call macros.us_template('schedule-day-tpl') %}
+<div class="header">
+    <%= day.name %>
+</div>
+<div class="schedule-item-container">
+</div>
+{% endcall %}
+
+{% call macros.us_template('schedule-hour-label-tpl') %}
+<%= hour %>:00
+{% endcall %}
+
+{% call macros.us_template('schedule-tpl') %}
+<div class="times">
+    <div class="header">
+    </div>
+    <div class="hour-label-container">
+    </div>
+</div>
+<div class="day-container">
+</div>
+{% endcall %}
