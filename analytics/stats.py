@@ -1,6 +1,7 @@
 from collections import defaultdict
 from datetime import datetime
 from datetime import timedelta
+import csv
 import mongoengine as me
 import rmc.models as m
 import rmc.shared.constants as c
@@ -277,7 +278,11 @@ def uid(user_id):
     return m.User.objects.with_id(user_id)
 
 # CSV dumps
-def csv_user_growth():
+# TODO(Sandy): Use dialect functionality of csv?
+def ga_date(date_val):
+    return date_val.strftime('%Y-%m-%d')
+
+def csv_user_growth(file_name='stats.tmp'):
     users = m.User.objects()
     hist = defaultdict(int)
     for u in users:
@@ -287,13 +292,17 @@ def csv_user_growth():
                 minutes=jd.minute,
                 seconds=jd.second,
                 microseconds=jd.microsecond)
-        timestamp = time.mktime(jd.timetuple())
-        # TODO(sandy): Change timestamp to nicer format
-        hist[timestamp] += 1
-    csv_result = "\"Date\", \"User Objects\"\n"
-    for key, val in hist.iteritems():
-        csv_result += "%d, %d\n" % (key, val)
-    return csv_result
+        hist[jd] += 1
+
+    with open(file_name, 'w+') as csv_file:
+        writer = csv.writer(csv_file)
+
+        writer.writerow(['Date', 'Sign ups'])
+        for key, val in iter(sorted(hist.items())):
+            writer.writerow([ga_date(key), val])
+
+        csv_file.seek(0);
+        return csv_file.read()
 
 # TODO(Sandy): More help info
 def stats_help():
