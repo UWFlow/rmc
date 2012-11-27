@@ -714,9 +714,6 @@ def renew_fb():
 @view_helpers.login_required
 def upload_transcript():
     req = flask.request
-    # TODO(Sandy): The following two cases involve users trying to import their transcript without being logged in.
-    # We have to decide how we treat those users. E.g. we might prevent this from the frontend, or maybe save it and
-    # tell them to make an account, etc
 
     user = view_helpers.get_current_user()
     user_id = user.id
@@ -789,6 +786,7 @@ def upload_transcript():
 
     user.course_history = course_history_list
     user.cache_mutual_course_ids(view_helpers.get_redis_instance())
+    user.transcripts_imported += 1
     user.save()
 
     rmclogger.log_event(

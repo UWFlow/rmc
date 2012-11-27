@@ -98,6 +98,8 @@ class User(me.Document):
 
     email_unsubscribed = me.BooleanField(default=False)
 
+    transcripts_imported = me.IntField(min_value=0, default=0)
+
     @property
     def name(self):
         return '%s %s' % (self.first_name , self.last_name)
@@ -156,9 +158,14 @@ class User(me.Document):
 
     @property
     def has_course_history(self):
-        # TODO(Sandy): This is only a heuristic right now. Have flags for
-        # importing courses and/or manually adding courses later
-        return (self.course_history and len(self.course_history) > 3)
+        # TODO(Sandy): Using this to backfill transcripts imported, remove later
+        if len(self.course_history) == 0:
+            return False
+
+        for uc in self.get_user_courses():
+            if not _term.Term.is_shortlist_term(uc.term_id):
+                return True
+        return False
 
     @property
     def has_shortlisted(self):
