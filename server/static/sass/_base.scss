@@ -98,12 +98,6 @@
   //outline: 1px rgba(255, 0, 0, 0.2) solid;
 //}
 
-// TODO(david): Make this work. Footer should be at bottom.
-html, body {
-  height: 100%;
-  min-height: 100%;
-}
-
 body {
   background: white url(/static/img/bg-white-grainy.png);
   background-attachment: fixed;
