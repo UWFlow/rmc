@@ -45,7 +45,7 @@ def increment_aggregate_ratings(courses, get_rating_fn, get_fields_fn, ucs):
                 ratings[field_key].add_aggregate_rating(field_value)
 
 
-def import_mongo_course_rating():
+def update_mongo_course_rating():
     # course => ratings
     def get_rating_fn(courses, uc):
         if uc.course_id not in courses:
@@ -122,7 +122,7 @@ def import_mongo_course_rating():
     print 'saved ratings for %d courses in mongodb' % count[0]
 
 
-def import_mongo_course_professors():
+def update_mongo_course_professors():
 
     count = 0
     for course in m.Course.objects.only('professor_ids'):
@@ -142,7 +142,7 @@ def import_mongo_course_professors():
     print 'added professors for %d courses in mongodb' % count
 
 
-def import_redis_course_professor_rating():
+def update_redis_course_professor_rating():
     # course => professors => ratings
     def get_rating_fn(courses, uc):
         if uc.professor_id is None:
@@ -199,7 +199,7 @@ def import_redis_course_professor_rating():
 
 # TODO(mack): test it when we get data to test with
 # TODO(mack): currently sort of duplicate logic in User.cache_mutual_course_ids()
-def import_redis_friend_mutual_courses():
+def update_redis_friend_mutual_courses():
 
     courses_by_user = {}
     for user in m.User.objects.only('friend_ids', 'course_history'):
@@ -232,14 +232,33 @@ def import_redis_friend_mutual_courses():
 
     print 'set %d friend pair keys in redis' % count
 
+
+def update_mongo_points():
+    total_points = 0
+
+    for user in m.User.objects.only(
+            'num_invites', 'course_history', 'num_points'):
+        num_points = 0
+        if user.num_invites:
+            num_points += m.PointSource.FIRST_INVITE
+        for uc in m.UserCourse.objects(id__in=user.course_history):
+            num_points += uc.num_points
+
+        user.update(set__num_points=num_points)
+        total_points += num_points
+
+    r.set('total_points', total_points)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     'all',
     mode_mapping = {
-        'redis_course_professor_rating': import_redis_course_professor_rating,
-        'redis_friend_mutual_courses': import_redis_friend_mutual_courses,
-        'mongo_course_rating': import_mongo_course_rating,
-        'mongo_course_professors': import_mongo_course_professors,
+        'redis_course_professor_rating': update_redis_course_professor_rating,
+        'redis_friend_mutual_courses': update_redis_friend_mutual_courses,
+        'mongo_course_rating': update_mongo_course_rating,
+        'mongo_course_professors': update_mongo_course_professors,
+        'mongo_points': update_mongo_points,
     }
     parser.add_argument('mode',
             help='one of %s' % ','.join(mode_mapping.keys() + ['all']))

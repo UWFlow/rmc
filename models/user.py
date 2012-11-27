@@ -278,7 +278,7 @@ class User(me.Document):
     def invite_friend(self, redis):
         self.num_invites += 1
         if self.num_invites == 1:
-            self.award_points(_points.PointsSource.FIRST_INVITE, redis)
+            self.award_points(_points.PointSource.FIRST_INVITE, redis)
 
     def award_points(self, points, redis):
         self.num_points += points
