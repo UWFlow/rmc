@@ -43,7 +43,7 @@ def render_template(*args, **kwargs):
         'js_dir': app.config['JS_DIR'],
         'ga_property_id': app.config['GA_PROPERTY_ID'],
         'current_user': view_helpers.get_current_user(),
-        'total_points': redis.get('total_points') or 0
+        'total_points': int(redis.get('total_points')) or 0
     })
     return flask_render_template(*args, **kwargs)
 flask.render_template = render_template

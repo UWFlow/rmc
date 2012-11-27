@@ -32,7 +32,7 @@
       {% if page_script %}
         window.pageData.pageScript = '{{ ('/static/%s/%s' % (js_dir, page_script)) }}';
       {% endif %}
-      window.pageData.totalPoints = '{{ total_points }}';
+      window.pageData.totalPoints = {{ total_points|tojson|safe }};
       // Query params that require.js fetches scripts with
       var require = { urlArgs: '{{ VERSION }}' };
     </script>

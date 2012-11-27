@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'util'],
-function(RmcBackbone, $, _, _s, __, util) {
+'ext/bootstrap', 'util', 'user'],
+function(RmcBackbone, $, _, _s, __, util, _user) {
 
   var RafflePrize = RmcBackbone.Model.extend({
     defaults: {
@@ -32,6 +32,16 @@ function(RmcBackbone, $, _, _s, __, util) {
 
     initialize: function(attributes) {
       this.updateUnlockPrizes();
+
+      // TODO(david): Really weird... this breaks in strange ways
+      //this.on('change:total_points', _.bind(this.updateUnlockPrizes, this));
+
+      var currentUser = _user.getCurrentUser();
+      if (currentUser) {
+        currentUser.on('change:num_points', _.bind(function(model, numPoints) {
+          this.incrementPoints(numPoints - model.previous('num_points'));
+        }, this));
+      }
     },
 
     incrementPoints: function(amount) {
