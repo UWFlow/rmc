@@ -10,7 +10,7 @@ setup:
 	./setup.sh
 
 import_menlo:
-	PYTHONPATH=.. python data/processor.py
+	PYTHONPATH=.. python data/processor.py all
 
 import_critiques:
 	PYTHONPATH=.. python data/evals/import_critiques.py data/evals/output/results_testing.txt
