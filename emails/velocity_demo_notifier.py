@@ -71,7 +71,7 @@ def html_body_renderer(user):
 # pre_send() and marking as sent in post_send() into sender.batch_send()
 
 def pre_send(user):
-    return user.sent_velocity_demo_notifier_email
+    return not user.sent_velocity_demo_notifier_email
 
 def post_send(user):
     user.sent_velocity_demo_notifier_email = True
