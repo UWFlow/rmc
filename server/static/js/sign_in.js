@@ -3,11 +3,11 @@ define(
 function($, _, RmcBackbone, _facebook) {
 
   var FbLoginView = RmcBackbone.View.extend({
-    template: _.template($('#fb-login-tpl').html()),
 
     initialize: function(attributes) {
       this.fbConnectText = attributes.fbConnectText || 'Connect with Facebook';
       this.source = attributes.source;
+      this.template = _.template($('#fb-login-tpl').html());
     },
 
     render: function() {
@@ -37,7 +37,6 @@ function($, _, RmcBackbone, _facebook) {
   });
 
   var SignInBannerView = RmcBackbone.View.extend({
-    template: _.template($('#sign-in-banner-tpl').html()),
     attributes: {
       'class': 'sign-in-banner',
       'data-spy': 'affix'
@@ -49,6 +48,7 @@ function($, _, RmcBackbone, _facebook) {
         fbConnectText: this.fbConnectText,
         source: attributes.source
       });
+      this.template = _.template($('#sign-in-banner-tpl').html());
     },
 
     render: function() {
@@ -88,7 +88,6 @@ function($, _, RmcBackbone, _facebook) {
   // but before redirection completes
   var SignInModalView = RmcBackbone.ModalView.extend({
 
-    template: _.template($('#sign-in-modal-tpl').html()),
 
     initialize: function(attributes) {
       this.title = attributes.title;
@@ -97,6 +96,7 @@ function($, _, RmcBackbone, _facebook) {
         fbConnectText: attributes.fbConnectText,
         source: attributes.source
       });
+      this.template = _.template($('#sign-in-modal-tpl').html());
     },
 
     render: function() {

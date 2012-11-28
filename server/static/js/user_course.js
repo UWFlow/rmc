@@ -399,7 +399,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
   });
 
   var UserCommentView = RmcBackbone.View.extend({
-    template: _.template($('#user-comment-tpl').html()),
     className: 'user-comment',
 
     initialize: function(options) {
@@ -407,6 +406,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.userCourse = options.userCourse;
       this.placeholder = options.placeholder;
       this.reviewType = options.reviewType;
+      this.template = _.template($('#user-comment-tpl').html());
     },
 
     render: function() {

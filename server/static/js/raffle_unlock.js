@@ -131,7 +131,6 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
   var RaffleUnlockView = RmcBackbone.View.extend({
     MAX_POINTS_RATIO: 1.25,
 
-    template: _.template($('#raffle-unlock-tpl').html()),
     className: 'raffle-unlock',
 
     initialize: function(attributes) {
@@ -142,6 +141,7 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
       var lastPrize = this.raffleSupervisor.get('last_unlock_prize');
       var lastPrizePoints = lastPrize.get('points_to_unlock');
       this.maxPointsScale = Math.round(lastPrizePoints * this.MAX_POINTS_RATIO);
+      this.template = _.template($('#raffle-unlock-tpl').html());
     },
 
     render: function() {

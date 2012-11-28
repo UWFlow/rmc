@@ -50,7 +50,10 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
   // TODO(david): Convert other backbone views to pre-compile templates
   var ProfCardView = RmcBackbone.View.extend({
     className: 'prof-card',
-    template: _.template($('#prof-card-tpl').html()),
+
+    initialize: function() {
+      this.template = _.template($('#prof-card-tpl').html());
+    },
 
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -74,7 +77,6 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
 
   // TODO(david): Need base expandable collection view
   var ExpandableProfView = RmcBackbone.View.extend({
-    template: _.template($('#prof-expandable-reviews-tpl').html()),
     firstExpanded: false,
     expanded: false,
     numShown: 1,
@@ -103,6 +105,8 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
         ratings: this.prof.get('ratings'),
         subject: 'professor'
       });
+
+      this.template = _.template($('#prof-expandable-reviews-tpl').html());
     },
 
     render: function() {

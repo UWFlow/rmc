@@ -15,12 +15,12 @@ function($, _, _s, bootstrap, RmcBackbone) {
 
   var PointsView = RmcBackbone.View.extend({
     className: 'points-counter',
-    template: _.template($('#points-counter-tpl').html()),
 
     initialize: function() {
       this.model.on('change:num_points', _.bind(this.onPointsChange, this));
       this.interval = null;
       this.pointsTicker = this.model.get('num_points');
+      this.template = _.template($('#points-counter-tpl').html());
     },
 
     render: function() {

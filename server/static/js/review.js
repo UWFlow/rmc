@@ -62,8 +62,11 @@ function(RmcBackbone, $, _, ratings, util) {
   });
 
   var CommentView = RmcBackbone.View.extend({
-    template: _.template($('#comment-tpl').html()),
     className: 'comment',
+
+    initialize: function() {
+      this.template = _.template($('#comment-tpl').html());
+    },
 
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -72,7 +75,6 @@ function(RmcBackbone, $, _, ratings, util) {
   });
 
   var ReviewView = RmcBackbone.View.extend({
-    template: _.template($('#review-tpl').html()),
     className: 'review-post',
 
     initialize: function(options) {
@@ -81,6 +83,7 @@ function(RmcBackbone, $, _, ratings, util) {
         collection: this.model.get('ratings'),
         readOnly: true
       });
+      this.template = _.template($('#review-tpl').html());
     },
 
     render: function() {

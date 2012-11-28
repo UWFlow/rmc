@@ -249,7 +249,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
   var CourseView = BaseCourseView.extend({
     MAX_REVIEW_LEVEL: 4,
 
-    template: _.template($('#course-tpl').html()),
     className: 'course',
 
     initialize: function(attributes) {
@@ -273,6 +272,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
       this.canShowAddReview =
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
+      this.template = _.template($('#course-tpl').html());
     },
 
     onSaveUserReview: function() {
@@ -469,7 +469,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
   // TODO(david): Refactor things to use implicit "model" on views
   var CourseInnerView = BaseCourseView.extend({
-    template: _.template($('#course-inner-tpl').html()),
     className: 'course-inner',
 
     initialize: function(attributes) {
@@ -497,6 +496,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
           courseModel: this.courseModel
         });
       }
+
+      this.template = _.template($('#course-inner-tpl').html());
     },
 
     render: function(moreDetails) {

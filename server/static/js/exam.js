@@ -48,11 +48,11 @@ function(RmcBackbone, $, _, _course) {
   });
 
   var ExamScheduleView = RmcBackbone.View.extend({
-    template: _.template($('#exam-schedule-tpl').html()),
     className: 'exam-schedule',
 
     initialize: function(options) {
       this.examSchedule = options.examSchedule;
+      this.template = _.template($('#exam-schedule-tpl').html());
     },
 
     render: function() {

@@ -60,12 +60,11 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
   });
 
   var RatingsView = RmcBackbone.View.extend({
-    template: _.template($('#ratings-tpl').html()),
-
     initialize: function(options) {
       this.ratings = options.ratings;
       this.userCourse = options.userCourse;
       this.subject = options.subject;
+      this.template = _.template($('#ratings-tpl').html());
     },
 
     render: function() {
@@ -93,8 +92,11 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
   });
 
   var RatingBoxView = RmcBackbone.View.extend({
-    template: _.template($('#rating-box-tpl').html()),
     className: 'rating-box',
+
+    initialize: function() {
+      this.template = _.template($('#rating-box-tpl').html());
+    },
 
     render: function() {
       this.$el
@@ -120,11 +122,11 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
   });
 
   var RatingChoiceView = RmcBackbone.View.extend({
-    template: _.template($('#binary-rating-tpl').html()),
     className: 'rating-choice',
 
     initialize: function(options) {
       this.model.on('change:rating', _.bind(this.setStateFromRating, this));
+      this.template = _.template($('#binary-rating-tpl').html());
       if (options.voting) {
         this.template = _.template($('#voting-tpl').html());
       }

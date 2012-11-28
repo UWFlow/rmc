@@ -4,7 +4,6 @@ require(
 function($, _, _s, transcript, util, RmcBackbone, _user, __) {
 
   var AddTranscriptView = RmcBackbone.View.extend({
-    template: _.template($('#add-transcript-tpl').html()),
     className: 'add-transcript',
 
     initialize: function(attributes) {
@@ -17,6 +16,7 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __) {
           this.transcriptFriends.add(friend);
         }
       }, this);
+      this.template = _.template($('#add-transcript-tpl').html());
     },
 
     render: function() {

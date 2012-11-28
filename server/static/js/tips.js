@@ -16,7 +16,6 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review) {
 
   // TODO(david): Make this fancier. Show more about tip person or something.
   var ExpandableTipsView = RmcBackbone.View.extend({
-    template: _.template($('#expandable-tips-tpl').html()),
     className: 'all-tips',
     expanded: false,
     numShown: 3,
@@ -30,6 +29,7 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review) {
       this.tipsCollectionView = new TipsCollectionView({
         collection: this.reviews
       });
+      this.template = _.template($('#expandable-tips-tpl').html());
     },
 
     render: function() {
