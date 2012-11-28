@@ -3,6 +3,9 @@
   baseUrl: '.',
   mainConfigFile: 'static/js/main.js',
   dir: 'static/js_prod',
+  // Default is 7 seconds, which is too low for prod and is causing
+  // timeout issues
+  waitSeconds: 120,
 
   // Allow nested static dependencies.
   findNestedDependencies: false,
