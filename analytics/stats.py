@@ -282,17 +282,19 @@ def uid(user_id):
 def ga_date(date_val):
     return date_val.strftime('%Y-%m-%d')
 
+def truncate_datetime(dt):
+    return dt - timedelta(
+            hours=dt.hour,
+            minutes=dt.minute,
+            seconds=dt.second,
+            microseconds=dt.microsecond)
+
 def csv_user_growth(file_name='stats.tmp'):
-    users = m.User.objects()
     signups = defaultdict(int)
     transcripts = defaultdict(int)
-    for u in users:
+    for u in m.User.objects():
         jd = u.join_date
-        jd -= timedelta(
-                hours=jd.hour,
-                minutes=jd.minute,
-                seconds=jd.second,
-                microseconds=jd.microsecond)
+        jd = truncate_datetime(jd)
 
         if u.has_course_history:
             transcripts[jd] += 1
@@ -321,19 +323,11 @@ def csv_review_growth(file_name='stats.tmp'):
         pr = uc.professor_review
         if cr and cr.comment:
             rd = cr.comment_date
-            rd -= timedelta(
-                    hours=rd.hour,
-                    minutes=rd.minute,
-                    seconds=rd.second,
-                    microseconds=rd.microsecond)
+            rd = truncate_datetime(rd)
             reviews[rd] += 1
         if pr and pr.comment:
             rd = pr.comment_date
-            rd -= timedelta(
-                    hours=rd.hour,
-                    minutes=rd.minute,
-                    seconds=rd.second,
-                    microseconds=rd.microsecond)
+            rd = truncate_datetime(rd)
             reviews[rd] += 1
 
     with open(file_name, 'w+') as csv_file:
