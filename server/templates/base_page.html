@@ -37,9 +37,6 @@
       var require = { urlArgs: '{{ VERSION }}' };
     </script>
 
-    <script data-main="{{ '/static/%s/main.js' % js_dir }}" src="{{ '/static/%s/ext/require-2.0.6.js' % js_dir }}">
-    </script>
-
     {# Google Analytics #}
     <script type="text/javascript">
       var _gaq = _gaq || [];
@@ -190,6 +187,9 @@
     {% include 'points.html' %}
     {% block templates %}
     {% endblock %}
+
+    <script data-main="{{ '/static/%s/main.js' % js_dir }}" src="{{ '/static/%s/ext/require-2.0.6.js' % js_dir }}">
+    </script>
 
     {# TODO(mack): rename js_vars?
         Put json data passed from backend here under window.pageData.
