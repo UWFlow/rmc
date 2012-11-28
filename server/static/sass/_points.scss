@@ -1,3 +1,75 @@
+@import 'mixins';
+@import 'variables';
+
+// TODO(david): read up more on keyframes / css 3 animations to see if we can
+//     synchronize animations on multiple elements
+
+@include keyframes(mario-points) {
+  from {
+    opacity: 0.0;
+    @include transform(scale(1.0) translate3d(0, 90px, 0));
+    @include text-shadow(0 0 0px rgba($flowBlue, 0.0));
+  }
+
+  30% {
+    opacity: 0.8;
+    @include transform(scale(1.0) translate3d(0, 50px, 0));
+    @include text-shadow(0 0 10px rgba($flowBlue, 1.0));
+  }
+
+  60% {
+    opacity: 0.8;
+    @include transform(scale(1.0) translate3d(0, 50px, 0));
+    @include text-shadow(0 0 10px rgba($flowBlue, 1.0));
+  }
+
+  to {
+    opacity: 0.0;
+    @include transform(scale(0.2), translate3d(0, 0, 0));
+    @include text-shadow(0 0 0px rgba($flowBlue, 0.0));
+  }
+}
+
+@include keyframes(flow-flare) {
+  from {
+    @include filter(drop-shadow(0 0 0px rgba($flowBlue, 0.0)));
+  }
+
+  30% {
+    @include filter(drop-shadow(0 0 5px rgba($flowBlue, 1.0)));
+  }
+
+  60% {
+    @include filter(drop-shadow(0 0 5px rgba($flowBlue, 1.0)));
+  }
+
+  to {
+    @include filter(drop-shadow(0 0 30px rgba($flowBlue, 0.0)));
+  }
+}
+
 .points-counter {
   display: inline-block;
+  position: relative;
+
+  &.animated {
+    @include animation(flow-flare 1s ease-out);
+  }
+}
+
+.flare {
+  position: absolute;
+  font-size: 50px;
+  width: 500px;
+  left: -250px;
+  text-align: center;
+  top: 0px;
+  margin-left: 19px;
+  opacity: 0.0;
+  color: $flowBlue;
+
+}
+
+.animated .flare {
+  @include animation(mario-points 1s ease-out);
 }

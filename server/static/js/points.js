@@ -14,11 +14,13 @@ function($, _, _s, bootstrap, RmcBackbone) {
   });
 
   var PointsView = RmcBackbone.View.extend({
-    className: 'points-counter badge',
+    className: 'points-counter',
     template: _.template($('#points-counter-tpl').html()),
 
     initialize: function() {
       this.model.on('change:num_points', _.bind(this.onPointsChange, this));
+      this.interval = null;
+      this.pointsTicker = this.model.get('num_points');
     },
 
     render: function() {
@@ -27,7 +29,37 @@ function($, _, _s, bootstrap, RmcBackbone) {
     },
 
     onPointsChange: function(model, numPoints, changes) {
-      this.$el.text(numPoints);
+      var diff = numPoints - model.previous('num_points');
+      if (diff === 0) return;
+
+      // Mario points animation of points earned
+      var sign = (diff > 0 ? "+" : "-");
+      this.$('.flare').text(sign + diff);
+
+      var $el = this.$el;
+      $el.addClass('animated');
+      // TODO(david): Use callback when animation is completed
+      window.setTimeout(function() {
+        $el.removeClass('animated');
+      }, 1100);
+
+      // Count up to the desired end value
+      if (this.interval) {
+        window.clearInterval(this.interval);
+      }
+
+      var incrementCounter = _.bind(function() {
+        if (this.pointsTicker === numPoints) {
+          window.clearInterval(this.interval);
+          return;
+        }
+
+        var unit = numPoints > this.pointsTicker ? 1 : -1;
+        this.pointsTicker += unit;
+        this.$('.counter').text(this.pointsTicker);
+      }, this);
+
+      this.interval = window.setInterval(incrementCounter, 20);
     }
   });
 

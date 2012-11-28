@@ -1,5 +1,6 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('points-counter-tpl') %}
-<%- num_points %>
+<span class="counter badge"><%- num_points %></span>
+<span class="flare"></span>
 {% endcall %}
