@@ -74,8 +74,6 @@ function(RmcBackbone, $, _, _s, bootstrap, util) {
         num_friends_future: this.futureTermUserCourses.length,
         course_code: this.courseCode
       }));
-      // FIXME(Sandy): HACKY FIX TO LOAD SINGLE COURSE PAGE
-      /*
       var pastTermCollectionView = new UserCollectionView({
         collection: this.pastTermUserCourses
       });
@@ -91,7 +89,6 @@ function(RmcBackbone, $, _, _s, bootstrap, util) {
         currentTermCollectionView.render().$el);
       this.$('.took-this-future-term-collection-placeholder').replaceWith(
         futureTermCollectionView.render().$el);
-      */
 
       return this;
     }
