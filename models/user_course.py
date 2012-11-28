@@ -134,10 +134,15 @@ class UserCourse(me.Document):
             points += _points.PointSource.COURSE_COMMENT
         if self.course_review.has_been_rated:
             points += _points.PointSource.COURSE_RATING
+        if self.course_review.has_shared:
+            points += _points.PointSource.SHARE_COURSE_REVIEW
+
         if self.professor_review.has_commented:
             points += _points.PointSource.PROFESSOR_COMMENT
         if self.professor_review.has_been_rated:
             points += _points.PointSource.PROFESSOR_RATING
+        if self.professor_review.has_shared:
+            points += _points.PointSource.SHARE_PROFESSOR_REVIEW
 
         return points
 

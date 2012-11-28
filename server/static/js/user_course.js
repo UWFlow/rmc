@@ -69,7 +69,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     onSync: function(model, response, options) {
-      this.get('user').gainPoints(response.points_gained);
+      this.gainPoints(response.points_gained);
+    },
+
+    gainPoints: function(numPoints) {
+      this.get('user').gainPoints(numPoints);
     },
 
     getReviewJson: function(reviewType) {
@@ -116,7 +120,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         if (response && response.post_id) {
           // TODO(sandy): Award points!
           // Give UI feedback with toastr
-          var msg = '';
+          var msg;
           if (reviewType === 'COURSE') {
             msg = _s.sprintf('Shared review for %s on Facebook!',
                 this.get('course').get('code'));
@@ -126,6 +130,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
                 this.get('course').get('code'));
           }
           toastr.success(msg);
+
+          this.onShareSuccess(reviewType);
 
           // Facebook engagement completed
           mixpanel.track('Facebook share review completed', {
@@ -143,6 +149,30 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         ReviewType: reviewType
       });
       mixpanel.people.increment({'Facebook share review intent': 1});
+    },
+
+    onShareSuccess: function(reviewType) {
+      if (reviewType == 'COURSE') {
+        reviewType = 'course';
+      } else if (reviewType == 'PROFESSOR') {
+        reviewType = 'professor';
+      }
+
+      var data = {
+        user_course_id: this.id,
+        review_type: reviewType
+      };
+
+      $.ajax('/api/user/course/share', {
+        type: 'POST',
+        dataType: 'json',
+        data: data,
+        success: _.bind(this.onShareSuccessResponse, this)
+      });
+    },
+
+    onShareSuccessResponse: function(response) {
+      this.gainPoints(response.points_gained);
     },
 
     hasTaken: function() {
@@ -441,7 +471,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         .removeClass('btn-info btn-warning btn-danger')
         .addClass('btn-primary')
         .prop('disabled', false)
-        .html('<i class="icon-save"></i> Update!');
+        .html('<i class="icon-save"></i> Update!')
+        // destroy the share to get points tooltip
+        .tooltip('destroy');
     },
 
     showShare: function() {
@@ -450,7 +482,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         .removeClass('btn-warning btn-danger btn-primary save-review')
         .addClass('btn-info share-review')
         .prop('disabled', false)
-        .html('<i class="icon-share"></i> Share');
+        .html('<i class="icon-share"></i> Share')
+        // TODO(mack): get number of points for action from backend
+        // TODO(mack): do not show this if they have already shared
+        // the course
+        .tooltip({ title: 'Share this course to earn 50 points!' });
     },
 
     saveSuccess: function() {

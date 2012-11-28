@@ -33,6 +33,7 @@ class Privacy(object):
 class BaseReview(me.EmbeddedDocument):
     comment = me.StringField(default='', max_length=4096)
     comment_date = me.DateTimeField()
+    share_date = me.DateTimeField()
     # The time that any rating for this review was changed
     # (either created, modified, or deleted)
     rating_change_date = me.DateTimeField()
@@ -71,6 +72,10 @@ class BaseReview(me.EmbeddedDocument):
     @property
     def has_commented(self):
         return self.comment_date and self.comment
+
+    @property
+    def has_shared(self):
+        return self.share_date
 
     def get_ratings_array(self):
         return [{'name': r, 'rating': getattr(self, r)}

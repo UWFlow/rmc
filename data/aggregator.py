@@ -260,8 +260,10 @@ def update_mongo_points():
 
     num_course_comments = 0
     num_course_ratings = 0
+    num_course_shares = 0
     num_professor_comments = 0
     num_professor_ratings = 0
+    num_professor_shares = 0
     num_invites = 0
 
     for user in m.User.objects.only(
@@ -273,14 +275,19 @@ def update_mongo_points():
         for uc in m.UserCourse.objects(id__in=user.course_history):
             num_points += uc.num_points
 
-            if uc.course_review.comment_date and uc.course_review.comment:
+            if uc.course_review.has_commented:
                 num_course_comments += 1
             if uc.course_review.has_been_rated:
                 num_course_ratings += 1
-            if uc.professor_review.comment_date and uc.professor_review.comment:
+            if uc.course_review.has_shared:
+                num_course_shares += 1
+
+            if uc.professor_review.has_commented:
                 num_professor_comments += 1
             if uc.professor_review.has_been_rated:
                 num_professor_ratings += 1
+            if uc.professor_review.has_shared:
+                num_professor_shares += 1
 
         user.update(set__num_points=num_points)
         total_points += num_points
@@ -290,8 +297,10 @@ def update_mongo_points():
     print ' ===update_mongo_points ==='
     print 'num_course_comments', num_course_comments
     print 'num_course_ratings', num_course_ratings
+    print 'num_course_shares', num_course_shares
     print 'num_professor_comments', num_professor_comments
     print 'num_professor_ratings', num_professor_ratings
+    print 'num_professor_shares', num_professor_shares
     print 'num_invites', num_invites
 
 

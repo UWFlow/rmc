@@ -983,6 +983,42 @@ def user_course():
         'points_gained': points_gained,
     })
 
+# TODO(mack): maybe merge this api into /api/user/course/share
+@view_helpers.login_required
+@app.route('/api/user/course/share', methods=['POST'])
+def user_course_share():
+    user_course_id = flask.request.form['user_course_id']
+    review_type  = flask.request.form['review_type']
+    current_user = view_helpers.get_current_user()
+
+    review = None
+    points_gained = 0
+
+    user_course = m.UserCourse.objects.get(
+            id=user_course_id, user_id=current_user.id)
+    if review_type == 'course':
+        review = user_course.course_review
+        points_gained = m.PointSource.SHARE_COURSE_REVIEW
+    elif review_type == 'professor':
+        review = user_course.professor_review
+        points_gained = m.PointSource.SHARE_PROFESSOR_REVIEW
+
+    # Only award points on the first share
+    if not review.share_date:
+        redis = view_helpers.get_redis_instance()
+        current_user.award_points(points_gained, redis)
+    else:
+        points_gained = 0
+
+    review.share_date = datetime.now()
+    user_course.save()
+    current_user.save()
+
+    return util.json_dumps({
+        'points_gained': points_gained,
+    })
+
+
 @app.route('/api/invite_friend', methods=['POST'])
 @view_helpers.login_required
 def invite_friend():
