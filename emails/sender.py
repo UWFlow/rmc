@@ -27,6 +27,9 @@ def batch_send(title_renderer, body_renderer,
     num_sent = 0
     for user in users:
         try:
+            if user.email_unsubscribed:
+                continue
+
             if not (user.fbid == '1647810326'):
                 continue
 
