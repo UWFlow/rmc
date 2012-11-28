@@ -162,12 +162,13 @@ function(_, _s, util, moment) {
     // state === 'interactive' could fire before dom is ready. See
     // https://github.com/divad12/rmc/commit/56af16db497db5b8d4e210e784e9f63051fcce32
     // for more info.
-    var state = document.readyState;
-    if (document.attachEvent ? state === 'complete' : state !== 'loading' ) {
-      onDomReady();
-    } else {
-      $(onDomReady);
-    }
+    //var state = document.readyState;
+    //if (document.attachEvent ? state === 'complete' : state !== 'loading' ) {
+    //  onDomReady();
+    //} else {
+    //  $(onDomReady);
+    //}
+    $(onDomReady);
   });
 
 });
