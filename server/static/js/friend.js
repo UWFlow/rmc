@@ -185,7 +185,7 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
         own_profile: pageData.ownProfile,
         invited_before: !!this.currentUser.get('num_invites'),
         // TODO(mack): get the points for first invite action from server
-        first_invite_points: 200
+        first_invite_points: 100
       }));
       this.$('[rel="tooltip"]').tooltip();
 
