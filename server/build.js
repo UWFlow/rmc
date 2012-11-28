@@ -4,6 +4,9 @@
   mainConfigFile: 'static/js/main.js',
   dir: 'static/js_prod',
 
+  // Allow nested static dependencies.
+  findNestedDependencies: true,
+
   // Removes uncessary licensing comments
   preserveLicenseComments: false,
 
