@@ -340,6 +340,10 @@ def csv_review_growth(file_name='stats.tmp'):
         csv_file.seek(0);
         return csv_file.read()
 
+def generate_csvs():
+    csv_user_growth('user_growth.csv')
+    csv_review_growth('review_growth.csv')
+
 # TODO(Sandy): More help info
 def stats_help():
     '''
