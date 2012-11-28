@@ -131,10 +131,11 @@ $inner-padding: 18px;
     }
 
     .sash {
+      position: absolute;
+      right: 257px;
       width: 66px;
       margin-top: -22px;
       display: inline-block;
-      float: right;
       text-align: left; // TODO(david): Figure out why text-align: center screws alignment
       padding-left: 8px;
       height: 60px;
@@ -234,7 +235,10 @@ $inner-padding: 18px;
       $num-sample-friends: 3;
 
       @extend .clearfix;
-      top: 12px;
+
+      position: absolute;
+      right: 132px;
+      top: 24px;
 
       display: inline-block;
       float: right;
