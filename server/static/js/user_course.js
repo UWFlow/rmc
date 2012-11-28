@@ -217,14 +217,15 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         review: courseReview,
         userCourse: this.userCourse,
         className: 'user-comment course-comment',
-        placeholder: 'Any tips or comments?',
+        placeholder: 'Post any tips or comments and earn 50 points!',
         reviewType: 'COURSE'
       });
       this.profCommentView = new UserCommentView({
         review: profReview,
         userCourse: this.userCourse,
         className: 'user-comment prof-comment',
-        placeholder: 'Comment about the professor...',
+        // TODO(mack): get number of points from backend
+        placeholder: 'Comment about the professor and earn 50 points!',
         reviewType: 'PROFESSOR'
       });
 
