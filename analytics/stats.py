@@ -302,11 +302,46 @@ def csv_user_growth(file_name='stats.tmp'):
     with open(file_name, 'w+') as csv_file:
         writer = csv.writer(csv_file)
 
-        writer.writerow(['Date', 'Users signed up',
-                'Users imported transcript'])
+        writer.writerow([
+            'Date',
+            'Users signed up',
+            'Users imported transcript',
+        ])
         for key, s_count in iter(sorted(signups.items())):
             t_count = transcripts[key] if key in transcripts else 0
             writer.writerow([ga_date(key), s_count, t_count])
+
+        csv_file.seek(0);
+        return csv_file.read()
+
+def csv_review_growth(file_name='stats.tmp'):
+    reviews = defaultdict(int)
+    for uc in m.UserCourse.objects():
+        cr = uc.course_review
+        pr = uc.professor_review
+        if cr and cr.comment:
+            rd = cr.comment_date
+            rd -= timedelta(
+                    hours=rd.hour,
+                    minutes=rd.minute,
+                    seconds=rd.second,
+                    microseconds=rd.microsecond)
+            reviews[rd] += 1
+        if pr and pr.comment:
+            rd = pr.comment_date
+            rd -= timedelta(
+                    hours=rd.hour,
+                    minutes=rd.minute,
+                    seconds=rd.second,
+                    microseconds=rd.microsecond)
+            reviews[rd] += 1
+
+    with open(file_name, 'w+') as csv_file:
+        writer = csv.writer(csv_file)
+
+        writer.writerow(['Date', 'Reviews'])
+        for key, r_count in iter(sorted(reviews.items())):
+            writer.writerow([ga_date(key), r_count])
 
         csv_file.seek(0);
         return csv_file.read()
