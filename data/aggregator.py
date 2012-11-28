@@ -258,18 +258,41 @@ def update_redis_friend_mutual_courses():
 def update_mongo_points():
     total_points = 0
 
+    num_course_comments = 0
+    num_course_ratings = 0
+    num_professor_comments = 0
+    num_professor_ratings = 0
+    num_invites = 0
+
     for user in m.User.objects.only(
             'num_invites', 'course_history', 'num_points'):
         num_points = 0
         if user.num_invites:
             num_points += m.PointSource.FIRST_INVITE
+            num_invites += 1
         for uc in m.UserCourse.objects(id__in=user.course_history):
             num_points += uc.num_points
+
+            if uc.course_review.comment_date and uc.course_review.comment:
+                num_course_comments += 1
+            if uc.course_review.has_been_rated:
+                num_course_ratings += 1
+            if uc.professor_review.comment_date and uc.professor_review.comment:
+                num_professor_comments += 1
+            if uc.professor_review.has_been_rated:
+                num_professor_ratings += 1
 
         user.update(set__num_points=num_points)
         total_points += num_points
 
     r.set('total_points', total_points)
+
+    print ' ===update_mongo_points ==='
+    print 'num_course_comments', num_course_comments
+    print 'num_course_ratings', num_course_ratings
+    print 'num_professor_comments', num_professor_comments
+    print 'num_professor_ratings', num_professor_ratings
+    print 'num_invites', num_invites
 
 
 if __name__ == '__main__':

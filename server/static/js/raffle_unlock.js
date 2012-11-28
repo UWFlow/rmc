@@ -94,13 +94,13 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
       var giftCardPrize = new RafflePrize({
         id: 'card',
         name: '$50 gift card',
-        points_to_unlock: 100000
+        points_to_unlock: 60000
       });
 
       var kindlePrize = new RafflePrize({
         id: 'kindle',
         name: 'Kindle',
-        points_to_unlock: 150000
+        points_to_unlock: 125000
       });
 
       var nexus7Prize = new RafflePrize({

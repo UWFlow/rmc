@@ -130,11 +130,11 @@ class UserCourse(me.Document):
     def num_points(self):
         points = 0
 
-        if self.course_review.comment_date:
+        if self.course_review.has_commented:
             points += _points.PointSource.COURSE_COMMENT
         if self.course_review.has_been_rated:
             points += _points.PointSource.COURSE_RATING
-        if self.professor_review.comment_date:
+        if self.professor_review.has_commented:
             points += _points.PointSource.PROFESSOR_COMMENT
         if self.professor_review.has_been_rated:
             points += _points.PointSource.PROFESSOR_RATING

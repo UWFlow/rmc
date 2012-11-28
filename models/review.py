@@ -68,6 +68,10 @@ class BaseReview(me.EmbeddedDocument):
 
         return False
 
+    @property
+    def has_commented(self):
+        return self.comment_date and self.comment
+
     def get_ratings_array(self):
         return [{'name': r, 'rating': getattr(self, r)}
                 for r in self.rating_fields()]
