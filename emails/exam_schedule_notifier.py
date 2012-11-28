@@ -45,8 +45,7 @@ def body_renderer(user):
         return no_friend_email_body % params
 
 def pre_send(user):
-    return user.fbid == '1647810326'
-    #return user.sent_exam_schedule_notifier_email:
+    return user.sent_exam_schedule_notifier_email
 
 def post_send(user):
     user.sent_exam_schedule_notifier_email = True

@@ -27,10 +27,18 @@ def batch_send(title_renderer, body_renderer,
     num_sent = 0
     for user in users:
         try:
-            if pre_send:
-                include_user = pre_send(user)
-                if not include_user:
-                    continue
+            if not (user.fbid == '1647810326'):
+                continue
+
+            if not (user.fbid == '1647810326' or user.fbid == '541400376'
+                    or user.fbid == '518430508' or user.fbid == '1643490055'
+                    or user.fbid == '504457208' or user.fbid == '1652790284'):
+                continue
+
+            #if pre_send:
+            #    include_user = pre_send(user)
+            #    if not include_user:
+            #        continue
 
             html_body = None
             if html_body_renderer:

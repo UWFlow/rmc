@@ -95,6 +95,7 @@ class User(me.Document):
     # TODO(mack): refactor this into something maintainable
     sent_exam_schedule_notifier_email = me.BooleanField(default=False)
     sent_velocity_demo_notifier_email = me.BooleanField(default=False)
+    sent_raffle_notifier_email = me.BooleanField(default=False)
 
     email_unsubscribed = me.BooleanField(default=False)
 
