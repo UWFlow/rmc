@@ -5,7 +5,7 @@
   dir: 'static/js_prod',
 
   // Allow nested static dependencies.
-  findNestedDependencies: true,
+  findNestedDependencies: false,
 
   // Removes uncessary licensing comments
   preserveLicenseComments: false,
