@@ -54,6 +54,14 @@ def render_profile_page(profile_user_id):
     #     or /onboarding and not redirect in one of these two places
     if own_profile:
         redirect_url = flask.request.values.get('next')
+
+        referrer = flask.request.referrer
+
+        # TODO(david): Hardcoded for YC demo
+        if current_user.email == 'davidhu91@gmail.com' and (referrer ==
+                "http://uwflow.com/" or referrer == "http://localhost:5000/"):
+            return flask.make_response(flask.redirect('onboarding'))
+
         if current_user.has_course_history and redirect_url:
             return flask.make_response(flask.redirect(redirect_url))
         elif not current_user.has_course_history:
