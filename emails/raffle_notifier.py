@@ -14,10 +14,10 @@ def body_renderer(user):
 
     Here's how you get points:
 
-       - Rate a course you've taken
-       - Write reviews
-       - Share your review on Facebook
-       - Invite your friends to use Flow
+       - Rate a course you've taken (10 points)
+       - Write reviews (50 points)
+       - Share your review on Facebook (50 points)
+       - Invite your friends to use Flow (100 points)
 
     Get started: www.uwflow.com
 

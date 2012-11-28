@@ -49,7 +49,7 @@ def batch_send(title_renderer, body_renderer,
                 title_renderer(user),
                 body_renderer(user),
                 [user.email],
-                #html_body=html_body,
+                html_body=html_body,
             )
 
             if post_send:
