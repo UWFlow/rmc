@@ -884,8 +884,8 @@ def remove_course():
 # XXX[uw](Sandy): Make this not completely fail when hitting this endpoint, otherwise the user would have wasted all
 # their work. We can do one of 1. a FB login on the client 2. store their data for after they login 3. don't let them
 # start writing if they aren't logged in. 1 or 3 seems best
-@view_helpers.login_required
 @app.route('/api/user/course', methods=['POST', 'PUT'])
+@view_helpers.login_required
 def user_course():
     uc_data = util.json_loads(flask.request.data)
     user = view_helpers.get_current_user()
@@ -984,8 +984,8 @@ def user_course():
     })
 
 # TODO(mack): maybe merge this api into /api/user/course/share
-@view_helpers.login_required
 @app.route('/api/user/course/share', methods=['POST'])
+@view_helpers.login_required
 def user_course_share():
     user_course_id = flask.request.form['user_course_id']
     review_type  = flask.request.form['review_type']
