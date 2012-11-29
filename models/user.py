@@ -99,6 +99,7 @@ class User(me.Document):
 
     email_unsubscribed = me.BooleanField(default=False)
 
+    # Note: Backfilled on night of Nov. 29th, 2012
     transcripts_imported = me.IntField(min_value=0, default=0)
 
     @property
