@@ -8,6 +8,13 @@ import rmc.shared.constants as c
 import sys
 import time
 
+def truncate_datetime(dt):
+    return dt - timedelta(
+            hours=dt.hour,
+            minutes=dt.minute,
+            seconds=dt.second,
+            microseconds=dt.microsecond)
+
 def print_generic_stats():
     #today = datetime.now() - timedelta(hours=4)
     #today = today.replace(hour=0, minute=0, second=0, microsecond=0)
@@ -267,6 +274,33 @@ def print_users_gender_count():
             gender_counts['none'] += 1
     print gender_counts
 
+def reviews_after_date(day=truncate_datetime(datetime.now()),
+        print_result=False):
+    reviews = []
+    for uc in m.UserCourse.objects():
+        cr = uc.course_review
+        pr = uc.professor_review
+        if cr and cr.comment and cr.comment_date >= day:
+            reviews.append(cr.comment)
+            if print_result:
+                print cr.comment
+        if pr and pr.comment and pr.comment_date >= day:
+            reviews.append(pr.comment)
+            if print_result:
+                print pr.comment
+    return reviews
+
+def review_length_hist(reviews, trunc=0, print_result=False):
+    hist = defaultdict(int)
+    for review in reviews:
+        length = len(review) % trunc if trunc else len(review)
+        hist[length] += 1
+    if print_result:
+        for key, val in iter(sorted(hist.items())):
+            length = (key + 1) * trunc if trunc else key
+            print "%d: %d" % (key, val)
+    return hist
+
 # Shorthands for common query operations
 def ucs_for_cid(course_id):
     return m.UserCourse.objects(course_id=course_id)
@@ -281,13 +315,6 @@ def uid(user_id):
 # TODO(Sandy): Use dialect functionality of csv?
 def ga_date(date_val):
     return date_val.strftime('%Y-%m-%d')
-
-def truncate_datetime(dt):
-    return dt - timedelta(
-            hours=dt.hour,
-            minutes=dt.minute,
-            seconds=dt.second,
-            microseconds=dt.microsecond)
 
 def csv_user_growth(file_name='stats.tmp'):
     signups = defaultdict(int)
