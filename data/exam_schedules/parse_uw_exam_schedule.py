@@ -2,6 +2,7 @@ from time import mktime
 from datetime import datetime
 from datetime import timedelta
 
+import argparse
 import mongoengine
 import os
 import re
@@ -39,12 +40,11 @@ def is_day_of_week(token):
 
     return False
 
-def parse_exam_schedule():
+def parse_exam_schedule(exam_file_name):
 
     m.Exam.objects._collection.drop()
 
-    # TODO(Sandy): Don't hardcode path. Look at example from crawler.py
-    exam_file = open('uw_oct_28_2012.txt')
+    exam_file = open(exam_file_name)
 
 
     for line in exam_file:
@@ -127,4 +127,8 @@ def parse_exam_schedule():
 
 
 if __name__ == '__main__':
-    parse_exam_schedule()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('exam_file', help='Processed exam file (see notes)')
+    args = parser.parse_args()
+
+    parse_exam_schedule(args.exam_file)
