@@ -202,10 +202,21 @@ def render_profile_page(profile_user_id):
     def get_latest_program_year_id(uc_dict_list, user_id):
         latest_term_uc = None
         for uc_dict in uc_dict_list:
+            # Some of the uc_dicts will be limited (will be missing certain
+            # information) we can safely ignore these.
+            #
+            # TODO(jlfwong): Remove the need for this - only the full ones
+            # should get passed into this function at all
+            if not 'term_id' in uc_dict or not 'program_year_id' in uc_dict:
+                continue
+
+            # There are also uc_dicts in this list that are not for the user of
+            # interest or are shortlisted - ignore those too.
             if (uc_dict['user_id'] != user_id or
                     uc_dict['term_id'] > LAST_TERM_ID):
                 continue
-            elif not latest_term_uc:
+
+            if not latest_term_uc:
                 latest_term_uc = uc_dict
             elif uc_dict['term_id'] > latest_term_uc['term_id']:
                 latest_term_uc = uc_dict
