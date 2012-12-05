@@ -478,6 +478,13 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     showShare: function() {
+      var tooltipText;
+      if (this.reviewType === 'COURSE') {
+        tooltipText = 'Share this course review to earn 50 points!';
+      } else if (this.reviewType === 'PROFESSOR') {
+        tooltipText = 'Share this professor review to earn 50 points!';
+      }
+
       this.saving = false;
       this.$('.save-review')
         .removeClass('btn-warning btn-danger btn-primary save-review')
@@ -487,7 +494,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         // TODO(mack): get number of points for action from backend
         // TODO(mack): do not show this if they have already shared
         // the course
-        .tooltip({ title: 'Share this course to earn 50 points!' });
+        .tooltip({ title: tooltipText });
     },
 
     saveSuccess: function() {
