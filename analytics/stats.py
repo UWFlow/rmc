@@ -340,7 +340,7 @@ def csv_user_growth(file_name='stats.tmp'):
             t_count = transcripts[key] if key in transcripts else 0
             writer.writerow([ga_date(key), s_count, t_count])
 
-        csv_file.seek(0);
+        csv_file.seek(0)
         return csv_file.read()
 
 def csv_review_growth(file_name='stats.tmp'):
@@ -364,7 +364,20 @@ def csv_review_growth(file_name='stats.tmp'):
         for key, r_count in iter(sorted(reviews.items())):
             writer.writerow([ga_date(key), r_count])
 
-        csv_file.seek(0);
+        csv_file.seek(0)
+        return csv_file.read()
+
+def csv_user_points(file_name='user_points.tmp'):
+    with open(file_name, 'w+') as csv_file:
+        writer = csv.writer(csv_file)
+
+        total = 0
+        writer.writerow(['User ID', 'Points', 'Total so far'])
+        for user in m.User.objects():
+            total += user.num_points
+            writer.writerow([user.id, user.num_points, total])
+
+        csv_file.seek(0)
         return csv_file.read()
 
 def generate_csvs():
