@@ -52,9 +52,9 @@ AMATH 350  001,002 Saturday December 15, 2012 12:30 PM 3:00 PM PAC 6,7,8
 AMATH 351  001 Monday December 17, 2012 12:30 PM 3:00 PM RCH 301
 AMATH 442  001
 AMATH 456  001 Thursday December 20, 2012 7:30 PM 10:00 PM PAC 3
-AMATH 463  001 Monday December 10, 2012 7:30 PM 10:00 PM PAC 12
+AMATH 463  001
 AMATH 473  001 Saturday December 8, 2012 9:00 AM 11:30 AM RCH 103
-AMATH 663  001 Monday December 10, 2012 7:30 PM 10:00 PM PAC 12
+AMATH 663  001
 AMATH 673  001 Saturday December 8, 2012 9:00 AM 11:30 AM RCH 103
 ANTH 101  001 Tuesday December 18, 2012 4:00 PM 6:00 PM DC 1350,1351
 ANTH 102  001 Monday December 10, 2012 9:00 AM 11:00 AM RCH 301,302,305
@@ -77,6 +77,8 @@ PAC 1,2,3,4,5,6,7,8,9,10,11,12
 DC 1350,1351,MC 1085
 BIOL 150  001,002 Wednesday December 19, 2012 12:30 PM 3:00 PM PAC 1,2,3,4,5,6
 BIOL 240  001,002 Wednesday December 12, 2012 4:00 PM 6:30 PM PAC 1,2,3,4
+Exam removed from the schedule.  Contact instructor for further information.
+Exam removed from the schedule.  Contact instructor for further information.
 Exam removed from the schedule.  Contact instructor for further information.
 Exam removed from the schedule.  Contact instructor for further information.Fall 2012
 Final Examination Schedule (for On Campus Exams)
@@ -125,8 +127,8 @@ See http://www.wlu.ca/page.php?grp_id=1366&p=14566
 See http://www.wlu.ca/page.php?grp_id=1366&p=14566
 See http://www.wlu.ca/page.php?grp_id=1366&p=14566
 See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-Exam removed from the schedule.  Contact instructor for further information.
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566Fall 2012
+See http://www.wlu.ca/page.php?grp_id=1366&p=14566
+Exam removed from the schedule.  Contact instructor for further information.Fall 2012
 Final Examination Schedule (for On Campus Exams)
 4
 Exam Section(s) Day Date Start Finish Location
@@ -758,7 +760,7 @@ PHYS 380  001 Wednesday December 12, 2012 9:00 AM 11:30 AM PHY 308
 PHYS 434  001 Monday December 10, 2012 9:00 AM 11:30 AM E2 1303
 PHYS 441A  001 Thursday December 6, 2012 12:30 PM 3:00 PM DWE 1501
 PHYS 454  001 Saturday December 8, 2012 9:00 AM 11:30 AM RCH 103
-PHYS 461  001 Friday December 7, 2012 12:30 PM 3:00 PM PHY 308
+PHYS 461  001
 PHYS 475  001 Thursday December 13, 2012 12:30 PM 3:00 PM PHY 313
 PHYS 480  001 Wednesday December 12, 2012 4:00 PM 6:30 PM PHY 313
 PLAN 100  001 Thursday December 6, 2012 12:30 PM 2:30 PM DC 1350,1351
@@ -773,6 +775,7 @@ PMATH 331  001 Friday December 14, 2012 12:30 PM 3:00 PM RCH 103,105
 PMATH 334  001 Friday December 7, 2012 12:30 PM 3:00 PM RCH 211
 PMATH 340  001 Wednesday December 19, 2012 12:30 PM 3:00 PM PAC 8
 PMATH 345  001 Wednesday December 19, 2012 7:30 PM 10:00 PM PAC 3
+Exam removed from the schedule.  Contact instructor for further information.
 Exam removed from the schedule.  Contact instructor for further information.Fall 2012
 Final Examination Schedule (for On Campus Exams)
 20

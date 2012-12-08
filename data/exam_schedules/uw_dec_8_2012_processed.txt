@@ -1,7 +1,5 @@
-Fall 2012
-Final Examination Schedule (for On Campus Exams)
-1
-Exam Section(s) Day Date Start Finish Location
+
+
 ACTSC 221  001 Tuesday December 11, 2012 7:30 PM 10:00 PM PAC 5
 ACTSC 231  001,002 Friday December 14, 2012 7:30 PM 10:00 PM M3 1006,MC 4020,4021,4045
 ACTSC 232  001 Friday December 7, 2012 7:30 PM 10:00 PM PAC 2
@@ -36,25 +34,19 @@ AFM 461  001 to 004 Monday December 10, 2012 9:00 AM 11:30 AM DC 1350,1351
 AFM 471  001 to 003 Saturday December 15, 2012 7:30 PM 9:30 PM M3 1006,MC 4060
 AFM 472  001 to 003 Monday December 17, 2012 9:00 AM 11:30 AM DC 1350
 AFM 476  001,002 Saturday December 15, 2012 7:30 PM 9:30 PM MC 4059,4061
-AFM 481  001 to 003 Thursday December 13, 2012 4:00 PM 6:30 PM M3 1006Fall 2012
-Final Examination Schedule (for On Campus Exams)
-2
-Exam Section(s) Day Date Start Finish Location
+AFM 481  001 to 003 Thursday December 13, 2012 4:00 PM 6:30 PM M3 1006
+
 AFM 482  001 to 003 Wednesday December 12, 2012 4:00 PM 6:30 PM DC 1350,1351
 AFM 491  001 to 003 Tuesday December 18, 2012 9:00 AM 11:30 AM PAC 1,2
 AMATH 231  001 Saturday December 8, 2012 12:30 PM 3:00 PM RCH 306
 AMATH 250  001 Monday December 17, 2012 7:30 PM 10:00 PM M3 1006
 AMATH 251  001 Saturday December 8, 2012 7:30 PM 10:00 PM MC 4045
 AMATH 271  001 Tuesday December 18, 2012 7:30 PM 10:00 PM PAC 10
-AMATH 310  001
 AMATH 331  001 Friday December 14, 2012 12:30 PM 3:00 PM RCH 103,105
 AMATH 350  001,002 Saturday December 15, 2012 12:30 PM 3:00 PM PAC 6,7,8
 AMATH 351  001 Monday December 17, 2012 12:30 PM 3:00 PM RCH 301
-AMATH 442  001
 AMATH 456  001 Thursday December 20, 2012 7:30 PM 10:00 PM PAC 3
-AMATH 463  001 Monday December 10, 2012 7:30 PM 10:00 PM PAC 12
 AMATH 473  001 Saturday December 8, 2012 9:00 AM 11:30 AM RCH 103
-AMATH 663  001 Monday December 10, 2012 7:30 PM 10:00 PM PAC 12
 AMATH 673  001 Saturday December 8, 2012 9:00 AM 11:30 AM RCH 103
 ANTH 101  001 Tuesday December 18, 2012 4:00 PM 6:00 PM DC 1350,1351
 ANTH 102  001 Monday December 10, 2012 9:00 AM 11:00 AM RCH 301,302,305
@@ -72,16 +64,10 @@ ARBUS 101  001,002 Thursday December 13, 2012 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7
 ARBUS 301  001 to 003 Tuesday December 11, 2012 7:30 PM 10:00 PM PAC 1,2,3
 ARTS 280  001 Monday December 17, 2012 4:00 PM 6:30 PM PAC 4
 BIOL 110  001 Thursday December 20, 2012 9:00 AM 11:30 AM PAC 1,2,3
-BIOL 130  001 to 004 Tuesday December 11, 2012 12:30 PM 3:00 PM
-PAC 1,2,3,4,5,6,7,8,9,10,11,12
-DC 1350,1351,MC 1085
+BIOL 130  001 to 004 Tuesday December 11, 2012 12:30 PM 3:00 PM PAC 1,2,3,4,5,6,7,8,9,10,11,12 DC 1350,1351,MC 1085
 BIOL 150  001,002 Wednesday December 19, 2012 12:30 PM 3:00 PM PAC 1,2,3,4,5,6
 BIOL 240  001,002 Wednesday December 12, 2012 4:00 PM 6:30 PM PAC 1,2,3,4
-Exam removed from the schedule.  Contact instructor for further information.
-Exam removed from the schedule.  Contact instructor for further information.Fall 2012
-Final Examination Schedule (for On Campus Exams)
-3
-Exam Section(s) Day Date Start Finish Location
+
 BIOL 240L  001 to 018 Tuesday December 18, 2012 12:30 PM 1:30 PM M3 1006,DC 1350,1351
 BIOL 302  001 Monday December 17, 2012 4:00 PM 6:00 PM DC 1350,1351,MC 1085
 BIOL 303  001 Thursday December 6, 2012 9:00 AM 11:30 AM DC 1350,1351,MC 2017,2054
@@ -103,53 +89,11 @@ BIOL 443  001 Friday December 7, 2012 9:00 AM 11:30 AM RCH 103,105
 BIOL 444  001 Friday December 7, 2012 7:30 PM 10:00 PM RCH 301
 BIOL 447  001 Tuesday December 11, 2012 4:00 PM 6:30 PM PAC 11,12
 BIOL 448  001 Thursday December 6, 2012 12:30 PM 3:00 PM MC 1056
-BIOL 452  001
 BIOL 455  001 Thursday December 6, 2012 4:00 PM 6:30 PM RCH 205
 BIOL 456  001 Saturday December 15, 2012 7:30 PM 10:00 PM RCH 205
-BIOL 462  001
 BIOL 473  001 Thursday December 13, 2012 12:30 PM 3:00 PM PAC 11,12
-BUS 111W 002,004 WLU
 BUS 111W 007,008,010 to 012 Saturday December 8, 2012 12:30 PM 3:00 PM PAC 6,7,8
-BUS 227W  WLU
-BUS 231W WLU
-BUS 288W  WLU
-BUS 352W  WLU
-BUS 354W  WLU
-BUS 357W WLU
-BUS 362W WLU
-Exam removed from the schedule.  Contact instructor for further information.
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-Exam removed from the schedule.  Contact instructor for further information.
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566Fall 2012
-Final Examination Schedule (for On Campus Exams)
-4
-Exam Section(s) Day Date Start Finish Location
-BUS 383W WLU
-BUS 385W WLU
-BUS 387W WLU
-BUS 408W WLU
-BUS 412W WLU
-BUS 413W WLU
-BUS 417W WLU
-BUS 423W WLU
-BUS 447W WLU
-BUS 451W WLU
-BUS 452W WLU
-BUS 456W WLU
-BUS 466W WLU
-BUS 467W WLU
-BUS 473W WLU
-BUS 477W WLU
-BUS 481W WLU
-BUS 482W WLU
-BUS 486W WLU
-BUS 487W WLU
+
 CHE 100  001 Friday December 7, 2012 12:30 PM 3:00 PM RCH 103,105,110
 CHE 102  001 to 008 Friday December 14, 2012 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7,8,9,10,11,12
 CHE 102  009 Friday December 14, 2012 9:00 AM 11:30 AM RCH 103,105,110
@@ -165,39 +109,12 @@ CHE 311  001 Friday December 7, 2012 9:00 AM 11:30 AM E6 2024,4022
 CHE 313  001 Monday December 10, 2012 7:30 PM 10:00 PM E6 2024,4022
 CHE 325  001 Tuesday December 18, 2012 4:00 PM 6:30 PM E6 2024,4022
 CHE 331  001 Tuesday December 11, 2012 4:00 PM 6:30 PM E6 2024,4022
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566Fall 2012
-Final Examination Schedule (for On Campus Exams)
-5
-Exam Section(s) Day Date Start Finish Location
+
 CHE 420  001 Wednesday December 12, 2012 9:00 AM 11:30 AM DWE 2527,2529
 CHE 480  001 Friday December 14, 2012 4:00 PM 6:30 PM E6 2024,4022
 CHE 541  001 Thursday December 20, 2012 9:00 AM 11:30 AM E6 2024
-CHEM 120  001 to 005 Friday December 7, 2012 9:00 AM 11:30 AM
-PAC 1,2,3,4,5,6,7,8,9,10,11,12
-DC 1350,1351,MC 1085,4020,
-MC 4021,4059,4061
-CHEM 120L  001 to 014 Thursday December 20, 2012 4:00 PM 6:00 PM
-PAC 1,2,3,4,5,6,7,8,9,10,11,12
-DC 1350,1351
+CHEM 120  001 to 005 Friday December 7, 2012 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7,8,9,10,11,12 DC 1350,1351,MC 1085,4020, MC 4021,4059,4061
+CHEM 120L  001 to 014 Thursday December 20, 2012 4:00 PM 6:00 PM PAC 1,2,3,4,5,6,7,8,9,10,11,12 DC 1350,1351
 CHEM 209  001 Tuesday December 11, 2012 9:00 AM 11:30 AM PAC 7,8
 CHEM 220  001 Tuesday December 18, 2012 9:00 AM 11:30 AM RCH 301,302
 CHEM 237  001 Thursday December 13, 2012 7:30 PM 10:00 PM PAC 1,2
@@ -226,10 +143,8 @@ CHINA 202R  001 Thursday December 20, 2012 12:30 PM 3:00 PM REN 2102
 CHINA 272R  001 Tuesday December 18, 2012 7:30 PM 10:00 PM REN 2106,2107
 CHINA 301R  001 Tuesday December 18, 2012 12:30 PM 3:00 PM REN 2102
 CIVE 204  001 Thursday December 13, 2012 9:00 AM 11:30 AM CPH 3602,3604,3607
-CIVE 221  001 Thursday December 6, 2012 9:00 AM 11:30 AM CPH 3602,3604,3607Fall 2012
-Final Examination Schedule (for On Campus Exams)
-6
-Exam Section(s) Day Date Start Finish Location
+CIVE 221  001 Thursday December 6, 2012 9:00 AM 11:30 AM CPH 3602,3604,3607
+
 CIVE 224  001 Tuesday December 18, 2012 9:00 AM 11:30 AM CPH 3602,3604,3607
 CIVE 265  001 Saturday December 8, 2012 9:00 AM 11:30 AM CPH 3602,3604,3607
 CIVE 292  001 Tuesday December 11, 2012 9:00 AM 11:30 AM RCH 110,112,211
@@ -264,10 +179,8 @@ CO 430  001 Thursday December 6, 2012 12:30 PM 3:00 PM MC 4064
 CO 442  001 Friday December 7, 2012 9:00 AM 11:30 AM RCH 205
 CO 456  001 Saturday December 8, 2012 9:00 AM 11:30 AM RCH 105
 CO 463  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 209
-CO 485  001 Monday December 17, 2012 9:00 AM 11:30 AM RCH 306Fall 2012
-Final Examination Schedule (for On Campus Exams)
-7
-Exam Section(s) Day Date Start Finish Location
+CO 485  001 Monday December 17, 2012 9:00 AM 11:30 AM RCH 306
+
 CO 630  001 Thursday December 6, 2012 12:30 PM 3:00 PM MC 4064
 CO 642  001 Friday December 7, 2012 9:00 AM 11:30 AM RCH 205
 CO 663  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 209
@@ -302,10 +215,8 @@ CS 350  001 to 003 Monday December 10, 2012 4:00 PM 6:30 PM DC 1350,1351
 CS 360  001 Friday December 7, 2012 7:30 PM 10:00 PM PAC 5
 CS 370  001,002 Tuesday December 18, 2012 4:00 PM 6:30 PM PAC 7,8
 CS 430  001 Friday December 7, 2012 9:00 AM 11:30 AM RCH 110,112
-CS 432  001 Thursday December 6, 2012 9:00 AM 11:30 AM RCH 307Fall 2012
-Final Examination Schedule (for On Campus Exams)
-8
-Exam Section(s) Day Date Start Finish Location
+CS 432  001 Thursday December 6, 2012 9:00 AM 11:30 AM RCH 307
+
 CS 445  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 301,302
 CS 456  001 Tuesday December 11, 2012 12:30 PM 3:00 PM RCH 110,112
 CS 458  001 Friday December 14, 2012 9:00 AM 11:30 AM MC 4020,4021
@@ -328,12 +239,9 @@ EARTH 123L  001,002 Saturday December 8, 2012 9:00 AM 11:30 AM RCH 302
 EARTH 231  001 Friday December 7, 2012 12:30 PM 3:00 PM PAC 8
 EARTH 235  001 Thursday December 13, 2012 4:00 PM 6:30 PM PAC 11,12
 EARTH 260  001 Tuesday December 18, 2012 7:30 PM 10:00 PM PAC 11,12
-EARTH 310  001
-EARTH 342  001
 EARTH 359  001 Thursday December 6, 2012 9:00 AM 11:30 AM RCH 204,211
 EARTH 421  001 Thursday December 20, 2012 9:00 AM 11:30 AM PAC 5
 EARTH 440  001 Saturday December 8, 2012 7:30 PM 10:00 PM RCH 204
-EARTH 444  001
 EARTH 461  001 Tuesday December 11, 2012 12:30 PM 3:00 PM RCH 209
 EARTH 668  001 Tuesday December 11, 2012 12:30 PM 3:00 PM RCH 209
 ECE 105  001 to 004 Monday December 10, 2012 4:00 PM 6:30 PM PAC 4,5,6,7,8,9
@@ -341,12 +249,7 @@ ECE 140  001 to 004 Saturday December 8, 2012 12:30 PM 3:00 PM PAC 1,2,3,4,5
 ECE 150  001 to 003 Wednesday December 12, 2012 4:00 PM 6:30 PM PAC 5,6,7,8
 ECE 207  001,002 Thursday December 6, 2012 9:00 AM 11:30 AM RCH 301,302,305,309
 ECE 209  001 Wednesday December 12, 2012 4:00 PM 6:30 PM RCH 103,105,110
-Exam removed from the schedule.  Contact instructor for further information.
-Exam removed from the schedule.  Contact instructor for further information.
-Exam removed from the schedule.  Contact instructor for further information.Fall 2012
-Final Examination Schedule (for On Campus Exams)
-9
-Exam Section(s) Day Date Start Finish Location
+
 ECE 222  001,002 Monday December 10, 2012 12:30 PM 3:00 PM RCH 103,105,110,112
 ECE 224  001,002 Saturday December 15, 2012 9:00 AM 11:30 AM DC 1350,1351
 ECE 240  001 Saturday December 15, 2012 9:00 AM 11:30 AM MC 4020,4021
@@ -371,7 +274,6 @@ ECON 101  009,011 Thursday December 6, 2012 7:30 PM 10:00 PM RCH 204,211
 ECON 101  010 Thursday December 6, 2012 7:30 PM 10:00 PM PAC 4,5
 ECON 102  001,003 Monday December 10, 2012 7:30 PM 10:00 PM PAC 1,2,3
 ECON 102  002 Monday December 10, 2012 7:30 PM 9:30 PM DC 1350,1351
-ECON 120W WLU
 ECON 201  001,002,005 Wednesday December 12, 2012 7:30 PM 10:00 PM PAC 1,2,3
 ECON 201  003 Wednesday December 12, 2012 7:30 PM 10:00 PM PAC 4
 ECON 201  004 Wednesday December 12, 2012 7:30 PM 10:00 PM PAC 5
@@ -382,10 +284,7 @@ ECON 211  001 Saturday December 15, 2012 4:00 PM 6:00 PM PAC 7
 ECON 221  001,002 Monday December 17, 2012 4:00 PM 6:00 PM M3 1006
 ECON 231  001 Thursday December 6, 2012 9:00 AM 11:30 AM PAC 11,12
 ECON 231  002,003 Thursday December 6, 2012 9:00 AM 11:00 AM MC 4045,4059,4061
-See http://www.wlu.ca/page.php?grp_id=1366&p=14566Fall 2012
-Final Examination Schedule (for On Campus Exams)
-10
-Exam Section(s) Day Date Start Finish Location
+
 ECON 301  001,002 Tuesday December 11, 2012 4:00 PM 6:30 PM RCH 301,302,305
 ECON 302  001 Wednesday December 19, 2012 4:00 PM 6:30 PM PAC 3
 ECON 302  002,003 Wednesday December 19, 2012 4:00 PM 6:30 PM PAC 7,8
@@ -420,16 +319,13 @@ ENGL 108F  001 Saturday December 8, 2012 4:00 PM 6:30 PM STJ 2017
 ENGL 108F  002 Wednesday December 19, 2012 9:00 AM 10:30 AM STJ 2017
 ENGL 108H  001 Friday December 7, 2012 12:30 PM 3:00 PM RCH 306
 ENGL 108M  001 Thursday December 20, 2012 9:00 AM 11:30 AM PAC 7
-ENGL 129R  001 Saturday December 15, 2012 4:00 PM 6:30 PM REN 2102Fall 2012
-Final Examination Schedule (for On Campus Exams)
-11
-Exam Section(s) Day Date Start Finish Location
+ENGL 129R  001 Saturday December 15, 2012 4:00 PM 6:30 PM REN 2102
+
 ENGL 200A  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 307,308
 ENGL 208A  001 Friday December 7, 2012 9:00 AM 10:30 AM STJ 2017
 ENGL 208C  001 Tuesday December 11, 2012 7:30 PM 10:00 PM PAC 9
 ENGL 208K  001 Thursday December 20, 2012 4:00 PM 6:30 PM RCH 306
 ENGL 210I  001 Monday December 10, 2012 9:00 AM 11:30 AM STJ 2017
-ENGL 251A  001
 ENGL 251A  002 Tuesday December 11, 2012 12:30 PM 3:00 PM RCH 306
 ENGL 251A  003 Saturday December 15, 2012 4:00 PM 6:30 PM PAC 3
 ENGL 251A  004 Wednesday December 12, 2012 12:30 PM 3:00 PM STJ 2011
@@ -459,10 +355,7 @@ ENVS 278  001 Tuesday December 11, 2012 4:00 PM 5:30 PM DC 1350,1351,MC 1056
 ERS 110  001 Monday December 17, 2012 9:00 AM 11:30 AM HH 1101
 ERS 211  001 Thursday December 20, 2012 4:00 PM 6:30 PM HH 1101,1102
 ERS 234  001 Monday December 10, 2012 9:00 AM 11:30 AM HH 1101
-Exam removed from the schedule.  Contact instructor for further information.Fall 2012
-Final Examination Schedule (for On Campus Exams)
-12
-Exam Section(s) Day Date Start Finish Location
+
 ERS 370  001 Wednesday December 12, 2012 12:30 PM 2:30 PM EV3 4408
 ERS 484  001 Friday December 14, 2012 9:00 AM 11:30 AM EV3 1408
 ESL 102R  001 to 007 Friday December 7, 2012 12:30 PM 3:00 PM STJ 1036
@@ -497,10 +390,8 @@ GEOG 316  001 Friday December 7, 2012 12:30 PM 3:00 PM RCH 307
 GEOG 353  001 Thursday December 20, 2012 7:30 PM 10:00 PM PAC 7
 GEOG 393  001 Wednesday December 19, 2012 9:00 AM 11:30 AM PAC 9,10
 GEOG 404  001 Friday December 14, 2012 9:00 AM 11:30 AM EV3 1408
-GEOG 459  001 Thursday December 13, 2012 12:30 PM 3:00 PM RCH 204,211Fall 2012
-Final Examination Schedule (for On Campus Exams)
-13
-Exam Section(s) Day Date Start Finish Location
+GEOG 459  001 Thursday December 13, 2012 12:30 PM 3:00 PM RCH 204,211
+
 GEOG 475  002 Saturday December 8, 2012 7:30 PM 10:00 PM RCH 206
 GER 100  001 Wednesday December 19, 2012 9:00 AM 11:30 AM HH 1101
 GER 101  001 to 007 Saturday December 8, 2012 4:00 PM 6:30 PM MC 1085,2017
@@ -530,16 +421,12 @@ HIST 291  001 Tuesday December 11, 2012 9:00 AM 11:00 AM HH 137
 HIST 348  001 Friday December 7, 2012 12:30 PM 3:00 PM CGC 1302
 HIST 356  001 Thursday December 20, 2012 9:00 AM 11:30 AM HH 1102
 HIST 389  001 Wednesday December 12, 2012 4:00 PM 6:30 PM STJ 2009
-HIST 391  001
 HLTH 101  001,002 Monday December 10, 2012 4:00 PM 6:30 PM PAC 1,2,3
 HLTH 201  001 Saturday December 15, 2012 9:00 AM 11:30 AM PAC 7,8
 HLTH 220  001 Monday December 10, 2012 12:30 PM 3:00 PM RCH 301,302
 HLTH 245  001 Tuesday December 18, 2012 7:30 PM 10:00 PM PAC 4,5
 HLTH 333  001 Thursday December 20, 2012 7:30 PM 10:00 PM PAC 4
-Exam removed from the schedule.  Contact instructor for further information.Fall 2012
-Final Examination Schedule (for On Campus Exams)
-14
-Exam Section(s) Day Date Start Finish Location
+
 HLTH 341  001 Thursday December 13, 2012 9:00 AM 11:00 AM RCH 103,105
 HLTH 346  001 Monday December 10, 2012 12:30 PM 3:00 PM M3 1006,MC 1085,2034,2035
 HLTH 407  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 110,112
@@ -574,10 +461,8 @@ KIN 456  001 Friday December 7, 2012 12:30 PM 3:00 PM RCH 309
 KIN 471  001 Monday December 17, 2012 12:30 PM 3:00 PM RCH 308
 KOREA 101R  001 to 003 Wednesday December 19, 2012 7:30 PM 10:00 PM STJ 1036
 LAT 101  001 to 003 Monday December 17, 2012 9:00 AM 11:00 AM RCH 110,112
-LAT 201  001 Wednesday December 19, 2012 7:30 PM 10:00 PM ML 246Fall 2012
-Final Examination Schedule (for On Campus Exams)
-15
-Exam Section(s) Day Date Start Finish Location
+LAT 201  001 Wednesday December 19, 2012 7:30 PM 10:00 PM ML 246
+
 LAT 351  001 Saturday December 8, 2012 9:00 AM 11:30 AM ML 349
 LS 280  001 Monday December 17, 2012 4:00 PM 6:30 PM PAC 5
 LS 321  001 Thursday December 20, 2012 12:30 PM 2:30 PM EV3 1408
@@ -595,16 +480,10 @@ MATH 124  001 Saturday December 15, 2012 4:00 PM 6:30 PM PAC 4,5
 MATH 127  001 to 009 Monday December 17, 2012 12:30 PM 3:00 PM PAC 1,2,3,4,5,6,7,8,9,10
 MATH 128  001 Wednesday December 19, 2012 7:30 PM 10:00 PM PAC 1,2
 MATH 135  001,010 Wednesday December 12, 2012 9:00 AM 11:30 AM MC 2034,2035
-MATH 135 
-002,003,004,006,007
-009,081
-Wednesday December 12, 2012 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7,8,9,10,11,12
+MATH 135 002,003,004,006,007 009,081 Wednesday December 12, 2012 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7,8,9,10,11,12
 MATH 135  005,008 Wednesday December 12, 2012 9:00 AM 11:30 AM DC 1350,1351,MC 2017,2054
 MATH 136  001 to 004 Tuesday December 18, 2012 9:00 AM 11:30 AM DC 1350,1351
-MATH 137 
-001,003, 005,006,007
-009,010,011
-Monday December 10, 2012 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7,8,9,10
+MATH 137 001,003, 005,006,007 009,010,011 Monday December 10, 2012 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7,8,9,10
 MATH 137  002,004 Monday December 10, 2012 9:00 AM 11:30 AM M3 1006,MC 1085,2017,2054
 MATH 137  008 Monday December 10, 2012 9:00 AM 11:30 AM PAC 11,12
 MATH 138  001 to 004 Saturday December 8, 2012 9:00 AM 11:30 AM DC 1350,1351
@@ -618,10 +497,8 @@ MATH 217  001 Saturday December 8, 2012 12:30 PM 3:00 PM PAC 9,10
 MATH 218  001 Wednesday December 19, 2012 4:00 PM 6:30 PM PAC 9,10
 MATH 225  001 Tuesday December 18, 2012 4:00 PM 6:30 PM PAC 3
 MATH 227  001 Thursday December 13, 2012 4:00 PM 6:30 PM RCH 301
-MATH 228  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 305,306Fall 2012
-Final Examination Schedule (for On Campus Exams)
-16
-Exam Section(s) Day Date Start Finish Location
+MATH 228  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 305,306
+
 MATH 229  001 Wednesday December 12, 2012 4:00 PM 6:30 PM PAC 9
 MATH 235  001 to 007 Tuesday December 18, 2012 9:00 AM 11:30 AM PAC 4,5,6,7,8,9
 MATH 237  001 to 007 Saturday December 15, 2012 12:30 PM 3:00 PM PAC 1,2,3,4,5
@@ -656,16 +533,13 @@ ME 599  001 Friday December 7, 2012 7:30 PM 10:00 PM RCH 211
 ME 760  003 Friday December 7, 2012 7:30 PM 10:00 PM RCH 211
 MEDVL 105  001 Tuesday December 11, 2012 12:30 PM 2:30 PM RCH 103,105
 MEDVL 115  001 Friday December 14, 2012 9:00 AM 11:30 AM STJ 3014
-MNS 101  001 Friday December 7, 2012 12:30 PM 3:00 PM DWE 1501Fall 2012
-Final Examination Schedule (for On Campus Exams)
-17
-Exam Section(s) Day Date Start Finish Location
+MNS 101  001 Friday December 7, 2012 12:30 PM 3:00 PM DWE 1501
+
 MSCI 211  001 Monday December 17, 2012 7:30 PM 10:00 PM DC 1350,1351
 MSCI 240  001 Monday December 10, 2012 7:30 PM 10:00 PM RCH 301
 MSCI 261  001 Monday December 17, 2012 9:00 AM 11:30 AM RCH 204,211
 MSCI 262  001,002 Thursday December 6, 2012 9:00 AM 11:30 AM PAC 9,10
 MSCI 271  001 Saturday December 8, 2012 9:00 AM 11:30 AM MC 1085
-MSCI 311  001
 MSCI 331  001 Tuesday December 11, 2012 4:00 PM 6:30 PM E2 1303A
 MSCI 332  001,002 Thursday December 6, 2012 7:30 PM 10:00 PM E2 1303A
 MSCI 343  001 Saturday December 8, 2012 7:30 PM 10:00 PM E2 1303A
@@ -695,17 +569,13 @@ NE 121  001 Friday December 14, 2012 12:30 PM 3:00 PM RCH 301,307
 NE 216  001 Thursday December 6, 2012 9:00 AM 11:30 AM RCH 103,105
 NE 224  001 Monday December 17, 2012 9:00 AM 11:30 AM RCH 103,105
 NE 225  001 Wednesday December 19, 2012 9:00 AM 11:30 AM PAC 8
-Exam removed from the schedule.  Contact instructor for further information.Fall 2012
-Final Examination Schedule (for On Campus Exams)
-18
-Exam Section(s) Day Date Start Finish Location
+
 NE 241  001 Thursday December 13, 2012 9:00 AM 11:30 AM RCH 110,112
 NE 335  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 204,211
 NE 336  001 Monday December 10, 2012 12:30 PM 3:00 PM RCH 204,211
 NE 352  001 Thursday December 20, 2012 4:00 PM 6:30 PM RCH 103,105
 NE 353  001 Thursday December 13, 2012 7:30 PM 10:00 PM PAC 3
 NE 445  001 Tuesday December 11, 2012 4:00 PM 6:30 PM RCH 307
-NE 451  001
 NE 461  001 Saturday December 8, 2012 7:30 PM 10:00 PM RCH 307
 NE 471  001 Friday December 7, 2012 12:30 PM 3:00 PM RCH 204
 NE 481  001 Wednesday December 12, 2012 12:30 PM 3:00 PM PAC 9,10
@@ -734,10 +604,7 @@ PHIL 100J  001,002 Thursday December 6, 2012 9:00 AM 11:30 AM STJ 2017
 PHIL 100J  003 Thursday December 6, 2012 9:00 AM 11:30 AM STJ 1036
 PHIL 110A  001 Wednesday December 19, 2012 9:00 AM 11:30 AM AL 124
 PHIL 216  001 Monday December 17, 2012 9:00 AM 11:30 AM HH 1102
-Exam removed from the schedule.  Contact instructor for further information.Fall 2012
-Final Examination Schedule (for On Campus Exams)
-19
-Exam Section(s) Day Date Start Finish Location
+
 PHIL 218J  001 Tuesday December 18, 2012 4:00 PM 6:30 PM STJ 2009
 PHIL 219J  001 Thursday December 6, 2012 9:00 AM 11:30 AM STJ 1036
 PHIL 224  001 Friday December 7, 2012 12:30 PM 3:00 PM HH 1101,1102
@@ -749,7 +616,6 @@ PHYS 115  001 to 006 Monday December 10, 2012 12:30 PM 3:00 PM PAC 1,2,3,4,5,6,9
 PHYS 121  001 to 003 Thursday December 13, 2012 12:30 PM 3:00 PM PAC 1,2,3,4
 PHYS 121L  001 to 005 Friday December 14, 2012 7:30 PM 8:30 PM PAC 11,12
 PHYS 131L  001 to 006 Friday December 14, 2012 7:30 PM 8:30 PM PAC 7,8
-PHYS 236  001
 PHYS 256  001 Thursday December 20, 2012 12:30 PM 3:00 PM PAC 4
 PHYS 334  001 Saturday December 8, 2012 12:30 PM 3:00 PM PHY 313
 PHYS 363  001 Tuesday December 18, 2012 12:30 PM 3:00 PM PHY 235
@@ -758,7 +624,6 @@ PHYS 380  001 Wednesday December 12, 2012 9:00 AM 11:30 AM PHY 308
 PHYS 434  001 Monday December 10, 2012 9:00 AM 11:30 AM E2 1303
 PHYS 441A  001 Thursday December 6, 2012 12:30 PM 3:00 PM DWE 1501
 PHYS 454  001 Saturday December 8, 2012 9:00 AM 11:30 AM RCH 103
-PHYS 461  001 Friday December 7, 2012 12:30 PM 3:00 PM PHY 308
 PHYS 475  001 Thursday December 13, 2012 12:30 PM 3:00 PM PHY 313
 PHYS 480  001 Wednesday December 12, 2012 4:00 PM 6:30 PM PHY 313
 PLAN 100  001 Thursday December 6, 2012 12:30 PM 2:30 PM DC 1350,1351
@@ -773,10 +638,7 @@ PMATH 331  001 Friday December 14, 2012 12:30 PM 3:00 PM RCH 103,105
 PMATH 334  001 Friday December 7, 2012 12:30 PM 3:00 PM RCH 211
 PMATH 340  001 Wednesday December 19, 2012 12:30 PM 3:00 PM PAC 8
 PMATH 345  001 Wednesday December 19, 2012 7:30 PM 10:00 PM PAC 3
-Exam removed from the schedule.  Contact instructor for further information.Fall 2012
-Final Examination Schedule (for On Campus Exams)
-20
-Exam Section(s) Day Date Start Finish Location
+
 PMATH 346  001 Thursday December 13, 2012 12:30 PM 3:00 PM RCH 305
 PMATH 351  001 Tuesday December 11, 2012 12:30 PM 3:00 PM RCH 211
 PMATH 442  001 Friday December 14, 2012 9:00 AM 11:30 AM RCH 112
@@ -811,10 +673,8 @@ PSYCH 353  001 Thursday December 6, 2012 4:00 PM 6:30 PM RCH 110,112
 PSYCH 391  001 Wednesday December 12, 2012 4:00 PM 6:30 PM M3 1006
 REC 101  001 Wednesday December 12, 2012 9:00 AM 11:00 AM RCH 301,302,305
 REC 416  001 Tuesday December 11, 2012 4:00 PM 6:30 PM PAC 9,10
-REES 273  001 Thursday December 6, 2012 12:30 PM 3:00 PM ML 212Fall 2012
-Final Examination Schedule (for On Campus Exams)
-21
-Exam Section(s) Day Date Start Finish Location
+REES 273  001 Thursday December 6, 2012 12:30 PM 3:00 PM ML 212
+
 RS 130  001 Friday December 7, 2012 7:30 PM 10:00 PM CGC 1111
 RS 152  001 Thursday December 6, 2012 9:00 AM 11:30 AM CGC 1111
 RS 203  001 Wednesday December 19, 2012 9:00 AM 11:00 AM HH 1102
@@ -849,10 +709,8 @@ SOC 120R  001 Monday December 17, 2012 7:30 PM 10:00 PM REN 2106
 SOC 120R  002 Monday December 17, 2012 7:30 PM 10:00 PM REN 2102,2107
 SOC 201  001 Monday December 10, 2012 7:30 PM 9:30 PM MC 4020,4021
 SOC 202  001 Monday December 10, 2012 9:00 AM 11:00 AM AL 208
-SOC 227  001 Thursday December 6, 2012 7:30 PM 9:30 PM MC 1056,1085Fall 2012
-Final Examination Schedule (for On Campus Exams)
-22
-Exam Section(s) Day Date Start Finish Location
+SOC 227  001 Thursday December 6, 2012 7:30 PM 9:30 PM MC 1056,1085
+
 SOC 228  001 Wednesday December 12, 2012 7:30 PM 9:30 PM M3 1006
 SOC 234  001 Tuesday December 11, 2012 12:30 PM 3:00 PM AL 208
 SOC 262  001 Saturday December 8, 2012 9:00 AM 11:00 AM AL 208
@@ -887,10 +745,8 @@ STAT 333  001,002 Monday December 10, 2012 7:30 PM 10:00 PM PAC 4,5,6
 STAT 334  001 Saturday December 8, 2012 4:00 PM 6:30 PM RCH 301
 STAT 341  001 Thursday December 13, 2012 4:00 PM 6:30 PM PAC 10
 STAT 371  001 Tuesday December 18, 2012 12:30 PM 3:00 PM PAC 4,5
-STAT 372  001 Thursday December 13, 2012 7:30 PM 10:00 PM DC 1350Fall 2012
-Final Examination Schedule (for On Campus Exams)
-23
-Exam Section(s) Day Date Start Finish Location
+STAT 372  001 Thursday December 13, 2012 7:30 PM 10:00 PM DC 1350
+
 STAT 373  001 Monday December 10, 2012 4:00 PM 6:30 PM RCH 110,112
 STAT 430  001 Saturday December 8, 2012 12:30 PM 3:00 PM RCH 112
 STAT 431  001 Wednesday December 12, 2012 12:30 PM 3:00 PM MC 2017,2054
@@ -925,8 +781,6 @@ SYDE 411  001 Monday December 10, 2012 12:30 PM 3:00 PM E5 6006,6008
 SYDE 475  001 Thursday December 13, 2012 9:00 AM 11:30 AM E5 6006,6008
 SYDE 553  001 Tuesday December 11, 2012 12:30 PM 3:00 PM E5 6006,6008
 TS 653  001 Monday December 17, 2012 9:00 AM 11:30 AM CGC 1302
-VCULT 100  001 Tuesday December 18, 2012 9:00 AM 11:30 AM PAC 3Fall 2012
-Final Examination Schedule (for On Campus Exams)
-24
-Exam Section(s) Day Date Start Finish Location
+VCULT 100  001 Tuesday December 18, 2012 9:00 AM 11:30 AM PAC 3
+
 WS 108E  001 Thursday December 6, 2012 12:30 PM 3:00 PM RCH 309
