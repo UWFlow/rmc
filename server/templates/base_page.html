@@ -150,6 +150,26 @@
     {% if not current_user_id %}
       <div id="sign-in-banner-container"></div>
     {% endif %}
+
+    <div class="container-fluid">
+      <div class="row-fluid social-media">
+        <div class="span6 fb-like-container">
+          <div class="fb-like" data-href="http://www.uwflow.com"
+              data-send="false" data-layout="button_count" data-width="100"
+              data-show-faces="true" data-font="lucida grande">
+          </div>
+        </div>
+        <div class="span6 twitter-follow-container">
+          <a href="https://twitter.com/useflow" class="twitter-follow-button"
+              data-show-count="false" data-show-screen-name="false">Follow
+          </a>
+          <script>
+            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+          </script>
+        </div>
+      </div>
+    </div>
+
     <header>
       {% block header %}
       {% endblock %}

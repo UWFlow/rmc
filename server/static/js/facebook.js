@@ -23,10 +23,11 @@ function($, _, __) {
   };
 
   var fbSignedRequest;
+  var fbid;
   window.fbAsyncInit = function() {
     initFacebook();
     FB.getLoginStatus(function(response) {
-      fbApiInit = true;
+      fbid = response.authResponse.userID;
       if (response.status === 'connected') {
         fbSignedRequest = response.authResponse.signedRequest;
       } else if (response.status === 'not_authorized') {
@@ -34,6 +35,7 @@ function($, _, __) {
       } else {
         // the user isn't logged in to Facebook.
       }
+      fbApiInit = true;
     });
   };
 
@@ -216,12 +218,27 @@ function($, _, __) {
     }
   };
 
+  var subscribeEvents = function() {
+    FB.Event.subscribe('edge.create',
+      function(response) {
+        mixpanel.track('Facebook Like', { fbid: fbid, url: response });
+      }
+    );
+
+    FB.Event.subscribe('edge.remove',
+      function(response) {
+        mixpanel.track('Facebook Unlike', { fbid: fbid, url: response });
+      }
+    );
+  };
+
   // These methods require that the FB api is fully initialized
   var ensureInitMethods = {
     initConnectButton: initConnectButton,
     showSendDialogProfile: showSendDialogProfile,
     checkAccessToken: checkAccessToken,
-    showFeedDialog: showFeedDialog
+    showFeedDialog: showFeedDialog,
+    subscribeEvents: subscribeEvents
   };
   // Ensure FB is initialized before calling any functions that require FB APIs
   _.each(ensureInitMethods, function(method, name) {
@@ -233,6 +250,7 @@ function($, _, __) {
     };
   });
 
+  $(ensureInitMethods.subscribeEvents);
   $(ensureInitMethods.checkAccessToken);
 
   return _.extend(ensureInitMethods, {
