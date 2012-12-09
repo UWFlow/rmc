@@ -52,6 +52,7 @@ def render_template(*args, **kwargs):
         'total_points': int(redis.get('total_points') or 0),
         'current_user': current_user,
         'should_renew_fb_token': should_renew_fb_token,
+        'current_term_id': util.get_current_term_id(),
     })
     return flask_render_template(*args, **kwargs)
 flask.render_template = render_template
@@ -247,7 +248,6 @@ def course_page(course_id):
         user_course_objs=user_course_dict_list,
         user_objs=user_dicts.values(),
         current_user_id=current_user.id if current_user else None,
-        current_term_id=util.get_current_term_id(),
     )
 
 
@@ -907,6 +907,11 @@ def user_course():
         # TODO(david): Perhaps we should have a request error function that
         # returns a 400
         raise ApiError('No course_id or term_id set')
+
+    if term_id > util.get_current_term_id():
+        logging.warning("%s attempted to rate %s in future/shortlist term %s"
+                % (user.id, course_id, term_id))
+        raise ApiError('Can\'t review a course in the future or shortlist')
 
     # Fetch existing UserCourse
     uc = m.UserCourse.objects(

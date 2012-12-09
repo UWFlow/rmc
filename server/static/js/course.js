@@ -476,8 +476,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       this.userCourse = attributes.userCourse;
       this.canShowAddReview =
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
-      this.canReview = this.userCourse && this.userCourse.get('term_id') !== '9999_99' &&
-          this.canShowAddReview && this.userCourse.has('term_id');
+      this.canReview =
+          this.userCourse &&
+          this.userCourse.has('term_id') &&
+          this.userCourse.get('term_id') <= window.pageData.currentTermId &&
+          this.canShowAddReview;
       this.courseView = attributes.courseView;  // optional
 
       this.ratingsView = new ratings.RatingsView({
