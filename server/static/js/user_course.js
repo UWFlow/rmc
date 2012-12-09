@@ -75,7 +75,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     saveRatings: function(ratingType) {
       this.save();
 
-      console.log('logging save ratings!');
       this.logToGA(ratingType, 'RATING');
       mixpanel.track('Reviewing: Save Ratings', {
         rating_type: ratingType,
