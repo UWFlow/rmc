@@ -47,13 +47,18 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.set('course_review', new UserComment(attrs ?
             attrs.course_review : undefined));
 
-      // TODO(david): This feels a little weird...
-      this.get('professor_review').set('ratings',
-        new ratings.RatingChoiceCollection(
-          this.get('professor_review').get('ratings')));
-      this.get('course_review').set('ratings',
-        new ratings.RatingChoiceCollection(
-          this.get('course_review').get('ratings')));
+
+      var profRatings = new ratings.RatingChoiceCollection(
+          this.get('professor_review').get('ratings'));
+      var courseRatings = new ratings.RatingChoiceCollection(
+          this.get('course_review').get('ratings'));
+
+      this.get('professor_review').set('ratings', profRatings);
+      this.get('course_review').set('ratings', courseRatings);
+
+      // TODO(david): Move analytics stuff in userCourseView to model
+      courseRatings.on('change', _.bind(this.save, this));
+      profRatings.on('change', _.bind(this.save, this));
 
       this.on('sync', _.bind(this.onSync, this));
     },
