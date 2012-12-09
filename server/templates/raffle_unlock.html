@@ -1,13 +1,19 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('raffle-unlock-tpl') %}
-<div class="unlock-requirements">
-  <% if (next_unlock_prize) { %>
-    Waterloo is <strong><%- next_unlock_prize.get('points_to_unlock') - total_points %> points</strong>
-    away from unlocking <strong><%- next_unlock_prize.get('name') %></strong>!
-  <% } else { %>
-    Congrats on unlocking all prizes for the upcoming raffle!
-  <% } %>
+<div class="header-text">
+  <span class="countdown">
+    Ends in
+    <span class="remaining-time"></span>
+  </span>
+  <span class="unlock-requirements">
+    <% if (next_unlock_prize) { %>
+      Waterloo is <strong><%- next_unlock_prize.get('points_to_unlock') - total_points %> points</strong>
+      from unlocking <strong><%- next_unlock_prize.get('name') %></strong>!
+    <% } else { %>
+      Congrats on unlocking all prizes for the raffle!
+    <% } %>
+  </span>
 </div>
 <div class="progress-container">
   <div class="progress progress-info">
@@ -61,6 +67,9 @@
   </div>
   <p class="description">
     We are currently running a raffle. Review more courses to unlock better raffle prizes!
+  </p>
+  <p class="end-time">
+    This raffle ends on December 12, 2012 at 12:12:12pm EST.
   </p>
   {# TODO(mack): add back
   <a class="learn-more" target="_blank" href="#">Learn more &raquo;</a>

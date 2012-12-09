@@ -116,7 +116,22 @@ function(_, _s) {
 
   var truncatePreviewString = function(str, n) {
     return str.substr(0, n-1) + (str.length > n ? '&hellip;' : '');
-  }
+  };
+
+  var getTimeDelta = function(seconds) {
+    var days = Math.floor(seconds / 86400);
+    seconds -= days * 86400;
+    var hours = Math.floor(seconds / 3600);
+    seconds -= hours * 3600;
+    var minutes = Math.floor(seconds / 60);
+    seconds -= minutes * 60;
+    return {
+      days: days,
+      hours: hours,
+      minutes: minutes,
+      seconds: seconds
+    };
+  };
 
   return {
     getQueryParam: getQueryParam,
@@ -128,6 +143,7 @@ function(_, _s) {
     getHashCode: getHashCode,
     toDate: toDate,
     userCourseTermIdComparator: userCourseTermIdComparator,
-    truncatePreviewString: truncatePreviewString
+    truncatePreviewString: truncatePreviewString,
+    getTimeDelta: getTimeDelta
   };
 });

@@ -151,6 +151,8 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
 
       this.$('[rel="tooltip"]').tooltip();
 
+      this.updateRemainingTime();
+
       _.delay(_.bind(this.postRender, this), 500);
 
       return this;
@@ -184,7 +186,29 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
       this.$('.bar').css({
         width: totalPercent + '%'
       });
+    },
+
+    // Update remaining time in raffle periodically
+    updateRemainingTime: function() {
+      var now = new Date();
+      var end = new Date('Wed Dec 12 12:12:12 EST 2012');
+      var ended = now >= end;
+
+      if (ended) {
+        this.$('.countdown').text('Ended Dec. 12, 2012');
+      } else {
+        var secondsDelta = Math.floor((end - now) / 1000);
+        var timeDelta = util.getTimeDelta(secondsDelta);
+        //var timeStr = _s.sprintf('%02d:%02d:%02d:%02d',
+        //  timeDelta.days, timeDelta.hours, timeDelta.minutes, timeDelta.seconds);
+        var timeStr = _s.sprintf('%dd %dh %dm %ds',
+          timeDelta.days, timeDelta.hours, timeDelta.minutes, timeDelta.seconds);
+        this.$('.remaining-time').text(timeStr);
+
+        _.delay(_.bind(this.updateRemainingTime, this), 1000);
+      }
     }
+
   });
 
   return {

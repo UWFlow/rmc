@@ -11,10 +11,21 @@
     height: 50px;
     padding: 5px 15px;
 
-    .unlock-requirements {
-      font-size: 14px;
-      text-align: right;
-      margin-bottom: 2px;
+    .header-text {
+      @extend .clearfix;
+
+      .countdown {
+        float: left;
+        font-size: 13px;
+        .remaining-time {
+        }
+      }
+
+      .unlock-requirements {
+        float: right;
+        font-size: 13px;
+        margin-bottom: 2px;
+      }
     }
 
     &:hover {
@@ -122,6 +133,7 @@
       }
 
       .description {
+        margin-top: 15px;
         width: $innerWidth;
       }
 
