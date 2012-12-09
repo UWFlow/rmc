@@ -17,6 +17,7 @@ OPENDATA_COURSES_DATA_DIR = 'opendata_courses'
 UWDATA_COURSES_DATA_DIR = 'uwdata_courses'
 REVIEWS_DATA_DIR = 'reviews'
 DEPARTMENTS_DATA_DIR = 'departments'
+EXAMS_DATA_DIR = 'exam_schedules'
 
 RATINGS_CONFIDENCE = 0.95
 

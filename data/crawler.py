@@ -3,6 +3,7 @@ import rmc.models as m;
 import mongoengine as me;
 
 import argparse
+import datetime
 import glob
 import lxml.html
 from lxml.html import soupparser
@@ -13,6 +14,8 @@ import sys
 import re
 import traceback
 import urllib2
+
+API_UWATERLOO_API_KEY = 'ead3606c6f096657ebd283b58bf316b6'
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -235,7 +238,7 @@ def get_opendata_courses():
             courses[dep].add(matches[0][1])
 
     errors = []
-    api_key = 'ead3606c6f096657ebd283b58bf316b6'
+    api_key = API_UWATERLOO_API_KEY
     bad_courses = 0
     bad_course_names = set()
     good_courses = 0
@@ -292,6 +295,32 @@ def get_opendata_courses():
     print 'Found {num} bad courses'.format(num=bad_courses)
     print 'Found {num} good courses'.format(num=good_courses)
     print 'Bad course names: {names}'.format(names=bad_course_names)
+
+def get_opendata_exam_schedule():
+    api_key = API_UWATERLOO_API_KEY
+    errors = []
+    url = 'http://api.uwaterloo.ca/public/v1/' + \
+            '?key={api_key}&service=ExamSchedule'.format(api_key=api_key)
+
+    data = get_data_from_url(url)
+    try:
+        data = data['response']['data']['result']
+    except Exception as e:
+        print "crawler.py: ExamSchedule API call failed:\n%s" % (data)
+        print e
+
+    today = datetime.datetime.today()
+    file_name = os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        '%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR, today.strftime('%Y_%m_%d')))
+    with open(file_name, 'w') as f:
+        json.dump(data, f)
+
+    print 'Found {num} errors'.format(num=len(errors))
+    count = 0
+    for error in errors:
+        count += 1
+        print count, ':', error
 
 def get_terms_offered():
     found = 0
@@ -370,5 +399,7 @@ if __name__ == '__main__':
         get_uwdata_courses()
     elif args.mode == 'terms_offered':
         get_terms_offered()
+    elif args.mode == 'opendata_exam_schedule':
+        get_opendata_exam_schedule()
     else:
         sys.exit('The mode %s is not supported' % args.mode)
