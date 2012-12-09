@@ -47,7 +47,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.set('course_review', new UserComment(attrs ?
             attrs.course_review : undefined));
 
-
       var profRatings = new ratings.RatingChoiceCollection(
           this.get('professor_review').get('ratings'));
       var courseRatings = new ratings.RatingChoiceCollection(
@@ -56,11 +55,33 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.get('professor_review').set('ratings', profRatings);
       this.get('course_review').set('ratings', courseRatings);
 
-      // TODO(david): Move analytics stuff in userCourseView to model
-      courseRatings.on('change', _.bind(this.save, this));
-      profRatings.on('change', _.bind(this.save, this));
+      // TODO(david): Should also consolidate written review logging stuff here
+      courseRatings.on('change', _.bind(this.saveRatings, this, 'COURSE'));
+      profRatings.on('change', _.bind(this.saveRatings, this, 'PROFESSOR'));
 
       this.on('sync', _.bind(this.onSync, this));
+    },
+
+    // TODO(david): Copied from UserCourseView
+    logToGA: function(event, label) {
+      _gaq.push([
+        '_trackEvent',
+        'USER_ENGAGEMENT',
+        event,
+        label
+      ]);
+    },
+
+    saveRatings: function(ratingType) {
+      this.save();
+
+      console.log('logging save ratings!');
+      this.logToGA(ratingType, 'RATING');
+      mixpanel.track('Reviewing: Save Ratings', {
+        rating_type: ratingType,
+        course_id: this.get('course_id')
+      });
+      mixpanel.people.increment({'Rated': 1});
     },
 
     parse: function(attrs) {
@@ -249,10 +270,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         collection: profRatings
       });
 
-      // TODO(david): Should be a change on model triggers save
-      courseRatings.on('change', _.bind(this.saveRatings, this, 'COURSE'));
-      profRatings.on('change', _.bind(this.saveRatings, this, 'PROFESSOR'));
-
       this.profNames = this.courseModel.get('professors').pluck('name');
       this.profIds = this.courseModel.get('professors').pluck('id');
       // TODO(david): Find a way to get select2 to not create search choice
@@ -368,17 +385,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         course_id: this.userCourse.get('course_id')
       });
       mixpanel.people.increment({'Reviewed': 1});
-    },
-
-    saveRatings: function(ratingType) {
-      this.logToGA(ratingType, 'RATING');
-      this.save();
-
-      mixpanel.track('Reviewing: Save Ratings', {
-        rating_type: ratingType,
-        course_id: this.userCourse.get('course_id')
-      });
-      mixpanel.people.increment({'Rated': 1});
     },
 
     save: function(attrs, options) {
