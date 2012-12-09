@@ -2,10 +2,12 @@ import rmc.shared.constants as c
 import rmc.models as m
 
 from datetime import datetime
+from datetime import timedelta
 import glob
 import json
 import mongoengine as me
 import os
+import time
 import re
 import sys
 
@@ -366,6 +368,70 @@ def import_reviews():
                 print 'failed on review', review
 
     print 'imported reviews:', m.MenloCourse.objects.count()
+
+def import_exam_schedules():
+
+    # FIXME(Sandy): If we're gonna be cronning this, we should have some sanity
+    # checks here to verify the file has content before dropping
+    m.Exam.objects._collection.drop()
+
+    today = datetime.today()
+
+    file_name = os.path.join(
+            #sys.path[0], kljv%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR,
+            # XXX(Sandy): Fix that path problem...
+            "/tmp/uw_exams_%s.txt" % (today.strftime('%Y_%m_%d')))
+    try:
+        with open(file_name, 'r') as f:
+            data = json.load(f)
+            data = data['exams']
+
+            for exam_json in data:
+                try:
+                    exam = m.Exam()
+
+                    exam.course_id = m.Course.code_to_id(exam_json['Course'])
+                    exam.sections = exam_json['Section']
+                    exam.location = exam_json['Location']
+
+                    # Time
+                    date_str = ' '.join([exam_json['Day'], exam_json['Date']])
+
+                    start_date_str = date_str + " " + exam_json['Start']
+                    end_date_str = date_str +  " " + exam_json['End']
+                    # E.g. Tuesday December 11, 2012 7:30 PM
+                    #      Tuesday December 11, 2012 10:00 PM
+                    date_format = "%A %B %d, %Y %I:%M %p"
+
+                    try:
+                        # TODO(sandy): do timezones better
+                        start_date = datetime.fromtimestamp(time.mktime(
+                                time.strptime(start_date_str, date_format)))
+                        start_date += timedelta(hours=5)
+                        end_date = datetime.fromtimestamp(time.mktime(
+                                time.strptime(end_date_str, date_format)))
+                        end_date += timedelta(hours=5)
+
+                        exam.start_date = start_date
+                        exam.end_date = end_date
+                    except:
+                        pass
+
+                    if (start_date and end_date):
+                        exam.info_known = True;
+                    else:
+                        exam.info_known = False;
+
+                    exam.save()
+                except Exception as e:
+                    print "Exception when parsing exam (%s):" % (exam_json)
+                    print e
+    except Exception as e:
+        print e
+
+    # TODO(Sandy): When done, update time in exam.js or just have that show
+    # latest day
+
 
 if __name__ == '__main__':
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
