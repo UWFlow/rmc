@@ -42,11 +42,6 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
           this.incrementPoints(numPoints - model.previous('num_points'));
         }, this));
       }
-
-      window.setInterval(_.bind(function() {
-        this.set('num_points', this.get('num_points') + 1000);
-        this.updateUnlockPrizes();
-      }, this), 1000);
     },
 
     incrementPoints: function(amount) {
