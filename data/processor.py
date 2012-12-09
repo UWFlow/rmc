@@ -1,12 +1,15 @@
 import rmc.shared.constants as c
+import rmc.shared.util as rmc_util
 import rmc.models as m
 
 import argparse
 from datetime import datetime
+from datetime import timedelta
 import glob
 import json
 import mongoengine as me
 import os
+import time
 import re
 import sys
 
@@ -467,6 +470,72 @@ def import_schedule_items():
     print 'added schedule items: ', num_added
     print 'updated schedule items: ', num_updated
 
+def import_opendata_exam_schedules():
+
+    # FIXME(Sandy): If we're gonna be cronning this, we should have some sanity
+    # checks here to verify the file has content before dropping
+    # Detect weird things like < ~810 exams, etc and warn HipChat
+
+    today = datetime.today()
+    file_name = os.path.join(
+            os.path.dirname(__file__),
+            '%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR, today.strftime('%Y_%m_%d')))
+    with open(file_name, 'r') as f:
+        data = json.load(f)
+
+        # Everything should be fine by here, drop the old exams collection
+        m.Exam.objects._collection.drop()
+
+        for exam_data in data:
+            course_id = m.Course.code_to_id(exam_data.get('Course'))
+            sections = exam_data.get('Section')
+
+            if sections.endswith('Online'):
+                # Catch this to be less spammy with the Exception below, and to do
+                # something with these courses later
+                print "Skipping online course: %s %s" % (course_id, sections)
+                continue
+
+            # E.g. April 13, 2013
+            date = exam_data.get('Date')
+            # E.g. 11:30 AM
+            start_time = exam_data.get('Start')
+            end_time = exam_data.get('End')
+            # E.g. December 11, 2012 7:30 PM
+            #      December 11, 2012 10:00 PM
+            date_format = "%B %d, %Y %I:%M %p"
+            start_date_string = "%s %s" % (date, start_time)
+            end_date_string = "%s %s" % (date, end_time)
+
+            try:
+                start_date = rmc_util.eastern_to_utc(
+                        datetime.fromtimestamp(
+                            time.mktime(
+                                time.strptime(start_date_string, date_format))))
+                end_date = rmc_util.eastern_to_utc(
+                        datetime.fromtimestamp(
+                            time.mktime(
+                                time.strptime(end_date_string, date_format))))
+            except Exception as exp:
+                # Right now this catches "See http://..." and removed exams
+                print "Could not get date for data (%s)" % (exam_data)
+                print exp
+                start_date = None
+                end_date = None
+                continue
+
+            exam = m.Exam(
+                course_id=course_id,
+                sections=sections,
+                start_date=start_date,
+                end_date=end_date,
+                location=exam_data.get('Location'),
+                info_known=bool(start_date and end_date),
+            )
+            exam.save()
+
+    # TODO(Sandy): When done, update time in exam.js
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     supported_modes = ['professors', 'departments',
@@ -485,6 +554,8 @@ if __name__ == '__main__':
         import_courses()
     elif args.mode == 'reviews':
         import_reviews()
+    elif args.mode == 'exams':
+        import_opendata_exam_schedules()
     elif args.mode == 'all':
         import_professors()
         import_departments()
