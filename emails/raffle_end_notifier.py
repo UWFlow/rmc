@@ -10,9 +10,9 @@ def body_renderer(user):
 
     Hope exams are going well.
 
-    Just a reminder, you can win a $50 gift card, Kindle, or potentially a Nexus 7 by reviewing courses and profs on Flow! You'll need 300 points to qualify, and each point is another chance to win. Check your profile at www.uwflow.com/profile?points=1 to see your current points.
+    Just a reminder, you can win a $50 gift card, Kindle, or potentially a Nexus 7 by reviewing courses and profs on Flow! You'll need 300 points to qualify, and each point is another chance to win. Check your profile at http://uwflow.com/profile/%(user_id)s?points=1 to see your current points.
 
-    There's only 2 days left until the contest ends this Wednesday, 12/12/12 at 12:12:12 pm. So take a quick study break by reviewing some courses on www.uwflow.com.
+    There's only 2 days left until the contest ends this Wednesday, 12/12/12 at 12:12:12 pm. So take a quick study break by reviewing some courses on http://uwflow.com.
 
     Good luck with exams!
 
@@ -33,9 +33,9 @@ def html_body_renderer(user):
 
     <p>Hope exams are going well.</p>
 
-    <p>Just a reminder, you can win a <b>$50 gift card</b>, <b>Kindle</b>, or potentially a <b>Nexus 7</b> by reviewing courses and profs on Flow! You'll need 300 points to qualify, and each point is another chance to win. Check your <a href="www.uwflow.com/profile?points=1">profile</a> to see your current points.</p>
+    <p>Just a reminder, you can win a <b>$50 gift card</b>, <b>Kindle</b>, or potentially a <b>Nexus 7</b> by reviewing courses and profs on Flow! You'll need 300 points to qualify, and each point is another chance to win. Check your <a href="http://uwflow.com/profile/%(user_id)s?points=1">profile</a> to see your current points.</p>
 
-    <p>There's only <b>2 days left</b> until the contest ends this <b>Wednesday, 12/12/12 at 12:12:12 pm</b>. So take a quick study break by reviewing some courses on <a href="www.uwflow.com">www.uwflow.com</a>.</p>
+    <p>There's only <b>2 days left</b> until the contest ends this <b>Wednesday, 12/12/12 at 12:12:12 pm</b>. So take a quick study break by reviewing some courses on <a href="http://uwflow.com">http://uwflow.com</a>.</p>
 
     <p>Good luck with exams!</p>
 
