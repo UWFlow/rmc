@@ -37,10 +37,57 @@
 
   30% {
     @include filter(drop-shadow(0 0 5px rgba($flowBlue, 1.0)));
+    background-color: rgba($flowBlue, 1.0);
   }
 
   60% {
     @include filter(drop-shadow(0 0 5px rgba($flowBlue, 1.0)));
+    background-color: rgba($flowBlue, 1.0);
+  }
+
+  to {
+    @include filter(drop-shadow(0 0 30px rgba($flowBlue, 0.0)));
+  }
+}
+
+@include keyframes(points-highlight) {
+  from {
+    @include filter(drop-shadow(0 0 0px rgba($flowBlue, 0.0)));
+  }
+
+  // TODO(david): Learn more about keyframes + animations and reduce duplication
+  10% {
+    @include filter(drop-shadow(0 0 10px rgba($flowBlue, 1.0)));
+    background-color: rgba($flowBlue, 1.0);
+  }
+
+  20% {
+    @include filter(drop-shadow(0 0 5px rgba($flowBlue, 1.0)));
+  }
+
+  30% {
+    @include filter(drop-shadow(0 0 10px rgba($flowBlue, 1.0)));
+  }
+
+  40% {
+    @include filter(drop-shadow(0 0 5px rgba($flowBlue, 1.0)));
+  }
+
+  50% {
+    @include filter(drop-shadow(0 0 10px rgba($flowBlue, 1.0)));
+  }
+
+  60% {
+    @include filter(drop-shadow(0 0 5px rgba($flowBlue, 1.0)));
+  }
+
+  70% {
+    @include filter(drop-shadow(0 0 10px rgba($flowBlue, 1.0)));
+  }
+
+  80% {
+    @include filter(drop-shadow(0 0 5px rgba($flowBlue, 1.0)));
+    background-color: rgba($flowBlue, 0.5);
   }
 
   to {
@@ -52,8 +99,12 @@
   display: inline-block;
   position: relative;
 
-  &.animated {
+  &.animated .counter {
     @include animation(flow-flare 1s ease-out);
+  }
+
+  &.highlight .counter {
+    @include animation(points-highlight 5s linear);
   }
 }
 
@@ -72,4 +123,10 @@
 
 .animated .flare {
   @include animation(mario-points 1s ease-out);
+}
+
+// TODO(david): This is a really weird workaround for a really weird Chrome CSS3
+//     animation + filter bug (which I'm too lazy to describe)
+.highlight .flare {
+  @include animation(mario-points 5s linear);
 }

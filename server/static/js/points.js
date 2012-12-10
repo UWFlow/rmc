@@ -1,7 +1,7 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'rmc_backbone'],
-function($, _, _s, bootstrap, RmcBackbone) {
+'rmc_backbone', 'util'],
+function($, _, _s, bootstrap, RmcBackbone, _util) {
 
   var Points = RmcBackbone.Model.extend({
     defaults: {
@@ -25,6 +25,17 @@ function($, _, _s, bootstrap, RmcBackbone) {
 
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
+
+      if (_util.getQueryParam('points')) {
+        var $el = this.$el;
+        window.setTimeout(function() {
+          $el.addClass('highlight');
+        }, 1000);
+        window.setTimeout(function() {
+          $el.removeClass('highlight');
+        }, 8000);
+      }
+
       return this;
     },
 
