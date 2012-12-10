@@ -26,6 +26,5 @@ RATINGS_CONFIDENCE = 0.95
 # TODO(Sandy): Have multiple demo accounts?
 DEMO_ACCOUNT_FBID = '100004384843130'
 
-FB_NO_ACCESS_TOKEN = 'NO_ACCESS_TOKEN'
 # A long token normally lasts for 60 days
 FB_FORCE_TOKEN_EXPIRATION_DAYS = 57
