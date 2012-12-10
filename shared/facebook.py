@@ -45,7 +45,7 @@ def code_for_token(code, config, cmd_line_debug=False):
     if resp.status_code != 200:
         err = util.json_loads(resp.text)
         if (err.get('error').get('message') == 'This authorization code has been used.' and
-            err.get('code') == 100):
+            err.get('error').get('code') == 100):
             logging.info('code_for_token failed (%d) with text:\n%s' % (
                     resp.status_code, resp.text))
         else:
