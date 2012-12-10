@@ -56,7 +56,7 @@ function($, _, _s, bootstrap, RmcBackbone) {
 
         var unit = numPoints > this.pointsTicker ? 1 : -1;
         this.pointsTicker += unit;
-        this.$('.counter').text(this.pointsTicker);
+        this.$('.counter').text(this.pointsTicker + " points");
       }, this);
 
       this.interval = window.setInterval(incrementCounter, 20);
