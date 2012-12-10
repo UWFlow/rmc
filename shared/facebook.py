@@ -44,7 +44,7 @@ def code_for_token(code, config, cmd_line_debug=False):
 
     if resp.status_code != 200:
         # TODO(Sandy): See if this is too verbose
-        logging.warning('code_for_token failed (%d) with text:\n%s' % (
+        logging.info('code_for_token failed (%d) with text:\n%s' % (
                 resp.status_code, resp.text))
 
     result = dict(urlparse.parse_qsl(resp.text))
@@ -85,7 +85,7 @@ def token_for_long_token(short_token, config, cmd_line_debug=False):
 
     if resp.status_code != 200:
         # TODO(Sandy): See if this is too verbose
-        logging.warning('code_for_token failed (%d) with text:\n%s' % (
+        logging.info('token_for_long_token failed (%d) with text:\n%s' % (
                 resp.status_code, resp.text))
 
     result = dict(urlparse.parse_qsl(resp.text))
@@ -172,7 +172,7 @@ def get_fb_data(signed_request, config):
                 logging.warn('Failed to exchange (%s) for long access token'
                         % short_access_token)
         else:
-            logging.warn('Failed to exchange code (%s) for token' % code)
+            logging.info('Failed to exchange code (%s) for token' % code)
     else:
         # Shouldn't happen, Facebook messed up
         logging.warn('No "code" field in fbsr. Blame FB')
