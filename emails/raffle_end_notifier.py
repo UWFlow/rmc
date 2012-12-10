@@ -35,7 +35,7 @@ def html_body_renderer(user):
 
     <p>Just a reminder, you can win a <b>$50 gift card</b>, <b>Kindle</b>, or potentially a <b>Nexus 7</b> by reviewing courses and profs on Flow! You'll need 300 points to qualify, and each point is another chance to win.</p>
 
-    <p>There's only <b>2 days left</b> until the contest ends this <b>Wednesday, 12/12/12 at 12:12:12 pm</b>. So take a quick study break by reviewing some courses on <http href="www.uwflow.com">www.uwflow.com</a>.</p>
+    <p>There's only <b>2 days left</b> until the contest ends this <b>Wednesday, 12/12/12 at 12:12:12 pm</b>. So take a quick study break by reviewing some courses on <a href="www.uwflow.com">www.uwflow.com</a>.</p>
 
     <p>Good luck with exams!</p>
 
