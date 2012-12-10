@@ -358,14 +358,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var overallRating = this.courseModel.getOverallRating();
       this.ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
 
-      if (this.canShowAddReview && this.userCourse) {
-        this.votingView = new ratings.RatingChoiceView({
-          model: this.userCourse.getOverallRating(),
-          voting: true,
-          className: 'voting'
-        });
-      }
-
       var friendUserCourses = this.courseModel.get('friend_user_courses');
       if (friendUserCourses) {
         this.sampleFriendsView = new SampleFriendsView({
@@ -379,10 +371,15 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var title = '';
       var termTookName = '';
 
-      if (this.userCourse) {
-        if (this.canShowAddReview) {
-          this.$('.voting-placeholder').replaceWith(this.votingView.render().el);
-        }
+      if (this.canShowAddReview &&
+          this.userCourse &&
+          this.userCourse.hasTaken()) {
+        this.votingView = new ratings.RatingChoiceView({
+          model: this.userCourse.getOverallRating(),
+          voting: true,
+          className: 'voting'
+        });
+        this.$('.voting-placeholder').replaceWith(this.votingView.render().el);
       }
 
       this.$('.rating-box-placeholder').replaceWith(
@@ -478,8 +475,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
       this.canReview =
           this.userCourse &&
-          this.userCourse.has('term_id') &&
-          this.userCourse.get('term_id') <= window.pageData.currentTermId &&
+          this.userCourse.hasTaken() &&
           this.canShowAddReview;
       this.courseView = attributes.courseView;  // optional
 
