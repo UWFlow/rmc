@@ -27,9 +27,9 @@ function($, _, __) {
   window.fbAsyncInit = function() {
     initFacebook();
     FB.getLoginStatus(function(response) {
-      fbid = response.authResponse.userID;
       if (response.status === 'connected') {
         fbSignedRequest = response.authResponse.signedRequest;
+        fbid = response.authResponse.userID;
       } else if (response.status === 'not_authorized') {
         // the user is logged in to Facebook, but didn't auth yet
       } else {
