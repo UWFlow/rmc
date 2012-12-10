@@ -212,7 +212,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     hasTaken: function() {
-      return this.get('term_id') && this.get('term_id') !== SHORTLIST_TERM_ID;
+      return this.has('term_id') &&
+          this.get('term_id') <= window.pageData.currentTermId;
     },
 
     // TODO(david): Properly determine if user ever has rated/commented by using
