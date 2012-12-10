@@ -39,25 +39,25 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     initialize: function(attrs) {
-      // TODO(mack): fix potential bug here, since professor_review
-      // and course_review are are objects that are potentially shared
-      // among all UserCourse models
-      this.set('professor_review', new UserComment(attrs ?
-            attrs.professor_review : undefined));
-      this.set('course_review', new UserComment(attrs ?
-            attrs.course_review : undefined));
+      var courseReview = new UserComment(attrs ? attrs.course_review : undefined);
+      var profReview = new UserComment(attrs ? attrs.professor_review : undefined);
+
+      this.set('professor_review', profReview);
+      this.set('course_review', courseReview);
 
       var profRatings = new ratings.RatingChoiceCollection(
-          this.get('professor_review').get('ratings'));
+          profReview.get('ratings'));
       var courseRatings = new ratings.RatingChoiceCollection(
-          this.get('course_review').get('ratings'));
+          courseReview.get('ratings'));
 
-      this.get('professor_review').set('ratings', profRatings);
-      this.get('course_review').set('ratings', courseRatings);
+      profReview.set('ratings', profRatings);
+      courseReview.set('ratings', courseRatings);
 
-      // TODO(david): Should also consolidate written review logging stuff here
-      courseRatings.on('change', _.bind(this.saveRatings, this, 'COURSE'));
-      profRatings.on('change', _.bind(this.saveRatings, this, 'PROFESSOR'));
+      courseRatings.on('change', _.bind(this.onRatingsChange, this, 'COURSE'));
+      profRatings.on('change', _.bind(this.onRatingsChange, this, 'PROFESSOR'));
+
+      courseReview.on('change:comment', _.bind(this.onCommentsChange, this, 'COURSE'));
+      profReview.on('change:comment', _.bind(this.onCommentsChange, this, 'PROFESSOR'));
 
       this.on('sync', _.bind(this.onSync, this));
     },
@@ -72,7 +72,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       ]);
     },
 
-    saveRatings: function(ratingType) {
+    onRatingsChange: function(ratingType) {
       this.save();
 
       this.logToGA(ratingType, 'RATING');
@@ -81,6 +81,17 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         course_id: this.get('course_id')
       });
       mixpanel.people.increment({'Rated': 1});
+    },
+
+    onCommentsChange: function(reviewType) {
+      // TODO(david): Make this fn more consistent with onRatingsChange (which
+      //     calls this.save() first. This doesn't because view calls save).
+      this.logToGA(reviewType, 'REVIEW');
+      mixpanel.track('Reviewing: Save comments', {
+        review_type: reviewType,
+        course_id: this.get('course_id')
+      });
+      mixpanel.people.increment({'Reviewed': 1});
     },
 
     parse: function(attrs) {
@@ -254,10 +265,10 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         reviewType: 'PROFESSOR'
       });
 
-      courseReview.on('change:comment', _.bind(this.saveComments, this,
-            this.courseCommentView, 'COURSE'));
-      profReview.on('change:comment', _.bind(this.saveComments, this,
-            this.profCommentView, 'PROFESSOR'));
+      courseReview.on('change:comment change:privacy',
+          _.bind(this.saveComments, this, this.courseCommentView, 'COURSE'));
+      profReview.on('change:comment change:privacy',
+          _.bind(this.saveComments, this, this.profCommentView, 'PROFESSOR'));
 
       var courseRatings = this.userCourse.get('course_review').get('ratings');
       var profRatings = this.userCourse.get('professor_review').get('ratings');
@@ -374,16 +385,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     saveComments: function(view, reviewType) {
-      this.logToGA(reviewType, 'REVIEW');
       this.save()
         .done(_.bind(view.saveSuccess, view))
         .error(_.bind(view.saveError, view));
-
-      mixpanel.track('Reviewing: Save comments', {
-        review_type: reviewType,
-        course_id: this.userCourse.get('course_id')
-      });
-      mixpanel.people.increment({'Reviewed': 1});
     },
 
     save: function(attrs, options) {
