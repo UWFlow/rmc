@@ -96,6 +96,7 @@ class User(me.Document):
     sent_exam_schedule_notifier_email = me.BooleanField(default=False)
     sent_velocity_demo_notifier_email = me.BooleanField(default=False)
     sent_raffle_notifier_email = me.BooleanField(default=False)
+    sent_raffle_end_notifier_email = me.BooleanField(default=False)
 
     email_unsubscribed = me.BooleanField(default=False)
 
