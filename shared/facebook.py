@@ -43,9 +43,14 @@ def code_for_token(code, config, cmd_line_debug=False):
             params=params)
 
     if resp.status_code != 200:
-        # TODO(Sandy): See if this is too verbose
-        logging.info('code_for_token failed (%d) with text:\n%s' % (
-                resp.status_code, resp.text))
+        err = util.json_loads(resp.text)
+        if (err.get('error').get('message') == 'This authorization code has been used.' and
+            err.get('code') == 100):
+            logging.info('code_for_token failed (%d) with text:\n%s' % (
+                    resp.status_code, resp.text))
+        else:
+            logging.warn('code_for_token failed (%d) with text:\n%s' % (
+                    resp.status_code, resp.text))
 
     result = dict(urlparse.parse_qsl(resp.text))
 
@@ -85,7 +90,7 @@ def token_for_long_token(short_token, config, cmd_line_debug=False):
 
     if resp.status_code != 200:
         # TODO(Sandy): See if this is too verbose
-        logging.info('token_for_long_token failed (%d) with text:\n%s' % (
+        logging.warn('token_for_long_token failed (%d) with text:\n%s' % (
                 resp.status_code, resp.text))
 
     result = dict(urlparse.parse_qsl(resp.text))
