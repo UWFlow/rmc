@@ -390,7 +390,7 @@ def csv_user_points(file_name='user_points.tmp'):
                 user.num_points,
                 reviews_given(user),
                 ratings_given(user),
-                "www.uwflow.com/profile/%s?as_oid=%s" % (user.id, user.id),
+                "http://uwflow.com/profile/%s?as_oid=%s" % (user.id, user.id),
             ])
 
         csv_file.seek(0)
