@@ -8,6 +8,7 @@ import term as _term
 import user_course as _user_course
 from rmc.shared import constants
 from rmc.shared import facebook
+from rmc.shared import util
 
 class User(me.Document):
 
@@ -248,6 +249,24 @@ class User(me.Document):
             pipe.delete(self.mutual_courses_redis_key(friend_id))
 
         return pipe.execute()
+
+    def get_latest_program_year_id(self):
+        latest_term_uc = None
+        for uc_dict in self.get_user_courses():
+
+            # Ignore untaken courses or shortlisted courses
+            if uc_dict['term_id'] > util.get_current_term_id():
+                continue
+
+            if not latest_term_uc:
+                latest_term_uc = uc_dict
+            elif uc_dict['term_id'] > latest_term_uc['term_id']:
+                latest_term_uc = uc_dict
+
+        if latest_term_uc:
+            return latest_term_uc['program_year_id']
+
+        return None
 
 
     def to_dict(self, include_course_ids=False):
