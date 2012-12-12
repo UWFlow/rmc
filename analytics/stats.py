@@ -371,11 +371,27 @@ def csv_user_points(file_name='user_points.tmp'):
     with open(file_name, 'w+') as csv_file:
         writer = csv.writer(csv_file)
 
-        total = 0
-        writer.writerow(['User ID', 'Points', 'Total so far'])
+        writer.writerow([
+            'User ID',
+            'Name',
+            'Program',
+            'Year',
+            'Points',
+            'Reviews written',
+            'Ratings given',
+            'Link',
+        ])
         for user in m.User.objects():
-            total += user.num_points
-            writer.writerow([user.id, user.num_points, total])
+            writer.writerow([
+                user.id,
+                user.name.encode('utf8'),
+                user.program_name,
+                user.get_latest_program_year_id(),
+                user.num_points,
+                reviews_given(user),
+                ratings_given(user),
+                "www.uwflow.com/profile/%s?as_oid=%s" % (user.id, user.id),
+            ])
 
         csv_file.seek(0)
         return csv_file.read()
