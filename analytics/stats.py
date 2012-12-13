@@ -301,6 +301,19 @@ def review_length_hist(reviews, trunc=0, print_result=False):
             print "%d: %d" % (key, val)
     return hist
 
+def latest_review_date(user):
+    latest_date = None
+    for uc in user.get_user_courses():
+        crd = uc.course_review.comment_date
+        prd = uc.professor_review.comment_date
+        if not latest_date:
+            latest_date = crd
+        if crd and latest_date < crd:
+            latest_date = crd
+        if prd and latest_date < prd:
+            latest_date = prd
+    return latest_date
+
 # Shorthands for common query operations
 def ucs_for_cid(course_id):
     return m.UserCourse.objects(course_id=course_id)
