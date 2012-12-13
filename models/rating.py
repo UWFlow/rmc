@@ -13,6 +13,14 @@ class AggregateRating(me.EmbeddedDocument):
     sorting_score_negative = me.FloatField(
         min_value=0.0, max_value=1.0, default=0.0)
 
+    def debug_logging(self, func_name):
+        # TODO(Sandy): Temporary debugging for over 100% average rating bug
+        if self.rating > 1:
+            logging.warn(
+                "%s: update_sorting_score will fail" % (func_name) +
+                " self.count=%s self.rating=%s" % (self.count, self.rating)
+            )
+
     def update_sorting_score(self):
         self.sorting_score_positive = util.get_sorting_score(
             self.rating, self.count)
@@ -23,6 +31,10 @@ class AggregateRating(me.EmbeddedDocument):
     def add_rating(self, rating):
         self.rating = ((self.rating * self.count) + rating) / (self.count + 1)
         self.count += 1
+
+        # TODO(Sandy): Temporary debugging
+        self.debug_logging("add_rating(%s)" % (rating));
+
         self.update_sorting_score()
 
     def remove_rating(self, rating):
@@ -37,6 +49,10 @@ class AggregateRating(me.EmbeddedDocument):
                 (self.count - 1))
 
         self.count -= 1
+
+        # TODO(Sandy): Temporary debugging
+        self.debug_logging("remove_rating(%s)" % (rating))
+
         self.update_sorting_score()
 
     def add_aggregate_rating(self, ar):
@@ -45,6 +61,10 @@ class AggregateRating(me.EmbeddedDocument):
         total = ar.rating * ar.count
         self.rating = ((self.rating * self.count) + total) / (self.count + ar.count)
         self.count += ar.count
+
+        # TODO(Sandy): Temporary debugging
+        self.debug_logging("add_aggregate_rating(%s)" % (ar));
+
         self.update_sorting_score()
 
     def to_dict(self):
