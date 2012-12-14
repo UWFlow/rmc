@@ -22,11 +22,6 @@ import rmc.shared.facebook as facebook
 
 VERSION = int(time.time())
 
-# Minimum number of characters for a review to pass
-# TODO(david): Have a function to do this. First, we need consistent review
-#     interface
-MIN_REVIEW_LENGTH = 15
-
 app = flask.Flask(__name__)
 
 app.config.from_envvar('FLASK_CONFIG')
@@ -230,7 +225,8 @@ def course_page(course_id):
                 uc_dict['user_id'])
 
     tip_dict_list = [tip_from_uc(uc_dict) for uc_dict in user_course_dict_list
-            if len(uc_dict['course_review']['comment']) >= MIN_REVIEW_LENGTH]
+            if len(uc_dict['course_review']['comment']) >=
+                m.review.CourseReview.MIN_REVIEW_LENGTH]
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,

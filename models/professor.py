@@ -14,8 +14,6 @@ r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
 class Professor(me.Document):
 
-    MIN_REVIEW_LENGTH = 15
-
     meta = {
         'indexes': [
             'clarity.rating',
