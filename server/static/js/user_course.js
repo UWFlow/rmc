@@ -266,10 +266,17 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         reviewType: 'PROFESSOR'
       });
 
-      courseReview.on('change:comment change:privacy',
-          _.bind(this.saveComments, this, this.courseCommentView, 'COURSE'));
-      profReview.on('change:comment change:privacy',
-          _.bind(this.saveComments, this, this.profCommentView, 'PROFESSOR'));
+      courseReview.on('change:comment',
+          _.bind(this.saveComments, this, this.courseCommentView));
+      profReview.on('change:comment',
+          _.bind(this.saveComments, this, this.profCommentView));
+
+      // Don't show comment posted UI changes after privacy change
+      // TODO(david): Should some of this stuff be in models?
+      courseReview.on('change:privacy', _.bind(this.save, this,
+            /* attrs */ null, /* options */ null));
+      profReview.on('change:privacy', _.bind(this.save, this,
+            /* attrs */ null, /* options */ null));
 
       var courseRatings = this.userCourse.get('course_review').get('ratings');
       var profRatings = this.userCourse.get('professor_review').get('ratings');
@@ -385,7 +392,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       mixpanel.people.increment({'Professor selected': 1});
     },
 
-    saveComments: function(view, reviewType) {
+    saveComments: function(view) {
       this.save()
         .done(_.bind(view.saveSuccess, view))
         .error(_.bind(view.saveError, view));
