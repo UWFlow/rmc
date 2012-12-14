@@ -42,7 +42,7 @@ class BaseReview(me.EmbeddedDocument):
     # Minimum number of characters for a review to pass
     # TODO(david): Have a function to do this. First, we need consistent review
     #     interface
-    MIN_REVIEW_LENGTH = 15
+    MIN_REVIEW_LENGTH = 11
 
     def __init__(self, **kwargs):
         if 'ratings' in kwargs:
