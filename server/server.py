@@ -204,13 +204,9 @@ def course_page(course_id):
 
     user_dicts = {}
     if current_user:
-        friend_ids = set()
-        for uc_dict in user_course_dict_list:
-            user_id = uc_dict['user_id']
-            if user_id == current_user.id:
-                continue
-            # TODO(Sandy): This is poorly named because its not only friends...
-            friend_ids.add(user_id)
+        # TODO(Sandy): This is poorly named because its not only friends...
+        friend_ids = ({uc_dict['user_id'] for uc_dict in user_course_dict_list}
+                - set([current_user.id]))
         friends = m.User.objects(id__in=friend_ids).only(
                 'first_name', 'last_name', 'fbid')
 

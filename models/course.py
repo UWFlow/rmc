@@ -140,6 +140,7 @@ class Course(me.Document):
         current_ucs = _user_course.UserCourse.objects(
             user_id=current_user.id,
             course_id__in=course_ids,
+            id__nin=[uc_dict['id'] for uc_dict in uc_dicts],
         )
         uc_dicts += [uc.to_dict() for uc in current_ucs]
 
