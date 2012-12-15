@@ -1,8 +1,7 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
-'schedule'],
-function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'term', 'course',
+'friend', 'util', 'user', 'user_course', 'prof', 'exam', 'schedule'],
+function($, _, _s, term, course, friend, util, user, uc, _prof,
     _exam, _schedule) {
 
   user.UserCollection.addToCache(pageData.userObjs);
@@ -67,8 +66,6 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
     renderTranscript(transcriptObj);
   }
 
-  var $transcript = $('#transcript-text');
-
   var examObjs = window.pageData.examObjs;
   if (examObjs && examObjs.length) {
     var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
@@ -81,75 +78,6 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
     });
     $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
   }
-
-  $transcript.bind('input paste', function(evt) {
-    // Remove any old info from the page
-    $('#terms').empty();
-    $('#transcript-error').empty();
-
-    // Store the transcript text
-    var data = $(evt.currentTarget).val();
-    if (!data) {
-      // If the text area has been emptied, exit immediately w/o
-      // showing error message for parse failure.
-      return;
-    }
-
-    addTranscriptData(data);
-  });
-
-  var addTranscriptData = function(data) {
-    // Try/catch around parsing logic so that we show error message
-    // should anything go wrong
-    var transcriptData;
-    var coursesByTerm;
-    try {
-      transcriptData = transcript.parseTranscript(data);
-      coursesByTerm = transcriptData.coursesByTerm;
-    } catch (ex) {
-      console.warn('Could not parse transcript', ex);
-      $('#transcript-error').text(
-          'Uh oh. Could not parse your transcript :( ' +
-          'Please check that you\'ve pasted your transcript correctly.');
-      return;
-    }
-
-    // TODO(mack): fix confusing names between term/termObj and course/courseObj
-    var courseIds = [];
-    _.each(coursesByTerm, function(termObj) {
-      _.each(termObj.courseIds, function(courseId) {
-        courseIds.push(courseId);
-      });
-    });
-
-    $.post(
-      '/api/transcript',
-      {
-        'transcriptData': JSON.stringify(transcriptData)
-      },
-      function() {
-        // TODO(mack): load and update page with js rather than reloading
-        window.location.reload();
-      },
-      'json'
-    );
-  };
-
-  // Handle the case that the user inputs into the transcript text area
-  // before the page has finished loading.
-  if ($transcript.val()) {
-    $transcript.trigger('input');
-  }
-
-  var init = function() {
-    if (util.getQueryParam('test')) {
-      $.get('/static/sample_transcript.txt', function(data) {
-        addTranscriptData(data);
-      });
-    }
-  };
-
-  init();
 
   // Render the schedule if possible
   if (pageData.scheduleItemObjs.length > 0) {
