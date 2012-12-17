@@ -2,6 +2,7 @@ from bson import json_util
 import rmc.shared.constants as c
 import math
 import logging
+import traceback
 
 def json_loads(json_str):
     return json_util.loads(json_str)
@@ -80,5 +81,6 @@ def get_sorting_score(phat, n, confidence=c.RATINGS_CONFIDENCE):
         # with the re-aggregator.
         logging.error('get_sorting_score(%s, %s, %s) threw an exception'
                 % (phat, n, confidence))
+        traceback.print_stack()
         retVal = max(0, min(1, phat))
     return retVal
