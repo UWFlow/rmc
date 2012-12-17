@@ -81,6 +81,6 @@ def get_sorting_score(phat, n, confidence=c.RATINGS_CONFIDENCE):
         # with the re-aggregator.
         logging.error('get_sorting_score(%s, %s, %s) threw an exception'
                 % (phat, n, confidence))
-        traceback.print_stack()
+        logging.error(' '.join(traceback.format_stack()))
         retVal = max(0, min(1, phat))
     return retVal
