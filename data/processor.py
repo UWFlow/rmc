@@ -401,7 +401,7 @@ def import_schedule_items():
             opendata_term % 10
         )
 
-        days = re.findall(r'[A-Z][a-z]?', schedule_item_json['Days'])
+        days = m.ScheduleItem.days_str_to_list(schedule_item_json['Days'])
 
         return {
             'id': schedule_item_json['ID'],
