@@ -299,9 +299,113 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
   // TODO(jlfwong): Remove me - move to profile.js and make data come from
   // models instead of arguments passed directly to the view
 
+  // FIXME(Sandy): Maybe move this to server side so we can store failed schedules
+  var parseSchedule = function(data) {
+    // Get the term for the schedule. E.g. Fall 2012
+    var termMatch = data.match(/(Spring|Fall|Winter)\s+(\d{4})/);
+    var termName;
+    if (termMatch) {
+      termName = termMatch[0];
+    } else {
+      // TODO(Sandy): show message for failure
+      return;
+    }
+
+    // Exact each course item from the schedule
+    var titleRe = /(\w{2,5}\ \w{1,5})\ -\ ([^\r\n]+)/g;
+    var rawItems = [];
+    var match = titleRe.exec(data);
+    var lastIndex = -1;
+    while (match) {
+      if (lastIndex !== -1) {
+        var rawItem = data.substring(lastIndex, match.index);
+        rawItems.push(rawItem);
+      }
+      lastIndex = match.index;
+      match = titleRe.exec(data);
+    }
+    if (lastIndex) {
+      rawItems.push(data.substring(lastIndex));
+    }
+
+    // Process each course item
+    var processedItems = [];
+    _.each(rawItems, function(rawItem) {
+      // Regexes from (with slight changes, i.e. braket on class number):
+      // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
+      // TODO(Sandy): take care of AM vs PM
+      // TODO(Sandy): This _might_ include more courses than trabscript.js
+      // TODO(Sandy): make this look cleaner (line breaks + comments)
+      var bodyRe = /(\d{4})\s+(\d{3})\s+(\w{3})\s+([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g;
+      var matches = bodyRe.exec(rawItem);
+
+      // TODO(Sandy): find cases where this is necessary
+      // Right now we miss my online SCI 238 and WKRPT, so that might be it
+      //var partialBodyRe = /([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g;
+      //if (!matches) {
+      //  // TODO(Sandy): Find the cases for when this is necessary
+      //  matches = partialBodyRe.exec(rawItem);
+      //  console.log(matches);
+      //}
+
+      if (!matches) {
+        return;
+      }
+
+      // E.g. CS 466 -> cs466
+      var courseId = titleRe.exec(data)[1].replace(/\s+/g, '').toLowerCase();
+      // E.g. 5300
+      var itemId = matches[1];
+      // E.g. LEC 001
+      var section = matches[2] + " " + matches[3];
+      // E.g. TTh
+      var days = matches[4];
+      // TODO(Sandy): Investigate cases with 24 hour clock format
+      // E.g. 1:00PM
+      var startTime = matches[5];
+      // E.g. 2:20PM
+      var endTime = matches[6];
+      // E.g. PHY   313
+      var location = matches[7].split(/\s+/g);
+      var building = location[0];
+      var room = location[1];
+      // E.g. Anna Lubiw
+      var profName = matches[8];
+
+      // TODO(Sandy): Cleanup after deciding where this goes (server or client)
+      var item = {
+        course_id: courseId,
+        item_id: itemId,
+        section: section,
+        days: days,
+        start_time: startTime,
+        end_time: endTime,
+        building: building,
+        room: room,
+        prof_name: profName
+      };
+
+      processedItems.push(item);
+    });
+
+    $.post(
+      '/api/schedule',
+      {
+        'schedule_data': JSON.stringify(processedItems),
+        'term_name': termName
+      },
+      function() {
+        // TODO(Sandy): appropriate action here
+      },
+      'json'
+      );
+
+  };
+
   return {
     ScheduleItem: ScheduleItem,
     ScheduleItemCollection: ScheduleItemCollection,
-    ScheduleView: ScheduleView
+    ScheduleView: ScheduleView,
+    parseSchedule: parseSchedule
   };
 });

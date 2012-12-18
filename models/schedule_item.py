@@ -2,6 +2,7 @@ import mongoengine as me
 
 class ScheduleItem(me.Document):
 
+    # FIXME(Sandy): Find out if this changes every term, impacts term changes
     # eg. 3359 - taken from opendata
     id = me.StringField(primary_key=True)
 
@@ -35,6 +36,14 @@ class ScheduleItem(me.Document):
     @staticmethod
     def days_str_to_list(date_str):
         return re.findall(r'[A-Z][a-z]?', date_str)
+
+    @staticmethod
+    def time_from_ampm_time(time_str):
+        '''
+        Transforms 11:00AM -> 11:00, 3:00PM -> 15:00
+        '''
+        # FIXME(Sandy): Do something here
+        return time_str
 
     def to_dict(self):
         return {
