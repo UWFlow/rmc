@@ -1,4 +1,5 @@
 import mongoengine as me
+import logging
 
 class Term(me.Document):
 
@@ -42,8 +43,8 @@ class Term(me.Document):
     def name(self):
         return Term.name_from_id(self.id)
 
-    @classmethod
-    def get_id_from_year_season(cls, year, season):
+    @staticmethod
+    def id_from_year_season(year, season):
         season = season.lower()
         month = Term.INVALID_TERM_MONTH
         for idx, ssn in enumerate(Term.SEASONS):
@@ -51,9 +52,25 @@ class Term(me.Document):
                 month = idx * 4 + 1
 
         if month == Term.INVALID_TERM_MONTH:
-            print "Term: Invalid seasons '%s'. Using month %d in term id" % (season, Term.INVALID_TERM_MONTH)
+            logging.warn("Term: Invalid seasons '%s'. Using month %d in term id" % (season, Term.INVALID_TERM_MONTH))
 
         return ('%s %02d' % (year, month)).replace(' ', '_')
+
+    # TODO(Sandy): Deprecate this
+    @classmethod
+    def get_id_from_year_season(cls, year, season):
+        return Term.id_from_year_season(year, season)
+
+    @staticmethod
+    def id_from_name(name):
+        try:
+            season, year = name.split()
+        except ValueError:
+            logging.error("term.py: id_from_name(cls, '%s'). Fix me!" % (name))
+            # Special place holder so we can correct it later
+            return '8888_88'
+
+        return Term.id_from_year_season(year, season)
 
     @classmethod
     def is_shortlist_term(cls, term_id):
