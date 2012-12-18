@@ -256,7 +256,8 @@ def render_profile_page(profile_user_id):
         exam_objs = m.Exam.objects(course_id__in=current_course_ids)
         exam_dicts = [e.to_dict() for e in exam_objs]
 
-        schedule_item_objs = m.ScheduleItem.objects(course_id__in=current_course_ids)
+        schedule_item_objs = m.ScheduleItem.objects(
+                id__in=current_user.schedule_items)
         schedule_item_dicts = [si.to_dict() for si in schedule_item_objs]
     else:
         exam_dicts = []

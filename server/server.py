@@ -592,6 +592,75 @@ def search_courses():
     })
 
 
+@app.route('/api/schedule', methods=['POST'])
+@view_helpers.login_required
+def upload_schedule():
+    req = flask.request
+    user = view_helpers.get_current_user()
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_SCHEDULE, {
+            'user_id': user.id,
+            'request_form': req.form,
+        },
+    )
+
+    new_schedule = []
+    schedule_data = util.json_loads(req.form.get('schedule_data'))
+    term_id = m.Term.id_from_name(req.form.get('term_name'))
+
+    for item in schedule_data:
+        try:
+            # FIXME(Sandy): Decide what to do if the user's shedule conflicts
+            # with our data. It could mean opendata is incomplete or user is
+            # being malicious. For now the basic usecase is to add new schedule
+            # items, and leave existing ones alone. Decide what do :/
+            # NOTE(Sandy): opendata doesn't seem to have room data for SE390,
+            # but student (Quest) schedule does :(
+            # Do we have this schedule item on record?
+            si = m.ScheduleItem.objects.with_id(item['item_id'])
+            if si is None:
+                # Create this schedule item
+                prof_id = m.Professor.get_id_from_name(item['prof_name'])
+                # TODO(Sandy): see if you can do this using kwargs or something
+                schedule_item = m.ScheduleItem()
+                schedule_item.id = item['item_id']
+                schedule_item.building = item['building']
+                schedule_item.room = item['room']
+                schedule_item.section = item['section']
+                schedule_item.start_time = m.ScheduleItem.time_from_ampm_time(
+                        item['start_time'])
+                schedule_item.end_time = m.ScheduleItem.time_from_ampm_time(
+                        item['end_time'])
+                schedule_item.course_id = item['course_id']
+                schedule_item.prof_id = prof_id
+                schedule_item.term_id = term_id
+                schedule_item.days = m.ScheduleItem.days_str_to_list(item['days'])
+                schedule_item.save()
+            else:
+                # Schedule item exists
+                # TODO(Sandy): logic for what to do with non-matching data
+                logging.info("Potential ScheduleItem mistmatch:\n"
+                        "Input: (%s)\n"
+                        "Mongo: (%s)" % (item, si.to_dict()))
+
+            # Add schedule item to user's schedule
+            new_schedule.append(item['item_id'])
+        except KeyError:
+            logging.error("Invalid item in uploaded schedule: %s" % (item))
+
+    user.schedule_items = new_schedule
+    user.save()
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_SCHEDULE,
+        rmclogger.LOG_EVENT_UPLOAD,
+        user.id
+    )
+
+    return ''
+
 @app.route('/api/transcript', methods=['POST'])
 @view_helpers.login_required
 def upload_transcript():
