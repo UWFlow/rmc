@@ -32,6 +32,10 @@ class ScheduleItem(me.Document):
     # eg. ['T', 'Th']
     days = me.ListField(me.StringField())
 
+    @staticmethod
+    def days_str_to_list(date_str):
+        return re.findall(r'[A-Z][a-z]?', date_str)
+
     def to_dict(self):
         return {
             'id': self.id,
