@@ -18,8 +18,6 @@ UWDATA_COURSES_DATA_DIR = 'uwdata_courses'
 REVIEWS_DATA_DIR = 'reviews'
 DEPARTMENTS_DATA_DIR = 'departments'
 
-CURRENT_TERM_ID = '2012_09'
-
 RATINGS_CONFIDENCE = 0.95
 
 # Demo accounts

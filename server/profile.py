@@ -240,9 +240,10 @@ def render_profile_page(profile_user_id):
             profile_uc_dict_list)
 
     # Fetch exam schedules
-    # TODO(david): 2013
-    if transcript_by_term.get('2012_09'):
-        current_course_ids = [c['course_id'] for c in transcript_by_term['2012_09']]
+    current_term_id = util.get_current_term_id()
+    if transcript_by_term.get(current_term_id):
+        current_course_ids = [
+                c['course_id'] for c in transcript_by_term[current_term_id]]
         print current_course_ids
         exam_objs = m.Exam.objects(course_id__in=current_course_ids)
         exam_dicts = [e.to_dict() for e in exam_objs]

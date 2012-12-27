@@ -1,8 +1,12 @@
-from bson import json_util
-import rmc.shared.constants as c
-import math
+import datetime
 import logging
+import math
 import traceback
+
+from bson import json_util
+
+import rmc.shared.constants as c
+
 
 def json_loads(json_str):
     return json_util.loads(json_str)
@@ -14,10 +18,23 @@ def dict_to_list(dikt):
     update_with_name = lambda key, val: dict(val, **{ 'name': key })
     return [update_with_name(k, v) for k, v in dikt.iteritems()]
 
+def get_term_id_for_date(the_date):
+    # From http://ugradcalendar.uwaterloo.ca/page/uWaterloo-Calendar-Events-and-Academic-Deadlines
+    # Seems should be usually right; just not sure of Spring term always
+    # starting on May...
+    # TODO(david): uWaterloo specific
+    term_start_months = [9, 5, 1]
+
+    # Find the month this term started
+    for month in term_start_months:
+        if the_date.month >= month:
+            start_month = month
+            break
+
+    return "%d_%02d" % (the_date.year, start_month)
+
 def get_current_term_id():
-    # FIXME[2013](Sandy): Don't hardcode this. Get the current term from the time
-    # REMEMBER TO DO THIS BEFORE 2013_01
-    return c.CURRENT_TERM_ID
+    return get_term_id_for_date(datetime.datetime.now())
 
 # Ported Ruby's Statistics2.pnormaldist(qn) to Python
 # http://stackoverflow.com/questions/6116770/whats-the-equivalent-of-rubys-pnormaldist-statistics-function-in-haskell

@@ -40,6 +40,10 @@ deploy:
 stats:
 	PYTHONPATH=.. python analytics/stats.py
 
+# TODO(david): Actually run a test runner
+test:
+	PYTHONPATH=.. python shared/util_test.py
+
 clean:
 	find . -name '*.pyc' -delete
 	rm -rf server/static/css
