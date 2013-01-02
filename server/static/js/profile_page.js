@@ -87,8 +87,8 @@ function($, _, _s, term, course, friend, util, user, uc, _prof,
     window.x = scheduleItems;
 
     var scheduleView = new _schedule.ScheduleView({
-      startHour: 8,
-      endHour: 18,
+      maxStartHour: 8,
+      minEndHour: 18,
       scheduleItems: scheduleItems
     });
 
@@ -96,8 +96,7 @@ function($, _, _s, term, course, friend, util, user, uc, _prof,
       .render()
       .resize({
         headerHeight: 30,
-        height: 800,
-
+        hourHeight: 60,
         hourLabelWidth: 100,
         width: $("#class-schedule-placeholder").outerWidth()
       });
