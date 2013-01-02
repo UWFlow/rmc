@@ -71,7 +71,6 @@ function($, _, _s, term, course, friend, util, user, uc, _prof,
   var examObjs = window.pageData.examObjs;
   if (examObjs && examObjs.length) {
     var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
-    // TODO(david): 2013
     var examSchedule = new _exam.ExamSchedule({
       exams: examCollection
     });
@@ -85,8 +84,6 @@ function($, _, _s, term, course, friend, util, user, uc, _prof,
   if (pageData.scheduleItemObjs.length > 0) {
     var scheduleItems = new _schedule.ScheduleItemCollection(
       pageData.scheduleItemObjs);
-
-    window.x = scheduleItems;
 
     var scheduleView = new _schedule.ScheduleView({
       maxStartHour: 8,
