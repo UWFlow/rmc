@@ -41,6 +41,12 @@
     font-size: 14px;
     line-height: 14px;
     box-sizing: border-box;
+
+    .time-loc-info {
+      color: #666;
+      font-size: 13px;
+      line-height: 13px;
+    }
   }
 
   .schedule-item-container {
@@ -49,9 +55,4 @@
     border-top: 1px solid $wellBorderColor;
   }
 
-  .time-loc-info {
-    color: #666;
-    font-size: 13px;
-    line-height: 13px;
-  }
 }
