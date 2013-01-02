@@ -1,17 +1,20 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('schedule-item-tpl') %}
-<span class="section-info truncate">
-  <a href="/course/<%= course_id %>"><%= course_id.toUpperCase() %></a>:
-  <%= section %>
-</span>
-<br>
-<span class="time-loc-info truncate">
-  <%= start_time %> - <%= end_time %>
-  <% if (building && room) { %>
-    (<%= building %><%= room %>)
+<div class="section-info truncate">
+  <a class="course-code" href="/course/<%- item.get('course_id') %>">
+    <%- item.get('course').get('code') %>
+  </a> -
+  <%- item.get('section') %>
+</div>
+<div class="time-loc-info truncate">
+  <%- moment(item.get('start_time'), 'H:m').format('h:mm') %> -
+  <%- moment(item.get('end_time'), 'H:m').format('h:mm a') %>
+  <% if (item.get('building') && item.get('room')) { %>
+    <br>
+    <%- item.get('building') %> <%- item.get('room') %>
   <% } %>
-</span>
+</div>
 {% endcall %}
 
 {% call macros.us_template('schedule-day-tpl') %}

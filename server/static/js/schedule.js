@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/bootstrap', 'util', 'ext/toastr'],
-function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
+'ext/bootstrap', 'course'],
+function(RmcBackbone, $, _, _s, _bootstrap, _course) {
 
   var strTimeToMinutes = function(strTime) {
     // Given a string in 24 hour HH:MM format, returns the corresponding number
@@ -12,6 +12,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
   // TODO(jlfwong): Integrate models somehow
   var ScheduleItem = RmcBackbone.Model.extend({
+    referenceFields: function() { return {
+      'course': ['course_id', _course.CourseCollection]
+    }; },
+
     intersects: function(otherItem) {
       var selfStart = this.startMinutes();
       var selfEnd = this.startMinutes();
@@ -87,7 +91,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
     render: function() {
       this.$el
-        .html(this.template(this.scheduleItem.toJSON()))
+        .html(this.template({
+          'item': this.scheduleItem
+        }))
         .addClass('well')
         .addClass('truncate');
 
