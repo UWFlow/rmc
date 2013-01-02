@@ -92,7 +92,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     render: function() {
       this.$el
         .html(this.template({
-          'item': this.scheduleItem
+          item: this.scheduleItem
         }))
         .addClass('well')
         .addClass('truncate');
@@ -121,9 +121,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       this.margin = 2;
 
       this.$el.css({
-        left: this.margin + leftOffset,
+        left: leftOffset - 1,
         right: this.margin,
-        top: Math.floor(startTop),
+        top: Math.floor(startTop) - 1,
         height: Math.floor(endTop - startTop)
       });
 
@@ -138,7 +138,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     mouseenterView: function(evt) {
       this.$el.removeClass('truncate');
       this.$el.css('z-index', 1);
-      this.$el.css('left', this.margin);
+      this.$el.css('left', -1);
     },
 
     mouseleaveView: function(evt) {
@@ -214,7 +214,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
           if (position === 0) {
             leftOffset = 0;
           } else {
-            leftOffset = (width - borderWidth) * 1/4;
+            leftOffset = (width - borderWidth) * 1/2;
           }
         } else {
           itemWidth = width - borderWidth;
@@ -239,9 +239,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
   });
 
   var ScheduleHourLabelView = RmcBackbone.View.extend({
-    template: _.template($("#schedule-hour-label-tpl").html()),
+    template: _.template($("#schedule-hour-row-tpl").html()),
 
-    className: 'hour-label',
+    className: 'hour-row',
 
     initialize: function(options) {
       this.hour = options.hour;
@@ -259,10 +259,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       var height = options.height;
 
       var borderHeight = 1;
-      var padding = 8;
 
       this.$el.css({
-        height: height - 2 * padding - borderHeight
+        height: height - borderHeight
       });
 
       return this;
@@ -356,14 +355,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
         height: this.height
       });
 
-      this.$('.times')
-        .css({
-          width: hourLabelWidth
-        })
-        .find('.header')
-          .css({
-            height: headerHeight - 2 * headerPadding - headerBorderHeight
-          });
+      this.$('.times .header').css({
+        height: headerHeight - 2 * headerPadding - headerBorderHeight
+      });
 
       // TODO(jlfwong): Don't know if we need to support weekends anytime
       // soon...
