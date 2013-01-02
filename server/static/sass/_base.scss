@@ -49,6 +49,12 @@
   line-height: 28px;
 }
 
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Overrides
 

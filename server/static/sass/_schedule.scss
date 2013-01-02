@@ -33,12 +33,6 @@
     position: absolute;
     font-size: 14px;
     box-sizing: border-box;
-
-    &.truncate {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
   }
 
   .schedule-item-container {
