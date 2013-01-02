@@ -23,7 +23,7 @@
 {% endcall %}
 
 {% call macros.us_template('schedule-hour-label-tpl') %}
-<%= hour %>:00
+<%- moment().hours(hour).format('h a') %>
 {% endcall %}
 
 {% call macros.us_template('schedule-tpl') %}
