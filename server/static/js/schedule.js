@@ -51,9 +51,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     forDay: function(day) {
-      return new ScheduleItemCollection(this.filter(function(x) {
+      var items = new ScheduleItemCollection(this.filter(function(x) {
         return _.indexOf(x.get('days'), day) !== -1;
       }));
+      items.sort();
+      return items;
     },
 
     byDay: function() {
@@ -161,7 +163,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var $scheduleItemContainer = this.$(".schedule-item-container");
 
       var self = this;
-      this.scheduleItems.sort();
       this.scheduleItems.each(function(scheduleItem) {
         var itemView = new ScheduleItemView({
           scheduleItem: scheduleItem,
@@ -270,8 +271,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     className: 'class-schedule',
 
     initialize: function(options) {
-      this.startHour = options.startHour;
-      this.endHour = options.endHour;
+      this.startHour = options.maxStartHour;
+      this.endHour = options.minEndHour;
 
       this.scheduleItems = options.scheduleItems;
 
@@ -295,18 +296,32 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         "Friday"
       ];
 
-      var self = this;
       _.each(this.scheduleItems.byDay(), function(itemsForDay, i) {
         var dayView = new ScheduleDayView({
           day: {
             name: dayNames[i]
           },
           scheduleItems: itemsForDay,
-          scheduleView: self
+          scheduleView: this
         });
+
+        var minStartItem = itemsForDay.min(function(item) {
+          return item.startMinutes();
+        });
+        if (minStartItem.startMinutes() / 60 < this.startHour) {
+          this.startHour = Math.floor(minStartItem.startMinutes() / 60);
+        }
+
+        var maxEndItem = itemsForDay.max(function(item) {
+          return item.endMinutes();
+        });
+        if (maxEndItem.endMinutes() / 60 > this.endHour) {
+          this.endHour = Math.ceil(maxEndItem.endMinutes() / 60);
+        }
+
         $dayContainer.append(dayView.render().el);
-        self.dayViews.push(dayView);
-      });
+        this.dayViews.push(dayView);
+      }, this);
 
       var $hourLabelContainer = this.$(".hour-label-container");
 
@@ -322,13 +337,13 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     resize: function(options) {
-      var height = options.height;
       var width = options.width;
+      var hourHeight = options.hourHeight;
       var headerHeight = options.headerHeight;
       var hourLabelWidth = options.hourLabelWidth;
 
       var nHours = this.endHour - this.startHour + 1;
-      var hourHeight = Math.floor((height - headerHeight) / nHours);
+      var height = hourHeight * nHours + headerHeight;
 
       this.$el.css({
         width: this.width,
