@@ -1,0 +1,10 @@
+@import 'base';
+@import 'profile';
+@import 'schedule';
+
+.fbconnect-btn {
+  width: 240px;
+  .icon-facebook {
+    margin-right: 7px;
+  }
+}

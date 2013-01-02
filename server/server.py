@@ -144,6 +144,10 @@ def crash():
 def profile_page(profile_user_id):
     return profile.render_profile_page(profile_user_id)
 
+@app.route('/schedule', defaults={'profile_user_id': None})
+@app.route('/schedule/<string:profile_user_id>')
+def schedule_page(profile_user_id):
+    return profile.render_schedule_page(profile_user_id)
 
 @app.route('/course')
 def course():

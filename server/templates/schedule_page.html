@@ -1,0 +1,48 @@
+{% extends 'base_profile_page.html' %}
+
+{% import 'macros.html' as macros %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ '/static/css/schedule_page.css'|version }}">
+{% endblock %}
+
+{% block page_title %}
+  {{ profile_obj['name'] }}'s Schedule
+{% endblock %}
+
+{% block sidebar %}
+  <hr class="divider">
+  <div class="row-fluid">
+    <div class="span12">
+      {% if current_user_id %}
+         {# TODO(mack): write js to enable button #}
+        <button class="view-profile-btn btn btn-large btn-primary">
+          View {{ profile_obj['first_name'] }}'s full profile
+        </button>
+      {% else %}
+        {# TODO(mack): write js to enable button #}
+        <button class="fbconnect-btn btn btn-large btn-primary">
+          <i class="icon-facebook"></i>
+          Connect to see {{ profile_obj['first_name'] }}'s full profile
+        </button>
+      {% endif %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  <div id="class-schedule-placeholder"></div>
+{% endblock %}
+
+{% block templates %}
+  {% include 'schedule.html' %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.pageData.userObjs = {{ user_objs|tojson|safe }};
+  window.pageData.userCourseObjs = {{ user_course_objs|tojson|safe }};
+  window.pageData.profileUserId = {{ profile_user_id|tojson|safe }};
+  window.pageData.scheduleItemObjs = {{ schedule_item_objs|tojson|safe }};
+</script>
+{% endblock %}

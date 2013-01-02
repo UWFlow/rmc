@@ -8,6 +8,58 @@ import rmc.server.view_helpers as view_helpers
 import rmc.shared.rmclogger as rmclogger
 import rmc.shared.util as util
 
+
+def get_schedule_item_dicts(course_ids):
+    # XXX(mack): revert
+    #schedule_item_objs = m.ScheduleItem.objects(
+    #        id__in=current_user.schedule_items)
+    schedule_item_objs = m.ScheduleItem.objects(course_id__in=course_ids)
+    return [si.to_dict() for si in schedule_item_objs]
+
+
+def render_schedule_page(profile_user_id):
+    # Fetch exam schedules and schedule items
+    current_term_id = util.get_current_term_id()
+    # XXX(mack): revert
+    current_term_id = '2012_09'
+
+    profile_user = m.User.objects.with_id(profile_user_id)
+    profile_dict = profile_user.to_dict()
+    profile_dict.update({
+        'last_program_year_id': profile_user.get_latest_program_year_id(),
+    })
+
+    current_ucs = m.UserCourse.objects(user_id=profile_user_id, term_id=current_term_id)
+    current_course_ids = [uc['course_id'] for uc in current_ucs]
+    schedule_item_dicts = get_schedule_item_dicts(current_course_ids)
+
+    current_user = view_helpers.get_current_user()
+    current_user_id = None
+    if current_user:
+        current_user_id = current_user.id
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_SCHEDULE_VIEW, {
+            'current_user': current_user_id,
+            'profile_user': profile_user.id,
+        },
+    )
+
+    user_dicts = [profile_dict]
+    if current_user and current_user_id != profile_user.id:
+        user_dicts.append(current_user.to_dict())
+
+    return flask.render_template('schedule_page.html',
+        page_script='schedule_page.js',
+        profile_obj=profile_dict,
+        user_objs=user_dicts,
+        profile_user_id=profile_user.id,
+        current_user_id=current_user_id,
+        schedule_item_objs=schedule_item_dicts,
+    )
+
+
 def render_profile_page(profile_user_id):
     # TODO(mack): for dict maps, use .update() rather than overwriting to
     # avoid subtle overwrites by data that has fields filled out
@@ -241,19 +293,16 @@ def render_profile_page(profile_user_id):
 
     # Fetch exam schedules and schedule items
     current_term_id = util.get_current_term_id()
-    if transcript_by_term.get(current_term_id):
-        current_course_ids = [
-                c['course_id'] for c in transcript_by_term[current_term_id]]
-        print current_course_ids
-        exam_objs = m.Exam.objects(course_id__in=current_course_ids)
-        exam_dicts = [e.to_dict() for e in exam_objs]
+    current_term_courses = transcript_by_term.get(current_term_id, [])
+    current_course_ids = [c['course_id'] for c in current_term_courses]
 
-        schedule_item_objs = m.ScheduleItem.objects(
-                id__in=current_user.schedule_items)
-        schedule_item_dicts = [si.to_dict() for si in schedule_item_objs]
-    else:
-        exam_dicts = []
-        schedule_item_dicts = []
+    exam_objs = m.Exam.objects(course_id__in=current_course_ids)
+    exam_dicts =  [e.to_dict() for e in exam_objs]
+
+    # TODO(mack): use get_schedule_item_dicts()
+    schedule_item_objs = m.ScheduleItem.objects(
+            id__in=current_user.schedule_items)
+    schedule_item_dicts = [si.to_dict() for si in schedule_item_objs]
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
