@@ -9,14 +9,6 @@ import rmc.shared.rmclogger as rmclogger
 import rmc.shared.util as util
 
 
-def get_schedule_item_dicts(course_ids):
-    # XXX(mack): revert
-    #schedule_item_objs = m.ScheduleItem.objects(
-    #        id__in=current_user.schedule_items)
-    schedule_item_objs = m.ScheduleItem.objects(course_id__in=course_ids)
-    return [si.to_dict() for si in schedule_item_objs]
-
-
 def render_schedule_page(profile_user_id):
     # Fetch exam schedules and schedule items
     current_term_id = util.get_current_term_id()
@@ -31,7 +23,7 @@ def render_schedule_page(profile_user_id):
 
     current_ucs = m.UserCourse.objects(user_id=profile_user_id, term_id=current_term_id)
     current_course_ids = [uc['course_id'] for uc in current_ucs]
-    schedule_item_dicts = get_schedule_item_dicts(current_course_ids)
+    schedule_item_dicts = profile_user.get_schedule_item_dicts()
 
     courses = m.Course.objects(id__in=current_course_ids)
     course_dicts = [c.to_dict() for c in courses]
@@ -297,16 +289,14 @@ def render_profile_page(profile_user_id):
 
     # Fetch exam schedules and schedule items
     current_term_id = util.get_current_term_id()
+
     current_term_courses = transcript_by_term.get(current_term_id, [])
     current_course_ids = [c['course_id'] for c in current_term_courses]
 
     exam_objs = m.Exam.objects(course_id__in=current_course_ids)
     exam_dicts =  [e.to_dict() for e in exam_objs]
 
-    # TODO(mack): use get_schedule_item_dicts()
-    schedule_item_objs = m.ScheduleItem.objects(
-            id__in=current_user.schedule_items)
-    schedule_item_dicts = [si.to_dict() for si in schedule_item_objs]
+    schedule_item_dicts = current_user.get_schedule_item_dicts()
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,

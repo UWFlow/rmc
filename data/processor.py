@@ -470,7 +470,7 @@ def import_schedule_items():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     supported_modes = ['professors', 'departments',
-            'courses', 'reviews', 'schedule_items', 'all']
+            'courses', 'reviews', 'all']
 
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
@@ -485,13 +485,10 @@ if __name__ == '__main__':
         import_courses()
     elif args.mode == 'reviews':
         import_reviews()
-    elif args.mode == 'schedule_items':
-        import_schedule_items()
     elif args.mode == 'all':
         import_professors()
         import_departments()
         import_courses() # must be after departments
         import_reviews() # must be after courses
-        import_schedule_items()
     else:
         sys.exit('The mode %s is not supported' % args.mode)
