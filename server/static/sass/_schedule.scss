@@ -1,6 +1,13 @@
+@import 'variables';
+
 .class-schedule {
   border: 1px solid $wellBorderColor;
   @include border-radius(4px);
+
+  .course-code {
+    font-weight: bold;
+    color: $textColor;
+  }
 
   .times, .day {
     height: 100%;
@@ -29,9 +36,10 @@
 
   .schedule-item {
     border-width: 1px;
-    padding: 8px;
+    padding: 4px;
     position: absolute;
     font-size: 14px;
+    line-height: 14px;
     box-sizing: border-box;
   }
 
@@ -39,5 +47,11 @@
     position: relative;
     height: 100%;
     border-top: 1px solid $wellBorderColor;
+  }
+
+  .time-loc-info {
+    color: #666;
+    font-size: 13px;
+    line-height: 13px;
   }
 }
