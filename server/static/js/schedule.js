@@ -12,6 +12,15 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
   // TODO(jlfwong): Integrate models somehow
   var ScheduleItem = RmcBackbone.Model.extend({
+    intersects: function(otherItem) {
+      var selfStart = this.startMinutes();
+      var selfEnd = this.startMinutes();
+      var otherStart = otherItem.startMinutes();
+      var otherEnd = otherItem.endMinutes();
+      return otherStart >= selfStart && otherStart <= selfEnd ||
+        otherEnd >= selfStart && otherEnd <= selfEnd;
+    },
+
     startMinutes: function() {
       return strTimeToMinutes(this.get('start_time'));
     },
@@ -23,6 +32,23 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
   var ScheduleItemCollection = RmcBackbone.Collection.extend({
     model: ScheduleItem,
+
+    comparator: function(firstItem, secondItem) {
+      var firstStart = firstItem.startMinutes();
+      var secondStart = secondItem.startMinutes();
+      if (firstStart === secondStart) {
+        // If they have the same start time, the longer item should be first
+        if (firstItem.endMinutes() >= secondItem.endMinutes()) {
+          return -1;
+        } else {
+          return 1;
+        }
+      } else if (firstStart < secondStart) {
+        return -1;
+      } else {
+        return 1;
+      }
+    },
 
     forDay: function(day) {
       return new ScheduleItemCollection(this.filter(function(x) {
@@ -60,14 +86,17 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     render: function() {
       this.$el
         .html(this.template(this.scheduleItem.toJSON()))
-        .addClass('well');
+        .addClass('well')
+        .addClass('truncate');
 
       return this;
     },
 
     resize: function(options) {
-      var width = options.width;
+      this.resizeOptions = options;
+
       var hourHeight = options.hourHeight;
+      var leftOffset = options.leftOffset;
 
       var sv = this.scheduleView;
 
@@ -81,18 +110,33 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var endTop = endMinutes * minuteHeight - startOffset;
 
       // NOTE: Not a real CSS margin since the item is absolutely positioned
-      var margin = 2;
-      var borderWidth = 1;
-      var padding = 8;
+      this.margin = 2;
 
       this.$el.css({
-        width: width - 2 * margin - 2 * borderWidth - 2 * padding,
-        left: margin,
+        left: this.margin + leftOffset,
+        right: this.margin,
         top: Math.floor(startTop),
-        height: Math.floor(endTop - startTop) - 2 * borderWidth - 2 * padding
+        height: Math.floor(endTop - startTop)
       });
 
       return this;
+    },
+
+    events: {
+      'mouseenter': 'mouseenterView',
+      'mouseleave': 'mouseleaveView'
+    },
+
+    mouseenterView: function(evt) {
+      this.$el.removeClass('truncate');
+      this.$el.css('z-index', 1);
+      this.$el.css('left', this.margin);
+    },
+
+    mouseleaveView: function(evt) {
+      this.$el.addClass('truncate');
+      this.$el.css('z-index', 0);
+      this.resize(this.resizeOptions);
     }
   });
 
@@ -106,7 +150,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       this.scheduleItems = options.scheduleItems;
       this.scheduleView = options.scheduleView;
 
-      this.itemViews = [];
+      this.itemViews = {};
     },
 
     render: function() {
@@ -117,6 +161,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       var $scheduleItemContainer = this.$(".schedule-item-container");
 
       var self = this;
+      this.scheduleItems.sort();
       this.scheduleItems.each(function(scheduleItem) {
         var itemView = new ScheduleItemView({
           scheduleItem: scheduleItem,
@@ -124,7 +169,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
           scheduleView: self.scheduleView
         });
         $scheduleItemContainer.append(itemView.render().el);
-        self.itemViews.push(itemView);
+        self.itemViews[scheduleItem.id] = itemView;
       });
 
       return this;
@@ -147,12 +192,40 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         height: headerHeight - 2 * headerPadding - headerBorderHeight
       });
 
-      _.each(this.itemViews, function(itemView) {
+      var lastScheduleItem;
+      var position = 0;
+      var numPositions = 2;
+      this.scheduleItems.each(function(scheduleItem) {
+        var intersects = lastScheduleItem &&
+          lastScheduleItem.intersects(scheduleItem);
+
+        var leftOffset ;
+        var itemWidth;
+        if (intersects) {
+          position = (position + 1) % numPositions;
+          itemWidth = (width - borderWidth) * 3/4;
+          if (position === 0) {
+            leftOffset = 0;
+          } else {
+            leftOffset = (width - borderWidth) * 1/4;
+          }
+        } else {
+          itemWidth = width - borderWidth;
+          position = 0;
+          leftOffset = 0;
+        }
+
+        // Deal with conflicts; currently only handles max of 2 intersecting
+        // schedule items
+
+        var itemView = this.itemViews[scheduleItem.id];
         itemView.resize({
           hourHeight: hourHeight,
-          width: width - borderWidth
+          leftOffset: leftOffset
         });
-      });
+
+        lastScheduleItem = scheduleItem;
+      }, this);
 
       return this;
     }
