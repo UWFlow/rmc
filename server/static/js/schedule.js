@@ -314,14 +314,14 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
         var minStartItem = itemsForDay.min(function(item) {
           return item.startMinutes();
         });
-        if (minStartItem.startMinutes() / 60 < this.startHour) {
+        if (minStartItem && minStartItem.startMinutes() / 60 < this.startHour) {
           this.startHour = Math.floor(minStartItem.startMinutes() / 60);
         }
 
         var maxEndItem = itemsForDay.max(function(item) {
           return item.endMinutes();
         });
-        if (maxEndItem.endMinutes() / 60 > this.endHour) {
+        if (maxEndItem && maxEndItem.endMinutes() / 60 > this.endHour) {
           this.endHour = Math.ceil(maxEndItem.endMinutes() / 60);
         }
 
