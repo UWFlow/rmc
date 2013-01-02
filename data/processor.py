@@ -40,8 +40,8 @@ def import_departments():
     ]
 
     for source in sources:
-        file_name = os.path.join(
-                sys.path[0], c.DEPARTMENTS_DATA_DIR, source['file_name'])
+        file_name = os.path.join(os.path.dirname(__file__),
+                c.DEPARTMENTS_DATA_DIR, source['file_name'])
 
         with open(file_name, 'r') as f:
             data = json.load(f)
@@ -151,7 +151,7 @@ def import_courses():
         source['added'] = 0
         source['ignored'] = 0
         for file_name in glob.glob(os.path.join(
-                sys.path[0], source['dir'], '*.txt')):
+                os.path.dirname(__file__), source['dir'], '*.txt')):
 
             with open(file_name, 'r') as f:
                 courses = json.load(f)
@@ -174,8 +174,8 @@ def import_courses():
 
 
     # Update courses with terms offered data
-    with open(os.path.join(
-            sys.path[0], c.TERMS_OFFERED_DATA_DIR, 'terms_offered.txt')) as f:
+    with open(os.path.join(os.path.dirname(__file__),
+            c.TERMS_OFFERED_DATA_DIR, 'terms_offered.txt')) as f:
 
         def map_term(term):
             return {
@@ -277,8 +277,8 @@ def import_professors():
         }
 
 
-    file_names = glob.glob(
-            os.path.join(sys.path[0], c.REVIEWS_DATA_DIR, '*.txt'))
+    file_names = glob.glob(os.path.join(os.path.dirname(__file__),
+            c.REVIEWS_DATA_DIR, '*.txt'))
     for file_name in file_names:
         with open(file_name, 'r') as f:
             data = json.load(f)
@@ -348,8 +348,8 @@ def import_reviews():
 
         return clean_review
 
-    file_names = glob.glob(
-            os.path.join(sys.path[0], c.REVIEWS_DATA_DIR, '*.txt'))
+    file_names = glob.glob(os.path.join(os.path.dirname(__file__),
+            c.REVIEWS_DATA_DIR, '*.txt'))
     for file_name in file_names:
         with open(file_name, 'r') as f:
             data = json.load(f)
@@ -416,7 +416,7 @@ def import_schedule_items():
             'days': days
         }
 
-    file_names = glob.glob(os.path.join(sys.path[0],
+    file_names = glob.glob(os.path.join(os.path.dirname(__file__),
             c.OPENDATA_SCHEDULE_ITEM_DATA_DIR, '*.txt'))
 
     schedule_items_json = []
