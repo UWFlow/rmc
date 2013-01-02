@@ -293,35 +293,6 @@ def get_opendata_courses():
     print 'Found {num} good courses'.format(num=good_courses)
     print 'Bad course names: {names}'.format(names=bad_course_names)
 
-
-def get_opendata_schedule_items():
-    dept_ids = [x.id for x in m.Department.objects.only('id')]
-
-    api_key = 'ead3606c6f096657ebd283b58bf316b6'
-
-    errors = []
-
-    for dept_id in dept_ids:
-        print dept_id
-
-        url = ('http://api.uwaterloo.ca/public/v1/' +
-                '?key={api_key}&service=Schedule&q={query}&output=json'
-                    .format(api_key=api_key, query=dept_id))
-
-        data = get_data_from_url(url)
-
-        try:
-            f = open(os.path.join(sys.path[0], '%s/%s.txt' % (c.OPENDATA_SCHEDULE_ITEM_DATA_DIR, dept_id)), 'w')
-            f.write(json.dumps(data))
-            f.close()
-        except Exception:
-            error = 'Exception writing to file {dep}.txt'.format(dep=dept_id)
-            errors.append(error)
-            print error
-            traceback.print_exc(file=sys.stdout)
-
-    print 'Found {num} errors.'.format(num=len(errors))
-
 def get_terms_offered():
     found = 0
     missing_course_ids = []
@@ -384,7 +355,7 @@ def get_terms_offered():
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     supported_modes = ['departments', 'ucalendar_courses', 'opendata_courses',
-            'uwdata_courses', 'terms_offered', 'opendata_schedule_items']
+            'uwdata_courses', 'terms_offered']
 
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
@@ -399,7 +370,5 @@ if __name__ == '__main__':
         get_uwdata_courses()
     elif args.mode == 'terms_offered':
         get_terms_offered()
-    elif args.mode == 'opendata_schedule_items':
-        get_opendata_schedule_items()
     else:
         sys.exit('The mode %s is not supported' % args.mode)

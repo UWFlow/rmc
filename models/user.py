@@ -6,6 +6,7 @@ import mongoengine as me
 import points as _points
 import term as _term
 import user_course as _user_course
+import user_schedule_item as _user_schedule_item
 from rmc.shared import constants
 from rmc.shared import facebook
 from rmc.shared import util
@@ -74,9 +75,6 @@ class User(me.Document):
 
     # List of UserCourse.id's
     course_history = me.ListField(me.ObjectIdField())
-
-    # List of ScheduleItem.id's
-    schedule_items = me.ListField(me.StringField())
 
     # TODO(mack): figure out why last_term_id was commented out in
     # a prior diff: #260f174
@@ -342,6 +340,11 @@ class User(me.Document):
         fb_friends = User.objects(fbid__in=self.friend_fbids).only('id', 'friend_ids')
         # We only have friends from Facebook right now, so just set it
         self.friend_ids = [f.id for f in fb_friends]
+
+    def get_schedule_item_dicts(self):
+        schedule_item_objs = _user_schedule_item.UserScheduleItem.objects(
+                user_id=self.id)
+        return [si.to_dict() for si in schedule_item_objs]
 
     def __repr__(self):
         return "<User: %s>" % self.name

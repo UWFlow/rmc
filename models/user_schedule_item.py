@@ -2,11 +2,22 @@ import re
 
 import mongoengine as me
 
-class ScheduleItem(me.Document):
+class UserScheduleItem(me.Document):
 
-    # FIXME(Sandy): Find out if this changes every term, impacts term changes
-    # eg. 3359 - taken from opendata
-    id = me.StringField(primary_key=True)
+    meta = {
+        'indexes': [
+            # TODO(Sandy): Stole Mack's TODO from UserCourse
+            # TODO(mack): this index on user_id is probably not necessary
+            # since it duplicates the unique_with on user_id
+            'user_id',
+        ],
+    }
+
+    # The user with this schedule item in their schedule
+    user_id = me.ObjectIdField(unique_with=['class_num'])
+
+    # eg. 3359
+    class_num = me.StringField(required=True)
 
     # eg. MC
     building = me.StringField()
@@ -35,21 +46,9 @@ class ScheduleItem(me.Document):
     # eg. ['T', 'Th']
     days = me.ListField(me.StringField())
 
-    @staticmethod
-    def days_str_to_list(date_str):
-        return re.findall(r'[A-Z][a-z]?', date_str)
-
-    @staticmethod
-    def time_from_ampm_time(time_str):
-        '''
-        Transforms 11:00AM -> 11:00, 3:00PM -> 15:00
-        '''
-        # FIXME(Sandy): Do something here
-        return time_str
-
     def to_dict(self):
         return {
-            'id': self.id,
+            'class_num': self.class_num,
             'building': self.building,
             'room': self.room,
             'section': self.section,
@@ -62,7 +61,8 @@ class ScheduleItem(me.Document):
         }
 
     def __repr__(self):
-        return "<ScheduleItem: %s, %s, %s-%s, %s>" % (
+        return "<UserScheduleItem: %s, %s, %s, %s-%s, %s>" % (
+            self.user_id,
             self.course_id,
             self.term_id,
             self.start_time,

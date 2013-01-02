@@ -472,19 +472,32 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
         return;
       }
 
+      var formatTime = function(time_str) {
+        var result = time_str;
+        // time_str = '2:20PM'
+        var matches = time_str.match(/(:|PM|AM|\d+)/g);
+        // => ['2', ':', '20', 'PM']
+        var hours = matches[0];
+        var mins = matches[2];
+        if (matches[3].toLowerCase() == 'pm') {
+           hours = (parseInt(hours, 10) + 12).toString();
+        }
+        return hours + ":" + mins;
+      };
+
       // E.g. CS 466 -> cs466
       var courseId = titleRe.exec(data)[1].replace(/\s+/g, '').toLowerCase();
       // E.g. 5300
-      var itemId = matches[1];
+      var classNum = matches[1];
       // E.g. LEC 001
       var section = matches[2] + " " + matches[3];
-      // E.g. TTh
-      var days = matches[4];
+      // E.g. TTh -> ['T', 'Th']
+      var days = matches[4].match(/[A-Z][a-z]/g);
       // TODO(Sandy): Investigate cases with 24 hour clock format
       // E.g. 1:00PM
-      var startTime = matches[5];
+      var startTime = formatTime(matches[5]);
       // E.g. 2:20PM
-      var endTime = matches[6];
+      var endTime = formatTime(matches[6]);
       // E.g. PHY   313
       var location = matches[7].split(/\s+/g);
       var building = location[0];
@@ -495,7 +508,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       // TODO(Sandy): Cleanup after deciding where this goes (server or client)
       var item = {
         course_id: courseId,
-        item_id: itemId,
+        class_num: classNum,
         section: section,
         days: days,
         start_time: startTime,
