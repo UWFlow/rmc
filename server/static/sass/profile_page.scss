@@ -1,24 +1,10 @@
 @import 'base';
+@import 'profile';
 @import 'term';
 @import 'course';
 @import 'friend';
 @import 'exam';
 @import 'schedule';
-
-header {
-  margin-bottom: 40px;
-}
-
-.personal-info {
-  .name {
-    margin-top: 15px;
-    margin-bottom: 0px;
-  }
-  .program {
-    margin-bottom: 0;
-    color: #666;
-  }
-}
 
 #shortlist-alert {
   padding-bottom: 18px;
@@ -43,12 +29,4 @@ header {
 
 .exam-schedule {
   margin-bottom: 20px;
-}
-
-#profile-container {
-  h1 {
-    border-bottom: 1px solid #DDD;
-    padding-bottom: 5px;
-    margin-bottom: 18px;
-  }
 }

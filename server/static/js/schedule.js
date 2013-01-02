@@ -390,6 +390,38 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     }
   });
 
+  var initScheduleView = function(options) {
+    var width = options.width;
+    var scheduleItems = options.scheduleItems;
+
+    var scheduleView = new ScheduleView({
+      maxStartHour: 8,
+      minEndHour: 18,
+      scheduleItems: scheduleItems
+    });
+
+    scheduleView
+      .render()
+      .resize({
+        headerHeight: 30,
+        hourHeight: 60,
+        hourLabelWidth: 100,
+        width: width
+      });
+
+    $(window).resize(function() {
+      scheduleView.resize({
+        headerHeight: 30,
+        height: 800,
+
+        hourLabelWidth: 100,
+        width: scheduleView.$el.outerWidth()
+      });
+    });
+
+    return scheduleView;
+  };
+
   // TODO(jlfwong): Remove me - move to profile.js and make data come from
   // models instead of arguments passed directly to the view
 
@@ -493,13 +525,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       },
       'json'
       );
-
   };
 
   return {
     ScheduleItem: ScheduleItem,
     ScheduleItemCollection: ScheduleItemCollection,
     ScheduleView: ScheduleView,
+    initScheduleView: initScheduleView,
     parseSchedule: parseSchedule
   };
 });
