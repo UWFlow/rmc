@@ -25,8 +25,10 @@
 </div>
 {% endcall %}
 
-{% call macros.us_template('schedule-hour-label-tpl') %}
-<%- moment().hours(hour).format('h a') %>
+{% call macros.us_template('schedule-hour-row-tpl') %}
+<span class="hour-label">
+  <%- moment().hours(hour).format('h a') %>
+</span>
 {% endcall %}
 
 {% call macros.us_template('schedule-tpl') %}

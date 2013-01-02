@@ -2,11 +2,19 @@
 
 .class-schedule {
   border: 1px solid $wellBorderColor;
+  position: relative;
   @include border-radius(4px);
+
+  $hour-width: 100px;
 
   .course-code {
     font-weight: bold;
     color: $textColor;
+  }
+
+  .times {
+    position: absolute;
+    width: 100%;
   }
 
   .times, .day {
@@ -20,12 +28,19 @@
 
   .day-container {
     height: 100%;
+    margin-left: $hour-width;
   }
 
-  .times .hour-label {
+  .times .hour-row {
     border-top: 1px solid $wellBorderColor;
-    padding: 8px;
-    text-align: right;
+
+    .hour-label {
+      padding: 8px;
+      text-align: right;
+      width: $hour-width;
+      display: block;
+      @include box-sizing(border-box);
+    }
   }
 
   .header {
