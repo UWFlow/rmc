@@ -1,7 +1,7 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
 'util', 'rmc_backbone', 'user', 'ext/bootstrap', 'schedule'],
-function($, _, _s, transcript, util, RmcBackbone, _user, __, _schedule) {
+function($, _, _s, transcript, _util, RmcBackbone, _user, __, _schedule) {
 
   var AddTranscriptView = RmcBackbone.View.extend({
     className: 'add-transcript',
@@ -26,7 +26,7 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __, _schedule) {
 
       this.$('[rel="tooltip"]').tooltip();
 
-      if (util.getQueryParam('test')) {
+      if (_util.getQueryParam('test')) {
         $.get('/static/sample_transcript.txt', _.bind(function(data) {
           this.addTranscriptData(data);
         }, this));
@@ -157,7 +157,7 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __, _schedule) {
           // TODO(mack): load and update page with js rather than reloading
           // Fail safe to make sure at least we sent off the _gaq trackEvent
           _gaq.push(function() {
-            var redirectUrl = util.getQueryParam('next');
+            var redirectUrl = _util.getQueryParam('next');
             if (redirectUrl) {
               window.location.href = redirectUrl;
             } else {
@@ -179,6 +179,11 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __, _schedule) {
 
     $('#add-transcript-container')
       .html(addTranscriptView.render().el);
+
+    var redirectUrl = _util.getQueryParam('next');
+    if (redirectUrl) {
+      $('.skip-link').attr('href', redirectUrl);
+    }
   };
 
   init();

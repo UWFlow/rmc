@@ -110,10 +110,14 @@ def render_profile_page(profile_user_id):
                 "http://uwflow.com/" or referrer == "http://localhost:5000/"):
             return flask.make_response(flask.redirect('onboarding'))
 
-        if current_user.has_course_history and redirect_url:
+        if not current_user.has_course_history:
+            onboarding_url = '/onboarding'
+            if flask.request.query_string:
+                onboarding_url = '%s?%s' % (
+                        onboarding_url, flask.request.query_string)
+            return flask.make_response(flask.redirect(onboarding_url))
+        elif redirect_url:
             return flask.make_response(flask.redirect(redirect_url))
-        elif not current_user.has_course_history:
-            return flask.make_response(flask.redirect('onboarding'))
 
     # PART TWO - DATA FETCHING
 
