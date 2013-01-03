@@ -348,7 +348,7 @@ class User(me.Document):
 
     def get_schedule_item_dicts(self):
         schedule_item_objs = _user_schedule_item.UserScheduleItem.objects(
-                user_id=self.id)
+                user_id=self.id, term_id=util.get_current_term_id())
         return [si.to_dict() for si in schedule_item_objs]
 
     def add_course(self, course_id, term_id, program_year_id=None):
