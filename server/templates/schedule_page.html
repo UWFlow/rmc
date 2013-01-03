@@ -16,9 +16,10 @@
     <div class="span12">
       {% if current_user_id %}
          {# TODO(mack): write js to enable button #}
-        <button class="view-profile-btn btn btn-large btn-primary">
+         <a href="/profile/{{ profile_user_id }}"
+            class="view-profile-btn btn btn-large btn-primary">
           View {{ profile_obj['first_name'] }}'s full profile
-        </button>
+        </a>
       {% else %}
         {# TODO(mack): write js to enable button #}
         <button class="fbconnect-btn btn btn-large btn-primary">
