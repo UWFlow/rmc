@@ -731,7 +731,7 @@ def upload_schedule():
     user.save()
 
     # Remove existing schedule items for the user
-    for usi in m.UserScheduleItem.objects(user_id=user.id):
+    for usi in m.UserScheduleItem.objects(user_id=user.id, term_id=term_id):
         usi.delete()
 
     for item in schedule_data:
