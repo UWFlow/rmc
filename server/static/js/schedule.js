@@ -105,9 +105,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
 
     resize: function(options) {
       this.resizeOptions = options;
+      this.margin = 1;
 
       var hourHeight = options.hourHeight;
       var leftOffset = options.leftOffset;
+      var rightOffset = options.rightOffset;
 
       var sv = this.scheduleView;
 
@@ -120,12 +122,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       var startTop = startMinutes * minuteHeight - startOffset;
       var endTop = endMinutes * minuteHeight - startOffset;
 
-      // NOTE: Not a real CSS margin since the item is absolutely positioned
-      this.margin = 2;
-
       this.$el.css({
-        left: leftOffset - 1,
-        right: this.margin,
+        left: leftOffset + this.margin,
+        right: rightOffset + this.margin,
         top: Math.floor(startTop) - 1,
         height: Math.floor(endTop - startTop)
       });
@@ -139,17 +138,29 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     },
 
     mouseenterView: function(evt) {
+      if (!this.resizeOptions) {
+        return;
+      }
+
       this.$el.removeClass('truncate');
-      this.$el.css('z-index', 1);
-      this.$el.css('left', -1);
+      this.$el.css({
+        'z-index': 1,
+        'left': this.margin,
+        'right': this.margin
+      });
     },
 
     mouseleaveView: function(evt) {
-      this.$el.addClass('truncate');
-      this.$el.css('z-index', 0);
-      if (this.resizeOptions) {
-        this.resize(this.resizeOptions);
+      if (!this.resizeOptions) {
+        return;
       }
+
+      this.$el.addClass('truncate');
+      this.$el.css({
+        'z-index': ''
+      });
+
+      this.resize(this.resizeOptions);
     }
   });
 
@@ -188,15 +199,14 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     },
 
     resize: function(options) {
-      var width = options.width;
+      var borderWidth = 1;
+      var width = options.width - borderWidth;
       var height = options.height;
       var headerHeight = options.headerHeight;
       var hourHeight = options.hourHeight;
 
-      var borderWidth = 1;
-
       this.$el.css({
-        width: width - borderWidth,
+        width: width,
         height: height
       });
 
@@ -204,40 +214,50 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
         height: headerHeight - 2 * headerPadding - headerBorderHeight
       });
 
-      var lastScheduleItem;
       var position = 0;
+      // Right now, only supporting 2 positions for intersecting schedule items:
+      // left side and right side. A series of intersecting items will zigzag
+      // between left and right.
       var numPositions = 2;
-      this.scheduleItems.each(function(scheduleItem) {
-        var intersects = lastScheduleItem &&
-          lastScheduleItem.intersects(scheduleItem);
 
-        var leftOffset ;
-        var itemWidth;
-        if (intersects) {
-          position = (position + 1) % numPositions;
-          itemWidth = (width - borderWidth) * 3/4;
-          if (position === 0) {
-            leftOffset = 0;
-          } else {
-            leftOffset = (width - borderWidth) * 1/2;
-          }
-        } else {
-          itemWidth = width - borderWidth;
-          position = 0;
-          leftOffset = 0;
+      for (var idx = 0; idx < this.scheduleItems.size(); ++idx) {
+        var currScheduleItem = this.scheduleItems.at(idx);
+
+        var prevScheduleItem = null;
+        if (idx > 0) {
+          prevScheduleItem = this.scheduleItems.at(idx - 1);
         }
 
-        // Deal with conflicts; currently only handles max of 2 intersecting
-        // schedule items
+        var nextScheduleItem = null;
+        if (idx < this.scheduleItems.size() - 1) {
+          nextScheduleItem = this.scheduleItems.at(idx + 1);
+        }
 
-        var itemView = this.itemViews[scheduleItem.id];
+        var intersects =
+            prevScheduleItem && prevScheduleItem.intersects(currScheduleItem) ||
+            nextScheduleItem && nextScheduleItem.intersects(currScheduleItem);
+
+        var leftOffset;
+        var rightOffset;
+        if (intersects) {
+          // Deal with conflicts; currently only handles max of 2 intersecting
+          // schedule items
+          position = (position + 1) % numPositions;
+          leftOffset = position/numPositions * width;
+          rightOffset = width - ((position + 1) * width/numPositions);
+        } else {
+          position = 0;
+          leftOffset = 0;
+          rightOffset = 0;
+        }
+
+        var itemView = this.itemViews[currScheduleItem.id];
         itemView.resize({
           hourHeight: hourHeight,
-          leftOffset: leftOffset
+          leftOffset: leftOffset,
+          rightOffset: rightOffset
         });
-
-        lastScheduleItem = scheduleItem;
-      }, this);
+      }
 
       return this;
     }
