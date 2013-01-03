@@ -72,6 +72,13 @@
   font-style: normal;
 }
 
+// Disable bootstrap modal slide-down animation (which is annoying) but preserve
+// fade-in. From http://stackoverflow.com/a/11978026/392426
+.modal.fade {
+  @include transition(opacity 0.3s linear, none);
+  top: 50%;
+}
+
 
 /****************************
  * Base page styles

@@ -383,6 +383,36 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     }
   });
 
+  var ScheduleInputView = RmcBackbone.View.extend({
+    template: _.template($('#schedule-input-tpl').html()),
+
+    className: 'schedule-input',
+
+    initialize: function() {
+    },
+
+    render: function() {
+      this.$el.html(this.template({}));
+      return this;
+    }
+  });
+
+  var ScheduleInputModalView = RmcBackbone.View.extend({
+    template: _.template($('#schedule-input-modal-tpl').html()),
+
+    initialize: function() {
+      this.scheduleInputView = new ScheduleInputView();
+    },
+
+    render: function() {
+      this.$el.html(this.template({}));
+      this.$('.schedule-input-placeholder')
+        .replaceWith(this.scheduleInputView.render().el);
+
+      return this;
+    }
+  });
+
   var initScheduleView = function(options) {
     var width = options.width;
     var scheduleItems = options.scheduleItems;
@@ -516,6 +546,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     ScheduleItem: ScheduleItem,
     ScheduleItemCollection: ScheduleItemCollection,
     ScheduleView: ScheduleView,
+    ScheduleInputView: ScheduleInputView,
+    ScheduleInputModalView: ScheduleInputModalView,
     initScheduleView: initScheduleView,
     parseSchedule: parseSchedule
   };
