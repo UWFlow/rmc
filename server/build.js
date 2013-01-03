@@ -7,7 +7,6 @@
   // timeout issues
   waitSeconds: 120,
 
-  // Allow nested static dependencies.
   findNestedDependencies: false,
 
   // Removes uncessary licensing comments
