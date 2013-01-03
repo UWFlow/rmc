@@ -67,8 +67,8 @@ require.config({
 require(['ext/underscore', 'ext/underscore.string', 'util', 'ext/moment',
     'ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone',
     'util', 'ext/moment', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
-    'raffle_unlock', 'points', 'user', 'facebook'],
-function(_, _s, util, moment, $, _, _s, Backbone, util, moment, __, __, toastr, _raffle_unlock,
+    'points', 'user', 'facebook'],
+function(_, _s, util, moment, $, _, _s, Backbone, util, moment, __, __, toastr,
 _points, _user, _facebook) {
 
   // Add helpers functions to all templates
@@ -127,10 +127,6 @@ _points, _user, _facebook) {
       $.removeCookie('fb_access_token_expires_in', { path: '/' });
       window.location.href = '/?logout=1';
     });
-
-    var raffleUnlockView = new _raffle_unlock.RaffleUnlockView({});
-    $('.navbar #raffle-unlock-placeholder')
-      .replaceWith(raffleUnlockView.render().$el);
 
     var currentUser = _user.getCurrentUser();
     if (currentUser) {

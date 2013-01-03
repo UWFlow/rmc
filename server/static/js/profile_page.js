@@ -1,9 +1,8 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
-'raffle_unlock'],
+'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam'],
 function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
-    _exam, _raffle_unlock) {
+    _exam) {
 
   user.UserCollection.addToCache(pageData.userObjs);
   course.CourseCollection.addToCache(pageData.courseObjs);
@@ -37,8 +36,7 @@ function($, _, _s, transcript, term, course, friend, util, user, uc, _prof,
 
     var friendSidebarView = new friend.FriendSidebarView({
       currentUser: currentUser,
-      friendCollection: userCollection,
-      raffleSupervisor: _raffle_unlock.getRaffleSupervisor()
+      friendCollection: userCollection
     });
 
     $('#friend-sidebar-container').html(friendSidebarView.render().el);

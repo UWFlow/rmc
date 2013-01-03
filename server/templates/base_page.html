@@ -111,8 +111,6 @@
           <span class="beta">UW Beta</span>
         </a>
 
-        <div id="raffle-unlock-placeholder"></div>
-
         <ul class="nav pull-right">
           <li class="{{ 'active' if nav_item == 'courses' else '' }}">
             <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Search Courses</a>
@@ -207,7 +205,6 @@
       {% endblock %}
     </footer>
 
-    {% include 'raffle_unlock.html' %}
     {% include 'points.html' %}
     {% block templates %}
     {% endblock %}

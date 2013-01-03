@@ -176,7 +176,6 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
     initialize: function(attributes) {
       this.currentUser = attributes.currentUser;
       this.friendCollection = attributes.friendCollection;
-      this.raffleSupervisor = attributes.raffleSupervisor;
     },
 
     render: function() {
@@ -248,7 +247,6 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
         num_invites: resp.num_invites,
         num_points: this.currentUser.get('num_points') + resp.points_gained
       });
-      this.raffleSupervisor.incrementPoints(resp.points_gained);
 
       // TODO(mack): maybe should call self.render() to update the star
       this.$('.invite-friends-btn .icon-star')
