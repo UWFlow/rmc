@@ -1,5 +1,3 @@
-import re
-
 import mongoengine as me
 
 class UserScheduleItem(me.Document):
@@ -48,6 +46,7 @@ class UserScheduleItem(me.Document):
 
     def to_dict(self):
         return {
+            'id': self.id,
             'class_num': self.class_num,
             'building': self.building,
             'room': self.room,
