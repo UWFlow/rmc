@@ -10,11 +10,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     return parseInt(x[0], 10) * 60 + parseInt(x[1], 10);
   };
 
-  // TODO(jlfwong): Integrate models somehow
   var ScheduleItem = RmcBackbone.Model.extend({
-    referenceFields: function() { return {
+    referenceFields: {
       'course': ['course_id', _course.CourseCollection]
-    }; },
+    },
 
     intersects: function(otherItem) {
       var selfStart = this.startMinutes();
