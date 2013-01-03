@@ -451,20 +451,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     _.each(rawItems, function(rawItem) {
       // Regexes from (with slight changes, i.e. braket on class number):
       // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
-      // TODO(Sandy): take care of AM vs PM
-      // TODO(Sandy): This _might_ include more courses than trabscript.js
       // TODO(Sandy): make this look cleaner (line breaks + comments)
       var bodyRe = /(\d{4})\s+(\d{3})\s+(\w{3})\s+([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g;
       var matches = bodyRe.exec(rawItem);
-
-      // TODO(Sandy): find cases where this is necessary
-      // Right now we miss my online SCI 238 and WKRPT, so that might be it
-      //var partialBodyRe = /([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g;
-      //if (!matches) {
-      //  // TODO(Sandy): Find the cases for when this is necessary
-      //  matches = partialBodyRe.exec(rawItem);
-      //  console.log(matches);
-      //}
 
       if (!matches) {
         return;
@@ -492,7 +481,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       var section = matches[2] + " " + matches[3];
       // E.g. TTh -> ['T', 'Th']
       var days = matches[4].match(/[A-Z][a-z]?/g);
-      // TODO(Sandy): Investigate cases with 24 hour clock format
       // E.g. 1:00PM
       var startTime = formatTime(matches[5]);
       // E.g. 2:20PM

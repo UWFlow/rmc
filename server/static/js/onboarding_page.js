@@ -66,7 +66,6 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __, _schedule) {
     // XXX(Sandy): Move this to input view (remember to remove _schedule)
     addScheduleData: function(data) {
       var scheduleData;
-      // TODO(Sandy): send up data for backfill here
       try {
         scheduleData = _schedule.parseSchedule(data);
       } catch (ex) {
