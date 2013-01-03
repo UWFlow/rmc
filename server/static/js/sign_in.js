@@ -7,6 +7,7 @@ function($, _, RmcBackbone, _facebook) {
     initialize: function(attributes) {
       this.fbConnectText = attributes.fbConnectText || 'Connect with Facebook';
       this.source = attributes.source;
+      this.nextUrl = attributes.nextUrl;
       this.template = _.template($('#fb-login-tpl').html());
     },
 
@@ -31,7 +32,7 @@ function($, _, RmcBackbone, _facebook) {
 
       _facebook.initConnectButton({
         source: this.source,
-        nextUrl: window.location.href
+        nextUrl: this.nextUrl
       });
     }
   });
@@ -43,10 +44,10 @@ function($, _, RmcBackbone, _facebook) {
     },
 
     initialize: function(attributes) {
-      this.fbConnectText = attributes.fbConnectText;
       this.fbLoginView = new FbLoginView({
-        fbConnectText: this.fbConnectText,
-        source: attributes.source
+        fbConnectText: attributes.fbConnectText,
+        source: attributes.source,
+        nextUrl: attributes.nextUrl
       });
       this.template = _.template($('#sign-in-banner-tpl').html());
     },
@@ -67,16 +68,17 @@ function($, _, RmcBackbone, _facebook) {
     }
   });
 
-  var renderBannerIfNecessary = function(source, fbConnectText) {
+  var renderBannerIfNecessary = function(attributes) {
     if (pageData.currentUserId) {
       return;
     }
 
-    fbConnectText = fbConnectText || 'See what your friends are taking!';
-    var signInBannerView = new SignInBannerView({
-      fbConnectText: fbConnectText,
-      source: source
-    });
+    attributes = _.extend({}, {
+      fbConnectText: 'Connect with Facebook',
+      source: 'UNKNOWN'
+    }, attributes);
+
+    var signInBannerView = new SignInBannerView(attributes);
 
     $('#sign-in-banner-container')
       // Empty just to be safe...
