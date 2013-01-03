@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'course'],
-function(RmcBackbone, $, _, _s, _bootstrap, _course) {
+'ext/bootstrap', 'course', 'util', 'facebook'],
+function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
   var strTimeToMinutes = function(strTime) {
     // Given a string in 24 hour HH:MM format, returns the corresponding number
@@ -434,7 +434,59 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       this.$el.html(this.template({}));
       this.$('.schedule-input-placeholder')
         .replaceWith(this.scheduleInputView.render().el);
+      return this;
+    }
+  });
 
+  var ScheduleShareView = RmcBackbone.View.extend({
+    template: _.template($('#schedule-share-tpl').html()),
+
+    className: 'schedule-share',
+
+    initialize: function(options) {
+      this.options = options;
+    },
+
+    events: {
+      'click .facebook-btn': 'shareScheduleFacebook',
+      'click .link-box': 'onFocus'
+      // TODO(Sandy): Restore text after clicking away?
+    },
+
+    onFocus: function() {
+      this.$('.link-box').select();
+      this.logShareIntent('Link box');
+    },
+
+    shareScheduleFacebook: function() {
+      _facebook.showFeedDialog(
+        getPublicScheduleLink(),
+        'My Winter 2013 class schedule',
+        'on Flow',
+        'Checkout my Winter 2013 class schedule!',
+        _.bind(function (response) {
+          this.logShareCompleted('Facebook');
+        }, this)
+      );
+      this.logShareIntent('Facebook');
+    },
+
+    logShareIntent: function(shareMethod) {
+      mixpanel.track('Share schedule intent', {
+        ShareMethod: shareMethod
+      });
+      mixpanel.people.increment({'Share schedule intent': 1});
+    },
+
+    logShareCompleted: function(shareMethod) {
+      mixpanel.track('Share schedule completed', {
+        ShareMethod: shareMethod
+      });
+      mixpanel.people.increment({'Share schedule completed': 1});
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.options));
       return this;
     }
   });
@@ -469,6 +521,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     });
 
     return scheduleView;
+  };
+
+  var getPublicScheduleLink = function() {
+    return _util.getSiteBaseUrl() +
+        '/schedule/' + window.pageData.currentUserId.$oid;
   };
 
   // TODO(jlfwong): Remove me - move to profile.js and make data come from
@@ -571,9 +628,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
   return {
     ScheduleItem: ScheduleItem,
     ScheduleItemCollection: ScheduleItemCollection,
+    ScheduleShareView: ScheduleShareView,
     ScheduleView: ScheduleView,
     ScheduleInputView: ScheduleInputView,
     ScheduleInputModalView: ScheduleInputModalView,
+    getPublicScheduleLink: getPublicScheduleLink,
     initScheduleView: initScheduleView,
     parseSchedule: parseSchedule
   };

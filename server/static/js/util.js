@@ -133,6 +133,15 @@ function(_, _s) {
     };
   };
 
+  var getSiteBaseUrl = function() {
+    // window.location.origin is Webkit only
+    if (!window.location.origin) {
+      window.location.origin =
+          window.location.protocol + "//" + window.location.host;
+    }
+    return window.location.origin;
+  };
+
   return {
     getQueryParam: getQueryParam,
     capitalize: capitalize,
@@ -144,6 +153,7 @@ function(_, _s) {
     toDate: toDate,
     userCourseTermIdComparator: userCourseTermIdComparator,
     truncatePreviewString: truncatePreviewString,
-    getTimeDelta: getTimeDelta
+    getTimeDelta: getTimeDelta,
+    getSiteBaseUrl: getSiteBaseUrl
   };
 });
