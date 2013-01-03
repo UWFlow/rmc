@@ -419,7 +419,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
   // TODO(jlfwong): Remove me - move to profile.js and make data come from
   // models instead of arguments passed directly to the view
 
-  // FIXME(Sandy): Maybe move this to server side so we can store failed schedules
   var parseSchedule = function(data) {
     // Get the term for the schedule. E.g. Fall 2012
     var termMatch = data.match(/(Spring|Fall|Winter)\s+(\d{4})/);
@@ -427,8 +426,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     if (termMatch) {
       termName = termMatch[0];
     } else {
-      // TODO(Sandy): show message for failure
-      return;
+      throw new Error('Couldn\'t find matching term (Spring|Fall|Winter)');
     }
 
     // Exact each course item from the schedule
@@ -472,14 +470,15 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
         return;
       }
 
-      var formatTime = function(time_str) {
-        var result = time_str;
-        // time_str = '2:20PM'
-        var matches = time_str.match(/(:|PM|AM|\d+)/g);
+      var formatTime = function(timeStr) {
+        var result = timeStr;
+        // timeStr = '2:20PM'
+        var matches = timeStr.match(/(:|PM|AM|\d+)/g);
         // => ['2', ':', '20', 'PM']
         var hours = matches[0];
         var mins = matches[2];
-        if (matches[3].toLowerCase() == 'pm') {
+        if (matches[3].toLowerCase() == 'pm' &&
+            parseInt(hours, 10) < 12) {
            hours = (parseInt(hours, 10) + 12).toString();
         }
         return hours + ":" + mins;
@@ -492,7 +491,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       // E.g. LEC 001
       var section = matches[2] + " " + matches[3];
       // E.g. TTh -> ['T', 'Th']
-      var days = matches[4].match(/[A-Z][a-z]/g);
+      var days = matches[4].match(/[A-Z][a-z]?/g);
       // TODO(Sandy): Investigate cases with 24 hour clock format
       // E.g. 1:00PM
       var startTime = formatTime(matches[5]);
@@ -505,7 +504,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       // E.g. Anna Lubiw
       var profName = matches[8];
 
-      // TODO(Sandy): Cleanup after deciding where this goes (server or client)
       var item = {
         course_id: courseId,
         class_num: classNum,
@@ -521,17 +519,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       processedItems.push(item);
     });
 
-    $.post(
-      '/api/schedule',
-      {
-        'schedule_data': JSON.stringify(processedItems),
-        'term_name': termName
-      },
-      function() {
-        // TODO(Sandy): appropriate action here
-      },
-      'json'
-      );
+    return {
+      processedItems: processedItems,
+      termName: termName
+    };
   };
 
   return {

@@ -723,8 +723,13 @@ def upload_schedule():
     schedule_data = util.json_loads(req.form.get('schedule_data'))
     term_id = m.Term.id_from_name(req.form.get('term_name'))
 
+    # Remove existing schedule items for the user
+    for usi in m.UserScheduleItem.objects(user_id=user.id):
+        usi.delete()
+
     for item in schedule_data:
         try:
+            # Create this UserScheduleItem
             prof_id = m.Professor.get_id_from_name(item['prof_name'])
             usi = m.UserScheduleItem(
                 user_id=user.id,
@@ -739,24 +744,13 @@ def upload_schedule():
                 term_id=term_id,
                 days=item['days'],
             )
-
-            existing_usi = m.UserScheduleItem.objects(
-                    user_id=user.id, course_id=usi.course_id).first()
-            if existing_usi:
-                # Update existing schedule item
-                usi.id = existing_usi.id
-
-                # Log how often this happens, just out of curiousity
-                rmclogger.log_event(
-                    rmclogger.LOG_CATEGORY_SCHEDULE,
-                    rmclogger.LOG_EVENT_UPDATED_ITEM, {
-                        'user_id': user.id,
-                        'course_id': usi.course_id,
-                        'user_schedule_item_id': usi.id,
-                    },
-                )
-
             usi.save()
+
+            # Add this item to the user's course history
+            # FIXME(Sandy): See if we can get program_year_id from Quest
+            # Or just increment their last one
+            user.add_course(usi.course_id, usi.term_id)
+
         except KeyError:
             logging.error("Invalid item in uploaded schedule: %s" % (item))
 
@@ -768,6 +762,31 @@ def upload_schedule():
 
     return ''
 
+# Create the directory for storing schedules if it does not exist
+SCHEDULE_DIR = os.path.join(app.config['LOG_DIR'], 'schedules')
+if not os.path.exists(SCHEDULE_DIR):
+    os.makedirs(SCHEDULE_DIR)
+
+@app.route('/api/schedule/log', methods=['POST'])
+@view_helpers.login_required
+def schedule_log():
+    user = view_helpers.get_current_user()
+
+    file_name = '%d.txt' % int(time.time())
+    file_path = os.path.join(SCHEDULE_DIR, file_name)
+    with open(file_path, 'w') as f:
+        f.write(flask.request.form['schedule'].encode('utf-8'))
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_SCHEDULE,
+        rmclogger.LOG_EVENT_PARSE_FAILED, {
+            'user_id': user.id,
+            'file_path': file_path,
+        },
+    )
+
+    return ''
+
 @app.route('/api/transcript', methods=['POST'])
 @view_helpers.login_required
 def upload_transcript():
@@ -775,7 +794,6 @@ def upload_transcript():
 
     user = view_helpers.get_current_user()
     user_id = user.id
-    course_history_list = user.course_history
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_API,
@@ -798,38 +816,8 @@ def upload_transcript():
         program_year_id = term['programYearId']
 
         for course_id in term['courseIds']:
-            course_id = course_id.lower()
             # TODO(Sandy): Fill in course weight and grade info here
-            user_course = m.UserCourse.objects(
-                user_id=user_id, course_id=course_id).first()
-
-            if user_course is None:
-                if m.Course.objects.with_id(course_id) is None:
-                    # Non-existant course according to our data
-                    rmclogger.log_event(
-                        rmclogger.LOG_CATEGORY_DATA_MODEL,
-                        rmclogger.LOG_EVENT_UNKNOWN_COURSE_ID,
-                        course_id
-                    )
-                    continue
-
-                user_course = m.UserCourse(
-                    user_id=user_id,
-                    course_id=course_id,
-                    term_id=term_id,
-                    program_year_id=program_year_id,
-                )
-            else:
-                # Record only the latest attempt for duplicate/failed courses
-                if term_id > user_course.term_id:
-                    user_course.term_id = term_id
-
-            user_course.save()
-
-            # We don't need to put this here and have this check, but it's more
-            # robust against data corruption if/when we mess up
-            if user_course.id not in course_history_list:
-                course_history_list.append(user_course.id)
+            user.add_course(course_id.lower(), term_id, program_year_id)
 
     if courses_by_term:
         last_term = courses_by_term[0]
@@ -842,7 +830,6 @@ def upload_transcript():
     if student_id:
         user.student_id = str(student_id)
 
-    user.course_history = course_history_list
     user.cache_mutual_course_ids(view_helpers.get_redis_instance())
     user.transcripts_imported += 1
     user.save()
