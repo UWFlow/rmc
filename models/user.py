@@ -115,7 +115,9 @@ class User(me.Document):
     schedules_imported = me.IntField(min_value=0, default=0)
 
     last_bad_schedule_paste = me.StringField()
+    last_bad_schedule_date = me.DateTimeField()
     last_good_schedule_paste = me.StringField()
+    last_good_schedule_date = me.DateTimeField()
 
     @property
     def name(self):
