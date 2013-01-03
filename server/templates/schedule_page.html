@@ -41,7 +41,7 @@
 {% block scripts %}
 <script>
   window.pageData.userObjs = {{ user_objs|tojson|safe }};
-  window.pageData.userCourseObjs = {{ user_course_objs|tojson|safe }};
+  window.pageData.courseObjs = {{ course_objs|tojson|safe }};
   window.pageData.profileUserId = {{ profile_user_id|tojson|safe }};
   window.pageData.scheduleItemObjs = {{ schedule_item_objs|tojson|safe }};
 </script>
