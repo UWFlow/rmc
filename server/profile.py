@@ -33,6 +33,9 @@ def render_schedule_page(profile_user_id):
     current_course_ids = [uc['course_id'] for uc in current_ucs]
     schedule_item_dicts = get_schedule_item_dicts(current_course_ids)
 
+    courses = m.Course.objects(id__in=current_course_ids)
+    course_dicts = [c.to_dict() for c in courses]
+
     current_user = view_helpers.get_current_user()
     current_user_id = None
     if current_user:
@@ -57,6 +60,7 @@ def render_schedule_page(profile_user_id):
         profile_user_id=profile_user.id,
         current_user_id=current_user_id,
         schedule_item_objs=schedule_item_dicts,
+        course_objs=course_dicts,
     )
 
 

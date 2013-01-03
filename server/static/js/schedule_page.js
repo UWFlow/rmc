@@ -1,8 +1,13 @@
+// TODO(mack): there's some kind of require.js dependency issue that currently
+// requires the 'user_course' module to be included here (probably of delayed
+// require('user_course') in the 'course' module); need to investigate further
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'user', 'schedule'],
-function($, _, _s, _user, _schedule) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'user', 'course',
+'user_course', 'schedule'],
+function($, _, _s, _user, _course, _user_course, _schedule) {
 
   _user.UserCollection.addToCache(pageData.userObjs);
+  _course.CourseCollection.addToCache(pageData.courseObjs);
 
   // Render the schedule
   $schedulePlaceholder = $("#class-schedule-placeholder");
