@@ -1,3 +1,4 @@
+from datetime import datetime
 import logging
 
 import bson
@@ -104,14 +105,29 @@ def render_profile_page(profile_user_id):
                 "http://uwflow.com/" or referrer == "http://localhost:5000/"):
             return flask.make_response(flask.redirect('onboarding'))
 
+
+        show_onboarding = False
         if not current_user.has_course_history:
+            if not current_user.last_show_onboarding:
+                show_onboarding = True
+            else:
+                time_delta = datetime.now() - current_user.last_show_onboarding
+                # If they haven't imported any courses yet and the last time
+                # the user was on the onboarding page is more than 5 days ago,
+                # show the onboarding page again
+                if time_delta.days > 5:
+                    show_onboarding =  True
+
+        if show_onboarding:
             onboarding_url = '/onboarding'
             if flask.request.query_string:
                 onboarding_url = '%s?%s' % (
                         onboarding_url, flask.request.query_string)
             return flask.make_response(flask.redirect(onboarding_url))
-        elif redirect_url:
-            return flask.make_response(flask.redirect(redirect_url))
+        else:
+            redirect_url = flask.request.values.get('next')
+            if redirect_url:
+                return flask.make_response(flask.redirect(redirect_url))
 
     # PART TWO - DATA FETCHING
 

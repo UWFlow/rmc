@@ -252,6 +252,9 @@ def course_page(course_id):
 def onboarding():
     current_user = view_helpers.get_current_user()
 
+    current_user.last_show_onboarding = datetime.now()
+    current_user.save()
+
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
         rmclogger.LOG_EVENT_ONBOARDING,

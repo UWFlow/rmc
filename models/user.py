@@ -66,6 +66,9 @@ class User(me.Document):
     # TODO(mack): consider using SequenceField()
     num_visits = me.IntField(min_value=0, default=0)
 
+    # The last time the user visited the onboarding page
+    last_show_onboarding = me.DateTimeField()
+
     # eg. mduan or 20345619 ?
     student_id = me.StringField()
     # eg. university_of_waterloo ?
