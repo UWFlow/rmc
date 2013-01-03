@@ -3,13 +3,19 @@
 .class-schedule {
   border: 1px solid $wellBorderColor;
   position: relative;
+  background: white;
   @include border-radius(4px);
 
-  $hour-width: 100px;
+  // TODO(david): Make this a JS option?
+  $hour-width: 80px;
 
-  .course-code {
-    font-weight: bold;
-    color: $textColor;
+  .section-info {
+    color: #666;
+
+    .course-code {
+      font-weight: bold;
+      color: $textColor;
+    }
   }
 
   .times {
@@ -33,6 +39,7 @@
 
   .times .hour-row {
     border-top: 1px solid $wellBorderColor;
+    position: relative;
 
     .hour-label {
       padding: 8px;
@@ -40,6 +47,17 @@
       width: $hour-width;
       display: block;
       @include box-sizing(border-box);
+    }
+
+    &:after {
+      content: ' ';
+      display: block;
+      position: absolute;
+      top: 50%;
+      margin-top: -1px;
+      left: $hour-width;
+      right: 0;
+      border-top: 1px dotted mix($wellBorderColor, white, 70%);
     }
   }
 
@@ -56,6 +74,7 @@
     font-size: 14px;
     line-height: 14px;
     box-sizing: border-box;
+    border-color: darken($wellBorderColor, 10%);
 
     .time-loc-info {
       color: #666;
