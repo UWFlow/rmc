@@ -59,6 +59,8 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __, _schedule) {
       }
 
       this.addTranscriptData(data);
+      // XXX(Sandy): Hacky Omni-paste! testing only
+      this.addScheduleData(data);
     },
 
     // XXX(Sandy): Move this to input view (remember to remove _schedule)

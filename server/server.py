@@ -870,11 +870,22 @@ if not os.path.exists(TRANSCRIPT_DIR):
     os.makedirs(TRANSCRIPT_DIR)
 
 @app.route('/api/transcript/log', methods=['POST'])
+@view_helpers.login_required
 def transcript_log():
+    user = view_helpers.get_current_user()
+
     file_name = '%d.txt' % int(time.time())
     file_path = os.path.join(TRANSCRIPT_DIR, file_name)
     with open(file_path, 'w') as f:
         f.write(flask.request.form['transcript'].encode('utf-8'))
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_TRANSCRIPT,
+        rmclogger.LOG_EVENT_PARSE_FAILED, {
+            'user_id': user.id,
+            'file_path': file_path,
+        },
+    )
 
     return ''
 
