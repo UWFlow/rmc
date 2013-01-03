@@ -10,6 +10,10 @@ import rmc.shared.rmclogger as rmclogger
 import rmc.shared.util as util
 
 
+# Local constants
+RESHOW_ONBOARDING_DELAY_DAYS = 5
+RESHOW_SCHEDULE_DELAY_DAYS = 5
+
 def render_schedule_page(profile_user_id):
     profile_user = m.User.objects.with_id(profile_user_id)
     profile_dict = profile_user.to_dict()
@@ -91,6 +95,7 @@ def render_profile_page(profile_user_id):
             logging.warn('profile_user is None')
             return view_helpers.redirect_to_profile(current_user)
 
+    show_import_schedule = False
     # Redirect the user appropriately... to /onboarding if they have no course
     # history, and to wherever they logged in from if they just logged in
     # TODO(david): Should have frontend decide whether to take us to /profile
@@ -107,7 +112,7 @@ def render_profile_page(profile_user_id):
                 # If they haven't imported any courses yet and the last time
                 # the user was on the onboarding page is more than 5 days ago,
                 # show the onboarding page again
-                if time_delta.days > 5:
+                if time_delta.days > RESHOW_ONBOARDING_DELAY_DAYS:
                     show_onboarding =  True
 
         if show_onboarding:
@@ -120,6 +125,21 @@ def render_profile_page(profile_user_id):
             redirect_url = flask.request.values.get('next')
             if redirect_url:
                 return flask.make_response(flask.redirect(redirect_url))
+
+        # Show the import schedule view if it's been long enough
+        if not current_user.has_schedule:
+            if current_user.last_show_import_schedule:
+                time_delta = datetime.now() - current_user.last_show_import_schedule
+                # User didn't import schedule yet, reshow every few days
+                if time_delta.days > RESHOW_SCHEDULE_DELAY_DAYS:
+                    show_import_schedule = True
+            else:
+                show_import_schedule = True
+
+            if show_import_schedule:
+                # TODO(Sandy): Do this on modal dismiss instead
+                current_user.last_show_import_schedule = datetime.now()
+                current_user.save()
 
     # PART TWO - DATA FETCHING
 
@@ -333,4 +353,5 @@ def render_profile_page(profile_user_id):
         exam_objs=exam_dicts,
         schedule_item_objs=schedule_item_dicts,
         has_shortlisted=current_user.has_shortlisted,
+        show_import_schedule=show_import_schedule,
     )

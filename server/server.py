@@ -761,6 +761,9 @@ def upload_schedule():
         except KeyError:
             logging.error("Invalid item in uploaded schedule: %s" % (item))
 
+    user.schedules_imported += 1
+    user.save()
+
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_SCHEDULE,
         rmclogger.LOG_EVENT_UPLOAD,

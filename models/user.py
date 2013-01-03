@@ -68,6 +68,8 @@ class User(me.Document):
 
     # The last time the user visited the onboarding page
     last_show_onboarding = me.DateTimeField()
+    # The last time the user was shown the import schedule view
+    last_show_import_schedule = me.DateTimeField()
 
     # eg. mduan or 20345619 ?
     student_id = me.StringField()
@@ -109,6 +111,8 @@ class User(me.Document):
 
     # Note: Backfilled on night of Nov. 29th, 2012
     transcripts_imported = me.IntField(min_value=0, default=0)
+
+    schedules_imported = me.IntField(min_value=0, default=0)
 
     last_bad_schedule_paste = me.StringField()
     last_good_schedule_paste = me.StringField()
@@ -186,6 +190,10 @@ class User(me.Document):
             if _term.Term.is_shortlist_term(uc.term_id):
                 return True
         return False
+
+    @property
+    def has_schedule(self):
+        return self.schedules_imported > 0
 
     @property
     def should_renew_fb_token(self):
