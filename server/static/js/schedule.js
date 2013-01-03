@@ -20,8 +20,12 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
       var selfEnd = this.startMinutes();
       var otherStart = otherItem.startMinutes();
       var otherEnd = otherItem.endMinutes();
-      return otherStart >= selfStart && otherStart <= selfEnd ||
-        otherEnd >= selfStart && otherEnd <= selfEnd;
+      return (otherStart >= selfStart && otherStart <= selfEnd) ||
+        (otherEnd >= selfStart && otherEnd <= selfEnd) ||
+        // To capture the case that self is enclosed by other
+        (selfStart >= otherStart && selfStart <= otherEnd) ||
+        // This check is not needed, but just for symmetry it's here
+        (selfEnd >= otherStart && selfEnd <= otherEnd);
     },
 
     startMinutes: function() {
@@ -143,7 +147,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course) {
     mouseleaveView: function(evt) {
       this.$el.addClass('truncate');
       this.$el.css('z-index', 0);
-      this.resize(this.resizeOptions);
+      if (this.resizeOptions) {
+        this.resize(this.resizeOptions);
+      }
     }
   });
 
