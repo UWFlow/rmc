@@ -294,7 +294,11 @@ def render_profile_page(profile_user_id):
     exam_objs = m.Exam.objects(course_id__in=current_course_ids)
     exam_dicts =  [e.to_dict() for e in exam_objs]
 
-    schedule_item_dicts = current_user.get_schedule_item_dicts()
+    # NOTE: This implictly requires that the courses on the schedule are on the
+    # transcript, since these course objects are needed by the schedule  on the
+    # frontend. This should be the case since when we add a schedule item, a
+    # corresponding item is added to the transcript.
+    schedule_item_dicts = profile_user.get_schedule_item_dicts()
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
