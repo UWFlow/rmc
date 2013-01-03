@@ -98,14 +98,6 @@ def render_profile_page(profile_user_id):
     if own_profile:
         redirect_url = flask.request.values.get('next')
 
-        referrer = flask.request.referrer
-
-        # TODO(david): Hardcoded for YC demo
-        if current_user.email == 'davidhu91@gmail.com' and (referrer ==
-                "http://uwflow.com/" or referrer == "http://localhost:5000/"):
-            return flask.make_response(flask.redirect('onboarding'))
-
-
         show_onboarding = False
         if not current_user.has_course_history:
             if not current_user.last_show_onboarding:
