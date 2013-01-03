@@ -42,3 +42,48 @@
 </div>
 <div class="clearfix"></div>
 {% endcall %}
+
+{% call macros.us_template('schedule-input-tpl') %}
+<div class="row-fluid">
+  <ol class="steps-container">
+    <li class="span3 step">
+      <p class="step-text lead">
+        <a href="https://quest.pecs.uwaterloo.ca/psp/SS/" target="_blank">
+          Log in to Quest
+        </a>
+        and click enroll.
+      </p>
+      <img class="step-img" src="/static/img/import-schedule/step-1.png">
+    </li>
+    <li class="span3 step">
+      <p class="step-text lead">Select the current term and continue.</p>
+      <img class="step-img" src="/static/img/import-schedule/step-2.png">
+    </li>
+    <li class="span3 step">
+      <p class="step-text lead">Select all and copy.</p>
+      <img class="step-img" src="/static/img/import-schedule/step-3.png">
+    </li>
+    <li class="span3 step">
+      <p class="step-text lead">Paste into the box below!</p>
+      <textarea class="schedule-input-textarea"></textarea>
+    </li>
+  </ol>
+</div>
+{% endcall %}
+
+{% call macros.us_template('schedule-input-modal-tpl') %}
+<div class="schedule-input-modal modal hide-initial fade"
+  role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>
+      Import your schedule
+      <a href="https://quest.pecs.uwaterloo.ca/psp/SS/"
+          target="_blank">from Quest</a>
+    </h3>
+  </div>
+  <div class="modal-body">
+    <div class="schedule-input-placeholder"></div>
+  </div>
+</div>
+{% endcall %}

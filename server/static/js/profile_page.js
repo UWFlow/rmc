@@ -1,8 +1,8 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'term', 'course',
-'friend', 'util', 'user', 'user_course', 'prof', 'exam', 'raffle_unlock',
-'schedule'],
-function($, _, _s, term, course, friend, util, user, uc, _prof,
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
+'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
+'raffle_unlock', 'schedule'],
+function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     _exam, _raffle_unlock, _schedule) {
 
   user.UserCollection.addToCache(pageData.userObjs);
@@ -112,6 +112,12 @@ function($, _, _s, term, course, friend, util, user, uc, _prof,
 
     $("#class-schedule-placeholder").replaceWith(scheduleView.el);
   }
+
+  // Show the "Add schedule" button if the user can and hasn't
+  // FIXME TODO(david): Conditionally show and hide button
+  var scheduleInputModalView = new _schedule.ScheduleInputModalView();
+  $('#schedule-input-modal-placeholder')
+    .replaceWith(scheduleInputModalView.render().el);
 
   mixpanel.track('Impression: Profile page');
 });

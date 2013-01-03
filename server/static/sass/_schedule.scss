@@ -88,5 +88,79 @@
     height: 100%;
     border-top: 1px solid $wellBorderColor;
   }
+}
 
+.schedule-input {
+  .steps-container {
+    counter-reset: steps;
+
+    .step {
+      text-align: center;
+      border-right: 1px solid #DDD;
+      // The margin-left of span3... yeah, I know, shouldn't be hardcoded
+      padding-right: 2.12766%;
+      padding-top: 20px;
+
+      &:last-child {
+        border-right: none;
+      }
+
+      // Fancy number counter
+      &:before {
+        display: block;
+
+        // Shape
+        $radius: 36px;
+        border-radius: $radius;
+        width: $radius * 2;
+        height: $radius * 2;
+
+        // Position
+        position: relative;
+        left: 50%;
+        margin-left: -$radius;
+        margin-bottom: 20px;
+
+        // Content
+        counter-increment: steps;
+        content: counter(steps);
+        line-height: $radius * 2;
+        font-size: $radius;
+        background-color: lighten($textColor, 15%);
+        color: #FFF;
+      }
+
+      .step-text {
+        min-height: 65px;
+        margin-bottom: 0;
+      }
+
+      .step-img {
+        padding-bottom: 7px;
+      }
+    }
+  }
+
+  .schedule-input-textarea {
+    height: 150px;  // TODO(david): How do I get this to stretch vertically?
+    resize: none;
+    width: 89%;
+    box-sizing: border-box;
+    margin-top: 10px;
+  }
+}
+
+.schedule-input-modal {
+  width: 80%;
+  left: 50%;
+  margin-left: -40%;
+
+  .modal-header {
+    border-bottom: 1px solid #DDD;
+  }
+
+  .modal-body {
+    padding: 0;
+    max-height: none;
+  }
 }
