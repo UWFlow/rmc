@@ -376,7 +376,8 @@ class User(me.Document):
             )
         else:
             # Record only the latest attempt for duplicate/failed courses
-            if term_id > user_course.term_id:
+            if (term_id > user_course.term_id or
+                user_course.term_id == _term.Term.SHORTLIST_TERM_ID):
                 user_course.term_id = term_id
 
         user_course.save()
