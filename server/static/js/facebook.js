@@ -112,11 +112,14 @@ function($, _, __) {
   var initConnectButton = function(attributes) {
     attributes = _.extend({
       source: 'UNKNOWN',
-      nextUrl: undefined
+      nextUrl: undefined,
+      // TODO(mack): make button element required parameter, rather than
+      // assuming default class for button
+      $button: $('.fb-login-button')
     }, attributes);
 
     // Facebook Connect button
-    $('.fb-login-button').click(function() {
+    attributes.$button.click(function() {
       // TODO(Sandy): Put up drip loader here
 
       FB.login(function(response) {
