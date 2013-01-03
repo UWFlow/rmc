@@ -119,5 +119,11 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
   $('#schedule-input-modal-placeholder')
     .replaceWith(scheduleInputModalView.render().el);
 
+  // Show the add schedule pop-up on a hash URL
+  // TODO(david): Auto-show this for anybody who can but hasn't imported
+  if (window.location.hash.indexOf('import-schedule') !== -1) {
+    $('.schedule-input-modal').modal();
+  }
+
   mixpanel.track('Impression: Profile page');
 });
