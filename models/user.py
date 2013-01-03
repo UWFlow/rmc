@@ -3,12 +3,14 @@ import itertools
 
 import mongoengine as me
 
+import course as _course
 import points as _points
 import term as _term
 import user_course as _user_course
 import user_schedule_item as _user_schedule_item
 from rmc.shared import constants
 from rmc.shared import facebook
+from rmc.shared import rmclogger
 from rmc.shared import util
 
 class User(me.Document):
@@ -345,6 +347,43 @@ class User(me.Document):
         schedule_item_objs = _user_schedule_item.UserScheduleItem.objects(
                 user_id=self.id)
         return [si.to_dict() for si in schedule_item_objs]
+
+    def add_course(self, course_id, term_id, program_year_id=None):
+        '''
+        Creates an UserCourse entry for the current user and adds it to the
+        user's course_history
+
+        Idempotent.
+        '''
+        user_course = _user_course.UserCourse.objects(
+            user_id=self.id, course_id=course_id).first()
+
+        if user_course is None:
+            if _course.Course.objects.with_id(course_id) is None:
+                # Non-existant course according to our data
+                rmclogger.log_event(
+                    rmclogger.LOG_CATEGORY_DATA_MODEL,
+                    rmclogger.LOG_EVENT_UNKNOWN_COURSE_ID,
+                    course_id
+                )
+                return
+
+            user_course = _user_course.UserCourse(
+                user_id=self.id,
+                course_id=course_id,
+                term_id=term_id,
+                program_year_id=program_year_id,
+            )
+        else:
+            # Record only the latest attempt for duplicate/failed courses
+            if term_id > user_course.term_id:
+                user_course.term_id = term_id
+
+        user_course.save()
+
+        if user_course.id not in self.course_history:
+            self.course_history.append(user_course.id)
+            self.save()
 
     def __repr__(self):
         return "<User: %s>" % self.name
