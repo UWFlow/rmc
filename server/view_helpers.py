@@ -80,5 +80,8 @@ def redirect_to_profile(user):
         logging.error('redirect_to_profile(user) called with user=None')
         return flask.redirect('/profile', 302)
 
-    return flask.redirect('/profile/%s' % user.id, 302)
-
+    if flask.request.query_string:
+        return flask.redirect('/profile/%s?%s' % (
+            user.id, flask.request.query_string), 302)
+    else:
+        return flask.redirect('/profile/%s' % user.id, 302)
