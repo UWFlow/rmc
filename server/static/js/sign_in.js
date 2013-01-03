@@ -88,7 +88,6 @@ function($, _, RmcBackbone, _facebook) {
   // but before redirection completes
   var SignInModalView = RmcBackbone.ModalView.extend({
 
-
     initialize: function(attributes) {
       this.title = attributes.title;
       this.message = attributes.message;

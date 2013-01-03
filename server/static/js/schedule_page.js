@@ -3,8 +3,8 @@
 // require('user_course') in the 'course' module); need to investigate further
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'user', 'course',
-'user_course', 'schedule', 'facebook'],
-function($, _, _s, _user, _course, _user_course, _schedule, _facebook) {
+'user_course', 'schedule', 'facebook', 'sign_in'],
+function($, _, _s, _user, _course, _user_course, _schedule, _facebook, _sign_in) {
 
   _user.UserCollection.addToCache(pageData.userObjs);
   _course.CourseCollection.addToCache(pageData.courseObjs);
@@ -24,6 +24,10 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook) {
     source: 'VIEW_FULL_PROFILE_SCHEDULE_PAGE',
     nextUrl: '/profile/' + pageData.profileUserId.$oid
   });
+
+  _sign_in.renderBannerIfNecessary(
+      'BANNER_SCHEDULE_PAGE',
+      'Share your schedule too!');
 
   mixpanel.track('Impression: Schedule page');
 });
