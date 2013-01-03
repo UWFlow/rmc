@@ -58,11 +58,6 @@
     {
       name: 'course_page',
       exclude: ['main']
-    },
-
-    {
-      name: 'schedule_page',
-      exclude: ['main']
     }
 
   ]
