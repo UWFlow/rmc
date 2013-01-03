@@ -148,20 +148,19 @@ _points, _user, _facebook) {
   };
 
 
-    // IF the dom ready event has already occurred, binding to jQuery's dom
-    // ready listener waits until the loaded event before firing.
-    // So manually check if domready has occurred, and if it has execute
-    // right away. In IE, gotta wait for state === 'complete' since
-    // state === 'interactive' could fire before dom is ready. See
-    // https://github.com/divad12/rmc/commit/56af16db497db5b8d4e210e784e9f63051fcce32
-    // for more info.
-    //var state = document.readyState;
-    //if (document.attachEvent ? state === 'complete' : state !== 'loading' ) {
-    //  onDomReady();
-    //} else {
-    //  $(onDomReady);
-    //}
+  // IF the dom ready event has already occurred, binding to jQuery's dom
+  // ready listener waits until the loaded event before firing.
+  // So manually check if domready has occurred, and if it has execute
+  // right away. In IE, gotta wait for state === 'complete' since
+  // state === 'interactive' could fire before dom is ready. See
+  // https://github.com/divad12/rmc/commit/56af16db497db5b8d4e210e784e9f63051fcce32
+  // for more info.
+  var state = document.readyState;
+  if (document.attachEvent ? state === 'complete' : state !== 'loading' ) {
+    onDomReady();
+  } else {
     $(onDomReady);
+  }
 
 });
 
