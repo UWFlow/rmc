@@ -10,22 +10,16 @@ import rmc.shared.util as util
 
 
 def render_schedule_page(profile_user_id):
-    # Fetch exam schedules and schedule items
-    current_term_id = util.get_current_term_id()
-    # XXX(mack): revert
-    current_term_id = '2012_09'
-
     profile_user = m.User.objects.with_id(profile_user_id)
     profile_dict = profile_user.to_dict()
     profile_dict.update({
         'last_program_year_id': profile_user.get_latest_program_year_id(),
     })
 
-    current_ucs = m.UserCourse.objects(user_id=profile_user_id, term_id=current_term_id)
-    current_course_ids = [uc['course_id'] for uc in current_ucs]
     schedule_item_dicts = profile_user.get_schedule_item_dicts()
 
-    courses = m.Course.objects(id__in=current_course_ids)
+    course_ids = [si['course_id'] for si in schedule_item_dicts]
+    courses = m.Course.objects(id__in=course_ids)
     course_dicts = [c.to_dict() for c in courses]
 
     current_user = view_helpers.get_current_user()
