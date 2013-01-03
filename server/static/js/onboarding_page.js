@@ -94,6 +94,7 @@ function($, _, _s, transcript, util, RmcBackbone, _user, __, _schedule) {
       mixpanel.track('Schedule uploaded');
       $.post(
         '/api/schedule', {
+          'schedule_text': data,
           'schedule_data': JSON.stringify(scheduleData.processedItems),
           'term_name': scheduleData.termName
         }, function() {
