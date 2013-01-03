@@ -43,6 +43,16 @@
 <div class="clearfix"></div>
 {% endcall %}
 
+{# TODO(Sandy): consider generalizing this if we need it later #}
+{% call macros.us_template('schedule-share-tpl') %}
+<div class="link-container">
+  <input type="url" class="link-box" value="<%- url %>">
+</div>
+<div class="facebook-container">
+  <button class="facebook-btn btn btn-info">Facebook it</button>
+</div>
+{% endcall %}
+
 {% call macros.us_template('schedule-input-tpl') %}
 <div class="row-fluid">
   <ol class="steps-container">

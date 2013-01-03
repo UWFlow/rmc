@@ -111,6 +111,13 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     });
 
     $("#class-schedule-placeholder").replaceWith(scheduleView.el);
+
+    if (window.pageData.ownProfile) {
+      var scheduleShareView = new _schedule.ScheduleShareView({
+        url: _schedule.getPublicScheduleLink()
+      });
+      $("#schedule-share-placeholder").replaceWith(scheduleShareView.render().el);
+    }
   }
 
   // Show the "Add schedule" button if the user can and hasn't
