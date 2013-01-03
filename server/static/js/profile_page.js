@@ -127,8 +127,8 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     .replaceWith(scheduleInputModalView.render().el);
 
   // Show the add schedule pop-up on a hash URL
-  // TODO(david): Auto-show this for anybody who can but hasn't imported
-  if (window.location.hash.indexOf('import-schedule') !== -1) {
+  if (window.location.hash.indexOf('import-schedule') !== -1 ||
+      window.pageData.showImportSchedule) {
     $('.schedule-input-modal').modal();
   }
 
