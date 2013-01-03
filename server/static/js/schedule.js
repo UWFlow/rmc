@@ -414,12 +414,71 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
     className: 'schedule-input',
 
+    events: {
+      'input .schedule-input-textarea': 'inputSchedule',
+      'paste .schedule-input-textarea': 'inputSchedule'
+    },
+
     initialize: function() {
     },
 
     render: function() {
       this.$el.html(this.template({}));
       return this;
+    },
+
+    inputSchedule: function(evt) {
+      this.$('.schedule-input-error').empty();
+
+      // Store the schedule text
+      var data = $(evt.currentTarget).val();
+      if (!data) {
+        // If the text area has been emptied, exit immediately w/o
+        // showing error message for parse failure.
+        return;
+      }
+
+      this.addScheduleData(data);
+    },
+
+    addScheduleData: function(data) {
+      var scheduleData;
+      try {
+        scheduleData = parseSchedule(data);
+        console.log('parsing success');
+      } catch (ex) {
+        $.ajax('/api/schedule/log', {
+          data: {
+            schedule: data
+          },
+          type: 'POST'
+        });
+
+        this.$('.schedule-input-error').text(
+            'Uh oh. Could not parse your schedule :( ' +
+            'Check that you\'ve pasted your schedule correctly.');
+
+        mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
+        console.log('parsing fail');
+        return;
+      }
+      console.log('after parse');
+      _gaq.push([
+        '_trackEvent',
+        'USER_GENERIC',
+        'SCHEDULE_UPLOAD'
+      ]);
+      mixpanel.track('Schedule uploaded');
+      $.post(
+        '/api/schedule', {
+          'schedule_text': data,
+          'schedule_data': JSON.stringify(scheduleData.processedItems),
+          'term_name': scheduleData.termName
+        }, function() {
+          window.location.href = '/profile';
+        },
+        'json'
+      );
     }
   });
 

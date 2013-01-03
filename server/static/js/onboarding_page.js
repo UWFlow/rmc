@@ -1,7 +1,7 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
-'util', 'rmc_backbone', 'user', 'ext/bootstrap', 'schedule'],
-function($, _, _s, transcript, _util, RmcBackbone, _user, __, _schedule) {
+'util', 'rmc_backbone', 'user', 'ext/bootstrap'],
+function($, _, _s, transcript, _util, RmcBackbone, _user, __) {
 
   var AddTranscriptView = RmcBackbone.View.extend({
     className: 'add-transcript',
@@ -59,48 +59,6 @@ function($, _, _s, transcript, _util, RmcBackbone, _user, __, _schedule) {
       }
 
       this.addTranscriptData(data);
-      // XXX(Sandy): Hacky Omni-paste! testing only
-      this.addScheduleData(data);
-    },
-
-    // XXX(Sandy): Move this to input view (remember to remove _schedule)
-    addScheduleData: function(data) {
-      var scheduleData;
-      try {
-        scheduleData = _schedule.parseSchedule(data);
-      } catch (ex) {
-        $.ajax('/api/schedule/log', {
-          data: {
-            schedule: data
-          },
-          type: 'POST'
-        });
-
-        // FIXME(Sandy): show message for failure in the right place
-        //this.$('.transcript-error').text(
-        //    'Uh oh. Could not parse your schedule :( ' +
-        //    'Please check that you\'ve pasted your schedule correctly.');
-
-        mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
-        return;
-      }
-
-      _gaq.push([
-        '_trackEvent',
-        'USER_GENERIC',
-        'SCHEDULE_UPLOAD'
-      ]);
-      mixpanel.track('Schedule uploaded');
-      $.post(
-        '/api/schedule', {
-          'schedule_text': data,
-          'schedule_data': JSON.stringify(scheduleData.processedItems),
-          'term_name': scheduleData.termName
-        }, function() {
-          // TODO(Sandy): appropriate action here (redirect?)
-        },
-        'json'
-      );
     },
 
     addTranscriptData: function(data) {
