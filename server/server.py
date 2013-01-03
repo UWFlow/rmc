@@ -712,16 +712,20 @@ def upload_schedule():
     req = flask.request
     user = view_helpers.get_current_user()
 
+    schedule_data = util.json_loads(req.form.get('schedule_data'))
+    term_id = m.Term.id_from_name(req.form.get('term_name'))
+
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_API,
         rmclogger.LOG_EVENT_SCHEDULE, {
+            'schedule_data': schedule_data,
+            'term_id': term_id,
             'user_id': user.id,
-            'request_form': req.form,
         },
     )
 
-    schedule_data = util.json_loads(req.form.get('schedule_data'))
-    term_id = m.Term.id_from_name(req.form.get('term_name'))
+    user.last_good_schedule_paste = req.form.get('schedule_text')
+    user.save()
 
     # Remove existing schedule items for the user
     for usi in m.UserScheduleItem.objects(user_id=user.id):
@@ -784,6 +788,9 @@ def schedule_log():
             'file_path': file_path,
         },
     )
+
+    user.last_bad_schedule_paste = flask.request.form.get('schedule')
+    user.save()
 
     return ''
 

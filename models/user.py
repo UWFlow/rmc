@@ -107,6 +107,9 @@ class User(me.Document):
     # Note: Backfilled on night of Nov. 29th, 2012
     transcripts_imported = me.IntField(min_value=0, default=0)
 
+    last_bad_schedule_paste = me.StringField()
+    last_good_schedule_paste = me.StringField()
+
     @property
     def name(self):
         return '%s %s' % (self.first_name , self.last_name)
