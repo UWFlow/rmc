@@ -114,10 +114,6 @@ _points, _user, _facebook) {
     _.extend($.fn.popover.defaults, overrides);
   })();
 
-  if (window.pageData.userObjs) {
-    _user.UserCollection.addToCache(window.pageData.userObjs);
-  }
-
   // TODO(mack): separate code inside into functions
   var onDomReady = function() {
     $('.navbar [title]').tooltip({ placement: 'bottom' });
@@ -127,6 +123,10 @@ _points, _user, _facebook) {
       $.removeCookie('fb_access_token_expires_in', { path: '/' });
       window.location.href = '/?logout=1';
     });
+
+    if (window.pageData.userObjs) {
+      _user.UserCollection.addToCache(window.pageData.userObjs);
+    }
 
     var currentUser = _user.getCurrentUser();
     if (currentUser) {
