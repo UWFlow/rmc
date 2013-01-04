@@ -3,7 +3,7 @@
 {% call macros.us_template('schedule-item-tpl') %}
 <div class="section-info truncate">
   <a class="course-code" href="/course/<%- item.get('course_id') %>">
-    <%- item.get('course').get('code') %>
+    <%- item.get('course') ? item.get('course').get('code') : item.get('course_id') %>
   </a> -
   <%- item.get('section') %>
 </div>
