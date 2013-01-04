@@ -393,6 +393,7 @@ class User(me.Document):
             if (term_id > user_course.term_id or
                 user_course.term_id == _term.Term.SHORTLIST_TERM_ID):
                 user_course.term_id = term_id
+                user_course.program_year_id = program_year_id
 
         user_course.save()
 
