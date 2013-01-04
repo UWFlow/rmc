@@ -17,7 +17,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
     intersects: function(otherItem) {
       var selfStart = this.startMinutes();
-      var selfEnd = this.startMinutes();
+      var selfEnd = this.endMinutes();
       var otherStart = otherItem.startMinutes();
       var otherEnd = otherItem.endMinutes();
       return (otherStart >= selfStart && otherStart <= selfEnd) ||
@@ -223,19 +223,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       for (var idx = 0; idx < this.scheduleItems.size(); ++idx) {
         var currScheduleItem = this.scheduleItems.at(idx);
 
-        var prevScheduleItem = null;
-        if (idx > 0) {
-          prevScheduleItem = this.scheduleItems.at(idx - 1);
-        }
-
-        var nextScheduleItem = null;
-        if (idx < this.scheduleItems.size() - 1) {
-          nextScheduleItem = this.scheduleItems.at(idx + 1);
-        }
-
+        var prevScheduleItem = idx > 0 && this.scheduleItems.at(idx - 1);
         var intersects =
-            prevScheduleItem && prevScheduleItem.intersects(currScheduleItem) ||
-            nextScheduleItem && nextScheduleItem.intersects(currScheduleItem);
+            prevScheduleItem && prevScheduleItem.intersects(currScheduleItem);
 
         var leftOffset;
         var rightOffset;
