@@ -45,11 +45,13 @@
 
 {# TODO(Sandy): consider generalizing this if we need it later #}
 {% call macros.us_template('schedule-share-tpl') %}
-<div class="link-container">
-  <input type="url" class="link-box" value="<%- url %>">
-</div>
-<div class="facebook-container">
-  <button class="facebook-btn btn btn-info">Facebook it</button>
+<div class="form-inline">
+  <button class="facebook-btn btn btn-info">
+    <i class="icon-share"></i>&nbsp;
+    Share on Facebook
+  </button>
+  <label class="share-label">or share this link:</label>
+  <input type="url" class="link-box input-small" value="<%- url %>">
 </div>
 {% endcall %}
 

@@ -171,24 +171,15 @@
   }
 }
 
-// FIXME(Sandy): Style
 .schedule-share {
-  // TODO(Sandy): Bug in schedule-item-container, workaround for now
-  position: relative;
-  z-index: 100;
   margin-top: 15px;
 
-  .link-container {
-    display: inline;
-    width: 75%;
-    margin-right: 5%;
-
-    .link-box {
-      width: inherit;
-    }
+  .share-label {
+    padding-left: 6px;
+    padding-right: 6px;
   }
 
-  .facebook-container {
-    display: inline;
+  .link-box {
+    width: 50%;
   }
 }

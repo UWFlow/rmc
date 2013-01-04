@@ -522,8 +522,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
         getPublicScheduleLink(),
         'My Winter 2013 class schedule',
         'on Flow',
-        'Checkout my Winter 2013 class schedule!',
-        _.bind(function (response) {
+        'Check out my Winter 2013 class schedule!',
+        _.bind(function(response) {
           this.logShareCompleted('Facebook');
         }, this)
       );
