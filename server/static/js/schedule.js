@@ -1,7 +1,8 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'course', 'util', 'facebook'],
-function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
+'ext/bootstrap', 'course', 'util', 'facebook', 'ext/moment'],
+function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook,
+    _moment) {
 
   var strTimeToMinutes = function(strTime) {
     // Given a string in 24 hour HH:MM format, returns the corresponding number
@@ -435,7 +436,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       var scheduleData;
       try {
         scheduleData = parseSchedule(data);
-        console.log('parsing success');
       } catch (ex) {
         $.ajax('/api/schedule/log', {
           data: {
@@ -449,10 +449,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
             'Check that you\'ve pasted your schedule correctly.');
 
         mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
-        console.log('parsing fail');
         return;
       }
-      console.log('after parse');
       _gaq.push([
         '_trackEvent',
         'USER_GENERIC',
@@ -628,54 +626,70 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
     var titleRe = getTitleRe();
     var rawItems = extractMatches(data, titleRe);
 
-    // TODO(Sandy): Remove after we take our reusable parts
     var formatTime = function(timeStr) {
-      var result = timeStr;
-      // timeStr = '2:20PM'
-      var matches = timeStr.match(/(:|PM|AM|\d+)/g);
-      // => ['2', ':', '20', 'PM']
-      var hours = matches[0];
-      var mins = matches[2];
-      if (matches[3].toLowerCase() == 'pm' &&
-          parseInt(hours, 10) < 12) {
-          hours = (parseInt(hours, 10) + 12).toString();
-      }
-      return hours + ":" + mins;
+      // '2:20PM' => '2:20 PM'
+      return timeStr.match(/(AM|PM|\d{1,2}:\d{2})/g).join(' ');
     };
 
-    var processSlotItem = function(cNum, sNum, sType, slotItem) {
-      // FIXME(Sandy): Magic for here for generating each UserScheduleItem from
-      // each slot item, then modify /api/schedule to accept the new format
-      var partialBodyRe = getPartialBodyRe();
-      var slotMatches = partialBodyRe.exec(slotItem);
+    var processSlotItem = function(cId, cNum, sNum, sType, slotItem) {
+      var slotMatches = getPartialBodyRe().exec(slotItem);
 
-      // TODO(Sandy): modify
-      //// E.g. LEC 001
-      //var section = matches[2] + " " + matches[3];
-      //// E just for fun, refactor every.g. TTh -> ['T', 'Th']
-      //var days = matches[4].match(/[A-Z][a-z]?/g);
-      //// E.g.
-      //var startDate =
-      //// E.g.
-      //var endDate =
-      //// E.g. PHY   313
-      //var location = matches[7].split(/\s+/g);
-      //var building = location[0];
-      //var room = location[1];
-      //// E.g. Anna Lubiw
-      //var profName = matches[8];
+      // Grab info from the slot item
+      // E.g. TTh -> ['T', 'Th']
+      var days = slotMatches[1].match(/[A-Z][a-z]?/g);
 
-      //var item = {
-      //  course_id: courseId,
-      //  class_num: cNum,
-      //  section_num: sNum,
-      //  section_type: sType,
-      //  start_date: startDate,
-      //  end_date: endDate,
-      //  building: building,
-      //  room: room,
-      //  prof_name: profName
-      //};
+      // FIXME(Sandy): Eventually worry about timezones
+      // E.g. '2:30PM'
+      var startTimeStr = formatTime(slotMatches[2]);
+      // E.g. '3:20PM'
+      var endTimeStr = formatTime(slotMatches[3]);
+
+      // E.g. 01/07/2013 (MM/DD/YYYY)
+      var startDateStr = slotMatches[6];
+      // E.g. 02/15/2013 (MM/DD/YYYY)
+      var endDateStr = slotMatches[7];
+
+      // E.g. PHY   313
+      var location = slotMatches[4].split(/\s+/g);
+      var building = location[0];
+      var room = location[1];
+
+      // E.g. Anna Lubiw
+      var profName = slotMatches[5];
+
+      // Generate each UserScheduleItem
+        // TODO(Sandy): Not sure if Saturday's and Sunday's are S and SU
+      var weekdayMap = { Su: 0, M: 1, T: 2, W: 3, Th: 4, F: 5, S: 6 };
+      var hasClassOnDay = [];
+      _.each(days, function(day) {
+        hasClassOnDay[weekdayMap[day]] = true;
+      });
+
+      // Time delta between start and end time, in milliseconds
+      var timeDelta = _moment(startDateStr + " " + endTimeStr) -
+          _moment(startDateStr + " " + startTimeStr);
+
+      var processedSlotItems = [];
+      // Iterate through all days in the date range
+      var curDate = _moment(startDateStr + " " + startTimeStr);
+      var slotEndDate = _moment(endDateStr);
+      while (curDate <= slotEndDate) {
+        if (hasClassOnDay[curDate.day()]) {
+          processedSlotItems.push({
+            course_id: cId,
+            class_num: cNum,
+            section_num: sNum,
+            section_type: sType,
+            start_date: curDate.unix(),
+            end_date: _moment(curDate.unix() * 1000 + timeDelta).unix(),
+            building: building,
+            room: room,
+            prof_name: profName
+          });
+        }
+        curDate.add('days', 1);
+      }
+      return processedSlotItems;
     };
 
     // Process each course item
@@ -689,7 +703,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       // Extract each of the class items
       var classItems = extractMatches(rawItem, bodyRe);
 
-      _.each(classItems, function(classItem) {
+      _.each(classItems, _.bind(function(cId, classItem) {
         var classMatches = bodyRe.exec(data);
         // Grab the info from the first entry of a class item
         // E.g. 5300
@@ -703,11 +717,15 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
         var partialBodyRe = getPartialBodyRe();
         var slotItems = classItem.match(partialBodyRe);
 
-        var processClassItems =
-          _.bind(processSlotItem, this, classNum, sectionNum, sectionType);
+        var processSlotItemBound =
+          _.bind(processSlotItem, this, cId, classNum, sectionNum, sectionType);
 
-        processedItems.concat(_.map(slotItems, processClassItems));
-      });
+        processedItems = processedItems.concat(
+            _.reduce(_.map(slotItems, processSlotItemBound), function(a, b) {
+              return a.concat(b);
+            })
+        );
+      }, this, courseId));
     });
 
     return {
