@@ -78,6 +78,24 @@
     box-sizing: border-box;
     border-color: darken($wellBorderColor, 10%);
 
+    @mixin item-class($color) {
+      // TODO(david): Make these args with defaults (once I get off the plane)
+      $topColor: #FCFCFC;
+      $colorWeight: 10%;
+
+      @include background(linear-gradient(top, $topColor, mix($color, $topColor, $colorWeight)));
+      border-color: mix($color, $wellBorderColor);
+    }
+
+    // TODO(david): Generate these using a for-loop (once I get off the plane)
+    &.blue   { @include item-class($blue);   }
+    &.green  { @include item-class($green);  }
+    &.red    { @include item-class($red);    }
+    &.yellow { @include item-class($yellow); }
+    &.orange { @include item-class($orange); }
+    &.purple { @include item-class($purple); }
+    &.gray   { @include item-class($gray);   }
+
     .time-loc-info {
       color: #666;
       font-size: 13px;

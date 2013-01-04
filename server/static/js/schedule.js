@@ -92,13 +92,30 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       this.scheduleDayView = options.scheduleDayView;
     },
 
+    getCssClass: function() {
+      var section = String(this.scheduleItem.get('section'));
+      var sectionType = /[a-zA-Z]{3}/.exec(section)[0];
+      var cssClass = {
+        LEC: 'blue',
+        TUT: 'green',
+        LAB: 'red',
+        SEM: 'yellow',
+        PRJ: 'purple'
+      }[sectionType];
+
+      // TODO(david): Actually hash the section type to get a color, to be more
+      //     extensible to new unknown section type designations.
+      return cssClass || 'gray';
+    },
+
     render: function() {
       this.$el
         .html(this.template({
           item: this.scheduleItem
         }))
         .addClass('well')
-        .addClass('truncate');
+        .addClass('truncate')
+        .addClass(this.getCssClass());
 
       return this;
     },
