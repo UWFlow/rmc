@@ -5,6 +5,7 @@ import csv
 import mongoengine as me
 import rmc.models as m
 import rmc.shared.constants as c
+import rmc.shared.util as _util
 import sys
 import time
 
@@ -313,6 +314,18 @@ def latest_review_date(user):
         if prd and latest_date < prd:
             latest_date = prd
     return latest_date
+
+def unsafe_clear_schedule(user, term_id=_util.get_current_term_id()):
+    for usi in m.UserScheduleItem.objects(user_id=user.id, term_id=term_id):
+        usi.delete()
+
+    for uc in m.UserCourse.objects(user_id=user.id, term_id=term_id):
+        try:
+            user.course_history.remove(uc.id)
+        except ValueError:
+            print "Weird problem: UC (%s) doesn't exist" % (uc.id)
+        uc.delete()
+    user.save()
 
 # Shorthands for common query operations
 def ucs_for_cid(course_id):
