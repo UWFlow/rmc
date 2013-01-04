@@ -590,82 +590,124 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       throw new Error('Couldn\'t find matching term (Spring|Fall|Winter)');
     }
 
-    // Exact each course item from the schedule
-    var titleRe = /(\w{2,5}\ \w{1,5})\ -\ ([^\r\n]+)/g;
-    var rawItems = [];
-    var match = titleRe.exec(data);
-    var lastIndex = -1;
-    while (match) {
-      if (lastIndex !== -1) {
-        var rawItem = data.substring(lastIndex, match.index);
-        rawItems.push(rawItem);
+    var extractMatches = function(input, regex) {
+      var results = [];
+      var match = regex.exec(input);
+      var lastIndex = -1;
+      while (match) {
+        if (lastIndex !== -1) {
+          var result = input.substring(lastIndex, match.index);
+          results.push(result);
+        }
+        lastIndex = match.index;
+        match = regex.exec(input);
       }
-      lastIndex = match.index;
-      match = titleRe.exec(data);
-    }
-    if (lastIndex) {
-      rawItems.push(data.substring(lastIndex));
-    }
+      if (lastIndex) {
+        results.push(input.substring(lastIndex));
+      }
+      return results;
+    };
+
+    // Regexes from:
+    // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
+    // TODO(Sandy): make this look cleaner (line breaks + comments)
+    var getTitleRe = function() {
+      return (/(\w{2,5}\ \w{1,5})\ -\ ([^\r\n]+)/g);
+    };
+
+    var getBodyRe = function() {
+      // Note: Changed from the github version, added bracket on class number
+      return (/(\d{4})\s+(\d{3})\s+(\w{3})\s+([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g);
+    };
+
+    var getPartialBodyRe = function() {
+      return (/([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g);
+    };
+
+    // Exact each course item from the schedule
+    var titleRe = getTitleRe();
+    var rawItems = extractMatches(data, titleRe);
+
+    // TODO(Sandy): Remove after we take our reusable parts
+    var formatTime = function(timeStr) {
+      var result = timeStr;
+      // timeStr = '2:20PM'
+      var matches = timeStr.match(/(:|PM|AM|\d+)/g);
+      // => ['2', ':', '20', 'PM']
+      var hours = matches[0];
+      var mins = matches[2];
+      if (matches[3].toLowerCase() == 'pm' &&
+          parseInt(hours, 10) < 12) {
+          hours = (parseInt(hours, 10) + 12).toString();
+      }
+      return hours + ":" + mins;
+    };
+
+    var processSlotItem = function(cNum, sNum, sType, slotItem) {
+      // FIXME(Sandy): Magic for here for generating each UserScheduleItem from
+      // each slot item, then modify /api/schedule to accept the new format
+      var partialBodyRe = getPartialBodyRe();
+      var slotMatches = partialBodyRe.exec(slotItem);
+
+      // TODO(Sandy): modify
+      //// E.g. LEC 001
+      //var section = matches[2] + " " + matches[3];
+      //// E just for fun, refactor every.g. TTh -> ['T', 'Th']
+      //var days = matches[4].match(/[A-Z][a-z]?/g);
+      //// E.g.
+      //var startDate =
+      //// E.g.
+      //var endDate =
+      //// E.g. PHY   313
+      //var location = matches[7].split(/\s+/g);
+      //var building = location[0];
+      //var room = location[1];
+      //// E.g. Anna Lubiw
+      //var profName = matches[8];
+
+      //var item = {
+      //  course_id: courseId,
+      //  class_num: cNum,
+      //  section_num: sNum,
+      //  section_type: sType,
+      //  start_date: startDate,
+      //  end_date: endDate,
+      //  building: building,
+      //  room: room,
+      //  prof_name: profName
+      //};
+    };
 
     // Process each course item
     var processedItems = [];
     _.each(rawItems, function(rawItem) {
-      // Regexes from (with slight changes, i.e. braket on class number):
-      // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
-      // TODO(Sandy): make this look cleaner (line breaks + comments)
-      var bodyRe = /(\d{4})\s+(\d{3})\s+(\w{3})\s+([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g;
-      var matches = bodyRe.exec(rawItem);
-
-      if (!matches) {
-        return;
-      }
-
-      var formatTime = function(timeStr) {
-        var result = timeStr;
-        // timeStr = '2:20PM'
-        var matches = timeStr.match(/(:|PM|AM|\d+)/g);
-        // => ['2', ':', '20', 'PM']
-        var hours = matches[0];
-        var mins = matches[2];
-        if (matches[3].toLowerCase() == 'pm' &&
-            parseInt(hours, 10) < 12) {
-           hours = (parseInt(hours, 10) + 12).toString();
-        }
-        return hours + ":" + mins;
-      };
-
+      // Grab info from the overall course item
       // E.g. CS 466 -> cs466
       var courseId = titleRe.exec(data)[1].replace(/\s+/g, '').toLowerCase();
-      // E.g. 5300
-      var classNum = matches[1];
-      // E.g. LEC 001
-      var section = matches[2] + " " + matches[3];
-      // E.g. TTh -> ['T', 'Th']
-      var days = matches[4].match(/[A-Z][a-z]?/g);
-      // E.g. 1:00PM
-      var startTime = formatTime(matches[5]);
-      // E.g. 2:20PM
-      var endTime = formatTime(matches[6]);
-      // E.g. PHY   313
-      var location = matches[7].split(/\s+/g);
-      var building = location[0];
-      var room = location[1];
-      // E.g. Anna Lubiw
-      var profName = matches[8];
 
-      var item = {
-        course_id: courseId,
-        class_num: classNum,
-        section: section,
-        days: days,
-        start_time: startTime,
-        end_time: endTime,
-        building: building,
-        room: room,
-        prof_name: profName
-      };
+      var bodyRe = getBodyRe();
+      // Extract each of the class items
+      var classItems = extractMatches(rawItem, bodyRe);
 
-      processedItems.push(item);
+      _.each(classItems, function(classItem) {
+        var classMatches = bodyRe.exec(data);
+        // Grab the info from the first entry of a class item
+        // E.g. 5300
+        var classNum = classMatches[1];
+        // E.g. 001
+        var sectionNum = classMatches[3];
+        // E.g. LEC
+        var sectionType = classMatches[2];
+
+        // Process each schedule slot of that class item
+        var partialBodyRe = getPartialBodyRe();
+        var slotItems = classItem.match(partialBodyRe);
+
+        var processClassItems =
+          _.bind(processSlotItem, this, classNum, sectionNum, sectionType);
+
+        processedItems.concat(_.map(slotItems, processClassItems));
+      });
     });
 
     return {
