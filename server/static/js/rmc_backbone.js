@@ -14,25 +14,33 @@ function(Backbone, $, _) {
     _cachedReferences: {},
 
     /**
-     * Override toJSON to convert appropriate string fields to { $oid: string }
-     * if the field represents an ObjectId
+     * Override toJSON to convert appropriate fields to their strict
+     * BSON representation before sending to the server
+     *
+     * For example, convert fields representing ObjectId to: { $oid: string }
+     *
+     * See: http://www.mongodb.org/display/DOCS/Mongo+Extended+JSON
      */
-    toJSON: function(resolveOids) {
+    toJSON: function(resolveBson) {
       // TODO(mack): consider resolving referenceFields in here
 
       var obj = this._super('toJSON');
-      if (resolveOids) {
-        _.each(this._oidFields, function(__, key) {
-          var value = obj[key];
-          if (typeof value === 'string') {
-            value = { $oid: value };
-          } else if (_.isArray(value)) {
-            value = _.map(value, function(v) {
-              return { $oid: v };
-            });
-          }
-        });
+      if (!resolveBson) {
+        return obj;
       }
+
+      _.each(this._oidFields, function(__, key) {
+        var value = obj[key];
+        if (typeof value === 'string') {
+          value = { $oid: value };
+        } else if (_.isArray(value)) {
+          value = _.map(value, function(v) {
+            return { $oid: v };
+          });
+        }
+        obj[key] = value;
+      });
+
       return obj;
     },
 
