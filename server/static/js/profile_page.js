@@ -118,11 +118,11 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     }
   }
 
-  // Show the "Add schedule" button if the user can and hasn't
-  // FIXME TODO(david): Conditionally show and hide button
-  var scheduleInputModalView = new _schedule.ScheduleInputModalView();
-  $('#schedule-input-modal-placeholder')
-    .replaceWith(scheduleInputModalView.render().el);
+  if (window.pageData.showImportScheduleButton) {
+    var scheduleInputModalView = new _schedule.ScheduleInputModalView();
+    $('#schedule-input-modal-placeholder')
+      .replaceWith(scheduleInputModalView.render().el);
+  }
 
   // Show the add schedule pop-up on a hash URL
   if (window.location.hash.indexOf('import-schedule') !== -1 ||

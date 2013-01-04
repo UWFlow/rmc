@@ -45,10 +45,12 @@
     </div>
   {% endif %}
 
-  <button type="button" class="btn btn-primary" data-toggle="modal"
-      data-target=".schedule-input-modal">
-    <i class="icon-plus"></i> Import your schedule
-  </button>
+  {% if show_import_schedule_button %}
+    <button type="button" class="btn btn-primary" data-toggle="modal"
+        data-target=".schedule-input-modal">
+      <i class="icon-plus"></i> Import your schedule
+    </button>
+  {% endif %}
 
   <div id="schedule-input-modal-placeholder"></div>
   <div id="class-schedule-placeholder"></div>
@@ -80,5 +82,7 @@
   window.pageData.examObjs = {{ exam_objs|tojson|safe }};
   window.pageData.scheduleItemObjs = {{ schedule_item_objs|tojson|safe }};
   window.pageData.showImportSchedule = {{ show_import_schedule|tojson|safe }};
+  window.pageData.showImportScheduleButton =
+      {{ show_import_schedule_button|tojson|safe }};
 </script>
 {% endblock %}
