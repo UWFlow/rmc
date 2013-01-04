@@ -30,6 +30,10 @@
 
   .day {
     border-left: 1px solid $wellBorderColor;
+    width: 20%;  // TODO(david): This assumes 5 days
+    @include box-sizing(border-box);
+    position: relative;
+    padding-right: 2px;
   }
 
   .day-container {
@@ -75,8 +79,9 @@
     position: absolute;
     font-size: 14px;
     line-height: 14px;
-    box-sizing: border-box;
+    @include box-sizing(border-box);
     border-color: darken($wellBorderColor, 10%);
+    margin-left: -1px;
 
     @mixin item-class($color) {
       // TODO(david): Make these args with defaults (once I get off the plane)

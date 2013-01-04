@@ -94,19 +94,8 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
       .resize({
         headerHeight: 30,
         hourHeight: 60,
-        hourLabelWidth: 100,
         width: $("#class-schedule-placeholder").outerWidth()
       });
-
-    $(window).resize(function() {
-      scheduleView.resize({
-        headerHeight: 30,
-        height: 800,
-
-        hourLabelWidth: 100,
-        width: scheduleView.$el.outerWidth()
-      });
-    });
 
     $("#class-schedule-placeholder").replaceWith(scheduleView.el);
 

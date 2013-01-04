@@ -87,7 +87,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
     initialize: function(options) {
       this.scheduleItem = options.scheduleItem;
-      this.width = options.width;
       this.scheduleView = options.scheduleView;
       this.scheduleDayView = options.scheduleDayView;
     },
@@ -122,7 +121,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
     resize: function(options) {
       this.resizeOptions = options;
-      this.margin = 2;
 
       var hourHeight = options.hourHeight;
       var leftOffset = options.leftOffset;
@@ -141,7 +139,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
       this.$el.css({
         left: leftOffset,
-        right: rightOffset + this.margin,
+        right: rightOffset,
         top: Math.floor(startTop) - 1,
         height: Math.floor(endTop - startTop)
       });
@@ -162,8 +160,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       this.$el.removeClass('truncate');
       this.$el.css({
         'z-index': 1,
-        'left': -1,
-        'right': this.margin
+        'left': 0,
+        'right': 0
       });
     },
 
@@ -216,14 +214,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
     },
 
     resize: function(options) {
-      var borderWidth = 1;
-      var width = options.width - borderWidth;
       var height = options.height;
       var headerHeight = options.headerHeight;
       var hourHeight = options.hourHeight;
 
       this.$el.css({
-        width: width,
         height: height
       });
 
@@ -240,21 +235,23 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       for (var idx = 0; idx < this.scheduleItems.size(); ++idx) {
         var currScheduleItem = this.scheduleItems.at(idx);
 
-        var prevScheduleItem = idx > 0 && this.scheduleItems.at(idx - 1);
+        var prevScheduleItem = this.scheduleItems.at(idx - 1);
+        var nextScheduleItem = this.scheduleItems.at(idx + 1);
         var intersects =
-            prevScheduleItem && prevScheduleItem.intersects(currScheduleItem);
+          (prevScheduleItem && prevScheduleItem.intersects(currScheduleItem)) ||
+          (nextScheduleItem && nextScheduleItem.intersects(currScheduleItem));
 
         var leftOffset;
         var rightOffset;
         if (intersects) {
           // Deal with conflicts; currently only handles max of 2 intersecting
           // schedule items
+          leftOffset = (position/numPositions * 100) + '%';
+          rightOffset = (100 - ((position + 1) * 100/numPositions)) + '%';
           position = (position + 1) % numPositions;
-          leftOffset = position/numPositions * width;
-          rightOffset = width - ((position + 1) * width/numPositions);
         } else {
           position = 0;
-          leftOffset = -1;
+          leftOffset = 0;
           rightOffset = 0;
         }
 
@@ -377,7 +374,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       var width = options.width;
       var hourHeight = options.hourHeight;
       var headerHeight = options.headerHeight;
-      var hourLabelWidth = options.hourLabelWidth;
 
       var nHours = this.endHour - this.startHour + 1;
       var height = hourHeight * nHours + headerHeight;
@@ -395,13 +391,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       // soon...
       var nDays = 5;
 
-      // TODO(jlfwong): Rounding error's a bitch. Figure out a cleaner way of
-      // dealing with this (pad days until they fill the full space)
-      var dayWidth = Math.floor((width - hourLabelWidth) / nDays);
-
       _.each(this.dayViews, function(dayView) {
         dayView.resize({
-          width: dayWidth,
           height: height,
           headerHeight: headerHeight,
           hourHeight: hourHeight
@@ -572,7 +563,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       .resize({
         headerHeight: 30,
         hourHeight: 60,
-        hourLabelWidth: 100,
         width: width
       });
 
@@ -580,8 +570,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       scheduleView.resize({
         headerHeight: 30,
         height: 800,
-
-        hourLabelWidth: 100,
         width: scheduleView.$el.outerWidth()
       });
     });
