@@ -325,6 +325,8 @@ def unsafe_clear_schedule(user, term_id=_util.get_current_term_id()):
         except ValueError:
             print "Weird problem: UC (%s) doesn't exist" % (uc.id)
         uc.delete()
+
+    user.schedules_imported = 0
     user.save()
 
 # Shorthands for common query operations

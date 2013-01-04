@@ -193,6 +193,8 @@ class User(me.Document):
 
     @property
     def has_schedule(self):
+        # TODO(Sandy): Actually this only works assuming users never remove
+        # their schedule and we'll have to do actual queries when 2013_05 comes
         return self.schedules_imported > 0
 
     @property
