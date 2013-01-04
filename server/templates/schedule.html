@@ -20,7 +20,7 @@
 
 {% call macros.us_template('schedule-day-tpl') %}
 <div class="header header-label">
-    <%= day.name %>
+    <%= moment(date).format('ddd M/D') %>
 </div>
 <div class="schedule-item-container">
 </div>
@@ -33,6 +33,38 @@
 {% endcall %}
 
 {% call macros.us_template('schedule-tpl') %}
+<div class="schedule-nav">
+  <div class="date-range">
+    <% var start_moment = moment(start_date); %>
+    <% var end_moment = moment(end_date); %>
+    <% if (end_moment.year() !== start_moment.year()) { %>
+      <%- moment(start_date).format('MMMM Do, YYYY') %>
+      -
+      <%- moment(end_date).format('MMMM Do, YYYY') %>
+    <% } else if (end_moment.month() !== start_moment.month()) { %>
+      <%- moment(start_date).format('MMMM Do') %>
+      -
+      <%- moment(end_date).format('MMMM Do, YYYY') %>
+    <% } else if (end_moment.date() !== start_moment.date()) { %>
+      <%- moment(start_date).format('MMMM Do') %>
+      -
+      <%- moment(end_date).format('Do, YYYY') %>
+    <% } else { %>
+      <%- moment(start_date).format('MMMM Do, YYYY') %>
+    <% } %>
+  </div>
+  <div class="buttons">
+    <button class="btn curr-week-btn">Current Week</button>
+    <div class="btn-group prev-next-week-btns">
+      <button class="btn prev-week-btn">
+        <i class="icon-chevron-left"></i>
+      </button>
+      <button class="btn next-week-btn">
+        <i class="icon-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+</div>
 <div class="times">
     <div class="header">
     </div>

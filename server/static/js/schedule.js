@@ -8,6 +8,12 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     return dateMoment.diff(dateMoment.sod(), 'minutes');
   };
 
+  var isSameDay = function(firstDate, secondDate) {
+    var firstMoment = moment(firstDate);
+    var secondMoment = moment(secondDate);
+    return firstMoment.sod().diff(secondMoment.sod()) === 0;
+  };
+
   // TODO(mack): rename UserScheduleItem to match the backend
   var ScheduleItem = RmcBackbone.Model.extend({
 
@@ -71,10 +77,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     forDay: function(date) {
-      var sod = moment(date).sod();
       var items = new ScheduleItemCollection(this.filter(function(x) {
-        var startMoment = moment(x.get('start_date'));
-        return sod.diff(startMoment.sod()) === 0;
+        return isSameDay(date, x.get('start_date'));
       }));
       items.sort();
       return items;
@@ -101,6 +105,17 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       section_num: '001',
       start_date: new Date(2013, 0, 4, 12, 30),
       end_date: new Date(2013, 0, 4, 13, 20),
+      course_id: 'ece458',
+      prof_id: 'bob',
+      term_id: '2013_01'
+    }, {
+      class_num: '1234',
+      building: 'DC',
+      room: '1350',
+      section_type: 'lec',
+      section_num: '001',
+      start_date: new Date(2013, 0, 8, 12, 30),
+      end_date: new Date(2013, 0, 8, 13, 20),
       course_id: 'ece458',
       prof_id: 'bob',
       term_id: '2013_01'
@@ -203,7 +218,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     className: 'day',
 
     initialize: function(options) {
-      this.day = options.day;
+      this.date = options.date;
       this.scheduleItems = options.scheduleItems;
       this.scheduleView = options.scheduleView;
 
@@ -212,8 +227,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
     render: function() {
       this.$el.html(this.template({
-        day: this.day
+        date: this.date
       }));
+
+      var today = new Date();
+      if (isSameDay(this.date, today)) {
+        this.$el.addClass('today');
+      }
 
       var $scheduleItemContainer = this.$(".schedule-item-container");
 
@@ -317,7 +337,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
   });
 
   // TODO(jlfwong): Resizing
-
   var ScheduleView = RmcBackbone.View.extend({
     template: _.template($("#schedule-tpl").html()),
 
@@ -327,26 +346,54 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       this.startHour = options.maxStartHour;
       this.endHour = options.minEndHour;
 
-      var currMoment = moment();
-      // The default start and end dates are the Monday and Friday of
-      // the current week respectively
-      this.startDate = options.startDate || currMoment.day(1).sod().toDate();
-      this.endDate = options.endDate || currMoment.day(5).sod().toDate();
+      if (this.startDate && this.endDate) {
+        this.startDate = options.startDate;
+        this.endDate = options.endDate;
+      } else {
+        this.setCurrWeek();
+      }
 
       this.scheduleItems = options.scheduleItems;
+      this.resizeOptions = options.resizeOptions;
 
       this.dayViews = [];
       this.hourLabelViews = [];
     },
 
+    setCurrWeek: function() {
+      var currMoment = moment();
+
+      // In out calendar, let us consider saturday to be the start of a week,
+      // since people probably aren't interested in classes of the week that
+      // just passed
+      if (currMoment.day() > 5) {
+        currMoment.add('days', 7);
+      }
+
+      // The default start and end dates are the Monday and Friday of
+      // the current week respectively
+      this.startDate = currMoment.day(1).sod().toDate();
+      this.endDate = currMoment.day(5).sod().toDate();
+    },
+
     render: function() {
       this.$el.html(this.template({
-        schedule: this.schedule
+        schedule: this.schedule,
+        start_date: this.startDate,
+        end_date: this.endDate
       }));
 
-      var $dayContainer = this.$(".day-container");
+      // Remove any existing days and hour labels
+      while (this.dayViews.length) {
+        this.dayViews.shift().close();
+      }
+      while (this.hourLabelViews.length) {
+        this.hourLabelViews.shift().close();
+      }
 
-      var currMoment = moment(this.startDate);
+      var $dayContainer = this.$(".day-container");
+      // Since moments mutate the underlying date, gotta clone
+      var currMoment = moment(new Date(this.startDate));
       var endMoment = moment(this.endDate);
       while (true) {
         if (currMoment.diff(endMoment) > 0) {
@@ -355,9 +402,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
         var itemsForDay = this.scheduleItems.forDay(currMoment.toDate());
         var dayView = new ScheduleDayView({
-          day: {
-            name: currMoment.format('dddd')
-          },
+          date: currMoment.toDate(),
           scheduleItems: itemsForDay,
           scheduleView: this
         });
@@ -383,7 +428,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       }
 
       var $hourLabelContainer = this.$(".hour-label-container");
-
       for (var i = this.startHour; i <= this.endHour; i++) {
         var hourLabelView = new ScheduleHourLabelView({
           hour: i
@@ -392,10 +436,16 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         this.hourLabelViews.push(hourLabelView);
       }
 
+      if (this.resizeOptions) {
+        this.resize(this.resizeOptions);
+      }
+
       return this;
     },
 
     resize: function(options) {
+      this.resizeOptions = options;
+
       var width = options.width;
       var hourHeight = options.hourHeight;
       var headerHeight = options.headerHeight;
@@ -413,9 +463,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         height: headerHeight - 2 * headerPadding - headerBorderHeight
       });
 
-      // TODO(jlfwong): Don't know if we need to support weekends anytime
-      // soon...
-      var nDays = 5;
+      var nDays = moment(this.endDate).diff(moment(this.startDate), 'days') + 1;
 
       // TODO(jlfwong): Rounding error's a bitch. Figure out a cleaner way of
       // dealing with this (pad days until they fill the full space)
@@ -435,6 +483,33 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       });
 
       return this;
+    },
+
+    events: {
+      'click .curr-week-btn': 'changeCurrWeek',
+      'click .prev-week-btn': 'changePrevWeek',
+      'click .next-week-btn': 'changeNextWeek'
+    },
+
+    changeCurrWeek: function(evt) {
+      this.setCurrWeek();
+      this.changeWeek();
+    },
+
+    changePrevWeek: function(evt) {
+      this.startDate = moment(this.startDate).subtract('days', 7).toDate();
+      this.endDate = moment(this.endDate).subtract('days', 7).toDate();
+      this.changeWeek();
+    },
+
+    changeNextWeek: function(evt) {
+      this.startDate = moment(this.startDate).add('days', 7).toDate();
+      this.endDate = moment(this.endDate).add('days', 7).toDate();
+      this.changeWeek();
+    },
+
+    changeWeek: function(evt) {
+      this.render();
     }
   });
 
@@ -583,23 +658,20 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     var scheduleView = new ScheduleView({
       maxStartHour: 8,
       minEndHour: 18,
-      scheduleItems: scheduleItems
-    });
-
-    scheduleView
-      .render()
-      .resize({
+      scheduleItems: scheduleItems,
+      resizeOptions: {
         headerHeight: 30,
         hourHeight: 60,
         hourLabelWidth: 100,
         width: width
-      });
+      }
+    });
+    scheduleView.render();
 
     $(window).resize(function() {
       scheduleView.resize({
         headerHeight: 30,
         height: 800,
-
         hourLabelWidth: 100,
         width: scheduleView.$el.outerWidth()
       });
