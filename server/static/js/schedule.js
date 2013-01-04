@@ -105,7 +105,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
     resize: function(options) {
       this.resizeOptions = options;
-      this.margin = 1;
+      this.margin = 2;
 
       var hourHeight = options.hourHeight;
       var leftOffset = options.leftOffset;
@@ -123,7 +123,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       var endTop = endMinutes * minuteHeight - startOffset;
 
       this.$el.css({
-        left: leftOffset + this.margin,
+        left: leftOffset,
         right: rightOffset + this.margin,
         top: Math.floor(startTop) - 1,
         height: Math.floor(endTop - startTop)
@@ -145,7 +145,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       this.$el.removeClass('truncate');
       this.$el.css({
         'z-index': 1,
-        'left': this.margin,
+        'left': -1,
         'right': this.margin
       });
     },
@@ -247,7 +247,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
           rightOffset = width - ((position + 1) * width/numPositions);
         } else {
           position = 0;
-          leftOffset = 0;
+          leftOffset = -1;
           rightOffset = 0;
         }
 
