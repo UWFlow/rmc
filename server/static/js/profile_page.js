@@ -118,15 +118,17 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     }
   }
 
-  if (window.pageData.showImportScheduleButton) {
+  // Show the add schedule pop-up on a hash URL
+  var showScheduleModal =
+      (window.location.hash.indexOf('import-schedule') !== -1);
+
+  if (window.pageData.showImportScheduleButton || showScheduleModal) {
     var scheduleInputModalView = new _schedule.ScheduleInputModalView();
     $('#schedule-input-modal-placeholder')
       .replaceWith(scheduleInputModalView.render().el);
   }
 
-  // Show the add schedule pop-up on a hash URL
-  if (window.location.hash.indexOf('import-schedule') !== -1 ||
-      window.pageData.showImportSchedule) {
+  if (showScheduleModal) {
     $('.schedule-input-modal').modal();
   }
 
