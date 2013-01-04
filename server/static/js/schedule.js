@@ -1,17 +1,29 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'course', 'util', 'facebook', 'ext/moment'],
-function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook,
-    _moment) {
+'ext/bootstrap', 'course', 'util', 'facebook', 'moment'],
+function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
-  var strTimeToMinutes = function(strTime) {
-    // Given a string in 24 hour HH:MM format, returns the corresponding number
-    // of minutes since the beginning of the day
-    var x = strTime.split(':');
-    return parseInt(x[0], 10) * 60 + parseInt(x[1], 10);
+  var minutesSinceSod = function(date) {
+    var dateMoment = moment(date);
+    return dateMoment.diff(dateMoment.sod(), 'minutes');
   };
 
+  // TODO(mack): rename UserScheduleItem to match the backend
   var ScheduleItem = RmcBackbone.Model.extend({
+
+    defaults: {
+      class_num: '',
+      building: '',
+      room: '',
+      section_type: '',
+      section_num: '',
+      start_date: '',
+      end_date: '',
+      course_id: '',
+      prof_id: '',
+      term_id: ''
+    },
+
     referenceFields: {
       'course': ['course_id', _course.CourseCollection]
     },
@@ -30,11 +42,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook,
     },
 
     startMinutes: function() {
-      return strTimeToMinutes(this.get('start_time'));
+      return minutesSinceSod(this.get('start_date'));
     },
 
     endMinutes: function() {
-      return strTimeToMinutes(this.get('end_time'));
+      return minutesSinceSod(this.get('end_date'));
     }
   });
 
@@ -58,24 +70,44 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook,
       }
     },
 
-    forDay: function(day) {
+    forDay: function(date) {
+      var sod = moment(date).sod();
       var items = new ScheduleItemCollection(this.filter(function(x) {
-        return _.indexOf(x.get('days'), day) !== -1;
+        var startMoment = moment(x.get('start_date'));
+        return sod.diff(startMoment.sod()) === 0;
       }));
       items.sort();
       return items;
-    },
-
-    byDay: function() {
-      return [
-        this.forDay('M'),
-        this.forDay('T'),
-        this.forDay('W'),
-        this.forDay('Th'),
-        this.forDay('F')
-      ];
     }
   });
+
+  ScheduleItemCollection.getSampleScheduleItems = function() {
+    return new this([{
+      class_num: '1234',
+      building: 'DC',
+      room: '1350',
+      section_type: 'lec',
+      section_num: '001',
+      start_date: new Date(2013, 0, 2, 12, 30),
+      end_date: new Date(2013, 0, 2, 13, 20),
+      course_id: 'ece458',
+      prof_id: 'bob',
+      term_id: '2013_01'
+    }, {
+      class_num: '1234',
+      building: 'DC',
+      room: '1350',
+      section_type: 'lec',
+      section_num: '001',
+      start_date: new Date(2013, 0, 4, 12, 30),
+      end_date: new Date(2013, 0, 4, 13, 20),
+      course_id: 'ece458',
+      prof_id: 'bob',
+      term_id: '2013_01'
+    }
+    ]);
+  };
+
 
   // CSS constants
   var headerPadding = 8;
@@ -295,6 +327,12 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook,
       this.startHour = options.maxStartHour;
       this.endHour = options.minEndHour;
 
+      var currMoment = moment();
+      // The default start and end dates are the Monday and Friday of
+      // the current week respectively
+      this.startDate = options.startDate || currMoment.day(1).sod().toDate();
+      this.endDate = options.endDate || currMoment.day(5).sod().toDate();
+
       this.scheduleItems = options.scheduleItems;
 
       this.dayViews = [];
@@ -308,19 +346,17 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook,
 
       var $dayContainer = this.$(".day-container");
 
-      // TODO(jlfwong): Weekends?
-      var dayNames = [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday"
-      ];
+      var currMoment = moment(this.startDate);
+      var endMoment = moment(this.endDate);
+      while (true) {
+        if (currMoment.diff(endMoment) > 0) {
+          break;
+        }
 
-      _.each(this.scheduleItems.byDay(), function(itemsForDay, i) {
+        var itemsForDay = this.scheduleItems.forDay(currMoment.toDate());
         var dayView = new ScheduleDayView({
           day: {
-            name: dayNames[i]
+            name: currMoment.format('dddd')
           },
           scheduleItems: itemsForDay,
           scheduleView: this
@@ -342,7 +378,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook,
 
         $dayContainer.append(dayView.render().el);
         this.dayViews.push(dayView);
-      }, this);
+
+        currMoment.add('days', 1);
+      }
 
       var $hourLabelContainer = this.$(".hour-label-container");
 

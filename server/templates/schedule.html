@@ -5,11 +5,12 @@
   <a class="course-code" href="/course/<%- item.get('course_id') %>">
     <%- item.get('course') ? item.get('course').get('code') : item.get('course_id') %>
   </a> -
-  <%- item.get('section') %>
+  <%- item.get('section_type').toUpperCase() %>
+  <%- item.get('section_num') %>
 </div>
 <div class="time-loc-info truncate">
-  <%- moment(item.get('start_time'), 'H:m').format('h:mm') %> -
-  <%- moment(item.get('end_time'), 'H:m').format('h:mm a') %>
+  <%- moment(item.get('start_date')).format('h:mm') %> -
+  <%- moment(item.get('end_date')).format('h:mm a') %>
   <% if (item.get('building') && item.get('room')) { %>
     <br>
     <%- item.get('building') %> <%- item.get('room') %>
