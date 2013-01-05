@@ -30,6 +30,19 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       term_id: ''
     },
 
+    initialize: function() {
+      // Server time is UTC, but client's computer is some other timezone.
+      // Adjust to their timezone by adding moment.zone().
+      // FIXME(Sandy): This will break for people not in the same timezone as
+      // their university, but they might not be attending classes there anyway?
+      var timezoneShift = function(date) {
+        mDate = moment(date);
+        return mDate.add('minutes', mDate.zone()).toDate();
+      };
+      this.set('start_date', timezoneShift(this.get('start_date')));
+      this.set('end_date', timezoneShift(this.get('end_date')));
+    },
+
     referenceFields: {
       'course': ['course_id', _course.CourseCollection]
     },
