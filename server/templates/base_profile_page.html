@@ -12,7 +12,6 @@
             <h1 class="name">{{ profile_obj['name'] }}</h1>
             {% if profile_obj['program_name'] %}
               <p class="lead program">
-                {{ profile_obj.get('last_program_year_id', '') }}
                 {{ profile_obj['program_name'] }}
               </p>
             {% endif %}
