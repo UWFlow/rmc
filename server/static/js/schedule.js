@@ -848,11 +848,14 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         var processSlotItemBound =
           _.bind(processSlotItem, this, cId, classNum, sectionNum, sectionType);
 
-        processedItems = processedItems.concat(
-            _.reduce(_.map(slotItems, processSlotItemBound), function(a, b) {
+        var processedSlotItems = _.map(slotItems, processSlotItemBound);
+        if (processedSlotItems.length > 0) {
+          processedItems = processedItems.concat(
+            _.reduce(processedSlotItems, function(a, b) {
               return a.concat(b);
             })
-        );
+          );
+        }
       }, this, courseId));
     });
 
