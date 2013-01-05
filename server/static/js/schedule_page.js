@@ -15,7 +15,9 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   var scheduleItems = new _schedule.ScheduleItemCollection(
     pageData.scheduleItemObjs);
 
+  var schedule = new _schedule.Schedule();
   var scheduleView = _schedule.initScheduleView({
+    schedule: schedule,
     scheduleItems: scheduleItems,
     width: $schedulePlaceholder.outerWidth()
   });
@@ -38,7 +40,14 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   }
 
   if (_util.getQueryParam('print')) {
-    $('#schedule-print-css').attr('media', 'screen,print');
+    var startDate = _util.getQueryParam('start_date');
+    if (startDate) {
+      schedule.set('start_date', new Date(Number(startDate)));
+    }
+    var endDate = _util.getQueryParam('end_date');
+    if (endDate) {
+      schedule.set('end_date', new Date(Number(endDate)));
+    }
 
     window.print();
 

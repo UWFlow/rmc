@@ -107,16 +107,10 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     var $schedulePlaceholder = $("#class-schedule-placeholder");
     var scheduleView = _schedule.initScheduleView({
       scheduleItems: scheduleItems,
-      width: $schedulePlaceholder.outerWidth()
+      width: $schedulePlaceholder.outerWidth(),
+      showSharing: window.pageData.ownProfile
     });
     $schedulePlaceholder.replaceWith(scheduleView.el);
-
-    if (window.pageData.ownProfile) {
-      var scheduleShareView = new _schedule.ScheduleShareView({
-        url: _schedule.getPublicScheduleLink()
-      });
-      $("#schedule-share-placeholder").replaceWith(scheduleShareView.render().el);
-    }
   }
 
   mixpanel.track('Impression: Profile page');

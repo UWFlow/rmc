@@ -242,7 +242,16 @@
 }
 
 .schedule-share {
-  margin-top: 15px;
+  // This is a workaround for the schedule-item-container stealing clicks
+  z-index: 100;
+  position: relative;
+
+  // Make the share bar look integrated with the schedule
+  background-color: #FAFAFA;
+  margin-top: 0;
+  padding: 8px 10px;
+  border-top: 1px solid $wellBorderColor;
+  @include border-radius(0 0 4px 4px);
 
   .share-label {
     padding-left: 6px;
@@ -256,6 +265,5 @@
 
   .print-schedule-btn {
     float: right;
-    margin-right: 10px;
   }
 }

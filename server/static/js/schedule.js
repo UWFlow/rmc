@@ -326,28 +326,16 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     }
   });
 
-  // TODO(jlfwong): Resizing
-  var ScheduleView = RmcBackbone.View.extend({
-    template: _.template($("#schedule-tpl").html()),
+  var Schedule = RmcBackbone.Model.extend({
+    defaults: {
+      start_date: null,
+      end_date: null
+    },
 
-    className: 'class-schedule',
-
-    initialize: function(options) {
-      this.startHour = options.maxStartHour;
-      this.endHour = options.minEndHour;
-
-      if (this.startDate && this.endDate) {
-        this.startDate = options.startDate;
-        this.endDate = options.endDate;
-      } else {
+    initialize: function() {
+      if (!this.get('start_date') || !this.get('end_date')) {
         this.setCurrWeek();
       }
-
-      this.scheduleItems = options.scheduleItems;
-      this.resizeOptions = options.resizeOptions;
-
-      this.dayViews = [];
-      this.hourLabelViews = [];
     },
 
     setCurrWeek: function() {
@@ -362,15 +350,59 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
       // The default start and end dates are the Monday and Friday of
       // the current week respectively
-      this.startDate = currMoment.day(1).sod().toDate();
-      this.endDate = currMoment.day(5).sod().toDate();
+      this.set({
+          start_date: currMoment.day(1).sod().toDate(),
+          end_date: currMoment.day(5).sod().toDate()
+      });
+    },
+
+    setNextWeek: function() {
+      this.set({
+        start_date: moment(this.get('start_date')).clone().add('days', 7).toDate(),
+        end_date: moment(this.get('end_date')).clone().add('days', 7).toDate()
+      });
+    },
+
+    setPrevWeek: function() {
+      this.set({
+        start_date: moment(this.get('start_date')).clone().subtract('days', 7).toDate(),
+        end_date: moment(this.get('end_date')).clone().subtract('days', 7).toDate()
+      });
+    }
+  });
+
+  // TODO(jlfwong): Resizing
+  var ScheduleView = RmcBackbone.View.extend({
+    template: _.template($("#schedule-tpl").html()),
+
+    className: 'class-schedule',
+
+    initialize: function(options) {
+      this.startHour = options.maxStartHour;
+      this.endHour = options.minEndHour;
+
+      this.schedule = options.schedule;
+      this.schedule.on('change:start_date change:end_date', this.render, this);
+
+      this.scheduleItems = options.scheduleItems;
+      this.resizeOptions = options.resizeOptions;
+
+      this.showSharing = options.showSharing;
+      if (this.showSharing) {
+        this.scheduleShareView = new ScheduleShareView({
+          url: getPublicScheduleLink(),
+          schedule: this.schedule
+        });
+      }
+
+      this.dayViews = [];
+      this.hourLabelViews = [];
     },
 
     render: function() {
       this.$el.html(this.template({
-        schedule: this.schedule,
-        start_date: this.startDate,
-        end_date: this.endDate
+        start_date: this.schedule.get('start_date'),
+        end_date: this.schedule.get('end_date')
       }));
 
       // Remove any existing days and hour labels
@@ -383,8 +415,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
       var $dayContainer = this.$(".day-container");
       // Since moments mutate the underlying date, gotta clone
-      var currMoment = moment(new Date(this.startDate));
-      var endMoment = moment(this.endDate);
+      var currMoment = moment(this.schedule.get('start_date')).clone();
+      var endMoment = moment(this.schedule.get('end_date'));
       while (true) {
         if (currMoment.diff(endMoment) > 0) {
           break;
@@ -430,6 +462,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         this.resize(this.resizeOptions);
       }
 
+      if (this.scheduleShareView) {
+        this.$('.schedule-share-placeholder').replaceWith(
+            this.scheduleShareView.render().el);
+      }
+
       return this;
     },
 
@@ -452,7 +489,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         height: headerHeight - 2 * headerPadding - headerBorderHeight
       });
 
-      var nDays = moment(this.endDate).diff(moment(this.startDate), 'days') + 1;
+      var nDays = moment(this.schedule.get('end_date')).diff(
+          moment(this.schedule.get('start_date')), 'days') + 1;
 
       _.each(this.dayViews, function(dayView) {
         dayView.resize({
@@ -471,30 +509,21 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     events: {
-      'click .curr-week-btn': 'changeCurrWeek',
-      'click .prev-week-btn': 'changePrevWeek',
-      'click .next-week-btn': 'changeNextWeek'
+      'click .curr-week-btn': 'onChangeCurrWeek',
+      'click .prev-week-btn': 'onChangePrevWeek',
+      'click .next-week-btn': 'onChangeNextWeek'
     },
 
-    changeCurrWeek: function(evt) {
-      this.setCurrWeek();
-      this.changeWeek();
+    onChangeCurrWeek: function(evt) {
+      this.schedule.setCurrWeek();
     },
 
-    changePrevWeek: function(evt) {
-      this.startDate = moment(this.startDate).subtract('days', 7).toDate();
-      this.endDate = moment(this.endDate).subtract('days', 7).toDate();
-      this.changeWeek();
+    onChangePrevWeek: function(evt) {
+      this.schedule.setPrevWeek();
     },
 
-    changeNextWeek: function(evt) {
-      this.startDate = moment(this.startDate).add('days', 7).toDate();
-      this.endDate = moment(this.endDate).add('days', 7).toDate();
-      this.changeWeek();
-    },
-
-    changeWeek: function(evt) {
-      this.render();
+    onChangeNextWeek: function(evt) {
+      this.schedule.setNextWeek();
     }
   });
 
@@ -589,7 +618,20 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     className: 'schedule-share',
 
     initialize: function(options) {
-      this.options = options;
+      this.printOptions = { print: 1 };
+
+      if (options.schedule) {
+        this.schedule = options.schedule;
+        var self = this;
+        this.schedule.on('change:start_date', function(model, start_date) {
+          self.printOptions.start_date = Number(start_date);
+          self.render();
+        }, this);
+        this.schedule.on('change:end_date', function(model, end_date) {
+          self.printOptions.end_date = Number(end_date);
+          self.render();
+        }, this);
+      }
     },
 
     events: {
@@ -632,8 +674,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
     render: function() {
       this.$el.html(this.template(_.extend({}, this.options, {
-        // TODO(david): Look up how to append query param after flight lands
-        print_url: this.options.url + "?print=1"
+        // TODO(david): Append query param properly
+        print_url: this.options.url + '?' + $.param(this.printOptions)
       })));
       return this;
     }
@@ -643,10 +685,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     var width = options.width;
     var scheduleItems = options.scheduleItems;
 
+    var schedule = options.schedule || new Schedule();
     var scheduleView = new ScheduleView({
+      schedule: schedule,
       maxStartHour: 8,
       minEndHour: 18,
       scheduleItems: scheduleItems,
+      showSharing: options.showSharing,
       resizeOptions: {
         headerHeight: 30,
         hourHeight: 60,
@@ -869,6 +914,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     ScheduleItem: ScheduleItem,
     ScheduleItemCollection: ScheduleItemCollection,
     ScheduleShareView: ScheduleShareView,
+    Schedule: Schedule,
     ScheduleView: ScheduleView,
     ScheduleInputView: ScheduleInputView,
     ScheduleInputModalView: ScheduleInputModalView,
