@@ -730,7 +730,7 @@ def upload_schedule():
     user.last_good_schedule_paste = req.form.get('schedule_text')
     user.save()
 
-    # Remove existing schedule items for the user
+    # Remove existing schedule items for the user for the given term
     for usi in m.UserScheduleItem.objects(user_id=user.id, term_id=term_id):
         usi.delete()
 
@@ -743,13 +743,13 @@ def upload_schedule():
                 class_num=item['class_num'],
                 building=item['building'],
                 room=item['room'],
-                section=item['section'],
-                start_time=item['start_time'],
-                end_time=item['end_time'],
+                section_type=item['section_type'],
+                section_num=item['section_num'],
+                start_date=datetime.fromtimestamp(item['start_date']),
+                end_date=datetime.fromtimestamp(item['end_date']),
                 course_id=item['course_id'],
                 prof_id=prof_id,
                 term_id=term_id,
-                days=item['days'],
             )
             usi.save()
 
