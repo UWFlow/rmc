@@ -61,10 +61,12 @@ class UserScheduleItem(me.Document):
         }
 
     def __repr__(self):
-        return "<UserScheduleItem: %s, %s, %s, %s-%s, %s>" % (
+        return "<UserScheduleItem: %s, %s, %s, %s %s, %s-%s>" % (
             self.user_id,
             self.course_id,
             self.term_id,
+            self.section_type,
+            self.section_num,
             self.start_date,
             self.end_date,
         )
