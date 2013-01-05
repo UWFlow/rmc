@@ -697,13 +697,43 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       return (/(\w{2,5}\ \w{1,5})\ -\ ([^\r\n]+)/g);
     };
 
-    var getBodyRe = function() {
-      // Note: Changed from the github version, added bracket on class number
-      return (/(\d{4})\s+(\d{3})\s+(\w{3})\s+([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g);
+    var getPartialBodyRe = function() {
+      var daysOfWeekRe = /([MThWF]{0,6})/;
+      var timeRe = /([1]{0,1}\d\:[0-5]\d[AP]M)/;
+      var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
+      var locationRe = /([\w ]+\s+[0-9]{1,5}[A-Z]?)/;
+      var profRe = /([\-\w ,\r\n]+)/;
+      var dayRe = /(\d{2}\/\d{2}\/\d{4})/;
+      var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
+      var wsRe = /\s+/;
+
+      var regexStr = [
+        daysOfWeekRe.source,
+        timePairRe.source,
+        locationRe.source,
+        profRe.source,
+        dayPairRe.source
+      ].join(wsRe.source);
+
+      return RegExp(regexStr, 'g');
     };
 
-    var getPartialBodyRe = function() {
-      return (/([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g);
+    var getBodyRe = function() {
+      // Note: Changed from the github version, added bracket on class number
+      var classNumRe = /(\d{4})/;
+      var sectionNumRe = /(\d{3})/;
+      var sectionTypeRe = /(\w{3})/;
+      var partialRegex = getPartialBodyRe();
+      var wsRe = /\s+/;
+
+      var regexStr = [
+        classNumRe.source,
+        sectionNumRe.source,
+        sectionTypeRe.source,
+        partialRegex.source
+      ].join(wsRe.source);
+
+      return new RegExp(regexStr, 'g');
     };
 
     // Exact each course item from the schedule
