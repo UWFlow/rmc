@@ -701,7 +701,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var daysOfWeekRe = /([MThWF]{0,6})/;
       var timeRe = /([1]{0,1}\d\:[0-5]\d[AP]M)/;
       var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
-      var locationRe = /([\w ]+\s+[0-9]{1,5}[A-Z]?)/;
+      // This could be a room, or 'TBA'
+      var locationRe = /([\-\w ,\r\n]+)/;
       var profRe = /([\-\w ,\r\n]+)/;
       // The day can appear in either format: '01/07/2013' or '2013-01-07'
       var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}-\d{2}-\d{2}))/;
@@ -765,9 +766,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       // E.g. 02/15/2013 (MM/DD/YYYY)
       var endDateStr = slotMatches[7];
 
-      // E.g. PHY   313
+      // E.g. PHY   313, TBA
       var location = slotMatches[4].split(/\s+/g);
       var building = location[0];
+      // room will be undefined if the location is 'TBA'
       var room = location[1];
 
       // E.g. Anna Lubiw
@@ -828,9 +830,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         // E.g. 5300
         var classNum = classMatches[1];
         // E.g. 001
-        var sectionNum = classMatches[3];
+        var sectionNum = classMatches[2];
         // E.g. LEC
-        var sectionType = classMatches[2];
+        var sectionType = classMatches[3];
 
         // Process each schedule slot of that class item
         var partialBodyRe = getPartialBodyRe();
