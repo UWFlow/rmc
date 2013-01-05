@@ -40,6 +40,12 @@ body {
   display: none;
 }
 
-.class-schedule .schedule-nav .buttons {
-  display: none;
+.class-schedule {
+  .schedule-nav {
+    padding: 5px 10px;
+
+    .buttons {
+      display: none;
+    }
+  }
 }

@@ -694,7 +694,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       showSharing: options.showSharing,
       resizeOptions: {
         headerHeight: 30,
-        hourHeight: 60,
+        hourHeight: 52,
         width: width
       }
     });
