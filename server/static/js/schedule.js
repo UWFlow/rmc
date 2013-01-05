@@ -244,9 +244,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var height = options.height;
       var headerHeight = options.headerHeight;
       var hourHeight = options.hourHeight;
+      var widthPercent = options.widthPercent;
 
       this.$el.css({
-        height: height
+        height: height,
+        width: widthPercent + '%'
       });
 
       this.$('.header').css({
@@ -456,7 +458,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         dayView.resize({
           height: height,
           headerHeight: headerHeight,
-          hourHeight: hourHeight
+          hourHeight: hourHeight,
+          widthPercent: 100/nDays
         });
       });
 

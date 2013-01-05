@@ -73,7 +73,6 @@
 
   .day {
     border-left: 1px solid $wellBorderColor;
-    width: 20%;  // TODO(david): This assumes 5 days
     @include box-sizing(border-box);
     position: relative;
     padding-right: 2px;
