@@ -543,7 +543,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
     },
 
     render: function() {
-      this.$el.html(this.template(this.options));
+      this.$el.html(this.template(_.extend({}, this.options, {
+        // TODO(david): Look up how to append query param after flight lands
+        print_url: this.options.url + "?print=1"
+      })));
       return this;
     }
   });

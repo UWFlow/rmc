@@ -1,0 +1,41 @@
+@import 'base';
+@import 'profile';
+@import 'schedule';
+@import 'sign_in';
+
+// TODO(david): May want to consider not re-using schedule page to be more
+//     robust to changes to website base templates
+
+.personal-info {
+  display: none;
+}
+
+body {
+  padding-top: 0;
+}
+
+// TODO(david): Show Flow logo somewhere?
+#site-nav {
+  display: none;
+}
+
+#profile-sidebar {
+  display: none;
+}
+
+#profile-container {
+  width: 100%;
+  margin-left: 0;
+}
+
+#social-media-actions {
+  display: none;
+}
+
+#site-header {
+  margin-bottom: 20px;
+}
+
+#site-footer {
+  display: none;
+}

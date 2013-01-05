@@ -106,7 +106,7 @@
          http://twitter.github.com/bootstrap/scaffolding.html#responsive #}
     <div id="fb-root"></div>
 
-    <div class="navbar navbar-fixed-top">
+    <div id="site-nav" class="navbar navbar-fixed-top">
       <div class="container-fluid">
         <a class="brand nav-item" href="/">
           <i class="logo logo-no-color"></i>
@@ -153,7 +153,7 @@
       <div id="sign-in-banner-container"></div>
     {% endif %}
 
-    <div class="container-fluid">
+    <div id="social-media-actions" class="container-fluid">
       <div class="row-fluid social-media">
         <div class="span6 fb-like-container">
           <div class="fb-like" data-href="http://www.facebook.com/planyourflow"
@@ -172,7 +172,7 @@
       </div>
     </div>
 
-    <header>
+    <header id="site-header">
       {% block header %}
       {% endblock %}
     </header>
@@ -182,7 +182,7 @@
       {% endblock %}
     </div>
 
-    <footer>
+    <footer id="site-footer">
       {% block footer %}
         <div id="footer-text">
           <ul id="main-links">

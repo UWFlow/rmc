@@ -4,6 +4,8 @@
 
 {% block stylesheets %}
   <link rel="stylesheet" href="{{ '/static/css/schedule_page.css'|version }}">
+  <link id="schedule-print-css" rel="stylesheet" media="print"
+      href="{{ '/static/css/schedule_page_print.css'|version }}">
 {% endblock %}
 
 {% block head_scripts %}

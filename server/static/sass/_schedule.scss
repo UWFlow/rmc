@@ -81,6 +81,7 @@
     line-height: 14px;
     @include box-sizing(border-box);
     border-color: darken($wellBorderColor, 10%);
+    border-left-width: 3px;  // TODO(david): Make this look less like Schedule+
     margin-left: -1px;
 
     @mixin item-class($color) {
@@ -203,6 +204,12 @@
   }
 
   .link-box {
-    width: 50%;
+    // TODO(david): Stretch box to take up more horizontal space if available
+    width: 270px;
+  }
+
+  .print-schedule-btn {
+    float: right;
+    margin-right: 10px;
   }
 }

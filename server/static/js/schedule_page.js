@@ -36,5 +36,14 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
     });
   }
 
-  mixpanel.track('Impression: Schedule page');
+  if (_util.getQueryParam('print')) {
+    $('#schedule-print-css').attr('media', 'screen,print');
+
+    window.print();
+
+    mixpanel.track('Impression: Print schedule page');
+  } else {
+    mixpanel.track('Impression: Schedule page');
+  }
+
 });
