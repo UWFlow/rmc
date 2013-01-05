@@ -11,9 +11,13 @@
 <div class="time-loc-info truncate">
   <%- moment(item.get('start_date')).format('h:mm') %> -
   <%- moment(item.get('end_date')).format('h:mm a') %>
-  <% if (item.get('building') && item.get('room')) { %>
+  <% if (item.get('building')){ %>
     <br>
-    <%- item.get('building') %> <%- item.get('room') %>
+    <%- item.get('building') %>
+    {# The building might not have a room. E.g. 'TBA' #}
+    <% if (item.get('room')) { %>
+      <%- item.get('room') %>
+    <% } %>
   <% } %>
 </div>
 {% endcall %}
