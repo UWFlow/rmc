@@ -1,16 +1,48 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'course', 'util', 'facebook'],
-function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
+'ext/bootstrap', 'course', 'util', 'facebook', 'moment'],
+function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
-  var strTimeToMinutes = function(strTime) {
-    // Given a string in 24 hour HH:MM format, returns the corresponding number
-    // of minutes since the beginning of the day
-    var x = strTime.split(':');
-    return parseInt(x[0], 10) * 60 + parseInt(x[1], 10);
+  var minutesSinceSod = function(date) {
+    var dateMoment = moment(date);
+    return dateMoment.diff(dateMoment.sod(), 'minutes');
   };
 
+  var isSameDay = function(firstDate, secondDate) {
+    var firstMoment = moment(firstDate);
+    var secondMoment = moment(secondDate);
+    return firstMoment.sod().diff(secondMoment.sod()) === 0;
+  };
+
+  // TODO(mack): rename UserScheduleItem to match the backend
   var ScheduleItem = RmcBackbone.Model.extend({
+
+    defaults: {
+      class_num: '',
+      building: '',
+      room: '',
+      section_type: '',
+      section_num: '',
+      start_date: '',
+      end_date: '',
+      course_id: '',
+      prof_id: '',
+      term_id: ''
+    },
+
+    initialize: function() {
+      // Server time is UTC, but client's computer is some other timezone.
+      // Adjust to their timezone by adding moment.zone().
+      // FIXME(Sandy): This will break for people not in the same timezone as
+      // their university, but they might not be attending classes there anyway?
+      var timezoneShift = function(date) {
+        mDate = moment(date);
+        return mDate.add('minutes', mDate.zone()).toDate();
+      };
+      this.set('start_date', timezoneShift(this.get('start_date')));
+      this.set('end_date', timezoneShift(this.get('end_date')));
+    },
+
     referenceFields: {
       'course': ['course_id', _course.CourseCollection]
     },
@@ -29,11 +61,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
     },
 
     startMinutes: function() {
-      return strTimeToMinutes(this.get('start_time'));
+      return minutesSinceSod(this.get('start_date'));
     },
 
     endMinutes: function() {
-      return strTimeToMinutes(this.get('end_time'));
+      return minutesSinceSod(this.get('end_date'));
     }
   });
 
@@ -57,22 +89,12 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       }
     },
 
-    forDay: function(day) {
+    forDay: function(date) {
       var items = new ScheduleItemCollection(this.filter(function(x) {
-        return _.indexOf(x.get('days'), day) !== -1;
+        return isSameDay(date, x.get('start_date'));
       }));
       items.sort();
       return items;
-    },
-
-    byDay: function() {
-      return [
-        this.forDay('M'),
-        this.forDay('T'),
-        this.forDay('W'),
-        this.forDay('Th'),
-        this.forDay('F')
-      ];
     }
   });
 
@@ -185,7 +207,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
     className: 'day',
 
     initialize: function(options) {
-      this.day = options.day;
+      this.date = options.date;
       this.scheduleItems = options.scheduleItems;
       this.scheduleView = options.scheduleView;
 
@@ -194,8 +216,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
     render: function() {
       this.$el.html(this.template({
-        day: this.day
+        date: this.date
       }));
+
+      var today = new Date();
+      if (isSameDay(this.date, today)) {
+        this.$el.addClass('today');
+      }
 
       var $scheduleItemContainer = this.$(".schedule-item-container");
 
@@ -298,7 +325,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
   });
 
   // TODO(jlfwong): Resizing
-
   var ScheduleView = RmcBackbone.View.extend({
     template: _.template($("#schedule-tpl").html()),
 
@@ -308,33 +334,63 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       this.startHour = options.maxStartHour;
       this.endHour = options.minEndHour;
 
+      if (this.startDate && this.endDate) {
+        this.startDate = options.startDate;
+        this.endDate = options.endDate;
+      } else {
+        this.setCurrWeek();
+      }
+
       this.scheduleItems = options.scheduleItems;
+      this.resizeOptions = options.resizeOptions;
 
       this.dayViews = [];
       this.hourLabelViews = [];
     },
 
+    setCurrWeek: function() {
+      var currMoment = moment();
+
+      // In out calendar, let us consider saturday to be the start of a week,
+      // since people probably aren't interested in classes of the week that
+      // just passed
+      if (currMoment.day() > 5) {
+        currMoment.add('days', 7);
+      }
+
+      // The default start and end dates are the Monday and Friday of
+      // the current week respectively
+      this.startDate = currMoment.day(1).sod().toDate();
+      this.endDate = currMoment.day(5).sod().toDate();
+    },
+
     render: function() {
       this.$el.html(this.template({
-        schedule: this.schedule
+        schedule: this.schedule,
+        start_date: this.startDate,
+        end_date: this.endDate
       }));
 
+      // Remove any existing days and hour labels
+      while (this.dayViews.length) {
+        this.dayViews.shift().close();
+      }
+      while (this.hourLabelViews.length) {
+        this.hourLabelViews.shift().close();
+      }
+
       var $dayContainer = this.$(".day-container");
+      // Since moments mutate the underlying date, gotta clone
+      var currMoment = moment(new Date(this.startDate));
+      var endMoment = moment(this.endDate);
+      while (true) {
+        if (currMoment.diff(endMoment) > 0) {
+          break;
+        }
 
-      // TODO(jlfwong): Weekends?
-      var dayNames = [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday"
-      ];
-
-      _.each(this.scheduleItems.byDay(), function(itemsForDay, i) {
+        var itemsForDay = this.scheduleItems.forDay(currMoment.toDate());
         var dayView = new ScheduleDayView({
-          day: {
-            name: dayNames[i]
-          },
+          date: currMoment.toDate(),
           scheduleItems: itemsForDay,
           scheduleView: this
         });
@@ -355,10 +411,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
 
         $dayContainer.append(dayView.render().el);
         this.dayViews.push(dayView);
-      }, this);
+
+        currMoment.add('days', 1);
+      }
 
       var $hourLabelContainer = this.$(".hour-label-container");
-
       for (var i = this.startHour; i <= this.endHour; i++) {
         var hourLabelView = new ScheduleHourLabelView({
           hour: i
@@ -367,10 +424,16 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
         this.hourLabelViews.push(hourLabelView);
       }
 
+      if (this.resizeOptions) {
+        this.resize(this.resizeOptions);
+      }
+
       return this;
     },
 
     resize: function(options) {
+      this.resizeOptions = options;
+
       var width = options.width;
       var hourHeight = options.hourHeight;
       var headerHeight = options.headerHeight;
@@ -387,9 +450,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
         height: headerHeight - 2 * headerPadding - headerBorderHeight
       });
 
-      // TODO(jlfwong): Don't know if we need to support weekends anytime
-      // soon...
-      var nDays = 5;
+      var nDays = moment(this.endDate).diff(moment(this.startDate), 'days') + 1;
 
       _.each(this.dayViews, function(dayView) {
         dayView.resize({
@@ -404,6 +465,33 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       });
 
       return this;
+    },
+
+    events: {
+      'click .curr-week-btn': 'changeCurrWeek',
+      'click .prev-week-btn': 'changePrevWeek',
+      'click .next-week-btn': 'changeNextWeek'
+    },
+
+    changeCurrWeek: function(evt) {
+      this.setCurrWeek();
+      this.changeWeek();
+    },
+
+    changePrevWeek: function(evt) {
+      this.startDate = moment(this.startDate).subtract('days', 7).toDate();
+      this.endDate = moment(this.endDate).subtract('days', 7).toDate();
+      this.changeWeek();
+    },
+
+    changeNextWeek: function(evt) {
+      this.startDate = moment(this.startDate).add('days', 7).toDate();
+      this.endDate = moment(this.endDate).add('days', 7).toDate();
+      this.changeWeek();
+    },
+
+    changeWeek: function(evt) {
+      this.render();
     }
   });
 
@@ -443,7 +531,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       var scheduleData;
       try {
         scheduleData = parseSchedule(data);
-        console.log('parsing success');
       } catch (ex) {
         $.ajax('/api/schedule/log', {
           data: {
@@ -457,10 +544,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
             'Check that you\'ve pasted your schedule correctly.');
 
         mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
-        console.log('parsing fail');
         return;
       }
-      console.log('after parse');
       _gaq.push([
         '_trackEvent',
         'USER_GENERIC',
@@ -558,24 +643,14 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
     var scheduleView = new ScheduleView({
       maxStartHour: 8,
       minEndHour: 18,
-      scheduleItems: scheduleItems
-    });
-
-    scheduleView
-      .render()
-      .resize({
+      scheduleItems: scheduleItems,
+      resizeOptions: {
         headerHeight: 30,
         hourHeight: 60,
         width: width
-      });
-
-    $(window).resize(function() {
-      scheduleView.resize({
-        headerHeight: 30,
-        height: 800,
-        width: scheduleView.$el.outerWidth()
-      });
+      }
     });
+    scheduleView.render();
 
     return scheduleView;
   };
@@ -598,82 +673,184 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
       throw new Error('Couldn\'t find matching term (Spring|Fall|Winter)');
     }
 
-    // Exact each course item from the schedule
-    var titleRe = /(\w{2,5}\ \w{1,5})\ -\ ([^\r\n]+)/g;
-    var rawItems = [];
-    var match = titleRe.exec(data);
-    var lastIndex = -1;
-    while (match) {
-      if (lastIndex !== -1) {
-        var rawItem = data.substring(lastIndex, match.index);
-        rawItems.push(rawItem);
+    var extractMatches = function(input, regex) {
+      var results = [];
+      var match = regex.exec(input);
+      var lastIndex = -1;
+      while (match) {
+        if (lastIndex !== -1) {
+          var result = input.substring(lastIndex, match.index);
+          results.push(result);
+        }
+        lastIndex = match.index;
+        match = regex.exec(input);
       }
-      lastIndex = match.index;
-      match = titleRe.exec(data);
-    }
-    if (lastIndex) {
-      rawItems.push(data.substring(lastIndex));
-    }
+      if (lastIndex) {
+        results.push(input.substring(lastIndex));
+      }
+      return results;
+    };
+
+    // Regexes from:
+    // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
+    // TODO(Sandy): make this look cleaner (line breaks + comments)
+    var getTitleRe = function() {
+      return (/(\w{2,5}\ \w{1,5})\ -\ ([^\r\n]+)/g);
+    };
+
+    var getPartialBodyRe = function() {
+      var daysOfWeekRe = /([MThWF]{0,6})/;
+      var timeRe = /([1]{0,1}\d\:[0-5]\d[AP]M)/;
+      var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
+      // This could be a room, or 'TBA'
+      var locationRe = /([\-\w ,]+)/;
+      // Apparently, it's possible to have mutiple profs (on separate lines):
+      // e.g. Behrad Khamesee,\nJan Huissoon
+      var profRe = /([\-\w ,\r\n]+)/;
+      // The day can appear in either format: '01/07/2013' or '2013-01-07'
+      var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}-\d{2}-\d{2}))/;
+      var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
+      var wsRe = /\s+/;
+
+      var regexStr = [
+        daysOfWeekRe.source,
+        timePairRe.source,
+        locationRe.source,
+        profRe.source,
+        dayPairRe.source
+      ].join(wsRe.source);
+
+      return RegExp(regexStr, 'g');
+    };
+
+    var getBodyRe = function() {
+      // Note: Changed from the github version, added bracket on class number
+      var classNumRe = /(\d{4})/;
+      var sectionNumRe = /(\d{3})/;
+      var sectionTypeRe = /(\w{3})/;
+      var partialRegex = getPartialBodyRe();
+      var wsRe = /\s+/;
+
+      var regexStr = [
+        classNumRe.source,
+        sectionNumRe.source,
+        sectionTypeRe.source,
+        partialRegex.source
+      ].join(wsRe.source);
+
+      return new RegExp(regexStr, 'g');
+    };
+
+    // Exact each course item from the schedule
+    var titleRe = getTitleRe();
+    var rawItems = extractMatches(data, titleRe);
+
+    var formatTime = function(timeStr) {
+      // '2:20PM' => '2:20 PM'
+      return timeStr.match(/(AM|PM|\d{1,2}:\d{2})/g).join(' ');
+    };
+
+    var processSlotItem = function(cId, cNum, sNum, sType, slotItem) {
+      var slotMatches = getPartialBodyRe().exec(slotItem);
+
+      // Grab info from the slot item
+      // E.g. TTh -> ['T', 'Th']
+      var days = slotMatches[1].match(/[A-Z][a-z]?/g);
+
+      // FIXME(Sandy): Eventually worry about timezones
+      // E.g. '2:30PM'
+      var startTimeStr = formatTime(slotMatches[2]);
+      // E.g. '3:20PM'
+      var endTimeStr = formatTime(slotMatches[3]);
+
+      // The day can appear in either format: '01/07/2013' or '2013-01-07'
+      // E.g. 01/07/2013 (MM/DD/YYYY)
+      var startDateStr = slotMatches[6];
+      // E.g. 02/15/2013 (MM/DD/YYYY)
+      var endDateStr = slotMatches[7];
+
+      // E.g. PHY   313, TBA
+      var location = slotMatches[4].split(/\s+/g);
+      var building = location[0];
+      // room will be undefined if the location is 'TBA'
+      var room = location[1];
+
+      // E.g. Anna Lubiw OR Behrad Khamesee,\nJan Huissoon
+      // If more than one prof, only keep the first one
+      var profName = slotMatches[5].split(',')[0];
+
+      // Generate each UserScheduleItem
+        // TODO(Sandy): Not sure if Saturday's and Sunday's are S and SU
+      var weekdayMap = { Su: 0, M: 1, T: 2, W: 3, Th: 4, F: 5, S: 6 };
+      var hasClassOnDay = [];
+      _.each(days, function(day) {
+        hasClassOnDay[weekdayMap[day]] = true;
+      });
+
+      var timeFormats = ['YYYY-MM-DD h:mm A', 'MM/DD/YYYY h:mm A'];
+      var firstStartMoment = moment(startDateStr + " " + startTimeStr, timeFormats);
+      var firstEndMoment = moment(startDateStr + " " + endTimeStr, timeFormats);
+
+      // Time delta between start and end time, in milliseconds
+      var timeDelta = firstEndMoment - firstStartMoment;
+
+      var processedSlotItems = [];
+      // Iterate through all days in the date range
+      var currMoment = firstStartMoment;
+      var slotEndMoment = moment(endDateStr + " " + startTimeStr, timeFormats);
+      while (currMoment <= slotEndMoment) {
+        if (hasClassOnDay[currMoment.day()]) {
+          processedSlotItems.push({
+            course_id: cId,
+            class_num: cNum,
+            section_num: sNum,
+            section_type: sType,
+            start_date: currMoment.unix(),
+            end_date: moment(currMoment.unix() * 1000 + timeDelta).unix(),
+            building: building,
+            room: room,
+            prof_name: profName
+          });
+        }
+        currMoment.add('days', 1);
+      }
+      return processedSlotItems;
+    };
 
     // Process each course item
     var processedItems = [];
     _.each(rawItems, function(rawItem) {
-      // Regexes from (with slight changes, i.e. braket on class number):
-      // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
-      // TODO(Sandy): make this look cleaner (line breaks + comments)
-      var bodyRe = /(\d{4})\s+(\d{3})\s+(\w{3})\s+([MThWF]{0,6})\s+([1]{0,1}\d\:[0-5]\d[AP]M)\ -\ ([1]{0,1}\d\:[0-5]\d[AP]M)\s+([\w\ ]+\s+[0-9]{1,5}[A-Z]?)\s+([\w\ \-\,\r\n]+)\s+(\d{2}\/\d{2}\/\d{4})\ -\ (\d{2}\/\d{2}\/\d{4})/g;
-      var matches = bodyRe.exec(rawItem);
-
-      if (!matches) {
-        return;
-      }
-
-      var formatTime = function(timeStr) {
-        var result = timeStr;
-        // timeStr = '2:20PM'
-        var matches = timeStr.match(/(:|PM|AM|\d+)/g);
-        // => ['2', ':', '20', 'PM']
-        var hours = matches[0];
-        var mins = matches[2];
-        if (matches[3].toLowerCase() == 'pm' &&
-            parseInt(hours, 10) < 12) {
-           hours = (parseInt(hours, 10) + 12).toString();
-        }
-        return hours + ":" + mins;
-      };
-
+      // Grab info from the overall course item
       // E.g. CS 466 -> cs466
       var courseId = titleRe.exec(data)[1].replace(/\s+/g, '').toLowerCase();
-      // E.g. 5300
-      var classNum = matches[1];
-      // E.g. LEC 001
-      var section = matches[2] + " " + matches[3];
-      // E.g. TTh -> ['T', 'Th']
-      var days = matches[4].match(/[A-Z][a-z]?/g);
-      // E.g. 1:00PM
-      var startTime = formatTime(matches[5]);
-      // E.g. 2:20PM
-      var endTime = formatTime(matches[6]);
-      // E.g. PHY   313
-      var location = matches[7].split(/\s+/g);
-      var building = location[0];
-      var room = location[1];
-      // E.g. Anna Lubiw
-      var profName = matches[8];
 
-      var item = {
-        course_id: courseId,
-        class_num: classNum,
-        section: section,
-        days: days,
-        start_time: startTime,
-        end_time: endTime,
-        building: building,
-        room: room,
-        prof_name: profName
-      };
+      var bodyRe = getBodyRe();
+      // Extract each of the class items
+      var classItems = extractMatches(rawItem, bodyRe);
 
-      processedItems.push(item);
+      _.each(classItems, _.bind(function(cId, classItem) {
+        var classMatches = bodyRe.exec(data);
+        // Grab the info from the first entry of a class item
+        // E.g. 5300
+        var classNum = classMatches[1];
+        // E.g. 001
+        var sectionNum = classMatches[2];
+        // E.g. LEC
+        var sectionType = classMatches[3];
+
+        // Process each schedule slot of that class item
+        var partialBodyRe = getPartialBodyRe();
+        var slotItems = classItem.match(partialBodyRe);
+
+        var processSlotItemBound =
+          _.bind(processSlotItem, this, cId, classNum, sectionNum, sectionType);
+
+        processedItems = processedItems.concat(
+            _.reduce(_.map(slotItems, processSlotItemBound), function(a, b) {
+              return a.concat(b);
+            })
+        );
+      }, this, courseId));
     });
 
     return {
@@ -690,7 +867,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook) {
     ScheduleInputView: ScheduleInputView,
     ScheduleInputModalView: ScheduleInputModalView,
     getPublicScheduleLink: getPublicScheduleLink,
-    initScheduleView: initScheduleView,
-    parseSchedule: parseSchedule
+    initScheduleView: initScheduleView
   };
 });

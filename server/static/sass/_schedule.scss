@@ -6,6 +6,49 @@
   background: white;
   @include border-radius(4px);
 
+  // TODO(mack): nest css properly
+
+  .schedule-nav {
+    @extend .clearfix;
+    vertical-align: bottom;
+
+    border-bottom: 1px solid $wellBorderColor;
+    padding: 15px 20px;
+
+    $height: 22px;
+
+    .date-range {
+      display: inline-block;
+      font-weight: bold;
+      font-size: $height;
+      height: $height;
+      line-height: $height;
+      // TODO(mack): remove hack to get things to align vertically
+      margin-top: 3px;
+    }
+
+    .buttons {
+      display: inline-block;
+      float: right;
+      line-height: $height;
+
+      $lineHeight: 18px;
+      .curr-week-btn {
+        line-height: $lineHeight;
+      }
+
+      .prev-next-week-btns {
+        display: inline-block;
+        // Hack to get the arrows to vertically align with the
+        // "Current Week" button
+        i {
+          display: inline-block;
+          height: $lineHeight;
+        }
+      }
+    }
+  }
+
   // TODO(david): Make this a JS option?
   $hour-width: 80px;
 
@@ -34,6 +77,10 @@
     @include box-sizing(border-box);
     position: relative;
     padding-right: 2px;
+
+    &.today {
+      background-color: #fcfcfc;
+    }
   }
 
   .day-container {

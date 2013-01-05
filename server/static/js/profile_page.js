@@ -83,21 +83,12 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     var scheduleItems = new _schedule.ScheduleItemCollection(
       pageData.scheduleItemObjs);
 
-    var scheduleView = new _schedule.ScheduleView({
-      maxStartHour: 8,
-      minEndHour: 18,
-      scheduleItems: scheduleItems
+    var $schedulePlaceholder = $("#class-schedule-placeholder");
+    var scheduleView = _schedule.initScheduleView({
+      scheduleItems: scheduleItems,
+      width: $schedulePlaceholder.outerWidth()
     });
-
-    scheduleView
-      .render()
-      .resize({
-        headerHeight: 30,
-        hourHeight: 60,
-        width: $("#class-schedule-placeholder").outerWidth()
-      });
-
-    $("#class-schedule-placeholder").replaceWith(scheduleView.el);
+    $schedulePlaceholder.replaceWith(scheduleView.el);
 
     if (window.pageData.ownProfile) {
       var scheduleShareView = new _schedule.ScheduleShareView({

@@ -730,26 +730,38 @@ def upload_schedule():
     user.last_good_schedule_paste = req.form.get('schedule_text')
     user.save()
 
-    # Remove existing schedule items for the user
+    # Remove existing schedule items for the user for the given term
     for usi in m.UserScheduleItem.objects(user_id=user.id, term_id=term_id):
         usi.delete()
 
     for item in schedule_data:
         try:
             # Create this UserScheduleItem
-            prof_id = m.Professor.get_id_from_name(item['prof_name'])
+            first_name, last_name = m.Professor.guess_names(item['prof_name'])
+            prof_id = m.Professor.get_id_from_name(
+                first_name=first_name,
+                last_name=last_name,
+            )
+            if first_name and last_name:
+                if not m.Professor.objects.with_id(prof_id):
+                    m.Professor(
+                        id=prof_id,
+                        first_name=first_name,
+                        last_name=last_name,
+                    ).save()
+
             usi = m.UserScheduleItem(
                 user_id=user.id,
                 class_num=item['class_num'],
                 building=item['building'],
                 room=item['room'],
-                section=item['section'],
-                start_time=item['start_time'],
-                end_time=item['end_time'],
+                section_type=item['section_type'],
+                section_num=item['section_num'],
+                start_date=datetime.fromtimestamp(item['start_date']),
+                end_date=datetime.fromtimestamp(item['end_date']),
                 course_id=item['course_id'],
                 prof_id=prof_id,
                 term_id=term_id,
-                days=item['days'],
             )
             usi.save()
 
@@ -1008,6 +1020,8 @@ def user_course():
 
         new_prof_name = uc_data['new_prof_added']
 
+        # TODO(mack): should do guess_names first, and use that to
+        # generate the id
         prof_id = m.Professor.get_id_from_name(new_prof_name)
         uc.professor_id = prof_id
 

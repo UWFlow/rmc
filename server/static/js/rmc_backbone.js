@@ -10,29 +10,54 @@ function(Backbone, $, _) {
   var Model = Backbone.Model.extend({
     // TODO(mack): fix _oidFields so that it is scoped per model
     _oidFields: {},
+    _dateFields: {},
 
     _cachedReferences: {},
 
     /**
-     * Override toJSON to convert appropriate string fields to { $oid: string }
-     * if the field represents an ObjectId
+     * Override toJSON to convert appropriate fields to their strict
+     * BSON representation before sending to the server
+     *
+     * For example, convert fields representing ObjectId to: { $oid: string }
+     *
+     * See: http://www.mongodb.org/display/DOCS/Mongo+Extended+JSON
      */
-    toJSON: function(resolveOids) {
+    toJSON: function(serializeBson) {
       // TODO(mack): consider resolving referenceFields in here
 
       var obj = this._super('toJSON');
-      if (resolveOids) {
-        _.each(this._oidFields, function(__, key) {
-          var value = obj[key];
-          if (typeof value === 'string') {
-            value = { $oid: value };
-          } else if (_.isArray(value)) {
-            value = _.map(value, function(v) {
-              return { $oid: v };
-            });
-          }
-        });
+      if (!serializeBson) {
+        return obj;
       }
+
+      function serializeOid(value) {
+        if (_.isArray(value)) {
+          return _.map(value, function(v) {
+            return { $oid: v };
+          });
+        } else if (value) {
+          return { $oid: value };
+        }
+      }
+
+      function serializeDate(value) {
+        if (_.isArray(value)) {
+          return _.map(value, function(v) {
+            return { $date: v.getTime() };
+          });
+        } else if (value) {
+          return { $date: value.getTime() };
+        }
+      }
+
+      _.each(this._oidFields, function(__, key) {
+        obj[key] = serializeOid(obj[key]);
+      });
+
+      _.each(this._dateFields, function(__, key) {
+        obj[key] = serializeDate(obj[key]);
+      });
+
       return obj;
     },
 
@@ -118,17 +143,33 @@ function(Backbone, $, _) {
 
       for (attr in attrs) {
         val = attrs[attr];
-        if (val && typeof val.$oid === 'string') {
-          attrs[attr] = val.$oid;
-          this._oidFields[attr] = true;
-        } else if (_.isArray(val) && val.length &&
-            typeof val[0].$oid === 'string') {
-          // Just gonna assume for now that if first item in array is an
-          // ObjectId, entire array contains ObjectIds
-          attrs[attr] = _.map(val, function(v) {
-            return v.$oid;
-          });
-          this._oidFields[attr] = true;
+
+        if (val) {
+          if (_.isArray(val) && val.length && val[0].$oid) {
+            // TODO(mack): This won't work if the field is supposed to objectid
+            // field but starts out empty as an empty list. We might need a
+            // more explicit way to state the type of each field.
+
+            // Just gonna assume for now that if first item in array is an
+            // ObjectId, entire array contains ObjectIds
+            attrs[attr] = _.map(val, function(v) {
+              return v.$oid;
+            });
+            this._oidFields[attr] = true;
+          } else if (val.$oid) {
+            attrs[attr] = val.$oid;
+            this._oidFields[attr] = true;
+          }
+
+          if (_.isArray(val) && val.length && val[0].$date) {
+            attrs[attr] = _.map(val, function(v) {
+              return new Date(v.$oid);
+            });
+            this._dateFields[attr] = true;
+          } else if (val.$date) {
+            attrs[attr] = new Date(val.$date);
+            this._dateFields[attr] = true;
+          }
         }
 
         // During set, check if we are setting over an _id that is associated
