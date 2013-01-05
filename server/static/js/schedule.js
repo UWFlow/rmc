@@ -703,7 +703,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
       // This could be a room, or 'TBA'
       var locationRe = /([\-\w ,]+)/;
-      var profRe = /([\-\w ,]+)/;
+      // Apparently, it's possible to have mutiple profs (on separate lines):
+      // e.g. Behrad Khamesee,\nJan Huissoon
+      var profRe = /([\-\w ,\r\n]+)/;
       // The day can appear in either format: '01/07/2013' or '2013-01-07'
       var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}-\d{2}-\d{2}))/;
       var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
@@ -772,8 +774,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       // room will be undefined if the location is 'TBA'
       var room = location[1];
 
-      // E.g. Anna Lubiw
-      var profName = slotMatches[5];
+      // E.g. Anna Lubiw OR Behrad Khamesee,\nJan Huissoon
+      // If more than one prof, only keep the first one
+      var profName = slotMatches[5].split(',')[0];
 
       // Generate each UserScheduleItem
         // TODO(Sandy): Not sure if Saturday's and Sunday's are S and SU
