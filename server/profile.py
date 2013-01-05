@@ -52,6 +52,7 @@ def render_schedule_page(profile_user_id):
         current_user_id=current_user_id,
         schedule_item_objs=schedule_item_dicts,
         course_objs=course_dicts,
+        show_printable=flask.request.values.get('print'),
     )
 
 

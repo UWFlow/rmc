@@ -4,7 +4,12 @@
 
 {% block stylesheets %}
   <link rel="stylesheet" href="{{ '/static/css/schedule_page.css'|version }}">
-  <link id="schedule-print-css" rel="stylesheet" media="print"
+  <link id="schedule-print-css" rel="stylesheet"
+    {% if show_printable %}
+      media="print,screen"
+    {% else %}
+      media="print"
+    {% endif %}
       href="{{ '/static/css/schedule_page_print.css'|version }}">
 {% endblock %}
 
