@@ -85,45 +85,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     }
   });
 
-  ScheduleItemCollection.getSampleScheduleItems = function() {
-    return new this([{
-      class_num: '1234',
-      building: 'DC',
-      room: '1350',
-      section_type: 'lec',
-      section_num: '001',
-      start_date: new Date(2013, 0, 2, 12, 30),
-      end_date: new Date(2013, 0, 2, 13, 20),
-      course_id: 'ece458',
-      prof_id: 'bob',
-      term_id: '2013_01'
-    }, {
-      class_num: '1234',
-      building: 'DC',
-      room: '1350',
-      section_type: 'lec',
-      section_num: '001',
-      start_date: new Date(2013, 0, 4, 12, 30),
-      end_date: new Date(2013, 0, 4, 13, 20),
-      course_id: 'ece458',
-      prof_id: 'bob',
-      term_id: '2013_01'
-    }, {
-      class_num: '1234',
-      building: 'DC',
-      room: '1350',
-      section_type: 'lec',
-      section_num: '001',
-      start_date: new Date(2013, 0, 8, 12, 30),
-      end_date: new Date(2013, 0, 8, 13, 20),
-      course_id: 'ece458',
-      prof_id: 'bob',
-      term_id: '2013_01'
-    }
-    ]);
-  };
-
-
   // CSS constants
   var headerPadding = 8;
   var headerBorderHeight = 0;

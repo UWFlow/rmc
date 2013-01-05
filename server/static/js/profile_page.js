@@ -80,11 +80,8 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
 
   // Render the schedule if possible
   if (pageData.scheduleItemObjs.length > 0) {
-    //var scheduleItems = new _schedule.ScheduleItemCollection(
-    //  pageData.scheduleItemObjs);
-
-    // XXX(mack): revert
-    var scheduleItems = _schedule.ScheduleItemCollection.getSampleScheduleItems();
+    var scheduleItems = new _schedule.ScheduleItemCollection(
+      pageData.scheduleItemObjs);
 
     var $schedulePlaceholder = $("#class-schedule-placeholder");
     var scheduleView = _schedule.initScheduleView({
