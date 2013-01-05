@@ -782,7 +782,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var processedSlotItems = [];
       // Iterate through all days in the date range
       var curDate = moment(startDateStr + " " + startTimeStr);
-      var slotEndDate = moment(endDateStr);
+      var slotEndDate = moment(endDateStr + " " + startTimeStr);
       while (curDate <= slotEndDate) {
         if (hasClassOnDay[curDate.day()]) {
           processedSlotItems.push({
