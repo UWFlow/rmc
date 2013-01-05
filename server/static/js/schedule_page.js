@@ -12,11 +12,8 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
 
   // Render the schedule
   $schedulePlaceholder = $("#class-schedule-placeholder");
-  //var scheduleItems = new _schedule.ScheduleItemCollection(
-  //  pageData.scheduleItemObjs);
-
-  // XXX(mack): revert
-  var scheduleItems = _schedule.ScheduleItemCollection.getSampleScheduleItems();
+  var scheduleItems = new _schedule.ScheduleItemCollection(
+    pageData.scheduleItemObjs);
 
   var scheduleView = _schedule.initScheduleView({
     scheduleItems: scheduleItems,
