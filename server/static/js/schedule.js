@@ -702,8 +702,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var timeRe = /([1]{0,1}\d\:[0-5]\d[AP]M)/;
       var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
       // This could be a room, or 'TBA'
-      var locationRe = /([\-\w ,\r\n]+)/;
-      var profRe = /([\-\w ,\r\n]+)/;
+      var locationRe = /([\-\w ,]+)/;
+      var profRe = /([\-\w ,]+)/;
       // The day can appear in either format: '01/07/2013' or '2013-01-07'
       var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}-\d{2}-\d{2}))/;
       var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
