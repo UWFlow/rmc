@@ -26,7 +26,7 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   var profileUser = _user.UserCollection.getFromCache(pageData.profileUserId.$oid);
   if (_util.getQueryParam('v') === 'full_profile') {
     var fbConnectText = _s.sprintf(
-        'View %s\'s full profile!', profileUser.get('first_name'));
+        'See %s\'s full profile!', profileUser.get('first_name'));
     _sign_in.renderBannerIfNecessary({
       source: 'FULL_PROFILE_BANNER_SCHEDULE_PAGE',
       fbConnectText: fbConnectText,
@@ -48,6 +48,14 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
     if (endDate) {
       schedule.set('end_date', new Date(Number(endDate)));
     }
+
+    // Brand the schedule a bit
+    $('<img src="/static/img/flow-logo-75x35.png">')
+      .css({
+        float: 'right',
+        height: 25
+      })
+      .appendTo('.class-schedule .schedule-nav');
 
     window.print();
 
