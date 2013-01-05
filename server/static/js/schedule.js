@@ -703,7 +703,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
       var locationRe = /([\w ]+\s+[0-9]{1,5}[A-Z]?)/;
       var profRe = /([\-\w ,\r\n]+)/;
-      var dayRe = /(\d{2}\/\d{2}\/\d{4})/;
+      // The day can appear in either format: '01/07/2013' or '2013-01-07'
+      var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}-\d{2}-\d{2}))/;
       var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
       var wsRe = /\s+/;
 
@@ -758,6 +759,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       // E.g. '3:20PM'
       var endTimeStr = formatTime(slotMatches[3]);
 
+      // The day can appear in either format: '01/07/2013' or '2013-01-07'
       // E.g. 01/07/2013 (MM/DD/YYYY)
       var startDateStr = slotMatches[6];
       // E.g. 02/15/2013 (MM/DD/YYYY)
@@ -779,29 +781,32 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         hasClassOnDay[weekdayMap[day]] = true;
       });
 
+      var timeFormats = ['YYYY-MM-DD h:mm A', 'MM/DD/YYYY h:mm A'];
+      var firstStartMoment = moment(startDateStr + " " + startTimeStr, timeFormats);
+      var firstEndMoment = moment(startDateStr + " " + endTimeStr, timeFormats);
+
       // Time delta between start and end time, in milliseconds
-      var timeDelta = moment(startDateStr + " " + endTimeStr) -
-          moment(startDateStr + " " + startTimeStr);
+      var timeDelta = firstEndMoment - firstStartMoment;
 
       var processedSlotItems = [];
       // Iterate through all days in the date range
-      var curDate = moment(startDateStr + " " + startTimeStr);
-      var slotEndDate = moment(endDateStr + " " + startTimeStr);
-      while (curDate <= slotEndDate) {
-        if (hasClassOnDay[curDate.day()]) {
+      var currMoment = firstStartMoment;
+      var slotEndMoment = moment(endDateStr + " " + startTimeStr, timeFormats);
+      while (currMoment <= slotEndMoment) {
+        if (hasClassOnDay[currMoment.day()]) {
           processedSlotItems.push({
             course_id: cId,
             class_num: cNum,
             section_num: sNum,
             section_type: sType,
-            start_date: curDate.unix(),
-            end_date: moment(curDate.unix() * 1000 + timeDelta).unix(),
+            start_date: currMoment.unix(),
+            end_date: moment(currMoment.unix() * 1000 + timeDelta).unix(),
             building: building,
             room: room,
             prof_name: profName
           });
         }
-        curDate.add('days', 1);
+        currMoment.add('days', 1);
       }
       return processedSlotItems;
     };
