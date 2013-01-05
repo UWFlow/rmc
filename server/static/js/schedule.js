@@ -776,13 +776,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       });
 
       // Time delta between start and end time, in milliseconds
-      var timeDelta = _moment(startDateStr + " " + endTimeStr) -
-          _moment(startDateStr + " " + startTimeStr);
+      var timeDelta = moment(startDateStr + " " + endTimeStr) -
+          moment(startDateStr + " " + startTimeStr);
 
       var processedSlotItems = [];
       // Iterate through all days in the date range
-      var curDate = _moment(startDateStr + " " + startTimeStr);
-      var slotEndDate = _moment(endDateStr);
+      var curDate = moment(startDateStr + " " + startTimeStr);
+      var slotEndDate = moment(endDateStr);
       while (curDate <= slotEndDate) {
         if (hasClassOnDay[curDate.day()]) {
           processedSlotItems.push({
@@ -791,7 +791,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
             section_num: sNum,
             section_type: sType,
             start_date: curDate.unix(),
-            end_date: _moment(curDate.unix() * 1000 + timeDelta).unix(),
+            end_date: moment(curDate.unix() * 1000 + timeDelta).unix(),
             building: building,
             room: room,
             prof_name: profName
@@ -852,7 +852,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     ScheduleInputView: ScheduleInputView,
     ScheduleInputModalView: ScheduleInputModalView,
     getPublicScheduleLink: getPublicScheduleLink,
-    initScheduleView: initScheduleView,
-    parseSchedule: parseSchedule
+    initScheduleView: initScheduleView
   };
 });
