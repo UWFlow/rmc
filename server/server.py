@@ -737,7 +737,19 @@ def upload_schedule():
     for item in schedule_data:
         try:
             # Create this UserScheduleItem
-            prof_id = m.Professor.get_id_from_name(item['prof_name'])
+            first_name, last_name = m.Professor.guess_names(item['prof_name'])
+            prof_id = m.Professor.get_id_from_name(
+                first_name=first_name,
+                last_name=last_name,
+            )
+            if first_name and last_name:
+                if not m.Professor.objects.with_id(prof_id):
+                    m.Professor(
+                        id=prof_id,
+                        first_name=first_name,
+                        last_name=last_name,
+                    ).save()
+
             usi = m.UserScheduleItem(
                 user_id=user.id,
                 class_num=item['class_num'],
@@ -1008,6 +1020,8 @@ def user_course():
 
         new_prof_name = uc_data['new_prof_added']
 
+        # TODO(mack): should do guess_names first, and use that to
+        # generate the id
         prof_id = m.Professor.get_id_from_name(new_prof_name)
         uc.professor_id = prof_id
 

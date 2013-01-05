@@ -1,5 +1,6 @@
 from bson import json_util
 import mongoengine as me
+import re
 import redis
 
 import rating as _rating
@@ -44,17 +45,17 @@ class Professor(me.Document):
 
     @classmethod
     def get_id_from_name(cls, first_name, last_name=None):
-        if last_name is None:
-            return first_name.lower().replace(' ', '_')
+        if not last_name:
+            return re.sub(r'\s+', '_', first_name.lower())
 
         first_name = first_name.lower()
         last_name = last_name.lower()
-        return ('%s %s' % (first_name, last_name)).replace(' ', '_')
+        return re.sub(r'\s+', '_', '%s %s' % (first_name, last_name))
 
     @staticmethod
     def guess_names(combined_name):
         """Returns first, last name given a string."""
-        names = combined_name.split(' ')
+        names = re.split(r'\s+', combined_name)
         return (' '.join(names[:-1]), names[-1])
 
     @property
