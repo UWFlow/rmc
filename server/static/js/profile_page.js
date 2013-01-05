@@ -17,6 +17,27 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
       pageData.currentUserId.$oid);
   }
 
+  // Show the add schedule pop-up on a hash URL
+  var showScheduleModal =
+      (window.location.hash.indexOf('import-schedule') !== -1);
+
+  if (window.pageData.showImportScheduleButton || showScheduleModal) {
+    var scheduleInputModalView = new _schedule.ScheduleInputModalView();
+    $('#schedule-input-modal-placeholder')
+      .replaceWith(scheduleInputModalView.render().el);
+  }
+
+  // By default, setting data-target on the button takes too
+  // long before the button click listener is bound, so
+  // manually bind the click listener
+  $('.schedule-input-btn').click(function(evt) {
+    $('.schedule-input-modal').modal();
+  });
+
+  if (showScheduleModal) {
+    $('.schedule-input-modal').modal();
+  }
+
   // Render friend sidebar
   (function() {
     // TODO(mack): use profileUser.get('friends')
@@ -96,20 +117,6 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
       });
       $("#schedule-share-placeholder").replaceWith(scheduleShareView.render().el);
     }
-  }
-
-  // Show the add schedule pop-up on a hash URL
-  var showScheduleModal =
-      (window.location.hash.indexOf('import-schedule') !== -1);
-
-  if (window.pageData.showImportScheduleButton || showScheduleModal) {
-    var scheduleInputModalView = new _schedule.ScheduleInputModalView();
-    $('#schedule-input-modal-placeholder')
-      .replaceWith(scheduleInputModalView.render().el);
-  }
-
-  if (showScheduleModal) {
-    $('.schedule-input-modal').modal();
   }
 
   mixpanel.track('Impression: Profile page');
