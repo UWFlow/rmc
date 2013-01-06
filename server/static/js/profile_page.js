@@ -24,6 +24,9 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     var scheduleInputModalView = new _schedule.ScheduleInputModalView();
     $('#schedule-input-modal-placeholder')
       .replaceWith(scheduleInputModalView.render().el);
+    $('#schedule-teaser').click(function() {
+      $('.schedule-input-modal').modal();
+    });
   }
 
   // By default, setting data-target on the button takes too

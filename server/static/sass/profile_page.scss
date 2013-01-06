@@ -31,3 +31,53 @@
 .exam-schedule, .class-schedule {
   margin-bottom: 20px;
 }
+
+#schedule-screenshot {
+
+}
+
+#schedule-teaser {
+  width: 642px;
+  height: 500px;
+  background: url("/static/img/class-schedule-screenshot.png") no-repeat;
+  background-size: 642px 500px;
+  position: relative;
+  text-align: center;
+
+  $shadow-radius: 50px;
+  @include box-shadow(0 0 $shadow-radius rgba(0, 0, 0, 0.5));
+  margin: $shadow-radius - 20px;
+
+  $border-radius: 5px;
+  @include border-radius($border-radius);
+
+  &:hover {
+    @include box-shadow(0 0 ($shadow-radius + 30px) rgba($yellow, 0.8));
+    cursor: pointer;
+
+    .schedule-input-btn {
+      display: block;
+      position: absolute;
+      z-index: 20;
+      top: 50%;
+      left: 50%;
+      width: 400px;
+      margin-left: -200px;
+      margin-top: -40px;
+    }
+  }
+
+  &:hover:after {
+    content: ' ';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    @include border-radius($border-radius);
+  }
+}
