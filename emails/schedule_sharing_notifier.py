@@ -16,7 +16,7 @@ def body_renderer(user):
 
     Just copy-and-paste your schedule from Quest, and you'll be able to share and print your timetable. Browse your friends' schedules and see what they're taking!
 
-    Get started: http://uwflow.com/profile/%(user_id)s#import-schedule
+    Get started: http://uwflow.com/profile?import-schedule=1
 
     Have a great term!
 
@@ -45,7 +45,7 @@ def html_body_renderer(user):
 
     <p>Just copy-and-paste your schedule from Quest, and you'll be able to <b>share and print your timetable</b>. Browse your friends' schedules and see what they're taking!</p>
 
-    <p><b>Get started:</b> http://uwflow.com/profile#import-schedule</p>
+    <p><b>Get started:</b> <a href="http://uwflow.com/profile?import-schedule=1">http://uwflow.com/profile?import-schedule=1</a></p>
 
     <p>Have a great term!</p>
 
