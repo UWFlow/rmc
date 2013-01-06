@@ -92,9 +92,31 @@
     $light-color: #fff;
     @include background(linear-gradient(bottom, $light-color 0%, $dark-color 100%));
 
-    .fb-login-button{
-      vertical-align: top;
-      margin: 0;
+    .fb-login-button-container {
+      display: inline-block;
+      position: relative;
+      text-align: left;
+
+      .fb-login-button{
+        vertical-align: top;
+        margin: 0;
+      }
+
+      // TODO(mack): this is pretty css to get the message to align with
+      // the facebook connect button
+      .message {
+        position: absolute;
+        width: 600px;
+        top: 60px;
+
+        font-weight: lighter;
+        color: #666;
+        font-size: 15px;
+
+        strong {
+          font-weight: lighter;
+        }
+      }
     }
 
     .fb-facepile {

@@ -95,7 +95,8 @@ function($, _, RmcBackbone, _facebook) {
       this.message = attributes.message;
       this.fbLoginView = new FbLoginView({
         fbConnectText: attributes.fbConnectText,
-        source: attributes.source
+        source: attributes.source,
+        nextUrl: attributes.nextUrl
       });
       this.template = _.template($('#sign-in-modal-tpl').html());
     },
@@ -119,7 +120,8 @@ function($, _, RmcBackbone, _facebook) {
     attributes = _.extend({}, {
       title: 'Please sign in...',
       message: 'Please connect with Facebook to use this feature.',
-      fbConnectText: 'Connect with Facebook'
+      fbConnectText: 'Connect with Facebook',
+      nextUrl: window.location.href
     }, attributes);
 
     (new SignInModalView(attributes)).show();

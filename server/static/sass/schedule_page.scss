@@ -2,3 +2,20 @@
 @import 'profile';
 @import 'schedule';
 @import 'sign_in';
+
+.sign-in-modal {
+  .modal-body {
+    .fb-login-text{
+      padding: 0 35px;
+    }
+  }
+}
+
+// TODO(mack): make this css less hacky
+#sign-in-banner-container {
+  height: 105px;
+
+  .sign-in-banner {
+    height: 70px;
+  }
+}

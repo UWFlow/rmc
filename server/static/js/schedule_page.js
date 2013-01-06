@@ -24,18 +24,29 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   $schedulePlaceholder.replaceWith(scheduleView.el);
 
   var profileUser = _user.UserCollection.getFromCache(pageData.profileUserId.$oid);
-  if (_util.getQueryParam('v') === 'full_profile') {
-    var fbConnectText = _s.sprintf(
-        'See %s\'s full profile!', profileUser.get('first_name'));
-    _sign_in.renderBannerIfNecessary({
-      source: 'FULL_PROFILE_BANNER_SCHEDULE_PAGE',
-      fbConnectText: fbConnectText,
-      nextUrl: _s.sprintf('/profile/%s', profileUser.id)
-    });
-  } else {
-    _sign_in.renderBannerIfNecessary({
-      source: 'SHARE_SCHEDULE_BANNER_SCHEDULE_PAGE',
-      fbConnectText: 'Share your schedule too!'
+  _sign_in.renderBannerIfNecessary({
+    source: 'SHARE_SCHEDULE_BANNER_SCHEDULE_PAGE',
+    fbConnectText: 'Connect with Facebook',
+    nextUrl: '/profile#import-schedule'
+  });
+
+  // TODO(mack): pass the message through renderBannerIfNecessary()
+  var $signinMessage = $('#sign-in-banner-container .message');
+  $signinMessage.html(
+    '...to <strong>create your own schedule</strong> and '+
+    '<strong>see what friends are taking</strong>'
+  );
+
+  if (!pageData.currentUserId) {
+    $('.view-profile-btn').click(function(evt) {
+      var firstName = profileUser.get('first_name');
+      _sign_in.renderModal({
+        title: 'Only ' + firstName + '\'s friends can view his profile',
+        message: 'Verify that you are friends with ' + firstName,
+        fbConnectText: 'Connect with Facebook',
+        source: 'MODAL_FRIENDS_TAKEN',
+        nextUrl: '/profile/' + profileUser.id
+      });
     });
   }
 
