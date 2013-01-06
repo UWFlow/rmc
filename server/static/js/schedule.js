@@ -251,8 +251,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         width: widthPercent + '%'
       });
 
+      var cssHeight = headerHeight - 2 * headerPadding - headerBorderHeight;
       this.$('.header').css({
-        height: headerHeight - 2 * headerPadding - headerBorderHeight
+        height: cssHeight,
+        lineHeight: cssHeight + 'px'  // jQuery doesn't px this automatically
       });
 
       var position = 0;
