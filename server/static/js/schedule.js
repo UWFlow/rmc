@@ -739,6 +739,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       throw new Error('Couldn\'t find matching term (Spring|Fall|Winter)');
     }
 
+    // TODO(david): Change other places where we assume uppercase to any case
+    var ampm = !!(/:\d{2}[AP]M/i.exec(data));
+
     var extractMatches = function(input, regex) {
       var results = [];
       var match = regex.exec(input);
@@ -766,7 +769,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
     var getPartialBodyRe = function() {
       var daysOfWeekRe = /([MThWF]{0,6})/;
-      var timeRe = /([1]{0,1}\d\:[0-5]\d[AP]M)/;
+      var timeRe = ampm ? /([1]{0,1}\d\:[0-5]\d[AP]M)/ : /([1]{0,1}\d\:[0-5]\d)/;
       var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
       // This could be a room, or 'TBA'
       var locationRe = /([\-\w ,]+)/;
@@ -853,7 +856,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         hasClassOnDay[weekdayMap[day]] = true;
       });
 
-      var timeFormats = ['YYYY-MM-DD h:mm A', 'MM/DD/YYYY h:mm A'];
+      var timeFormats = ['YYYY-MM-DD h:mm A', 'MM/DD/YYYY h:mm A', 'DD/MM/YYYY H:mm'];
       var firstStartMoment = moment(startDateStr + " " + startTimeStr, timeFormats);
       var firstEndMoment = moment(startDateStr + " " + endTimeStr, timeFormats);
 
