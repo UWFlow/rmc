@@ -640,8 +640,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
     events: {
       'click .facebook-btn': 'shareScheduleFacebook',
-      'click .link-box': 'onFocus'
+      'click .link-box': 'onFocus',
+      'click .reimport-btn': 'openImportModal'
       // TODO(Sandy): Restore text after clicking away?
+    },
+
+    openImportModal: function() {
+      $('.schedule-input-modal').modal();
     },
 
     onFocus: function() {
@@ -683,6 +688,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         // TODO(david): Append query param properly
         print_url: this.options.url + '?' + $.param(this.printOptions)
       })));
+
+      this.$('.reimport-btn')
+        .tooltip({
+          title: 'Reimport your schedule from Quest',
+          placement: 'bottom',
+          animation: false
+        });
       return this;
     }
   });
