@@ -355,5 +355,5 @@ def render_profile_page(profile_user_id):
         schedule_item_objs=schedule_item_dicts,
         has_shortlisted=current_user.has_shortlisted,
         show_import_schedule=show_import_schedule,
-        show_import_schedule_button=(not current_user.has_schedule),
+        show_import_schedule_button=own_profile and (not current_user.has_schedule),
     )
