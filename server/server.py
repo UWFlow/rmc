@@ -754,7 +754,7 @@ def upload_schedule():
                 user_id=user.id,
                 class_num=item['class_num'],
                 building=item['building'],
-                room=item['room'],
+                room=item.get('room'),
                 section_type=item['section_type'],
                 section_num=item['section_num'],
                 start_date=datetime.fromtimestamp(item['start_date']),
