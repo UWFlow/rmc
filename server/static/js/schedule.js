@@ -582,6 +582,24 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
         return;
       }
+
+      if (scheduleData.failed_items.length) {
+        var failedCourses = _.map(scheduleData.failed_items, function(courseId) {
+          return courseId.toUpperCase();
+        });
+
+        window.alert(
+          'Uh oh, it seems like ' + failedCourses.join(', ') +
+          _util.pluralize(failedCourses.length, 'is ', 'are ') +
+          'missing details (eg. meeting times that are "To Be Announced"), ' +
+          'so we can\'t show ' +
+          _util.pluralize(failedCourses.length, 'it ', 'them ') +
+          'on your schedule.\n\n' +
+          'You can reimport when details are available.\n\n' +
+          'If details are not missing, please tell us that we screwed up!'
+        );
+      }
+
       _gaq.push([
         '_trackEvent',
         'USER_GENERIC',
@@ -591,8 +609,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       $.post(
         '/api/schedule', {
           'schedule_text': data,
-          'schedule_data': JSON.stringify(scheduleData.processedItems),
-          'term_name': scheduleData.termName
+          'schedule_data': JSON.stringify(scheduleData)
         }, function() {
           window.location.href = '/profile';
         },
@@ -886,8 +903,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       return processedSlotItems;
     };
 
-    // Process each course item
     var processedItems = [];
+    var failedItems = [];
+
+    // Process each course item
     _.each(rawItems, function(rawItem) {
       // Grab info from the overall course item
       // E.g. CS 466 -> cs466
@@ -903,6 +922,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         // TODO(david): Did not match. Maybe a TBA and times are not there. Need
         // to inform user.
         if (!classMatches) {
+          failedItems.push(courseId);
           return;
         }
 
@@ -933,8 +953,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     });
 
     return {
-      processedItems: processedItems,
-      termName: termName
+      processed_items: processedItems,
+      term_name: termName,
+      failed_items: failedItems
     };
   };
 

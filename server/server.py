@@ -716,7 +716,12 @@ def upload_schedule():
     user = view_helpers.get_current_user()
 
     schedule_data = util.json_loads(req.form.get('schedule_data'))
-    term_id = m.Term.id_from_name(req.form.get('term_name'))
+    processed_items = schedule_data['processed_items']
+    term_name = schedule_data['term_name']
+    term_id = m.Term.id_from_name(term_name)
+
+    # FIXME TODO(david): Save these in models and display on schedule
+    #failed_items = schedule_data['failed_items']
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_API,
@@ -734,7 +739,7 @@ def upload_schedule():
     for usi in m.UserScheduleItem.objects(user_id=user.id, term_id=term_id):
         usi.delete()
 
-    for item in schedule_data:
+    for item in processed_items:
         try:
             # Create this UserScheduleItem
             first_name, last_name = m.Professor.guess_names(item['prof_name'])
