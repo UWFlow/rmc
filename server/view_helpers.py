@@ -3,6 +3,7 @@ import logging
 
 import flask
 import redis
+import urllib
 
 import rmc.models as m
 import rmc.shared.constants as c
@@ -57,7 +58,10 @@ def login_required(f):
         current_user = get_current_user()
         logging.info("login_required: current_user (%s)" % current_user)
         if not current_user:
-            resp = flask.make_response(flask.redirect('/'))
+            next_url = urllib.quote_plus(flask.request.url)
+            print dir(flask.request)
+            print 'url', flask.request.path
+            resp = flask.make_response(flask.redirect('/?next=%s' % next_url))
             resp.set_cookie('fbid', None)
             resp.set_cookie('fb_access_token', None)
             return resp

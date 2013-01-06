@@ -27,7 +27,7 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   _sign_in.renderBannerIfNecessary({
     source: 'SHARE_SCHEDULE_BANNER_SCHEDULE_PAGE',
     fbConnectText: 'Connect with Facebook',
-    nextUrl: '/profile#import-schedule'
+    nextUrl: '/profile?import-schedule=1'
   });
 
   // TODO(mack): pass the message through renderBannerIfNecessary()

@@ -18,8 +18,7 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
   }
 
   // Show the add schedule pop-up on a hash URL
-  var showScheduleModal =
-      (window.location.hash.indexOf('import-schedule') !== -1);
+  var showScheduleModal = !!util.getQueryParam('import-schedule');
 
   if (window.pageData.showImportScheduleButton || showScheduleModal) {
     var scheduleInputModalView = new _schedule.ScheduleInputModalView();
