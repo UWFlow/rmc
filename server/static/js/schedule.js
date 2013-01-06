@@ -1,6 +1,6 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'course', 'util', 'facebook', 'moment'],
+'ext/bootstrap', 'course', 'util', 'facebook', 'ext/moment'],
 function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
   var minutesSinceSod = function(date) {
