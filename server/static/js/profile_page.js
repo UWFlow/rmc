@@ -27,6 +27,9 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     $('#schedule-teaser').click(function() {
       $('.schedule-input-modal').modal();
     });
+    $('#import-schedule-heading').click(function() {
+      $('.schedule-input-modal').modal();
+    });
   }
 
   // By default, setting data-target on the button takes too

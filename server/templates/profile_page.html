@@ -33,6 +33,24 @@
     </p>
   {% endif %}
 
+  {# TODO(david): Make this backbone model view #}
+  {% if show_import_schedule_button %}
+    <div class="alert fade in">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      <h1><i class="icon-calendar"></i>
+        <a id="import-schedule-heading">Import your class schedule</a>
+      </h1>
+      <span class="lead">...to print and share it! Here's what it looks like:</span>
+      <div id="schedule-teaser">
+        <button type="button"
+          class="btn btn-primary btn-large schedule-input-btn hide-initial"
+          data-toggle="schedule-input-modal">
+          <i class="icon-plus"></i> &nbsp;Import schedule from Quest
+        </button>
+      </div>
+    </div>
+  {% endif %}
+
   {% if own_profile and not has_shortlisted %}
     <div class="alert fade in alert-info" id="shortlist-alert">
       <button type="button" class="close" data-dismiss="alert">×</button>
@@ -42,22 +60,6 @@
           <img src="/static/img/how_to_add_to_shortlist.png" class="shortlist-screenshot-img">
         </span>
       </a>
-    </div>
-  {% endif %}
-
-  {# TODO(david): Make this backbone model view #}
-  {% if show_import_schedule_button %}
-    <div class="alert fade in">
-      <button type="button" class="close" data-dismiss="alert">×</button>
-      <h1><i class="icon-calendar"></i> &nbsp;Import your class schedule</h1>
-      <span class="lead">...to print and share it! Here's what it looks like:</span>
-      <div id="schedule-teaser">
-        <button type="button"
-          class="btn btn-primary btn-large schedule-input-btn hide-initial"
-          data-toggle="modal">
-          <i class="icon-plus"></i> &nbsp;Import schedule from Quest
-        </button>
-      </div>
     </div>
   {% endif %}
 
