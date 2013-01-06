@@ -118,6 +118,10 @@ class User(me.Document):
     last_bad_schedule_paste = me.StringField()
     last_good_schedule_paste = me.StringField()
 
+    # Whether this user imported a schedule when it was still broken and we
+    # should email them to apologize
+    schedule_sorry = me.BooleanField(default=False)
+
     @property
     def name(self):
         return '%s %s' % (self.first_name , self.last_name)
