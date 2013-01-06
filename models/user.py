@@ -106,6 +106,7 @@ class User(me.Document):
     sent_velocity_demo_notifier_email = me.BooleanField(default=False)
     sent_raffle_notifier_email = me.BooleanField(default=False)
     sent_raffle_end_notifier_email = me.BooleanField(default=False)
+    sent_schedule_sharing_notifier_email = me.BooleanField(default=False)
 
     email_unsubscribed = me.BooleanField(default=False)
 
