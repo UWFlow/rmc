@@ -590,7 +590,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
         window.alert(
           'Uh oh, it seems like ' + failedCourses.join(', ') +
-          _util.pluralize(failedCourses.length, 'is ', 'are ') +
+          _util.pluralize(failedCourses.length, ' is ', ' are ') +
           'missing details (eg. meeting times that are "To Be Announced"), ' +
           'so we can\'t show ' +
           _util.pluralize(failedCourses.length, 'it ', 'them ') +
