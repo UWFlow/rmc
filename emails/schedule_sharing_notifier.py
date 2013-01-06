@@ -41,7 +41,7 @@ def html_body_renderer(user):
 
     <p>Wondering who's in your class? Well, we're excited to launch <b>schedule sharing</b>!</p>
 
-    <img src="http://uwflow.com/static/img/class-schedule-screenshot.png">
+    <img src="http://uwflow.com/static/img/class-schedule-screenshot-small.png">
 
     <p>Just copy-and-paste your schedule from Quest, and you'll be able to <b>share and print your timetable</b>. Browse your friends' schedules and see what they're taking!</p>
 
