@@ -1,19 +1,20 @@
 @import 'variables';
 
+$toolbarBg: #FAFAFA;
+
 .class-schedule {
   border: 1px solid $wellBorderColor;
   position: relative;
   background: white;
   @include border-radius(4px);
 
-  // TODO(mack): nest css properly
-
   .schedule-nav {
     @extend .clearfix;
     vertical-align: bottom;
 
     border-bottom: 1px solid $wellBorderColor;
-    padding: 15px 20px;
+    padding: 10px 15px;
+    background: $toolbarBg;
 
     $height: 22px;
 
@@ -38,6 +39,7 @@
       }
 
       .prev-next-week-btns {
+        margin-left: 10px;
         display: inline-block;
         // Hack to get the arrows to vertically align with the
         // "Current Week" button
@@ -247,7 +249,7 @@
   position: relative;
 
   // Make the share bar look integrated with the schedule
-  background-color: #FAFAFA;
+  background-color: $toolbarBg;
   margin-top: 0;
   padding: 8px 10px;
   border-top: 1px solid $wellBorderColor;
