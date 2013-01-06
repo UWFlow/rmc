@@ -171,15 +171,25 @@ function($, _, __) {
     }, cb);
   };
 
-  var showFeedDialog = function(link, name, caption, description, cb) {
+  /**
+   * Options consist of:
+   *    - link
+   *    - name
+   *    - caption
+   *    - description
+   *    - callback
+   *    - picture (optional)
+   */
+  var showFeedDialog = function(options) {
+    var picture = options.picture || dialogBaseUrl + logoPath;
     FB.ui({
       method: 'feed',
-      link: link,
-      picture: dialogBaseUrl + logoPath,
-      name: name,
-      caption: caption,
-      description: description
-    }, cb);
+      link: options.link,
+      picture: picture,
+      name: options.name,
+      caption: options.caption,
+      description: options.description
+    }, options.callback);
   };
 
   // Ensure FB is fully initialized before calling any of its APIs. Solution

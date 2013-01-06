@@ -179,7 +179,13 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
       // TODO(Sandy): Implement proper review showing, if people actually share
       var link = 'http://uwflow.com/course/' + this.get('course').get('id');
-      _facebook.showFeedDialog(link, name, caption, description, callback);
+      _facebook.showFeedDialog({
+        link: link,
+        name: name,
+        caption: caption,
+        description: description,
+        callback: callback
+      });
       // Facebook engagement intent
       mixpanel.track('Facebook share review intent', {
         ReviewType: reviewType
