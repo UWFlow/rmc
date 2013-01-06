@@ -114,6 +114,25 @@
           <span class="beta">UW Beta</span>
         </a>
 
+        <div id="social-media-actions" class="nav-item">
+          <div class="row-fluid social-media">
+            <div class="span6 fb-like-container">
+              <div class="fb-like" data-href="http://www.facebook.com/planyourflow"
+                  data-send="false" data-layout="button_count" data-width="100"
+                  data-show-faces="true" data-font="lucida grande">
+              </div>
+            </div>
+            <div class="span6 twitter-follow-container">
+              <a href="https://twitter.com/useflow" class="twitter-follow-button"
+                  data-show-count="false" data-show-screen-name="false">Follow
+              </a>
+              <script>
+                !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+              </script>
+            </div>
+          </div>
+        </div>
+
         <ul class="nav pull-right">
           <li class="{{ 'active' if nav_item == 'courses' else '' }}">
             <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Search Courses</a>
@@ -152,25 +171,6 @@
     {% if not current_user_id %}
       <div id="sign-in-banner-container"></div>
     {% endif %}
-
-    <div id="social-media-actions" class="container-fluid">
-      <div class="row-fluid social-media">
-        <div class="span6 fb-like-container">
-          <div class="fb-like" data-href="http://www.facebook.com/planyourflow"
-              data-send="false" data-layout="button_count" data-width="100"
-              data-show-faces="true" data-font="lucida grande">
-          </div>
-        </div>
-        <div class="span6 twitter-follow-container">
-          <a href="https://twitter.com/useflow" class="twitter-follow-button"
-              data-show-count="false" data-show-screen-name="false">Follow
-          </a>
-          <script>
-            !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
-          </script>
-        </div>
-      </div>
-    </div>
 
     <header id="site-header">
       {% block header %}

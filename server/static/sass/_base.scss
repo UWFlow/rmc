@@ -212,9 +212,12 @@ a:hover {
   }
 }
 
-.social-media {
+
+#social-media-actions {
+  float: left;
   width: 200px;
-  margin-top: 21px;
+  margin-top: 18px;
+  margin-left: 20px;
 }
 
 // NOTE: When changing this, make sure the homepage also looks OK, whose footers
