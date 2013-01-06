@@ -883,7 +883,14 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var classItems = extractMatches(rawItem, bodyRe);
 
       _.each(classItems, _.bind(function(cId, classItem) {
-        var classMatches = bodyRe.exec(data);
+        var classMatches = getBodyRe().exec(classItem);
+
+        // TODO(david): Did not match. Maybe a TBA and times are not there. Need
+        // to inform user.
+        if (!classMatches) {
+          return;
+        }
+
         // Grab the info from the first entry of a class item
         // E.g. 5300
         var classNum = classMatches[1];
