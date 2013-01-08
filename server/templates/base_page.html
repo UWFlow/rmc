@@ -97,6 +97,18 @@
       {% endif %}
     </script>
 
+    {# Sift Science #}
+    {# Because we have to catch fradulent users so we don't lose 10% of our
+    whopping $0 revenue. (Well, actually this is what I'm supposed to do for
+    bootcamp at work... integrate SiftScience with a blog/website.) #}
+    {% if current_user %}
+      <script type="text/javascript">
+        var _user_id = "{{ current_user.id }}"; // IMPORTANT! Set to the user's account name, or "$ip" to use the user's IP
+
+        var _sift = _sift || []; _sift.push(['_setAccount', 'd6d3cc766c']); _sift.push(['_setUserId', _user_id]); _sift.push(['_trackPageview']); (function() { function ls() { var e = document.createElement('script'); e.type = 'text/javascript'; e.async = true; e.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'dtlilztwypawv.cloudfront.net/s.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(e, s); } if (window.attachEvent) { window.attachEvent('onload', ls); } else { window.addEventListener('load', ls, false); }})();
+      </script>
+    {% endif %}
+
     {% block head_misc %}
     {% endblock %}
   </head>
