@@ -78,7 +78,7 @@ else:
     logging.basicConfig(level=logging.DEBUG)
 
 # Initialize sift stuff after logging has been initialized
-sift = rmc_sift.RmcSift(api_key='b1eb450bb0c5a2f1')
+sift = rmc_sift.RmcSift(api_key=c.SIFT_API_KEY)
 
 
 # Jinja filters

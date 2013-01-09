@@ -26,3 +26,5 @@ DEMO_ACCOUNT_FBID = '100004384843130'
 
 # A long token normally lasts for 60 days
 FB_FORCE_TOKEN_EXPIRATION_DAYS = 57
+
+SIFT_API_KEY = 'b1eb450bb0c5a2f1'
