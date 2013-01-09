@@ -16,8 +16,9 @@ cd $HOME/rmc
 
 git pull
 
+# TODO(david): Use virtualenv so we don't have to sudo pip install
 echo "Installing requirements"
-pip install -r requirements.txt
+sudo pip install -r requirements.txt
 
 echo "Compiling compass"
 compass compile server --output-style compressed --force
