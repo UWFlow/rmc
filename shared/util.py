@@ -3,7 +3,7 @@ import logging
 import math
 import traceback
 
-from bson import json_util
+from bson import json_util, ObjectId
 
 import rmc.shared.constants as c
 
@@ -101,3 +101,15 @@ def get_sorting_score(phat, n, confidence=c.RATINGS_CONFIDENCE):
         logging.error(' '.join(traceback.format_stack()))
         retVal = max(0, min(1, phat))
     return retVal
+
+def flatten_dict(dikt):
+    """Flatten dict into 1 level by JSON-encoding all non-primitive values."""
+    flattened = {}
+    for k, v in dikt.iteritems():
+        if isinstance(v, dict) or isinstance(v, list):
+            flattened[k] = json_util.dumps(v)
+        elif isinstance(v, ObjectId):
+            flattened[k] = str(v)
+        else:
+            flattened[k] = v
+    return flattened

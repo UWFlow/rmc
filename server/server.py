@@ -16,6 +16,7 @@ import rmc.models as m
 import rmc.shared.util as util
 import rmc.shared.rmclogger as rmclogger
 import rmc.server.profile as profile
+import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
 
 import rmc.shared.facebook as facebook
@@ -26,6 +27,9 @@ app = flask.Flask(__name__)
 
 app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+
+sift = rmc_sift.RmcSift(api_key='b1eb450bb0c5a2f1')
+
 
 flask_render_template = flask.render_template
 def render_template(*args, **kwargs):
@@ -553,11 +557,18 @@ def search_courses():
 
     current_user = view_helpers.get_current_user()
 
+    # TODO(david): These logging things should be done asynchronously
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_COURSE_SEARCH,
         rmclogger.LOG_EVENT_SEARCH_PARAMS,
         request.values
     )
+
+    if current_user:
+        sift.track('search', dict({
+            '$user_id': str(current_user.id),
+            '$user_email': current_user.email,
+        }, **request.values))
 
     filters = {}
     if keywords:
@@ -983,6 +994,12 @@ def user_course():
             'user_id': user.id,
         },
     )
+
+    if user:
+        sift.track('user_course', dict({
+            '$user_id': str(user.id),
+            '$user_email': user.email,
+        }, **util.flatten_dict(uc_data)))
 
     # Validate request object
     course_id = uc_data.get('course_id')
