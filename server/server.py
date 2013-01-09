@@ -565,10 +565,17 @@ def search_courses():
     )
 
     if current_user:
-        sift.track('search', dict({
+        sift.track('search', {
             '$user_id': str(current_user.id),
             '$user_email': current_user.email,
-        }, **request.values))
+            'keywords': str(keywords),
+            'term': term,
+            'sort_mode': sort_mode,
+            'name': name,
+            'direction': direction,
+            'count': count,
+            'offset': offset,
+        })
 
     filters = {}
     if keywords:
