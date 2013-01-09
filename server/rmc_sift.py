@@ -3,6 +3,7 @@ events.
 """
 
 import threading
+import logging
 
 from hotqueue import HotQueue
 
@@ -21,9 +22,13 @@ class RmcSift(object):
         process_thread.setDaemon(True)
         process_thread.start()
 
+        logging.warn('RMC_SIFT: __init__')
+
     def track(self, event, params):
+        logging.warn('RMC_SIFT: track event: %s params: %s' % (event, params))
         self.queue.put({'event': event, 'params': params})
 
     def _process_events(self):
         for item in self.queue.consume():
+            logging.warn('RMC_SIFT: _process_events item: %s' % item)
             self.client.track(item['event'], item['params'])

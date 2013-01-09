@@ -28,8 +28,6 @@ app = flask.Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
-sift = rmc_sift.RmcSift(api_key='b1eb450bb0c5a2f1')
-
 
 flask_render_template = flask.render_template
 def render_template(*args, **kwargs):
@@ -78,6 +76,9 @@ if not app.debug:
     logging.getLogger('').addHandler(hipchat_handler)
 else:
     logging.basicConfig(level=logging.DEBUG)
+
+# Initialize sift stuff after logging has been initialized
+sift = rmc_sift.RmcSift(api_key='b1eb450bb0c5a2f1')
 
 
 # Jinja filters
