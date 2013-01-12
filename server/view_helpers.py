@@ -52,18 +52,39 @@ def get_current_user():
 
     return req.current_user
 
+def login_required_func():
+    current_user = get_current_user()
+    logging.info("login_required: current_user (%s)" % current_user)
+    if not current_user:
+        next_url = urllib.quote_plus(flask.request.url)
+        resp = flask.make_response(flask.redirect('/?next=%s' % next_url))
+        resp.set_cookie('fbid', None)
+        resp.set_cookie('fb_access_token', None)
+        return resp
+
 def login_required(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
+        resp = login_required_func()
+        if resp is not None:
+            return resp
+
+        return f(*args, **kwargs)
+
+    return wrapper
+
+# TODO(mack): figure out how to do properly by wrapping in @login_required
+def admin_required(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        resp = login_required_func()
+        if resp is not None:
+            return resp
+
         current_user = get_current_user()
-        logging.info("login_required: current_user (%s)" % current_user)
-        if not current_user:
-            next_url = urllib.quote_plus(flask.request.url)
-            print dir(flask.request)
-            print 'url', flask.request.path
-            resp = flask.make_response(flask.redirect('/?next=%s' % next_url))
-            resp.set_cookie('fbid', None)
-            resp.set_cookie('fb_access_token', None)
+        logging.info("admin_required: current_user (%s)" % current_user)
+        if not current_user.is_admin:
+            resp = flask.make_response(flask.redirect('/'))
             return resp
 
         return f(*args, **kwargs)

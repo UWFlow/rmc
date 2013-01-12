@@ -451,6 +451,17 @@ def unsubscribe_page():
         unsubscribe_user=unsubscribe_user_id,
     )
 
+
+@app.route('/admin/backfill_schedules', methods=['GET'])
+@view_helpers.admin_required
+def backfill_schedules():
+
+    return flask.render_template(
+        'backfill_schedules_page.html',
+        page_script='backfill_schedules_page.js',
+    )
+
+
 # TODO(mack): move API's to separate file
 # TODO(mack): add security measures (e.g. require auth, xsrf cookie)
 ###############################
@@ -1151,6 +1162,46 @@ def invite_friend():
     return util.json_dumps({
         'num_invites': current_user.num_invites,
         'points_gained': points_gained,
+    })
+
+@app.route('/api/users/schedule_paste', methods=['GET'])
+@view_helpers.admin_required
+def pasted_schedule_users():
+    include_good_paste = bool(flask.request.values.get('include_good_paste'))
+    include_bad_paste = bool(flask.request.values.get('include_bad_paste'))
+
+    # Start off with a query that maches no one
+    query = me.Q(id__exists=False)
+    if include_good_paste:
+        query = query | me.Q(last_good_schedule_paste__exists=True)
+    if include_bad_paste:
+        query = query | me.Q(last_bad_schedule_paste__exists=True)
+
+    users = m.User.objects.filter(query).only('id')
+    user_ids = [user.id for user in users]
+    print 'num_users', len(user_ids)
+    return util.json_dumps({
+        'user_ids': user_ids,
+    })
+
+
+@app.route('/api/user/last_schedule_paste', methods=['GET'])
+# TODO(mack): make this work for logged in user, rather than just admins
+@view_helpers.admin_required
+def last_schedule_paste():
+
+    user_id = flask.request.values.get('user_id')
+    if not user_id:
+        user_id = view_helpers.get_current_user().id
+    else:
+        user_id = bson.ObjectId(user_id)
+
+    user = m.User.objects.with_id(user_id)
+    last_schedule_paste = (user.last_good_schedule_paste
+            or user.last_bad_schedule_paste)
+
+    return util.json_dumps({
+        'last_schedule_paste': last_schedule_paste,
     })
 
 if __name__ == '__main__':

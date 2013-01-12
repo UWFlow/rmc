@@ -1,0 +1,36 @@
+{% extends 'base_page.html' %}
+
+{% import 'macros.html' as macros %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ '/static/css/backfill_schedules_page.css'|version }}">
+{% endblock %}
+
+{% block page_title %}Backfill Schedules{% endblock %}
+
+{% block header %}
+  {{ macros.page_title('Backfill Schedules') }}
+{% endblock %}
+
+{% block body %}
+  <button id="backfill-all-btn"
+      class="btn btn-primary btn-large"
+      type="button"
+      data-loading-text="Processing...">Backfill All</button>
+  <button id="backfill-failed-btn"
+      class="btn btn-primary btn-large"
+      type="button"
+      data-loading-text="Processing...">Backfill Failed</button>
+  <div class="row-fluid">
+    <div class="span12">
+<pre id="logger"><span>Logging output:<br>=================</span>
+</pre>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+
+{% block templates %}
+{% endblock %}

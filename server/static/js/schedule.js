@@ -968,6 +968,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     ScheduleInputView: ScheduleInputView,
     ScheduleInputModalView: ScheduleInputModalView,
     getPublicScheduleLink: getPublicScheduleLink,
-    initScheduleView: initScheduleView
+    initScheduleView: initScheduleView,
+    parseSchedule: parseSchedule
   };
 });

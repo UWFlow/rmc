@@ -1,0 +1,17 @@
+@import 'base';
+
+#backfill-schedules-btn {
+}
+
+#logger {
+  margin-top: 20px;
+  height: 400px;
+  overflow: auto;
+
+  .indent {
+    padding-left: 20px;
+    &:before {
+      content: "> ";
+    }
+  }
+}
