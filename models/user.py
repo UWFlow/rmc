@@ -411,4 +411,4 @@ class User(me.Document):
             self.save()
 
     def __repr__(self):
-        return "<User: %s>" % self.name
+        return "<User: %s>" % self.name.encode('utf-8')
