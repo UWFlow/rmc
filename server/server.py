@@ -461,6 +461,18 @@ def backfill_schedules():
         page_script='backfill_schedules_page.js',
     )
 
+@app.route('/admin/user/<string:user_id>', methods=['GET'])
+@view_helpers.admin_required
+def get_user_info(user_id):
+    # TODO(Sandy): We could list all attr's on a user and maybe even provide
+    # hyper links to it, if we ever need friendlier interface to this data.
+    # Maybe non-devs will need it. Build it later if we need it
+    return m.User.objects.with_id(user_id).name
+
+@app.route('/admin/user/<string:user_id>/<string:attr>', methods=['GET'])
+@view_helpers.admin_required
+def get_user_attr(user_id, attr):
+    return getattr(m.User.objects.with_id(user_id), attr)
 
 # TODO(mack): move API's to separate file
 # TODO(mack): add security measures (e.g. require auth, xsrf cookie)
