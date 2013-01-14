@@ -76,12 +76,14 @@ function($, _, _s, __, _util, _schedule) {
 
   function processUsers(userIds) {
     var idx = 0;
+    var failedCount = 0;
     processUser();
 
     function processUser() {
       if (idx >= userIds.length) {
         $('button').removeClass('disabled');
-        $logger.append('<div class="text-info">Finished processing all users</div>');
+        $logger.append('<div class="text-info">Finished processing all users '
+            + 'with ' + failedCount + ' failures</div>');
         return;
       }
 
@@ -98,6 +100,7 @@ function($, _, _s, __, _util, _schedule) {
         error: function(xhr) {
           $logger.append('<div class="text-error indent">Error getting last ' +
               'pasted schedule: ' + _.escape(xhr.statusText) + '</div>');
+          failedCount += 1;
         }
       }).then(
         function (data) {
@@ -112,6 +115,7 @@ function($, _, _s, __, _util, _schedule) {
           } catch(ex) {
             $logger.append('<div class="text-error indent">Error while parsing: ' +
               ex.toString() +'</div>');
+            failedCount += 1;
             return $.Deferred().reject();
           }
 
@@ -124,6 +128,7 @@ function($, _, _s, __, _util, _schedule) {
             error: function(xhr) {
               $logger.append('<div class="text-error indent">Error saving ' +
                   'schedule: ' + _.escape(xhr.statusText) + '</div>');
+              failedCount += 1;
             }
           });
         }
