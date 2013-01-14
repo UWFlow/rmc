@@ -13,7 +13,7 @@ class UserScheduleItem(me.Document):
     }
 
     # The user with this schedule item in their schedule
-    user_id = me.ObjectIdField(unique_with=['term_id', 'section_type', 'section_num', 'start_date'])
+    user_id = me.ObjectIdField(unique_with=['course_id', 'term_id', 'section_type', 'section_num', 'start_date'])
 
     # eg. 3359
     class_num = me.StringField()
@@ -31,7 +31,7 @@ class UserScheduleItem(me.Document):
     section_num = me.StringField(required=True)
 
     # eg. 14:30
-    start_date = me.DateTimeField()
+    start_date = me.DateTimeField(required=True)
 
     # eg. 15:20
     end_date = me.DateTimeField()
