@@ -752,6 +752,7 @@ def upload_schedule():
     )
 
     user.last_good_schedule_paste = req.form.get('schedule_text')
+    user.last_good_schedule_paste_date = datetime.now()
     user.save()
 
     # Remove existing schedule items for the user for the given term
@@ -832,6 +833,7 @@ def schedule_log():
     )
 
     user.last_bad_schedule_paste = flask.request.form.get('schedule')
+    user.last_bad_schedule_paste_date = datetime.now()
     user.save()
 
     return ''

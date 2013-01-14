@@ -117,6 +117,8 @@ class User(me.Document):
 
     last_bad_schedule_paste = me.StringField()
     last_good_schedule_paste = me.StringField()
+    last_bad_schedule_paste_date = me.DateTimeField()
+    last_good_schedule_paste_date = me.DateTimeField()
 
     # Whether this user imported a schedule when it was still broken and we
     # should email them to apologize
