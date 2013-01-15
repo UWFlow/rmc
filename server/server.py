@@ -810,7 +810,13 @@ def upload_schedule():
                 prof_id=prof_id,
                 term_id=term_id,
             )
-            usi.save()
+            try:
+                usi.save()
+            except me.NotUniqueError as ex:
+                # Likely the case where the user pastes in two or more valid
+                # schedules into the same input box
+                logging.info('Duplicate error on UserScheduleItem .save(): %s'
+                        % (ex))
 
             # Add this item to the user's course history
             # FIXME(Sandy): See if we can get program_year_id from Quest
