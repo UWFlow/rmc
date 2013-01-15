@@ -25,8 +25,10 @@ RMC_VENV_DIR="$VENV_DIR/rmc"
 echo "Creating virtualenv in $VENV_DIR"
 mkdir $VENV_DIR
 virtualenv $RMC_VENV_DIR
+# TODO(Sandy): Hmm shouldn't even need to run this script with sudo (at least
+# for the gems, probably not for pip stuff either). Fix it next time I set up
 # TODO(Sandy): Couldn't find a better way to do this. Is this dangerous?
-chown -R $SUDO_USER $VENV_DIR
+# chown -R $SUDO_USER $VENV_DIR
 
 echo "Activating virtualenv/rmc"
 source $RMC_VENV_DIR/bin/activate
