@@ -6,16 +6,23 @@ header {
 }
 
 #about-container {
-  .meet-team {
-    margin-bottom: 20px;
+  max-width: 900px;
+  margin: auto;
+
+  .team-intro {
+    padding-bottom: 30px;
   }
 
   .bio-row {
-    margin-bottom: 50px;
+    margin-bottom: 30px;
+    border-bottom: 1px solid #DDD;
+    padding-bottom: 30px;
   }
 
   .card-info {
     padding-left: 20px;
+    font-size: 18px;
+    line-height: 19px;
 
     .name {
       margin-top: -8px;
@@ -39,4 +46,16 @@ header {
       margin-bottom: 15px;
     }
   }
+
+  .sponsors-heading {
+    padding-top: 30px;
+    padding-bottom: 20px;
+  }
+
+  .sponsor-description {
+    font-size: 18px;
+    padding-left: 30px;
+    line-height: 19px;
+  }
+
 }
