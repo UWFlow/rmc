@@ -97,7 +97,6 @@ footer {
   text-align: center;
   background-color: rgba(255, 255, 255, 0.6);
   height: auto;
-  @include border-radius(3px 3px 0 0);
 
   &:before {
     display: none;
@@ -108,8 +107,10 @@ footer {
 
     padding-top: 13px;
     padding-left: 0;
+    padding-right: 0;
     font-size: 14px;
     bottom: 0;
+    text-align: center;
 
     ul {
       list-style: none;
@@ -128,6 +129,11 @@ footer {
           border-right: none;
         }
       }
+    }
+
+    .footer-social-icon {
+      float: none;
+      padding-left: 0;
     }
 
     .mixpanel-logo {

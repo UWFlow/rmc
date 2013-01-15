@@ -224,27 +224,20 @@ a:hover {
 //      uses the same HTML but overrides some CSS
 footer {
   margin-top: 50px;
-  height: 1000px;
+  height: 439px;
   position: relative;
-
-  &:before {
-    content: ' ';
-    position: absolute;
-    top: -10px;
-    height: 10px;
-    display: block;
-    width: 100%;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  }
 
   #footer-text {
     position: absolute;
-    left: 0;
-    bottom: 32px;
-    padding-left: 50px;
+    right: 0;
+    bottom: 40px;
+    padding-right: 22px;
+    text-align: right;
+
+    $footer-text-color: #222;
 
     a {
-      color: rgba(40, 40, 40, 0.8);
+      color: rgba($footer-text-color, 0.8);
       @include transition(all 0.2s ease-out);
       &:hover {
         @include transition(all 0.2s ease-out);
@@ -274,13 +267,18 @@ footer {
       letter-spacing: 2px;
     }
 
+    .footer-social-icon {
+      float: right;
+      padding-left: 7px;
+    }
+
     .mixpanel-logo img {
       margin-top: 50px;
       opacity: 0.6;
     }
 
     #footer-fine-print {
-      $footer-text-color: rgba(40, 40, 40, 0.4);
+      $footer-text-color: rgba($footer-text-color, 0.4);
       font-size: 13px;
       margin-top: 10px;
       color: $footer-text-color;

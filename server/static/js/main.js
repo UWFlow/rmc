@@ -142,7 +142,7 @@ _points, _user, _facebook) {
     if ($footer.length && window.location.pathname !== '/') {
       // TODO(david): Use jpg and have it fade out into bg color
       $footer.css('background',
-        'url(/static/img/footer_uw_sphere.jpg) left top no-repeat');
+        'url(/static/img/footer_uw_sphere_short.png) right top no-repeat');
         //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
     }
   };
