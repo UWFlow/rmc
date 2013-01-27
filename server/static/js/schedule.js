@@ -753,7 +753,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     if (termMatch) {
       termName = termMatch[0];
     } else {
-      throw new Error('Couldn\'t find matching term (Spring|Fall|Winter)');
+      // TODO(Sandy)[2013_01->2013_05]: Don't hardcode term
+      termName = 'Winter 2013';
     }
 
     // TODO(david): Change other places where we assume uppercase to any case
