@@ -1209,8 +1209,7 @@ def last_schedule_paste():
         user_id = bson.ObjectId(user_id)
 
     user = m.User.objects.with_id(user_id)
-    last_schedule_paste = (user.last_good_schedule_paste
-            or user.last_bad_schedule_paste)
+    last_schedule_paste = user.last_schedule_paste
 
     return util.json_dumps({
         'last_schedule_paste': last_schedule_paste,

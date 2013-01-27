@@ -219,6 +219,10 @@ class User(me.Document):
     def is_demo_account(self):
         return self.fbid == constants.DEMO_ACCOUNT_FBID
 
+    @property
+    def last_schedule_paste(self):
+        return self.last_good_schedule_paste or self.last_bad_schedule_paste
+
     def get_user_courses(self):
         return _user_course.UserCourse.objects(id__in=self.course_history)
 
