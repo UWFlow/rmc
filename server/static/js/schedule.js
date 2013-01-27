@@ -772,7 +772,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         lastIndex = match.index;
         match = regex.exec(input);
       }
-      if (lastIndex) {
+      if (lastIndex > -1) {
         results.push(input.substring(lastIndex));
       }
       return results;

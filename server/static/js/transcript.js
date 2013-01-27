@@ -46,7 +46,7 @@ function($, _, _s) {
       lastIndex = match.index;
       match = termRe.exec(data);
     }
-    if (lastIndex) {
+    if (lastIndex > -1) {
       termsRaw.push(data.substring(lastIndex));
     }
 
