@@ -375,6 +375,9 @@ class User(me.Document):
                 user_id=self.id, term_id=util.get_current_term_id())
         return [si.to_dict() for si in schedule_item_objs]
 
+    def get_all_schedule_items(self):
+        return _user_schedule_item.UserScheduleItem.objects(user_id=self.id)
+
     def add_course(self, course_id, term_id, program_year_id=None):
         '''
         Creates an UserCourse entry for the current user and adds it to the

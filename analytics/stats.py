@@ -428,6 +428,22 @@ def generate_csvs():
     csv_user_growth('user_growth.csv')
     csv_review_growth('review_growth.csv')
 
+# TODO(Sandy): Move to test/debugging file
+def print_user_schedule_debug():
+    """
+    A very light sanity check for backfilling schedule imports
+    Diff the results before and after parsing changes
+    """
+    for user in m.User.objects():
+        items = user.get_all_schedule_items()
+
+        courses = set()
+        for i in items:
+            courses.add(i.course_id)
+
+        safe_name = user.name.encode('utf-8')
+        print "%s, %d USIs, %d courses" % (safe_name, len(items), len(courses))
+
 # TODO(Sandy): More help info
 def stats_help():
     '''
