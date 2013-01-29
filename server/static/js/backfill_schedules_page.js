@@ -123,7 +123,8 @@ function($, _, _s, __, _util, _schedule) {
             type: 'POST',
             data: {
               'schedule_text': scheduleText,
-              'schedule_data': JSON.stringify(scheduleData)
+              'schedule_data': JSON.stringify(scheduleData),
+              'as_oid': userId.$oid
             },
             error: function(xhr) {
               $logger.append('<div class="text-error indent">Error saving ' +
