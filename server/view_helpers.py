@@ -33,8 +33,8 @@ def get_current_user():
                 fbid=fbid, fb_access_token=fb_access_token).first()
 
     if req.current_user and req.current_user.is_admin:
-        oid = req.args.get('as_oid', '')
-        fbid = req.args.get('as_fbid', '')
+        oid = req.values.get('as_oid', '')
+        fbid = req.values.get('as_fbid', '')
         if oid:
             try:
                 as_user = m.User.objects.with_id(oid)
@@ -54,7 +54,8 @@ def get_current_user():
 
 def login_required_func():
     current_user = get_current_user()
-    logging.info("login_required: current_user (%s)" % current_user)
+    user_logging = current_user.id if current_user else current_user
+    logging.info("login_required: current_user (%s)" % user_logging)
     if not current_user:
         next_url = urllib.quote_plus(flask.request.url)
         resp = flask.make_response(flask.redirect('/?next=%s' % next_url))
