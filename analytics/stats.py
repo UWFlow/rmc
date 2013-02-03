@@ -16,31 +16,27 @@ def truncate_datetime(dt):
             seconds=dt.second,
             microseconds=dt.microsecond)
 
-def print_generic_stats():
-    today = datetime.now() - timedelta(hours=24)
-    print "Setting time frame ('Today') to be any time after %s" % today
-
+def generic_stats():
     users = m.User.objects()
     ucs = m.UserCourse.objects()
 
-    print "Total User"
-    print len(users)
+    num_users = len(users)
 
-    print "User with course_history"
-    print sum([1 if user.has_course_history else 0 for user in users])
+    num_users_with_history = sum(
+            [1 if user.has_course_history else 0 for user in users])
 
-    print "Total UserCourse"
-    print len(ucs)
+    num_ucs = len(ucs)
 
-    uc_cr = 0
-    uc_pr = 0
+    # UserCourse Course/Prof Reviews/Ratings
+    uc_crev = 0
+    uc_prev = 0
     uc_crat = 0
     uc_prat = 0
     for uc in ucs:
         cr = uc.course_review
         pr = uc.professor_review
         if cr.comment:
-            uc_cr += 1
+            uc_crev += 1
         if cr.interest:
             uc_crat += 1
         if cr.easiness:
@@ -48,23 +44,59 @@ def print_generic_stats():
         if cr.usefulness:
             uc_crat += 1
         if pr.comment:
-            uc_pr += 1
+            uc_prev += 1
         if pr.clarity:
             uc_prat += 1
         if pr.passion:
             uc_prat += 1
 
-    print "Total UserCourse Course reviews"
-    print uc_cr
-    print "Total UserCourse Prof reviews"
-    print uc_pr
-    print "Total UserCourse Course ratings"
-    print uc_crat
-    print "Total UserCourse Prof ratings"
-    print uc_prat
+    today = datetime.now() - timedelta(hours=24)
+    signups = users_joined_after()
 
-    print "Users signed up Today"
-    print users_joined_after(today)
+    return {
+        'num_users': len(users),
+        'num_users_with_history': num_users_with_history,
+        'num_ucs': len(ucs),
+        'num_reviews': uc_crev + uc_prev,
+        'num_ratings': uc_crat + uc_prat,
+        'num_course_reviews': uc_crev,
+        'num_professor_reviews': uc_prev,
+        'num_course_ratings': uc_crat,
+        'num_professor_ratings': uc_prat,
+        'num_signups_today': signups,
+        'num_signups_start_time': today,
+    }
+
+def print_generic_stats():
+    data = generic_stats()
+
+    print """
+Total User
+%s
+User with course_history
+%s
+Total UserCourse
+%s
+Total UserCourse Course review
+%s
+Total UserCourse Prof reviews
+%s
+Total UserCourse Course ratings
+%s
+Total UserCourse Prof ratings
+%s
+Users signed up since a day ago (%s)
+%s""" % (
+        data['num_users'],
+        data['num_users_with_history'],
+        data['num_ucs'],
+        data['num_course_reviews'],
+        data['num_professor_reviews'],
+        data['num_course_ratings'],
+        data['num_professor_ratings'],
+        data['num_signups_start_time'],
+        data['num_signups_today'],
+    )
 
 def count_user_joined_date(cmp_op):
     """Count the number of users that cmp_op(join_date) returns true for"""
