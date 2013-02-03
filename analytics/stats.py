@@ -16,7 +16,7 @@ def truncate_datetime(dt):
             seconds=dt.second,
             microseconds=dt.microsecond)
 
-def generic_stats():
+def generic_stats(show_all=False):
     users = m.User.objects()
     ucs = m.UserCourse.objects()
 
@@ -27,48 +27,54 @@ def generic_stats():
 
     num_ucs = len(ucs)
 
-    # UserCourse Course/Prof Reviews/Ratings
-    uc_crev = 0
-    uc_prev = 0
-    uc_crat = 0
-    uc_prat = 0
-    for uc in ucs:
-        cr = uc.course_review
-        pr = uc.professor_review
-        if cr.comment:
-            uc_crev += 1
-        if cr.interest:
-            uc_crat += 1
-        if cr.easiness:
-            uc_crat += 1
-        if cr.usefulness:
-            uc_crat += 1
-        if pr.comment:
-            uc_prev += 1
-        if pr.clarity:
-            uc_prat += 1
-        if pr.passion:
-            uc_prat += 1
+    if show_all:
+        # UserCourse Course/Prof Reviews/Ratings
+        uc_crev = 0
+        uc_prev = 0
+        uc_crat = 0
+        uc_prat = 0
+        for uc in ucs:
+            cr = uc.course_review
+            pr = uc.professor_review
+            if cr.comment:
+                uc_crev += 1
+            if cr.interest:
+                uc_crat += 1
+            if cr.easiness:
+                uc_crat += 1
+            if cr.usefulness:
+                uc_crat += 1
+            if pr.comment:
+                uc_prev += 1
+            if pr.clarity:
+                uc_prat += 1
+            if pr.passion:
+                uc_prat += 1
 
     today = datetime.now() - timedelta(hours=24)
     signups = users_joined_after()
 
-    return {
+    result = {
         'num_users': len(users),
         'num_users_with_history': num_users_with_history,
         'num_ucs': len(ucs),
-        'num_reviews': uc_crev + uc_prev,
-        'num_ratings': uc_crat + uc_prat,
-        'num_course_reviews': uc_crev,
-        'num_professor_reviews': uc_prev,
-        'num_course_ratings': uc_crat,
-        'num_professor_ratings': uc_prat,
         'num_signups_today': signups,
         'num_signups_start_time': today,
     }
+    if show_all:
+        result.update({
+            'num_reviews': uc_crev + uc_prev,
+            'num_ratings': uc_crat + uc_prat,
+            'num_course_reviews': uc_crev,
+            'num_professor_reviews': uc_prev,
+            'num_course_ratings': uc_crat,
+            'num_professor_ratings': uc_prat,
+        })
+
+    return result
 
 def print_generic_stats():
-    data = generic_stats()
+    data = generic_stats(show_all=True)
 
     print """
 Total User
