@@ -1,5 +1,9 @@
+import base64
 import datetime
+import hashlib
 import itertools
+import time
+import uuid
 
 import mongoengine as me
 
@@ -22,6 +26,8 @@ class User(me.Document):
         'indexes': [
             'fb_access_token',
             'fbid',
+            # TODO(mack): need to create the 'api_key' index on prod
+            'api_key',
         ],
     }
 
@@ -123,6 +129,9 @@ class User(me.Document):
     # Whether this user imported a schedule when it was still broken and we
     # should email them to apologize
     schedule_sorry = me.BooleanField(default=False)
+
+    # API key that grants user to login_required APIs
+    api_key = me.StringField()
 
     @property
     def name(self):
@@ -411,6 +420,17 @@ class User(me.Document):
         if user_course.id not in self.course_history:
             self.course_history.append(user_course.id)
             self.save()
+
+    # Generate a random api key granting this user to access '/api/' routes
+    def grant_api_key(self):
+        uuid_ = uuid.uuid4()
+        md5 = hashlib.md5()
+        md5.update(str(uuid_))
+        microsecs = int(time.time() * 1000000)
+        raw_api_key = str(microsecs) + md5.hexdigest()
+        self.api_key = base64.b64encode(raw_api_key)
+        self.save()
+        return self.api_key
 
     def __repr__(self):
         return "<User: %s>" % self.name

@@ -9,6 +9,7 @@ import os
 import pymongo
 import re
 import time
+import werkzeug.exceptions as exceptions
 
 import rmc.shared.constants as c
 import rmc.shared.secrets as s
@@ -102,14 +103,12 @@ def after_this_request(f):
 def call_after_request_callbacks(response):
     for callback in getattr(flask.g, 'after_request_callbacks', ()):
         response = callback(response)
-    return response
 
-class ApiError(Exception):
-    """
-        All errors during api calls should use this rather than Exception
-        directly.
-    """
-    pass
+    # Enable CORS for api requests
+    if view_helpers.is_api_request():
+        response.headers['Access-Control-Allow-Origin'] = '*'
+
+    return response
 
 
 @app.route('/')
@@ -305,7 +304,7 @@ def login():
     if (fbid is None or
         fbsr is None):
             logging.warn('No fbsr set')
-            raise ApiError('No fbsr set')
+            raise exceptions.ImATeapot('No fbsr set')
 
     fb_data = facebook.get_fb_data(fbsr, app.config)
     fbid = fb_data['fbid']
@@ -696,7 +695,7 @@ def renew_fb():
     fbsr = req.form.get('fb_signed_request')
     if fbsr is None:
         logging.warn('No fbsr set')
-        raise ApiError('No fbsr set')
+        raise exceptions.ImATeapot('No fbsr set')
 
     fb_data = facebook.get_fb_data(fbsr, app.config)
     access_token = fb_data['access_token']
@@ -1025,12 +1024,12 @@ def user_course():
             (course_id, term_id))
         # TODO(david): Perhaps we should have a request error function that
         # returns a 400
-        raise ApiError('No course_id or term_id set')
+        raise exceptions.ImATeapot('No course_id or term_id set')
 
     if term_id > util.get_current_term_id():
         logging.warning("%s attempted to rate %s in future/shortlist term %s"
                 % (user.id, course_id, term_id))
-        raise ApiError('Can\'t review a course in the future or shortlist')
+        raise exceptions.ImATeapot('Can\'t review a course in the future or shortlist')
 
     # Fetch existing UserCourse
     uc = m.UserCourse.objects(
@@ -1045,7 +1044,7 @@ def user_course():
             (user.id, course_id, term_id))
         # TODO(david): Perhaps we should have a request error function that
         # returns a 400
-        raise ApiError('No user course found')
+        raise exceptions.ImATeapot('No user course found')
 
 
     orig_points = uc.num_points
