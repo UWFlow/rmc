@@ -17,8 +17,6 @@ def truncate_datetime(dt):
             microseconds=dt.microsecond)
 
 def print_generic_stats():
-    #today = datetime.now() - timedelta(hours=4)
-    #today = today.replace(hour=0, minute=0, second=0, microsecond=0)
     today = datetime.now() - timedelta(hours=24)
     print "Setting time frame ('Today') to be any time after %s" % today
 
@@ -65,23 +63,23 @@ def print_generic_stats():
     print "Total UserCourse Prof ratings"
     print uc_prat
 
-
     print "Users signed up Today"
-    join_count = 0
-    for user in users:
-        join_date = user.join_date
-        if join_date >= today:
-            join_count += 1
-    print join_count
+    print users_joined_after(today)
 
-def users_as_of(date):
+def count_user_joined_date(cmp_op):
+    """Count the number of users that cmp_op(join_date) returns true for"""
     users = m.User.objects()
     join_count = 0
     for user in users:
-        join_date = user.join_date
-        if join_date <= date:
+        if cmp_op(user.join_date):
             join_count += 1
     return join_count
+
+def users_joined_after(date=(datetime.now() - timedelta(hours=24))):
+    return count_user_joined_date(date.__le__)
+
+def users_joined_before(date=(datetime.now() - timedelta(hours=24))):
+    return count_user_joined_date(date.__ge__)
 
 def reviews_given(user):
     ucs = m.UserCourse.objects(user_id=user.id)
@@ -458,4 +456,4 @@ if __name__ == '__main__':
     print_users_rr_counts()
     #print_program_names(users)
     #print_exam_collection()
-    #print users_as_of(datetime(2012, 10, 19))
+    #print users_joined_before(datetime(2012, 10, 19))
