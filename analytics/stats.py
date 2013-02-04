@@ -60,6 +60,7 @@ def generic_stats(show_all=False):
         'num_ucs': len(ucs),
         'num_signups_today': signups,
         'num_signups_start_time': today,
+        'epoch': datetime.now(),
     }
     if show_all:
         result.update({
