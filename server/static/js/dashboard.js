@@ -2,7 +2,10 @@ require(
 ['ext/jquery'],
 function($) {
   var POLLING_DELAY = 60000;
+  // Stop refreshing after an hour, incase we leave tabs open :(
+  var CUTOFF_COUNT = 60;
 
+  var timesRefreshed = 0;
   var pollStats = function() {
     console.log('this is actually hapnnieng');
     $.post(
@@ -20,7 +23,10 @@ function($) {
       },
       'json'
     );
-    setTimeout(pollStats, POLLING_DELAY);
+    timesRefreshed += 1;
+    if (timesRefreshed < CUTOFF_COUNT) {
+      setTimeout(pollStats, POLLING_DELAY);
+    }
   };
 
   var setLastUpdatedTime = function(time) {
