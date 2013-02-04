@@ -1,0 +1,47 @@
+{% extends 'base_page.html' %}
+
+{% import 'macros.html' as macros %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ '/static/css/dashboard.css'|version }}">
+{% endblock %}
+
+{% block page_title %}Dashboard{% endblock %}
+
+{% block header %}
+  {{ macros.page_title("Dashboard") }}
+{% endblock %}
+
+{% block body %}
+<div class="stats-row">
+  <div class="row-fluid stats-title">
+    <div class="span6">Total users</div>
+    <div class="span6">Signups today</div>
+  </div>
+  <div class="row-fluid stats-num">
+    <div class="span6" id="num_users">{{ num_users|tojson|safe }}</div>
+    <div class="span6" id="num_signups_today">
+      {{ num_signups_today|tojson|safe }}
+    </div>
+  </div>
+</div>
+<div class="stats-row">
+  <div class="row-fluid stats-title">
+    <div class="span6">Users with transcript</div>
+    <div class="span6">UserCourses</div>
+  </div>
+  <div class="row-fluid stats-num">
+    <div class="span6" id="num_users_with_transcript">
+      {{ num_users_with_transcript|tojson|safe }}
+    </div>
+    <div class="span6" id="num_ucs">{{ num_ucs|tojson|safe }}</div>
+  </div>
+</div>
+<div id="last_updated"></div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.pageData.epoch = {{ epoch|tojson|safe }};
+</script>
+{% endblock %}

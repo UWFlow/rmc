@@ -19,6 +19,7 @@ import rmc.shared.rmclogger as rmclogger
 import rmc.server.profile as profile
 import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
+import rmc.analytics.stats as rmc_stats
 
 import rmc.shared.facebook as facebook
 
@@ -1159,6 +1160,34 @@ def invite_friend():
         'num_invites': current_user.num_invites,
         'points_gained': points_gained,
     })
+
+@app.route('/admin/api/generic-stats', methods=['POST'])
+# FIXME(sandy): take admin required from backfill branch
+@view_helpers.login_required
+def dashboard_data(json=True):
+    current_user = view_helpers.get_current_user()
+    if not current_user.is_admin:
+        return ""
+    data = rmc_stats.generic_stats()
+    if json:
+        data = util.json_dumps(data)
+    return data
+
+@app.route('/dashboard', methods=['GET'])
+# FIXME(sandy): take admin required from backfill branch
+@view_helpers.login_required
+def dashboard_page():
+    current_user = view_helpers.get_current_user()
+    if not current_user.is_admin:
+        return flask.redirect('profile')
+
+    data = dashboard_data(json=False)
+    print "retting"
+    return flask.render_template(
+        'dashboard.html',
+        page_script='dashboard.js',
+        **data
+    )
 
 if __name__ == '__main__':
     # Late import since this isn't used on production
