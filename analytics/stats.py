@@ -16,72 +16,138 @@ def truncate_datetime(dt):
             seconds=dt.second,
             microseconds=dt.microsecond)
 
-def print_generic_stats():
-    #today = datetime.now() - timedelta(hours=4)
-    #today = today.replace(hour=0, minute=0, second=0, microsecond=0)
-    today = datetime.now() - timedelta(hours=24)
-    print "Setting time frame ('Today') to be any time after %s" % today
-
+def generic_stats(show_all=False):
     users = m.User.objects()
     ucs = m.UserCourse.objects()
 
-    print "Total User"
-    print len(users)
+    num_users = len(users)
 
-    print "User with course_history"
-    print sum([1 if user.has_course_history else 0 for user in users])
+    num_users_with_transcript = sum(
+            [1 if user.transcripts_imported else 0 for user in users])
 
-    print "Total UserCourse"
-    print len(ucs)
+    num_ucs = len(ucs)
 
-    uc_cr = 0
-    uc_pr = 0
-    uc_crat = 0
-    uc_prat = 0
-    for uc in ucs:
-        cr = uc.course_review
-        pr = uc.professor_review
-        if cr.comment:
-            uc_cr += 1
-        if cr.interest:
-            uc_crat += 1
-        if cr.easiness:
-            uc_crat += 1
-        if cr.usefulness:
-            uc_crat += 1
-        if pr.comment:
-            uc_pr += 1
-        if pr.clarity:
-            uc_prat += 1
-        if pr.passion:
-            uc_prat += 1
+    if show_all:
+        # UserCourse Course/Prof Reviews/Ratings
+        uc_crev = 0
+        uc_prev = 0
+        uc_crat = 0
+        uc_prat = 0
+        for uc in ucs:
+            cr = uc.course_review
+            pr = uc.professor_review
+            if cr.comment:
+                uc_crev += 1
+            if cr.interest:
+                uc_crat += 1
+            if cr.easiness:
+                uc_crat += 1
+            if cr.usefulness:
+                uc_crat += 1
+            if pr.comment:
+                uc_prev += 1
+            if pr.clarity:
+                uc_prat += 1
+            if pr.passion:
+                uc_prat += 1
 
-    print "Total UserCourse Course reviews"
-    print uc_cr
-    print "Total UserCourse Prof reviews"
-    print uc_pr
-    print "Total UserCourse Course ratings"
-    print uc_crat
-    print "Total UserCourse Prof ratings"
-    print uc_prat
+    today = datetime.now() - timedelta(hours=24)
+    signups = users_joined_after()
 
+    result = {
+        'num_users': len(users),
+        'num_users_with_transcript': num_users_with_transcript,
+        'num_ucs': len(ucs),
+        'num_signups_today': signups,
+        'num_signups_start_time': today,
+        'epoch': datetime.now(),
+    }
+    if show_all:
+        result.update({
+            'num_reviews': uc_crev + uc_prev,
+            'num_ratings': uc_crat + uc_prat,
+            'num_course_reviews': uc_crev,
+            'num_professor_reviews': uc_prev,
+            'num_course_ratings': uc_crat,
+            'num_professor_ratings': uc_prat,
+        })
 
-    print "Users signed up Today"
-    join_count = 0
-    for user in users:
-        join_date = user.join_date
-        if join_date >= today:
-            join_count += 1
-    print join_count
+    return result
 
-def users_as_of(date):
+def print_generic_stats():
+    data = generic_stats(show_all=True)
+
+    print """
+Total User
+%s
+User with transcripts imported
+%s
+Total UserCourse
+%s
+Total UserCourse Course review
+%s
+Total UserCourse Prof reviews
+%s
+Total UserCourse Course ratings
+%s
+Total UserCourse Prof ratings
+%s
+Users signed up since a day ago (%s)
+%s""" % (
+        data['num_users'],
+        data['num_users_with_transcript'],
+        data['num_ucs'],
+        data['num_course_reviews'],
+        data['num_professor_reviews'],
+        data['num_course_ratings'],
+        data['num_professor_ratings'],
+        data['num_signups_start_time'],
+        data['num_signups_today'],
+    )
+
+def count_user_joined_date(cmp_op):
+    """Count the number of users that cmp_op(join_date) returns true for"""
     users = m.User.objects()
     join_count = 0
     for user in users:
-        join_date = user.join_date
-        if join_date <= date:
+        if cmp_op(user.join_date):
             join_count += 1
     return join_count
+
+def users_joined_after(date=(datetime.now() - timedelta(hours=24))):
+    return count_user_joined_date(date.__le__)
+
+def users_joined_before(date=(datetime.now() - timedelta(hours=24))):
+    return count_user_joined_date(date.__ge__)
+
+def latest_reviews(n=5):
+    tups = []
+
+    for uc in m.UserCourse.objects():
+        cr_date = uc.course_review.comment_date
+        pr_date = uc.professor_review.comment_date
+        if cr_date:
+            tups.append((cr_date, 'course_review', uc))
+        if pr_date:
+            tups.append((pr_date, 'professor_review', uc))
+
+    tups.sort(reverse=True)
+
+    result = []
+    for tup in tups:
+        date, rev_type, uc = tup
+        result.append({
+            'user_id': uc.user_id,
+            'course_id': uc.course_id,
+            'professor_id': uc.professor_id,
+            'text': getattr(uc, rev_type).comment,
+            'time': date,
+            'type': rev_type,
+        })
+        if len(result) == n:
+            break
+
+    return result
 
 def reviews_given(user):
     ucs = m.UserCourse.objects(user_id=user.id)
@@ -474,4 +540,4 @@ if __name__ == '__main__':
     print_users_rr_counts()
     #print_program_names(users)
     #print_exam_collection()
-    #print users_as_of(datetime(2012, 10, 19))
+    #print users_joined_before(datetime(2012, 10, 19))

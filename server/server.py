@@ -9,6 +9,7 @@ import os
 import pymongo
 import re
 import time
+import werkzeug.exceptions as exceptions
 
 import rmc.shared.constants as c
 import rmc.shared.secrets as s
@@ -18,6 +19,7 @@ import rmc.shared.rmclogger as rmclogger
 import rmc.server.profile as profile
 import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
+import rmc.analytics.stats as rmc_stats
 
 import rmc.shared.facebook as facebook
 
@@ -102,14 +104,12 @@ def after_this_request(f):
 def call_after_request_callbacks(response):
     for callback in getattr(flask.g, 'after_request_callbacks', ()):
         response = callback(response)
-    return response
 
-class ApiError(Exception):
-    """
-        All errors during api calls should use this rather than Exception
-        directly.
-    """
-    pass
+    # Enable CORS for api requests
+    if view_helpers.is_api_request():
+        response.headers['Access-Control-Allow-Origin'] = '*'
+
+    return response
 
 
 @app.route('/')
@@ -305,7 +305,7 @@ def login():
     if (fbid is None or
         fbsr is None):
             logging.warn('No fbsr set')
-            raise ApiError('No fbsr set')
+            raise exceptions.ImATeapot('No fbsr set')
 
     fb_data = facebook.get_fb_data(fbsr, app.config)
     fbid = fb_data['fbid']
@@ -719,7 +719,7 @@ def renew_fb():
     fbsr = req.form.get('fb_signed_request')
     if fbsr is None:
         logging.warn('No fbsr set')
-        raise ApiError('No fbsr set')
+        raise exceptions.ImATeapot('No fbsr set')
 
     fb_data = facebook.get_fb_data(fbsr, app.config)
     access_token = fb_data['access_token']
@@ -775,6 +775,7 @@ def upload_schedule():
     )
 
     user.last_good_schedule_paste = req.form.get('schedule_text')
+    user.last_good_schedule_paste_date = datetime.now()
     user.save()
 
     # Remove existing schedule items for the user for the given term
@@ -861,6 +862,7 @@ def schedule_log():
     )
 
     user.last_bad_schedule_paste = flask.request.form.get('schedule')
+    user.last_bad_schedule_paste_date = datetime.now()
     user.save()
 
     return ''
@@ -1046,12 +1048,12 @@ def user_course():
             (course_id, term_id))
         # TODO(david): Perhaps we should have a request error function that
         # returns a 400
-        raise ApiError('No course_id or term_id set')
+        raise exceptions.ImATeapot('No course_id or term_id set')
 
     if term_id > util.get_current_term_id():
         logging.warning("%s attempted to rate %s in future/shortlist term %s"
                 % (user.id, course_id, term_id))
-        raise ApiError('Can\'t review a course in the future or shortlist')
+        raise exceptions.ImATeapot('Can\'t review a course in the future or shortlist')
 
     # Fetch existing UserCourse
     uc = m.UserCourse.objects(
@@ -1066,7 +1068,7 @@ def user_course():
             (user.id, course_id, term_id))
         # TODO(david): Perhaps we should have a request error function that
         # returns a 400
-        raise ApiError('No user course found')
+        raise exceptions.ImATeapot('No user course found')
 
 
     orig_points = uc.num_points
@@ -1220,6 +1222,34 @@ def last_schedule_paste():
     return util.json_dumps({
         'last_schedule_paste': last_schedule_paste,
     })
+
+@app.route('/admin/api/generic-stats', methods=['POST'])
+# FIXME(sandy): take admin required from backfill branch
+@view_helpers.login_required
+def dashboard_data(json=True):
+    current_user = view_helpers.get_current_user()
+    if not current_user.is_admin:
+        return ""
+    data = rmc_stats.generic_stats()
+    if json:
+        data = util.json_dumps(data)
+    return data
+
+@app.route('/dashboard', methods=['GET'])
+# FIXME(sandy): take admin required from backfill branch
+@view_helpers.login_required
+def dashboard_page():
+    current_user = view_helpers.get_current_user()
+    if not current_user.is_admin:
+        return flask.redirect('profile')
+
+    data = dashboard_data(json=False)
+    print "retting"
+    return flask.render_template(
+        'dashboard.html',
+        page_script='dashboard.js',
+        **data
+    )
 
 if __name__ == '__main__':
     # Late import since this isn't used on production
