@@ -120,6 +120,35 @@ def users_joined_after(date=(datetime.now() - timedelta(hours=24))):
 def users_joined_before(date=(datetime.now() - timedelta(hours=24))):
     return count_user_joined_date(date.__ge__)
 
+def latest_reviews(n=5):
+    tups = []
+
+    for uc in m.UserCourse.objects():
+        cr_date = uc.course_review.comment_date
+        pr_date = uc.professor_review.comment_date
+        if cr_date:
+            tups.append((cr_date, 'course_review', uc))
+        if pr_date:
+            tups.append((pr_date, 'professor_review', uc))
+
+    tups.sort(reverse=True)
+
+    result = []
+    for tup in tups:
+        date, rev_type, uc = tup
+        result.append({
+            'user_id': uc.user_id,
+            'course_id': uc.course_id,
+            'professor_id': uc.professor_id,
+            'text': getattr(uc, rev_type).comment,
+            'time': date,
+            'type': rev_type,
+        })
+        if len(result) == n:
+            break
+
+    return result
+
 def reviews_given(user):
     ucs = m.UserCourse.objects(user_id=user.id)
     review_count = 0
