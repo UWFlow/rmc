@@ -20,13 +20,16 @@ aggregate_data:
 
 init_data: import_menlo aggregate_data
 
+export_data:
+	mongodump --db rmc
+
 prod_import: prod_import_mongo aggregate_data
 
 prod_import_mongo:
 	@if [ `whoami` = 'rmc' ]; then \
 		echo "You're in prod!!! Don't dump our data :("; \
 	else \
-		rsync -avz rmc:~/rmc/dump .; \
+		rsync -avz rmc:~/dump .; \
 		mongorestore --drop dump; \
 	fi
 
