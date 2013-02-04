@@ -1232,25 +1232,16 @@ def last_schedule_paste():
     })
 
 @app.route('/admin/api/generic-stats', methods=['POST'])
-# FIXME(sandy): take admin required from backfill branch
-@view_helpers.login_required
+@view_helpers.admin_required
 def dashboard_data(json=True):
-    current_user = view_helpers.get_current_user()
-    if not current_user.is_admin:
-        return ""
     data = rmc_stats.generic_stats()
     if json:
         data = util.json_dumps(data)
     return data
 
 @app.route('/dashboard', methods=['GET'])
-# FIXME(sandy): take admin required from backfill branch
-@view_helpers.login_required
+@view_helpers.admin_required
 def dashboard_page():
-    current_user = view_helpers.get_current_user()
-    if not current_user.is_admin:
-        return flask.redirect('profile')
-
     data = dashboard_data(json=False)
     print "retting"
     return flask.render_template(
