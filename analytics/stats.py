@@ -508,7 +508,8 @@ def print_user_schedule_debug():
             courses.add(i.course_id)
 
         safe_name = user.name.encode('utf-8')
-        print "%s, %d USIs, %d courses" % (safe_name, len(items), len(courses))
+        print "%s, %s, %d USIs, %d courses" % (
+                str(user.id), safe_name, len(items), len(courses))
 
 # TODO(Sandy): More help info
 def stats_help():
