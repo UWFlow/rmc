@@ -22,8 +22,8 @@ def generic_stats(show_all=False):
 
     num_users = len(users)
 
-    num_users_with_history = sum(
-            [1 if user.has_course_history else 0 for user in users])
+    num_users_with_transcript = sum(
+            [1 if user.transcripts_imported else 0 for user in users])
 
     num_ucs = len(ucs)
 
@@ -56,7 +56,7 @@ def generic_stats(show_all=False):
 
     result = {
         'num_users': len(users),
-        'num_users_with_history': num_users_with_history,
+        'num_users_with_transcript': num_users_with_transcript,
         'num_ucs': len(ucs),
         'num_signups_today': signups,
         'num_signups_start_time': today,
@@ -79,7 +79,7 @@ def print_generic_stats():
     print """
 Total User
 %s
-User with course_history
+User with transcripts imported
 %s
 Total UserCourse
 %s
@@ -94,7 +94,7 @@ Total UserCourse Prof ratings
 Users signed up since a day ago (%s)
 %s""" % (
         data['num_users'],
-        data['num_users_with_history'],
+        data['num_users_with_transcript'],
         data['num_ucs'],
         data['num_course_reviews'],
         data['num_professor_reviews'],
