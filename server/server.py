@@ -578,6 +578,7 @@ def search_courses():
     direction = int(request.values.get('direction', default_direction))
     count = int(request.values.get('count', 10))
     offset = int(request.values.get('offset', 0))
+    exclude_taken_courses = request.values.get('exclude_taken_courses')
 
     current_user = view_helpers.get_current_user()
 
@@ -618,6 +619,13 @@ def search_courses():
 
     if term:
         filters['terms_offered'] = term
+
+    if exclude_taken_courses == "exclude":
+        ucs = (current_user.get_user_courses().only('course_id', 'term_id'))
+        filters['id__nin'] = [
+            uc.course_id for uc in ucs
+            if not m.term.Term.is_shortlist_term(uc.term_id)
+        ]
 
     if sort_mode == 'friends':
 

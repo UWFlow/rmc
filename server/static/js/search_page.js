@@ -18,6 +18,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       this.term = window.pageData.terms[0];
       this.sortMode = window.pageData.sortModes[0];
       this.courses = new _course.CourseCollection();
+      this.excludeTakenCourses = false;
       $(window).scroll(_.bind(this.scrollWindow, this));
     },
 
@@ -47,7 +48,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         sortModes: pageData.sortModes,
         selectedTerm: this.term,
         selectedSortMode: this.sortMode,
-        getIconForMode: this.getIconForMode
+        getIconForMode: this.getIconForMode,
+        excludeTakenCourses: this.excludeTakenCourses
       }));
 
       var $friendOption = this.$('.sort-options [data-value="friends taken"]');
@@ -81,6 +83,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     },
 
     events: {
+      'click .excluding-taken-courses-dropdown .dropdown-menu li': 'changeExcludeTakenCourses',
       'click .term-dropdown .dropdown-menu li': 'changeTerm',
       'click .sort-options .option': 'changeSortMode',
       'input .keywords': 'changeKeywords',
@@ -91,6 +94,14 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       var $target = $(evt.currentTarget);
       this.$('.selected-term').text($target.text());
       this.setTerm($target.attr('data-value'));
+
+      this.resetAndUpdate();
+    },
+
+    changeExcludeTakenCourses: function(evt) {
+      var $target = $(evt.currentTarget);
+      this.$('.selected-exclude-option').text($target.text());
+      this.setExcludeTakenCourses($target.attr('data-value'));
 
       this.resetAndUpdate();
     },
@@ -130,6 +141,10 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       this.term = _.find(pageData.terms, function(term) {
         return term.value === termValue;
       });
+    },
+
+    setExcludeTakenCourses: function(excludeTakenCourses) {
+      this.excludeTakenCourses = excludeTakenCourses;
     },
 
     setSortMode: function(sortName) {
@@ -177,7 +192,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         term: this.term.value,
         name: this.sortMode.name,
         sort_mode: this.sortMode.value,
-        keywords: this.keywords
+        keywords: this.keywords,
+        exclude_taken_courses: this.excludeTakenCourses
       };
 
       mixpanel.track('Course search request', args);
