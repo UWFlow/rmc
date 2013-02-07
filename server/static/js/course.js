@@ -428,7 +428,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
     toggleCourse: function(evt) {
       if (this.$('.course-inner').is(':visible')) {
-        this.collapseCourse(evt);
+        // Don't collapse if a link is being clicked
+        if (!$(evt.target).is('a')) {
+          this.collapseCourse(evt);
+        }
       } else {
         this.expandCourse(evt);
       }

@@ -17,7 +17,12 @@
 <% } %>
 <div class="course-content">
   <div class="visible-section">
-    <div class="course-code"><%- course.code %></div>
+    <div class="course-code">
+      <span><%- course.code %></span>
+      <a href="/course/<%- course.id %>">
+        <%- course.code %>
+      </a>
+    </div>
     <div class="course-name"><%- course.name %></div>
 
     <div class="rating-box-placeholder"></div>

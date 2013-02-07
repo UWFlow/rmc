@@ -86,6 +86,16 @@ $inner-padding: 18px;
     margin-top: 10px;
     margin-bottom: 10px;
     padding: 1%;
+
+    .course-code {
+      & > a {
+        display: inline;
+      }
+
+      & > span {
+        display: none;
+      }
+    }
   }
 
   .course-content {
@@ -117,6 +127,11 @@ $inner-padding: 18px;
       letter-spacing: -1px;
       font-weight: lighter;
       color: $textColor;
+
+      & > a {
+         display: none;
+         color: $textColor;
+      }
     }
 
     .course-name {
