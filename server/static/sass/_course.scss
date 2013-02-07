@@ -88,11 +88,11 @@ $inner-padding: 18px;
     padding: 1%;
 
     .course-code {
-      & > a {
+      .course-code-linked {
         display: inline;
       }
 
-      & > span {
+      .course-code-unlinked {
         display: none;
       }
     }
@@ -128,7 +128,7 @@ $inner-padding: 18px;
       font-weight: lighter;
       color: $textColor;
 
-      & > a {
+      .course-code-linked {
          display: none;
          color: $textColor;
       }
