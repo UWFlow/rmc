@@ -91,6 +91,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     },
 
     changeTerm: function(evt) {
+      evt.preventDefault();
+
       var $target = $(evt.currentTarget);
       this.$('.selected-term').text($target.text());
       this.setTerm($target.attr('data-value'));
@@ -99,6 +101,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     },
 
     changeExcludeTakenCourses: function(evt) {
+      evt.preventDefault();
+
       var $target = $(evt.currentTarget);
       this.$('.selected-exclude-option').text($target.text());
       this.setExcludeTakenCourses($target.attr('data-value'));
