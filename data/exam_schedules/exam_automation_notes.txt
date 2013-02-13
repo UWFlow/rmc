@@ -6,12 +6,12 @@ Step 1: Grab the latest exam schedule and get David to copy/paste it
 Step 2: Run the following replaces in vim
 (easy to automate)
 
-:%s/Fall 2012//g
-:%s/^Final Examination Schedule (for On Campus Exams)//g
-:%s/^Exam Section(s) Day Date Start Finish Location//g
+:%s/Winter 2013//g
+:%s/^Final Examination Schedule//g
+:%s/^Exam Section(s) Day Date Start Time End Time Location//g
 :%s/\n[0-9][0-9]*\n//g
 :%s/Exam removed from.*\n//g
-:%s/^See http.*\n//g
+:g/See http.*\n/d
 :%s/^.*\sWLU.*\n//g
 
 Note: Now we'll still have (a few) lines of courses with section, date or location broken into separate lines
@@ -21,3 +21,5 @@ TODO(Sandy): Modify parse_uw_exam_schedule.py to read tokens (instead of lines l
 
 Step 4: Remove anything that is on a line on it's own with only section # (ie. AMATH 442) (this is probably from courses with "Exam remove from...")
 TODO(Sandy): fix parser so it doesn't crash for this case
+
+(Winter 2013): We might have a couple of courses on the same line (I saw ENGL 102B and PSYCH 323R)
