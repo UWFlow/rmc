@@ -28,13 +28,13 @@ function(RmcBackbone, $, _, _course) {
     model: Exam,
 
     comparator: function(exam) {
-      return exam.get('start_date').$date;
+      return exam.get('start_date');
     },
 
     groupedByCourse: function() {
       return this.chain()
         .groupBy(function(model) { return model.get('course_id'); })
-        .sortBy(function(exams) { return exams[0].get('start_date').$date; })
+        .sortBy(function(exams) { return exams[0].get('start_date'); })
         .value();
     }
   });
