@@ -244,7 +244,7 @@
     {% endif %}
 
     {# Intercom.io #}
-    {% if current_user %}
+    {% if current_user and env == 'prod' %}
       <script id="IntercomSettingsScriptTag">
         var intercomSettings = {
           app_id: '4ytbu7ss',
