@@ -76,13 +76,11 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     });
 
     // Add the parsed term and course info to the page for live preview
-    var termCollectionView = new term.TermCollectionView({
-      termCollection: termCollection
+    var profileTermsView = new term.ProfileTermsView({
+      termCollection: termCollection,
+      showAddTerm: window.pageData.ownProfile
     });
-    $('#term-collection-container')
-      .html(termCollectionView.render().el)
-      .prepend('<h1>Courses</h1>')  // TODO(david): This should be in HTML
-      .show();
+    $('#profile-terms-placeholder').replaceWith(profileTermsView.render().el);
   };
 
   // Render the transcript, if available

@@ -1,50 +1,46 @@
 @import 'course';
 
-#profile-container {
-  .term-collection {
-    list-style: none;
-    margin: 0;
+.term-collection {
+  list-style: none;
+  margin: 0;
+}
 
-    .term {
-      .term-name.well {
-        padding: 10px;
-        cursor: pointer;
-        font-size: 36px;
-        line-height: 36px;
-        margin-top: 10px;
-        margin-bottom: 10px;
+.course-collection {
+  list-style: none;
+  margin-left: 0;
+}
 
-        .bold {
-          font-weight: bold;
-        }
-        .light {
-          font-weight: lighter;
-        }
+#transcript-error {
+  color: #ff0000;
+}
 
-        // TODO(mack): remove duplication with hover for course
-        &:hover {
-          // TODO(david): More crap on hover
-          @include box-shadow(0 0 10px rgba(0, 0, 0, 0.1));
-          // TODO(david): Should not hardcode #F7F7F7
-          @include background(linear-gradient(top, #FCFCFC, #F6F6F6));
-          @include transition(all 0.3s ease-out);
-          border-color: darken($wellBorderColor, 10%);
-        }
+.term-bar.well {
+  padding: 10px;
+  cursor: pointer;
+  font-size: 36px;
+  line-height: 36px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 
-        .arrow {
-          float: left;
-        }
-      }
-
-      .course-collection {
-        list-style: none;
-        margin-left: 0;
-      }
-    }
+  .bold {
+    font-weight: bold;
+  }
+  .light {
+    font-weight: lighter;
   }
 
-  #transcript-error {
-    color: #ff0000;
+  // TODO(mack): remove duplication with hover for course
+  &:hover {
+    // TODO(david): More crap on hover
+    @include box-shadow(0 0 10px rgba(0, 0, 0, 0.1));
+    // TODO(david): Should not hardcode #F7F7F7
+    @include background(linear-gradient(top, #FCFCFC, #F6F6F6));
+    @include transition(all 0.3s ease-out);
+    border-color: darken($wellBorderColor, 10%);
+  }
+
+  .arrow {
+    float: left;
   }
 }
 

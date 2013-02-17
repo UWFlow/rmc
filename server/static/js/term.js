@@ -111,10 +111,58 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
     }
   });
 
+  var AddTermBtnView = RmcBackbone.View.extend({
+    className: 'add-term-btn',
+
+    initialize: function() {
+      this.template = _.template($('#add-term-btn-tpl').html());
+    },
+
+    render: function() {
+      this.$el.html(this.template({}));
+      return this;
+    },
+
+    events: {
+      'click': 'onAddTermBtnClick'
+    },
+
+    onAddTermBtnClick: function() {
+      $('.schedule-input-modal').modal();  // TODO(david): This is a hack
+    }
+  });
+
+  var ProfileTermsView = RmcBackbone.View.extend({
+    className: 'profile-terms',
+    initialize: function(options) {
+      this.termCollection = options.termCollection;
+      this.termCollectionView = new TermCollectionView({
+        termCollection: this.termCollection
+      });
+      if (options.showAddTerm) {
+        this.addTermBtnView = new AddTermBtnView();
+      }
+
+      this.template = _.template($('#profile-terms-tpl').html());
+    },
+
+    render: function() {
+      this.$el.html(this.template({}));
+      if (this.addTermBtnView) {
+        this.$('.add-term-btn-placeholder')
+            .replaceWith(this.addTermBtnView.render().el);
+      }
+      this.$('.term-collection-placeholder')
+          .replaceWith(this.termCollectionView.render().el);
+      return this;
+    }
+  });
+
   return {
     TermModel: TermModel,
     TermView: TermView,
     TermCollection: TermCollection,
-    TermCollectionView: TermCollectionView
+    TermCollectionView: TermCollectionView,
+    ProfileTermsView: ProfileTermsView
   };
 });

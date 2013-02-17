@@ -1,7 +1,7 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('term-tpl') %}
-<div class="term-name well">
+<div class="term-name term-bar well">
   <% if(expand) { %>
     <i class="arrow icon-caret-down"></i>
   <% } else { %>
@@ -10,4 +10,19 @@
   <%- name %>
 </div>
 <div class="course-collection-placeholder"></div>
+{% endcall %}
+
+{% call macros.us_template('add-term-btn-tpl') %}
+<ul class="unstyled">
+  <li class="term-bar well">
+    <i class="icon-plus"></i>
+    Add term
+  </li>
+</ul>
+{% endcall %}
+
+{% call macros.us_template('profile-terms-tpl') %}
+<h1>Courses</h1>
+<div class="add-term-btn-placeholder"></div>
+<div class="term-collection-placeholder"></div>
 {% endcall %}
