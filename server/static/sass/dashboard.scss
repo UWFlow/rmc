@@ -9,6 +9,27 @@ header {
   padding-bottom: 40px;
   font-size: 50px;
   line-height: 70px;
+
+  .stats-title {
+    font-size: 40px;
+    color: #888888;
+  }
+}
+
+.reviews {
+
+  .review {
+    margin-bottom: 20px;
+    line-height: 20px;
+
+    .review-course-id {
+      font-size: 20px;
+    }
+
+    .review-type {
+      font-size: 12px;
+    }
+  }
 }
 
 #last_updated {

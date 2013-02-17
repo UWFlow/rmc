@@ -1235,8 +1235,11 @@ def last_schedule_paste():
 @view_helpers.admin_required
 def dashboard_data(json=True):
     data = rmc_stats.generic_stats()
+    data['latest_reviews'] = rmc_stats.latest_reviews(n=5)
+
     if json:
         data = util.json_dumps(data)
+
     return data
 
 @app.route('/dashboard', methods=['GET'])

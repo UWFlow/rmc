@@ -37,11 +37,13 @@
     <div class="span6" id="num_ucs">{{ num_ucs|tojson|safe }}</div>
   </div>
 </div>
+<div class="reviews"></div>
 <div id="last_updated"></div>
 {% endblock %}
 
 {% block scripts %}
 <script>
   window.pageData.epoch = {{ epoch|tojson|safe }};
+  window.pageData.latest_reviews = {{ latest_reviews|tojson|safe }};
 </script>
 {% endblock %}
