@@ -30,13 +30,6 @@ def batch_send(title_renderer, body_renderer,
             if user.email_unsubscribed:
                 continue
 
-            # Filter out hotmail users since sending with SES will cause these
-            # emails to end up in spam. Thus, we are currently sending to these
-            # users with mailchimp.
-            # TODO(mack): Get sending emails to hotmail users working with SES.
-            if '@live.' in user.email or '@hotmail.' in user.email:
-                continue
-
             if pre_send:
                 include_user = pre_send(user)
                 if not include_user:
