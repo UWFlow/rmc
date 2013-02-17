@@ -34,6 +34,8 @@ function($, _util) {
         $('#num_signups_today').text(resp.num_signups_today);
         $('#num_users_with_transcript').text(resp.num_users_with_transcript);
         $('#num_ucs').text(resp.num_ucs);
+        $('#num_ratings').text(resp.num_ratings);
+        $('#num_reviews').text(resp.num_reviews);
         setReviews(resp.latest_reviews);
         setLastUpdatedTime(_util.toDate(resp.epoch));
       },

@@ -37,6 +37,16 @@
     <div class="span6" id="num_ucs">{{ num_ucs|tojson|safe }}</div>
   </div>
 </div>
+<div class="stats-row">
+  <div class="row-fluid stats-title">
+    <div class="span6">Total ratings</div>
+    <div class="span6">Total reviews</div>
+  </div>
+  <div class="row-fluid stats-num">
+    <div class="span6" id="num_ratings">{{ num_ratings|tojson|safe }}</div>
+    <div class="span6" id="num_reviews">{{ num_reviews|tojson|safe }}</div>
+  </div>
+</div>
 <div class="reviews"></div>
 <div id="last_updated"></div>
 {% endblock %}

@@ -1234,7 +1234,7 @@ def last_schedule_paste():
 @app.route('/admin/api/generic-stats', methods=['POST'])
 @view_helpers.admin_required
 def dashboard_data(json=True):
-    data = rmc_stats.generic_stats()
+    data = rmc_stats.generic_stats(show_all=True)
     data['latest_reviews'] = rmc_stats.latest_reviews(n=5)
 
     if json:
