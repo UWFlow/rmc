@@ -59,7 +59,8 @@ function($, _, RmcBackbone, _facebook) {
       this.$('.fb-login-placeholder').replaceWith(
         this.fbLoginView.render().el);
 
-      $('#sign-in-banner-container').toggleClass('with-message', this.message);
+      $('#sign-in-banner-container')
+          .toggleClass('with-message', !!this.message);
 
       _.defer(_.bind(this.postRender, this));
 
