@@ -621,11 +621,14 @@ def search_courses():
         filters['terms_offered'] = term
 
     if exclude_taken_courses == "exclude":
-        ucs = (current_user.get_user_courses().only('course_id', 'term_id'))
-        filters['id__nin'] = [
-            uc.course_id for uc in ucs
-            if not m.term.Term.is_shortlist_term(uc.term_id)
-        ]
+        if current_user:
+            ucs = (current_user.get_user_courses().only('course_id', 'term_id'))
+            filters['id__nin'] = [
+                uc.course_id for uc in ucs
+                if not m.term.Term.is_shortlist_term(uc.term_id)
+            ]
+        else:
+            logging.error('Anonymous user tried excluding taken courses')
 
     if sort_mode == 'friends':
 
