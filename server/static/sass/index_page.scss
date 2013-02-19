@@ -4,6 +4,11 @@
 
 .navbar {
   background: rgba(250, 250, 250, 0.6);
+
+  .divider-vertical {
+    border-left: 1px solid rgba(200,200,200, 0.15);
+    border-right: 1px solid rgba(white, 0.15);
+  }
 }
 
 #landing-header {

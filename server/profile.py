@@ -56,7 +56,7 @@ def render_schedule_page(profile_user_id):
     )
 
 
-def render_profile_page(profile_user_id):
+def render_profile_page(profile_user_id, current_user=None):
     # TODO(mack): for dict maps, use .update() rather than overwriting to
     # avoid subtle overwrites by data that has fields filled out
 
@@ -64,7 +64,7 @@ def render_profile_page(profile_user_id):
 
     # PART ONE - VALIDATION
 
-    current_user = view_helpers.get_current_user()
+    current_user = current_user or view_helpers.get_current_user()
 
     try:
         if profile_user_id:
@@ -83,8 +83,8 @@ def render_profile_page(profile_user_id):
         own_profile = False
 
         # Allow only friends to view profile
-        if not (profile_user_id in current_user.friend_ids
-                or current_user.is_admin and flask.request.values.get('admin')):
+        if not (profile_user_id in current_user.friend_ids or (
+                current_user.is_admin and flask.request.values.get('admin'))):
             logging.warn("User (%s) tried to access non-friend profile (%s)"
                     % (current_user.id, profile_user_id))
             return view_helpers.redirect_to_profile(current_user)

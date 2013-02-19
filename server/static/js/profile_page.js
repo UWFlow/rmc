@@ -1,9 +1,9 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
-'raffle_unlock', 'schedule'],
+'raffle_unlock', 'schedule', 'sign_in'],
 function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
-    _exam, _raffle_unlock, _schedule) {
+    _exam, _raffle_unlock, _schedule, _sign_in) {
 
   course.CourseCollection.addToCache(pageData.courseObjs);
   uc.UserCourses.addToCache(pageData.userCourseObjs);
@@ -20,6 +20,31 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
   // Show the add schedule pop-up on a hash URL
   var showScheduleModal = !!util.getQueryParam('import-schedule');
 
+  // For demo account, cancel some AJAX calls on this page and pop-up a log-in
+  // dialog
+  if (window.location.pathname === '/profile/demo') {
+    $.ajaxSetup({
+      beforeSend: function(jqXhr, settings) {
+        if (_(['PUT', 'POST', 'DELETE']).contains(settings.type) &&
+            settings.url !== '/login') {
+          console.log(jqXhr, settings);
+          _sign_in.renderModal({
+            source: 'MODAL_DEMO_PROFILE_AJAX',
+            nextUrl: window.location.origin
+          });
+          return false;
+        }
+      }
+    });
+
+    _sign_in.renderBanner({
+      fbConnectText: 'Connect with Facebook',
+      source: 'BANNER_DEMO_PROFILE_PAGE',
+      nextUrl: window.location.origin,
+      message: '<strong>This is a demo account.</strong> Nothing will be' +
+          ' saved, so go nuts! When you\'re done playing...'
+    });
+  }
 
   var scheduleInputModalView = new _schedule.ScheduleInputModalView();
   $('#schedule-input-modal-placeholder')

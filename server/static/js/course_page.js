@@ -40,11 +40,13 @@ function($, course, tookThis, user, tips, prof, ratings, user_course, _review, _
   var profsView = new prof.ProfCollectionView({ collection: profsCollection });
   $('#professor-review-container').html(profsView.render().el);
 
-  _sign_in.renderBannerIfNecessary({
-    fbConnectText: 'See friends taking this course!',
-    source: 'BANNER_COURSE_PAGE',
-    nextUrl: window.location.href
-  });
+  if (!window.pageData.currentUserId) {
+    _sign_in.renderBanner({
+      fbConnectText: 'See friends taking this course!',
+      source: 'BANNER_COURSE_PAGE',
+      nextUrl: window.location.href
+    });
+  }
 
   mixpanel.track('Impression: Single course page');
 });

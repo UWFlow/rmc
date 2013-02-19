@@ -38,24 +38,28 @@ function($, _, RmcBackbone, _facebook) {
   });
 
   var SignInBannerView = RmcBackbone.View.extend({
+    className: 'sign-in-banner',
+
     attributes: {
-      'class': 'sign-in-banner',
       'data-spy': 'affix'
     },
 
-    initialize: function(attributes) {
+    initialize: function(options) {
       this.fbLoginView = new FbLoginView({
-        fbConnectText: attributes.fbConnectText,
-        source: attributes.source,
-        nextUrl: attributes.nextUrl
+        fbConnectText: options.fbConnectText,
+        source: options.source,
+        nextUrl: options.nextUrl
       });
+      this.message = options.message || '';
       this.template = _.template($('#sign-in-banner-tpl').html());
     },
 
     render: function() {
-      this.$el.html(this.template({}));
+      this.$el.html(this.template({ message: this.message }));
       this.$('.fb-login-placeholder').replaceWith(
         this.fbLoginView.render().el);
+
+      $('#sign-in-banner-container').toggleClass('with-message', this.message);
 
       _.defer(_.bind(this.postRender, this));
 
@@ -68,11 +72,7 @@ function($, _, RmcBackbone, _facebook) {
     }
   });
 
-  var renderBannerIfNecessary = function(attributes) {
-    if (pageData.currentUserId) {
-      return;
-    }
-
+  var renderBanner = function(attributes) {
     attributes = _.extend({}, {
       fbConnectText: 'Connect with Facebook',
       source: 'UNKNOWN'
@@ -128,7 +128,7 @@ function($, _, RmcBackbone, _facebook) {
   };
 
   return {
-    renderBannerIfNecessary: renderBannerIfNecessary,
+    renderBanner: renderBanner,
     renderModal: renderModal
   };
 

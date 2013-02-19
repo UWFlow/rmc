@@ -253,11 +253,13 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     var courseSearchView = new CourseSearchView({});
     $('#course-search-container').append(courseSearchView.render().$el);
 
-    _sign_in.renderBannerIfNecessary({
-      fbConnectText: 'See what your friends are taking!',
-      source: 'BANNER_SEARCH_PAGE',
-      nextUrl: window.location.href
-    });
+    if (!window.pageData.currentUserId) {
+      _sign_in.renderBanner({
+        fbConnectText: 'See what your friends are taking!',
+        source: 'BANNER_SEARCH_PAGE',
+        nextUrl: window.location.href
+      });
+    }
   };
 
   init();

@@ -58,8 +58,13 @@
 }
 
 #sign-in-banner-container {
-  height: 75px;
+  height: 60px;
   display: none;
+
+  // TODO(david): Don't hardcode this
+  &.with-message {
+    height: 120px;
+  }
 
   .sign-in-banner {
     display: inline-block;
@@ -72,16 +77,15 @@
     }
 
     // TODO(mack): Make this work properly with text-align: center
-    $banner-width: 820px;
+    $banner-width: 920px;
     width: $banner-width;
     left: 50%;
     margin-left: -$banner-width/2;
 
     text-align: center;
-    height: 50px;
     padding-top: 20px;
     padding-bottom: 20px;
-    z-index: 10;
+    z-index: 100;
 
     border: 1px solid rgba(34, 25, 25, 0.25);
     border-top: 0;
@@ -92,30 +96,21 @@
     $light-color: #fff;
     @include background(linear-gradient(bottom, $light-color 0%, $dark-color 100%));
 
+    .message {
+      margin-bottom: 12px;
+    }
+
     .fb-login-button-container {
       display: inline-block;
       position: relative;
       text-align: left;
+      margin-right: 14px;
+      width: 50%;
 
       .fb-login-button{
         vertical-align: top;
         margin: 0;
-      }
-
-      // TODO(mack): this is pretty css to get the message to align with
-      // the facebook connect button
-      .message {
-        position: absolute;
-        width: 600px;
-        top: 60px;
-
-        font-weight: lighter;
-        color: #666;
-        font-size: 15px;
-
-        strong {
-          font-weight: lighter;
-        }
+        width: 100%;
       }
     }
 

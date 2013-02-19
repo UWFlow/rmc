@@ -24,13 +24,15 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   $schedulePlaceholder.replaceWith(scheduleView.el);
 
   var profileUser = _user.UserCollection.getFromCache(pageData.profileUserId.$oid);
-  _sign_in.renderBannerIfNecessary({
-    source: 'SHARE_SCHEDULE_BANNER_SCHEDULE_PAGE',
-    fbConnectText: 'Connect with Facebook',
-    nextUrl: '/profile?import-schedule=1'
-  });
+  if (!window.pageData.currentUserId) {
+    _sign_in.renderBanner({
+      source: 'SHARE_SCHEDULE_BANNER_SCHEDULE_PAGE',
+      fbConnectText: 'Connect with Facebook',
+      nextUrl: '/profile?import-schedule=1'
+    });
+  }
 
-  // TODO(mack): pass the message through renderBannerIfNecessary()
+  // TODO(mack): pass the message through renderBanner()
   var $signinMessage = $('#sign-in-banner-container .message');
   $signinMessage.html(
     '...to <strong>create your own schedule</strong> and '+

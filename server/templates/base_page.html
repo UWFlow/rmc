@@ -150,17 +150,25 @@
             <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Search Courses</a>
           </li>
 
-          {% if current_user %}
-            <li class="divider-vertical"></li>
+          <li class="divider-vertical"></li>
 
-            <li class="{{ 'active' if own_profile else '' }}">
+          <li class="{{ 'active' if own_profile else '' }}">
+            {% if current_user %}
               <a title="Go to profile" class="nav-item" href="/profile">
                 <img class="img img-rounded user-pic" width="30" height="30"
                     src="{{ current_user.fb_pic_url }}?type=square">
-                    {# {{ current_user.first_name }} #}
-                  <span id="user-points-placeholder"></span>
+                {# {{ current_user.first_name }} #}
+                <span id="user-points-placeholder"></span>
               </a>
-            </li>
+            {% else %}
+              <a class="nav-item" href="/profile/demo">
+                <i class="icon-user"></i>
+                Demo profile
+              </a>
+            {% endif %}
+          </li>
+
+          {% if current_user %}
 
             <li class="divider-vertical"></li>
 
@@ -180,9 +188,7 @@
         </ul>
       </div>
     </div>
-    {% if not current_user_id %}
-      <div id="sign-in-banner-container"></div>
-    {% endif %}
+    <div id="sign-in-banner-container"></div>
 
     <header id="site-header">
       {% block header %}

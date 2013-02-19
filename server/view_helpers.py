@@ -69,6 +69,7 @@ def get_current_user():
 
 def login_required_func():
     current_user = get_current_user()
+
     user_logging = current_user.id if current_user else current_user
     logging.info("login_required: current_user (%s)" % user_logging)
     if not current_user:
