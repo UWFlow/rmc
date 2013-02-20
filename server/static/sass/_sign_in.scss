@@ -64,12 +64,17 @@
   // TODO(david): Don't hardcode this
   &.with-message {
     height: 120px;
+
+    .sign-in-banner {
+      height: 90px;
+    }
   }
 
   .sign-in-banner {
     display: inline-block;
     position: fixed;
     top: $navbar-height;
+    height: 50px;
 
     opacity: 0.9;
     &:hover {
