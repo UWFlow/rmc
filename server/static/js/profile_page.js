@@ -27,7 +27,6 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
       beforeSend: function(jqXhr, settings) {
         if (_(['PUT', 'POST', 'DELETE']).contains(settings.type) &&
             settings.url !== '/login') {
-          console.log(jqXhr, settings);
           _sign_in.renderModal({
             source: 'MODAL_DEMO_PROFILE_AJAX',
             nextUrl: window.location.origin
