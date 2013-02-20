@@ -91,10 +91,10 @@ def parse_exam_schedule(exam_file_name):
 
         # TODO(sandy): do timezones better
         try:
-            start_date = rmc_util.to_eastern_time(
+            start_date = rmc_util.eastern_to_utc(
                     datetime.fromtimestamp(
                         mktime(time.strptime(start_date_string, date_format))))
-            end_date = rmc_util.to_eastern_time(
+            end_date = rmc_util.eastern_to_utc(
                     datetime.fromtimestamp(
                         mktime(time.strptime(end_date_string, date_format))))
         except Exception as exp:

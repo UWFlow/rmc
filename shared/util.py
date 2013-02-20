@@ -116,7 +116,7 @@ def flatten_dict(dikt):
             flattened[k] = v
     return flattened
 
-def to_eastern_time(date):
+def eastern_to_utc(date):
     tz = pytz.timezone('US/Eastern')
     return utc_date(date, tz)
 
