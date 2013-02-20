@@ -3,6 +3,8 @@ import logging
 import math
 import traceback
 
+import pytz
+
 from bson import json_util, ObjectId
 
 import rmc.shared.constants as c
@@ -113,3 +115,10 @@ def flatten_dict(dikt):
         else:
             flattened[k] = v
     return flattened
+
+def to_eastern_time(date):
+    tz = pytz.timezone('US/Eastern')
+    return utc_date(date, tz)
+
+def utc_date(date, tz):
+    return tz.normalize(tz.localize(date)).astimezone(pytz.utc)

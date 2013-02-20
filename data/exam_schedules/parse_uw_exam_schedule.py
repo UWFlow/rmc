@@ -11,6 +11,7 @@ import time
 
 import rmc.models as m
 import rmc.shared.constants as c
+import rmc.shared.util as rmc_util
 
 mongoengine.connect(c.MONGO_DB_RMC)
 
@@ -90,14 +91,16 @@ def parse_exam_schedule(exam_file_name):
 
         # TODO(sandy): do timezones better
         try:
-            start_date = datetime.fromtimestamp(mktime(
-                    time.strptime(start_date_string, date_format)))
-            start_date += timedelta(hours=5)
-            end_date = datetime.fromtimestamp(mktime(
-                    time.strptime(end_date_string, date_format)))
-            end_date += timedelta(hours=5)
-        except:
+            start_date = rmc_util.to_eastern_time(
+                    datetime.fromtimestamp(
+                        mktime(time.strptime(start_date_string, date_format))))
+            end_date = rmc_util.to_eastern_time(
+                    datetime.fromtimestamp(
+                        mktime(time.strptime(end_date_string, date_format))))
+        except Exception as exp:
             print "Could not get date for line '%s'" % ' '.join(tokens)
+            # Don't remmeber exactly what exception I was trying to catch...
+            print exp
             start_date = None
             end_date = None
 
