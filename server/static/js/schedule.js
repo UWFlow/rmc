@@ -782,7 +782,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
     // TODO(Sandy): make this look cleaner (line breaks + comments)
     var getTitleRe = function() {
-      return (/(\w{2,5}\ \w{1,5})\ -\ ([^\r\n]+)/g);
+      return (/(\w{2,}\ \w{1,5})\ -\ ([^\r\n]+)/g);
     };
 
     var getPartialBodyRe = function() {
