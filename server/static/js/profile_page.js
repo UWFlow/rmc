@@ -1,4 +1,4 @@
-require(
+define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
 'raffle_unlock', 'schedule'],

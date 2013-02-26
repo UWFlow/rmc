@@ -134,8 +134,11 @@ _points, _user, _facebook) {
       $('#user-points-placeholder').replaceWith(userPointsView.render().$el);
     }
 
+    var pageScriptDeferred = new $.Deferred();
     if (window.pageData.pageScript) {
-      require([window.pageData.pageScript]);
+      require([window.pageData.pageScript], function() {
+        pageScriptDeferred.resolve();
+      });
     }
 
     var $footer = $('footer');
@@ -145,6 +148,14 @@ _points, _user, _facebook) {
         'url(/static/img/footer_uw_sphere_short.png) right top no-repeat');
         //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
     }
+
+    // This is to be triggered once the entire page has been rendered;
+    // i.e. we have completed the domready function (i.e. at the end of the
+    // function) and the backbone views have been inserted into the dom
+    console.log('reached end');
+    pageScriptDeferred.then(function() {
+      $(document.body).data('rendered', true);
+    });
   };
 
 

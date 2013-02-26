@@ -1,4 +1,4 @@
-require(
+define(
 ['facebook', 'ext/jquery', 'util'],
 function(_facebook, $, _util) {
   $('.header-bg').css('opacity', 1.0);

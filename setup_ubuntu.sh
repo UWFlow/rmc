@@ -28,3 +28,7 @@ sudo apt-get install redis-server
 
 # Install rubygems, in order to install compass
 sudo apt-get install ruby rubygems
+
+# TODO(mack): This might result in version of phantomjs that's too old, in which case
+# it'll be necessary to manually build/install phantom.js
+sudo apt-get install phantomjs

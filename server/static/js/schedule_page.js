@@ -1,7 +1,7 @@
 // TODO(mack): there's some kind of require.js dependency issue that currently
 // requires the 'user_course' module to be included here (probably of delayed
 // require('user_course') in the 'course' module); need to investigate further
-require(
+define(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'user', 'course',
 'user_course', 'schedule', 'facebook', 'sign_in', 'util'],
 function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
