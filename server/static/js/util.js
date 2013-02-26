@@ -142,6 +142,10 @@ function(_, _s) {
     return window.location.origin;
   };
 
+  var inIframe = function() {
+    return window.top !== window.self;
+  };
+
   return {
     getQueryParam: getQueryParam,
     capitalize: capitalize,
@@ -154,6 +158,7 @@ function(_, _s) {
     userCourseTermIdComparator: userCourseTermIdComparator,
     truncatePreviewString: truncatePreviewString,
     getTimeDelta: getTimeDelta,
-    getSiteBaseUrl: getSiteBaseUrl
+    getSiteBaseUrl: getSiteBaseUrl,
+    inIframe: inIframe
   };
 });

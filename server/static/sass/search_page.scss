@@ -124,3 +124,13 @@ header {
     }
   }
 }
+
+.in-iframe {
+
+  header {
+    padding-top: 0;
+  }
+  #site-header {
+    display: none;
+  }
+}

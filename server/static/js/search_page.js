@@ -1,6 +1,7 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course', 'prof', 'sign_in'],
-function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, _sign_in) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course', 'prof', 'sign_in', 'util'],
+function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof,
+    _sign_in, _util) {
 
   var FETCH_DELAY_MS = 300;
 
@@ -37,7 +38,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       var loaderOffset = this.$('.loader-bottom').offset().top;
       var $window = $(window);
       var bottomOffset = $window.scrollTop() + $window.height();
-      if (bottomOffset > loaderOffset) {
+      if (bottomOffset > loaderOffset - 500) {
         this.updateCourses();
       }
     },
@@ -74,10 +75,11 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
           courseCollectionView.render().$el);
       this.updateCourses();
 
-      window.setTimeout(_.bind(function() {
-        // TODO(mack): investgate why this has to be done in window.setTimeout
-        this.$('.keywords').focus();
-      }, this), 0);
+      if (!_util.inIframe()) {
+        _.defer(_.bind(function() {
+          this.$('.keywords').focus();
+        }, this));
+      }
 
       return this;
     },
@@ -199,6 +201,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         // search options
         return;
       }
+
+      console.log('updating courses');
       this.$('.loader').removeClass('hide');
       this.updatingCourses = true;
       var args = {
@@ -253,12 +257,14 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     var courseSearchView = new CourseSearchView({});
     $('#course-search-container').append(courseSearchView.render().$el);
 
-    if (!window.pageData.currentUserId) {
-      _sign_in.renderBanner({
-        fbConnectText: 'See what your friends are taking!',
-        source: 'BANNER_SEARCH_PAGE',
-        nextUrl: window.location.href
-      });
+    if (!_util.inIframe()) {
+      if (!window.pageData.currentUserId) {
+        _sign_in.renderBanner({
+          fbConnectText: 'See what your friends are taking!',
+          source: 'BANNER_SEARCH_PAGE',
+          nextUrl: window.location.href
+        });
+      }
     }
   };
 

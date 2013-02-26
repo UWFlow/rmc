@@ -66,9 +66,9 @@ require.config({
 
 require(['ext/underscore', 'ext/underscore.string', 'util', 'ext/moment',
     'ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone',
-    'util', 'ext/moment', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
-    'points', 'user', 'facebook'],
-function(_, _s, util, moment, $, _, _s, Backbone, util, moment, __, __, toastr,
+    'ext/bootstrap', 'ext/cookie', 'ext/toastr', 'points', 'user',
+    'facebook'],
+function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr,
 _points, _user, _facebook) {
 
   // Add helpers functions to all templates
@@ -116,34 +116,45 @@ _points, _user, _facebook) {
 
   // TODO(mack): separate code inside into functions
   var onDomReady = function() {
-    $('.navbar [title]').tooltip({ placement: 'bottom' });
-    $('.navbar .signout-btn').click(function() {
+    if (util.inIframe()) {
+      $('#site-nav').hide();
+      $('#site-footer').hide();
+      $('body').addClass('in-iframe');
+    } else {
+      renderNav();
+      _.defer(renderFooter);
+    }
+
+    if (window.pageData.userObjs) {
+      _user.UserCollection.addToCache(window.pageData.userObjs);
+    }
+
+    if (window.pageData.pageScript) {
+      require([window.pageData.pageScript]);
+    }
+  };
+
+  var renderNav = function() {
+    $('#site-nav [title]').tooltip({ placement: 'bottom' });
+    $('#site-nav .signout-btn').click(function() {
       $.removeCookie('fbid', { path: '/' });
       $.removeCookie('fb_access_token', { path: '/' });
       $.removeCookie('fb_access_token_expires_in', { path: '/' });
       window.location.href = '/?logout=1';
     });
 
-    if (window.pageData.userObjs) {
-      _user.UserCollection.addToCache(window.pageData.userObjs);
-    }
-
     var currentUser = _user.getCurrentUser();
     if (currentUser) {
       var userPointsView = new _points.PointsView({ model: currentUser });
       $('#user-points-placeholder').replaceWith(userPointsView.render().$el);
     }
+  };
 
-    if (window.pageData.pageScript) {
-      require([window.pageData.pageScript]);
-    }
-
+  var renderFooter = function() {
     var $footer = $('footer');
     if ($footer.length && window.location.pathname !== '/') {
-      // TODO(david): Use jpg and have it fade out into bg color
       $footer.css('background',
         'url(/static/img/footer_uw_sphere_short.png) right top no-repeat');
-        //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
     }
   };
 

@@ -11,16 +11,20 @@
   }
 }
 
+$header-height: 500px;
+
 #landing-header {
   width: 100%;
   position: absolute;
   top: 0;
-  height: 100%;
+  height: $header-height;
   overflow: hidden;
   padding: 0;
   background-color: white;
   min-width: 700px;
-
+  //border-bottom: 8px solid $flowBlue;
+  //border-bottom: 10px solid #FF8207;
+  border-bottom: 7px solid #DDD;
 
   .header-bg {
     opacity: 0;
@@ -35,7 +39,7 @@
   .sign-up-box {
     z-index: 10;
     position: absolute;
-    top: 45%;
+    top: 55%;
     margin-top: -155px;
     padding: 20px 40px;
     padding-bottom: 25px;
@@ -163,3 +167,22 @@ footer {
   margin-top: 5px;
   font-size: 12px;
 }
+
+#landing-content {
+  margin-top: $header-height;
+
+  .landing-heading {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #777;
+  }
+}
+
+#course-search-iframe {
+  $iframe-width: 1250px;
+  width: $iframe-width;
+  position: relative;
+  left: 50%;
+  margin-left: -$iframe-width / 2;
+}
+
