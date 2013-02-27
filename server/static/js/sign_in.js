@@ -89,6 +89,7 @@ function($, _, RmcBackbone, _facebook) {
 
   // TODO(mack): Show loading or something after connecting with facebook,
   // but before redirection completes
+  // TODO(david): Remove RmcBackbone.ModalView (just use Bootstrap's JS)
   var SignInModalView = RmcBackbone.ModalView.extend({
 
     initialize: function(attributes) {
@@ -117,6 +118,39 @@ function($, _, RmcBackbone, _facebook) {
     }
   });
 
+  // TODO(david): Consolidate this w/ other code. Gotta rush this out right now.
+  var EmailSignInModalView = RmcBackbone.View.extend({
+    initialize: function() {
+      this.template = _.template($('#email-sign-in-modal-tpl').html());
+    },
+
+    render: function() {
+      this.$el.html(this.template({}));
+      return this;
+    },
+
+    events: {
+      'click .send-email-btn': 'onSendEmailBtnClick',
+      'keypress .email-input': 'onEmailInputKeypress'
+    },
+
+    onSendEmailBtnClick: function() {
+      this.saveEmail();
+    },
+
+    onEmailInputKeypress: function(evt) {
+      if (evt.keyCode === 13 /* enter key */) {
+        this.saveEmail();
+      }
+    },
+
+    saveEmail: function() {
+      var email = this.$('.email-input').val();
+      $.post('/api/sign_up_email', { email: email });
+      this.$('.submit-msg').fadeIn();
+    }
+  });
+
   var renderModal = function(attributes) {
     attributes = _.extend({}, {
       title: 'Please sign in...',
@@ -128,9 +162,15 @@ function($, _, RmcBackbone, _facebook) {
     (new SignInModalView(attributes)).show();
   };
 
+  var renderEmailSignInModal = function() {
+    var emailSignInModalView = new EmailSignInModalView();
+    emailSignInModalView.render().$el.appendTo('body');
+  };
+
   return {
     renderBanner: renderBanner,
-    renderModal: renderModal
+    renderModal: renderModal,
+    renderEmailSignInModal: renderEmailSignInModal
   };
 
 });

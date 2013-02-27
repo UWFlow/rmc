@@ -1275,6 +1275,15 @@ def dashboard_page():
         **data
     )
 
+@app.route('/api/sign_up_email', methods=['POST'])
+def save_sign_up_email():
+    email = flask.request.values.get('email')
+    logging.info('user wants to sign in with email: %s' % email)
+    with open('email_sign_ups.txt', 'a') as f:
+        f.write("%s\n" % email)
+    return ''
+
+
 if __name__ == '__main__':
     # Late import since this isn't used on production
     import flask_debugtoolbar

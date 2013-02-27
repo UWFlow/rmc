@@ -40,3 +40,34 @@
 {# <div class="fb-facepile" data-max-rows="1" data-width="350"></div> #}
 <div class="fb-facepile" data-max-rows="1" data-width="350"></div>
 {% endcall %}
+
+{% call macros.us_template('email-sign-in-modal-tpl') %}
+<div class="email-sign-in-modal modal hide-initial fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3><i class="icon-time"></i>&nbsp; Hang on!</h3>
+  </div>
+  <div class="modal-body">
+    <p class="lead">
+      Thanks for your interest! We're still working on this.
+    </p>
+    <p>
+      For now, you'll have to sign in with Facebook.
+    </p>
+    <p>
+      If you would like to be notified when email accounts are ready, enter your
+      email below.
+    </p>
+  </div>
+  <div class="modal-footer">
+    <div class="input-append">
+      <input class="email-input" type="text" placeholder="Email address">
+      <button class="btn send-email-btn" type="button">Submit</button>
+    </div>
+    <div class="submit-msg hide-initial alert alert-info">
+      <i class="icon-ok"></i>&nbsp;
+      Thanks! We&rsquo;ll notify you when we&rsquo;re ready.
+    </div>
+  </div>
+</div>
+{% endcall %}

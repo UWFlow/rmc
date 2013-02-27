@@ -41,7 +41,7 @@
     padding-bottom: 25px;
     right: 0;
     @include border-radius(3px 0 0 3px);
-    width: 500px;
+    width: 560px;
     opacity: 0;
     color: #333;
 
@@ -56,6 +56,16 @@
     .tagline {
       color: #222;
       font-size: 26px;
+    }
+
+    .email-link {
+      color: #555;
+      font-weight: bold;
+
+      &:hover {
+        color: $flowBlue;
+        @include transition(all 0.2s ease-out);
+      }
     }
 
     .permission-text {

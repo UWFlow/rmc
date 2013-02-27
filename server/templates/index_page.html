@@ -15,7 +15,7 @@
   <div class="sign-up-box">
     <div class="sign-up-content">
 
-        <h1 class="welcome">Welcome to Flow.</h1>
+        <h1 class="welcome">Join 2388+ UW students on Flow</h1>
       {# TODO(mack): make the button and facepile use backbone view in sign_in.html #}
         <p class="lead tagline">
           Plan courses. See what your friends are taking.
@@ -30,6 +30,10 @@
 
       <div class="permission-text">
         <i class="icon-lock"></i> We'll never post without your permission.
+        Alternatively,&nbsp;
+        <a class="email-link" data-toggle="modal" role="button" data-target=".email-sign-in-modal">
+          <i class="icon-envelope-alt"></i>&nbsp; sign up with email.
+        </a>
       </div>
 
       {# FIXME(Sandy): Permission requests after login now gives
@@ -48,3 +52,7 @@
 {% block body %}
 <div id="photo-credit">Photo by Paulom Shah</div>
 {% endblock body %}
+
+{% block templates %}
+  {% include 'sign_in.html' %}
+{% endblock templates %}
