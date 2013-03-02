@@ -1,7 +1,7 @@
 require(
 ['ext/jquery', 'util'],
 function($, _util) {
-  var POLLING_DELAY = 60000;
+  var POLLING_DELAY = 3 * 60 * 1000;
   // Stop refreshing after an hour, incase we leave tabs open :(
   var CUTOFF_COUNT = 60;
   var timesRefreshed = 0;

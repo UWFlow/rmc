@@ -1255,20 +1255,26 @@ def last_schedule_paste():
 
 @app.route('/admin/api/generic-stats', methods=['POST'])
 @view_helpers.admin_required
-def dashboard_data(json=True):
-    data = rmc_stats.generic_stats(show_all=True)
-    data['latest_reviews'] = rmc_stats.latest_reviews(n=5)
+def dashboard_data():
+    REDIS_KEY_DASHBOARD_DATA = 'dashboard_data'
+    CACHE_EXPIRY_SECONDS = 3 * 60
 
-    if json:
+    redis = view_helpers.get_redis_instance()
+    data = redis.get(REDIS_KEY_DASHBOARD_DATA)
+    if not data:
+        data = rmc_stats.generic_stats(show_all=True)
+        data['latest_reviews'] = rmc_stats.latest_reviews(n=5)
         data = util.json_dumps(data)
+
+        redis.set(REDIS_KEY_DASHBOARD_DATA, data)
+        redis.expire(REDIS_KEY_DASHBOARD_DATA, CACHE_EXPIRY_SECONDS)
 
     return data
 
 @app.route('/dashboard', methods=['GET'])
 @view_helpers.admin_required
 def dashboard_page():
-    data = dashboard_data(json=False)
-    print "retting"
+    data = util.json_loads(dashboard_data())
     return flask.render_template(
         'dashboard.html',
         page_script='dashboard.js',
