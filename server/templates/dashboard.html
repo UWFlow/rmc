@@ -54,9 +54,7 @@
 {% block templates %}
 {% call macros.us_template('review-info-tpl') %}
 <div class="review">
-  {# <div class="review-user-id"><%- review.user_id.$oid %></div> #}
   <div class="review-course-id"><%- review.course_id.toUpperCase() %></div>
-  {# <div class="review-professor-id"><%- review.professor_id.$oid %></div>  #}
   <div class="review-text"><%- review.text %></div>
   <div class="review-type"><%- review.type %></div>
 </div>
