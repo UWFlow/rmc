@@ -61,6 +61,11 @@
 
   .submit-bar {
     .privacy-msg {
+      display: inline-block;
+      margin-bottom: 0;
+      padding-top: 0px;
+      padding-bottom: 0px;
+
       .dropdown {
         text-shadow: none;
         .dropdown-toggle {
