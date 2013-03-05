@@ -1272,6 +1272,15 @@ def dashboard_page():
         **data
     )
 
+# TODO(mack): Follow instructions at:
+# http://stackoverflow.com/questions/4239825/static-files-in-flask-robot-txt-sitemap-xml-mod-wsgi
+# to clean up how we serve up custom static path
+@app.route('/google92ea789ec6f7d90c.html', methods=['GET'])
+def verify_webmaster():
+    # To verify site with https://www.google.com/webmasters
+    response = flask.make_response(open('webmaster.html').read())
+    response.headers["Content-type"] = "text/plain"
+    return response
 
 if __name__ == '__main__':
     # Late import since this isn't used on production
