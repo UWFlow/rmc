@@ -1317,7 +1317,15 @@ def verify_webmaster():
     # To verify site with https://www.google.com/webmasters
     file_path = os.path.join(SERVER_DIR, 'webmaster.html')
     response = flask.make_response(open(file_path).read())
-    response.headers["Content-type"] = "text/plain"
+    response.headers["Content-Type"] = "text/plain"
+    return response
+
+@app.route('/sitemap.txt', methods=['GET'])
+def sitemap():
+    # To verify site with https://www.google.com/webmasters
+    file_path = os.path.join(SERVER_DIR, 'sitemap.txt')
+    response = flask.make_response(open(file_path).read())
+    response.headers["Content-Type"] = "text/plain"
     return response
 
 if __name__ == '__main__':
