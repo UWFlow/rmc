@@ -22,6 +22,7 @@ def ensure_dir(file_path):
 def crawl_page(url):
     args = [
         'phantomjs',
+        '--disk-cache=true',
         os.path.join(FILE_DIR, 'phantom-server.js'),
         url,
     ]
@@ -45,8 +46,11 @@ def main():
     urls = generate_urls()
     for url in urls:
         full_url = os.path.join(SERVER_ROOT, url)
-        rendered_html = crawl_page(full_url)
         file_path = os.path.join(HTML_DIR, url)
+        if os.path.isfile(file_path):
+            continue
+
+        rendered_html = crawl_page(full_url)
 
         print 'Writing: %s' % url
         write(file_path, rendered_html)
