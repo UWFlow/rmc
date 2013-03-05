@@ -31,6 +31,7 @@ app = flask.Flask(__name__)
 app.config.from_envvar('FLASK_CONFIG')
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
+SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
 
 flask_render_template = flask.render_template
 def render_template(*args, **kwargs):
@@ -1314,7 +1315,8 @@ def save_sign_up_email():
 @app.route('/google92ea789ec6f7d90c.html', methods=['GET'])
 def verify_webmaster():
     # To verify site with https://www.google.com/webmasters
-    response = flask.make_response(open('webmaster.html').read())
+    file_path = os.path.join(SERVER_DIR, 'webmaster.html')
+    response = flask.make_response(open(file_path).read())
     response.headers["Content-type"] = "text/plain"
     return response
 
