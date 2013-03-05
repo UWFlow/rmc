@@ -2,7 +2,7 @@
 .sass-cache/
 logs/
 mongodb/
-server/sitemap.txt
+server/static/sitemap.txt
 server/static/css/
 server/static/js_prod/
 server/Gemfile.lock
