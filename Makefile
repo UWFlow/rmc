@@ -20,6 +20,7 @@ html_snapshots:
 sitemap:
 	rm -f server/static/sitemap.txt
 	PYTHONPATH=.. python html_snapshots/sitemap.py http://uwflow.com > server/static/sitemap.txt
+	curl www.google.com/webmasters/tools/ping?sitemap=http://uwflow.com/static/sitemap.txt
 
 import_menlo:
 	PYTHONPATH=.. python data/processor.py all
