@@ -1,4 +1,4 @@
-define(
+require(
 ['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'ratings',
 'user_course', 'review', 'sign_in'],
 function($, course, tookThis, user, tips, prof, ratings, user_course, _review, _sign_in) {

@@ -1,4 +1,4 @@
-define(
+require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'transcript',
 'util', 'rmc_backbone', 'user', 'ext/bootstrap'],
 function($, _, _s, transcript, _util, RmcBackbone, _user, __) {

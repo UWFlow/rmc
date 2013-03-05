@@ -1,4 +1,4 @@
-define(
+require(
 ['ext/jquery'],
 function($) {
   $('.unsubscribe_button').click(function() {

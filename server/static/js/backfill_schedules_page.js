@@ -1,4 +1,4 @@
-define(
+require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'util', 'schedule'],
 function($, _, _s, __, _util, _schedule) {
