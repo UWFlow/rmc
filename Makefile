@@ -19,7 +19,7 @@ html_snapshots:
 
 sitemap:
 	rm -f server/sitemap.txt
-	PYTHONPATH=.. python html_snapshots/sitemap.py > server/sitemap.txt
+	PYTHONPATH=.. python html_snapshots/sitemap.py http://uwflow.com > server/sitemap.txt
 
 import_menlo:
 	PYTHONPATH=.. python data/processor.py all

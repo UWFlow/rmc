@@ -1,7 +1,5 @@
-import rmc.shared.constants as c
 import rmc.html_snapshots.utils as utils
 
-import mongoengine as me
 import os
 import subprocess
 import sys
@@ -17,7 +15,6 @@ def crawl_page(url):
     return rendered_html
 
 def generate_snapshots():
-    me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
     if len(sys.argv) < 2:
         sys.exit('Usage: %s <server-root>' % sys.argv[0])
 
