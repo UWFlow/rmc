@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 
 .PHONY: local setup import_menlo import_critiques aggregate_data init_data \
-        prod_import prod_import_mongo html_snapshots deploy clean
+        prod_import prod_import_mongo html_snapshots sitemap deploy clean
 
 local:
 	./local_server.sh
@@ -12,10 +12,14 @@ setup:
 # TODO(mack): Find better way to vary command based on prod/dev
 html_snapshots:
 	@if [ `whoami` = 'rmc' ]; then \
-		PYTHONPATH=.. python html_snapshots/generator.py http://localhost:80; \
+		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:80; \
 	else \
-		PYTHONPATH=.. python html_snapshots/generator.py http://localhost:5000; \
+		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:5000; \
 	fi
+
+sitemap:
+	rm -f server/sitemap.txt
+	PYTHONPATH=.. python html_snapshots/sitemap.py > server/sitemap.txt
 
 import_menlo:
 	PYTHONPATH=.. python data/processor.py all

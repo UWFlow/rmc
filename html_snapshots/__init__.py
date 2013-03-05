@@ -1,1 +1,1 @@
-from generator import HTML_DIR
+from utils import HTML_DIR
