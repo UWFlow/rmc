@@ -14,6 +14,7 @@ import werkzeug.exceptions as exceptions
 import rmc.shared.constants as c
 import rmc.shared.secrets as s
 import rmc.models as m
+import rmc.html_snapshots as html_snapshots
 import rmc.shared.util as util
 import rmc.shared.rmclogger as rmclogger
 import rmc.server.profile as profile
@@ -91,6 +92,24 @@ def tojson(obj):
 @app.template_filter()
 def version(file_name):
     return '%s?v=%s' % (file_name, VERSION)
+
+@app.before_request
+def before_request():
+    if '_escaped_fragment_' not in flask.request.values:
+        return
+
+    # Remove leading '/'s to be compatible with os.path.join()
+    path = re.sub('^/*', '', flask.request.path)
+    file_path = os.path.join(html_snapshots.HTML_DIR, path)
+    try:
+        with open(file_path, 'r') as f:
+            # Returning something will cause this to be the response
+            # for the request
+            return f.read()
+    except IOError:
+        logging.warn('Snapshot does not exist for %s. '
+            'Returning dynamic page' % path)
+
 
 # TODO(Sandy): Unused right now, but remove in a separate diff for future
 # reference
@@ -1289,6 +1308,15 @@ def save_sign_up_email():
         f.write("%s\n" % email)
     return ''
 
+# TODO(mack): Follow instructions at:
+# http://stackoverflow.com/questions/4239825/static-files-in-flask-robot-txt-sitemap-xml-mod-wsgi
+# to clean up how we serve up custom static path
+@app.route('/google92ea789ec6f7d90c.html', methods=['GET'])
+def verify_webmaster():
+    # To verify site with https://www.google.com/webmasters
+    response = flask.make_response(open('webmaster.html').read())
+    response.headers["Content-type"] = "text/plain"
+    return response
 
 if __name__ == '__main__':
     # Late import since this isn't used on production
