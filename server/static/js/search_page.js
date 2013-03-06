@@ -4,6 +4,48 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
   var FETCH_DELAY_MS = 300;
 
+  var courseSearchView, courseSearchRouter;
+
+  var CourseSearchRouter = RmcBackbone.Router.extend({
+    routes: {
+      '*path': 'search'
+    },
+
+    search: function(path) {
+      if (courseSearchView) return;
+
+      var queryString = {};
+
+      // From: http://stevenbenner.com/2010/03/javascript-regex-trick-parse-a-query-string-into-an-object/
+      var queryStringRE = new RegExp("([^?=&]+)(=([^&]*))?", "g");
+      path.replace(queryStringRE, function($0, $1, $2, $3) {
+        queryString[$1] = $3;
+      });
+
+      var args = {
+        sortMode: _.find(window.pageData.sortModes, function(sortMode) {
+          return (sortMode.name == queryString.name && sortMode.value == queryString.sort_mode);
+        }) || window.pageData.sortModes[0],
+        term: _.find(window.pageData.terms, function(term) {
+          return (term.value == queryString.term);
+        }) || window.pageData.terms[0],
+        excludeTakenCourses: queryString.exclude_taken_courses,
+        keywords: (queryString.keywords || '').replace('+',' ')
+      };
+
+      courseSearchView = new CourseSearchView(args);
+      $('#course-search-container').append(courseSearchView.render().$el);
+
+      if (!window.pageData.currentUserId) {
+        _sign_in.renderBanner({
+          fbConnectText: 'See what your friends are taking!',
+          source: 'BANNER_SEARCH_PAGE',
+          nextUrl: window.location.href
+        });
+      }
+    }
+  });
+
   var CourseSearchView = RmcBackbone.View.extend({
     className: 'course-search',
     timer: undefined,
@@ -13,12 +55,17 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     offset: 0,
     courses: undefined,
     hasMore: true,
+    excludeTakenCourses: undefined,
 
     initialize: function(options) {
-      this.term = window.pageData.terms[0];
-      this.sortMode = window.pageData.sortModes[0];
+      this.term = options.term;
+      this.sortMode = options.sortMode;
+      if (pageData.currentUserId) {
+        this.excludeTakenCourses = options.excludeTakenCourses;
+      }
+      this.keywords = options.keywords;
+
       this.courses = new _course.CourseCollection();
-      this.excludeTakenCourses = false;
       $(window).scroll(_.bind(this.scrollWindow, this));
     },
 
@@ -49,7 +96,8 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         selectedTerm: this.term,
         selectedSortMode: this.sortMode,
         getIconForMode: this.getIconForMode,
-        excludeTakenCourses: this.excludeTakenCourses
+        excludeTakenCourses: this.excludeTakenCourses,
+        keywords: this.keywords
       }));
 
       var $friendOption = this.$('.sort-options [data-value="friends taken"]');
@@ -211,6 +259,29 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         exclude_taken_courses: this.excludeTakenCourses
       };
 
+      var queryParams = {};
+
+      if (this.sortMode != window.pageData.sortModes[0]) {
+        queryParams.name = this.sortMode.name;
+        queryParams.sort_mode = this.sortMode.value;
+      }
+
+      if (this.term.value) {
+        queryParams.term = this.term.value;
+      }
+
+      if (this.excludeTakenCourses) {
+        queryParams.exclude_taken_courses = this.excludeTakenCourses;
+      }
+
+      if (this.keywords) {
+        queryParams.keywords = this.keywords;
+      }
+
+      if (_.size(queryParams)) {
+        courseSearchRouter.navigate("?" + $.param(queryParams));
+      }
+
       mixpanel.track('Course search request', args);
       mixpanel.people.increment({'Course search request': 1});
       // TODO(mack): use $.ajax to handle error
@@ -250,16 +321,12 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
   });
 
   var init = function() {
-    var courseSearchView = new CourseSearchView({});
-    $('#course-search-container').append(courseSearchView.render().$el);
+    courseSearchRouter = new CourseSearchRouter();
 
-    if (!window.pageData.currentUserId) {
-      _sign_in.renderBanner({
-        fbConnectText: 'See what your friends are taking!',
-        source: 'BANNER_SEARCH_PAGE',
-        nextUrl: window.location.href
-      });
-    }
+    Backbone.history.start({
+      pushState: true,
+      root: '/courses'
+    });
   };
 
   init();

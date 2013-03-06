@@ -39,7 +39,7 @@
       <div class="row-fluid keywords-container">
         <div class="span12">
           <input type="search" class="keywords search-query"
-            placeholder='eg: cs241, econ, astronomy'>
+            placeholder='eg: cs241, econ, astronomy' value='<%- keywords %>'>
           <i class="icon-search"></i>
         </div>
       </div>
@@ -63,7 +63,7 @@
         sorted by
         <span class="sort-options btn-group">
           <% _.each(sortModes, function(sortMode, i) { %>
-            <button class="option btn <%- i === 0 ? 'active' : '' %>"
+            <button class="option btn <%- sortModes[i] === selectedSortMode ? 'active' : '' %>"
                 data-value="<%- sortMode.name %>">
               <i class="<%- getIconForMode(sortMode.name) %>"></i>
               <%-sortMode.name %>
@@ -74,7 +74,7 @@
         <li class="excluding-taken-courses-dropdown dropdown">
           <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
             <span class="selected-exclude-option">
-              <% if (excludeTakenCourses) { %>
+              <% if (excludeTakenCourses == 'exclude') { %>
                 excluding
               <% } else { %>
                 including
