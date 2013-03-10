@@ -152,7 +152,6 @@ _points, _user, _facebook) {
     // This is to be triggered once the entire page has been rendered;
     // i.e. we have completed the domready function (i.e. at the end of the
     // function) and the backbone views have been inserted into the dom
-    console.log('reached end');
     pageScriptDeferred.then(function() {
       $(document.body).data('rendered', true);
     });
