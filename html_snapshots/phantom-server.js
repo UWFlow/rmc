@@ -46,6 +46,9 @@ page.onLoadFinished = function() {
       });
     },
     function() {
+      page.evaluate(function() {
+        $('script').remove();
+      });
       var html = page.content;
       console.log(html);
       phantom.exit();
