@@ -43,6 +43,36 @@
       var require = { urlArgs: '{{ VERSION }}' };
     </script>
 
+    {# Airbrake #}
+    {# From: https://github.com/airbrake/airbrake-js #}
+    {% if env == 'prod' %}
+        <script type="text/javascript">
+        (function(callback) {
+            var ab = document.createElement('script');
+            ab.type = 'text/javascript'; ab.async = true;
+            ab.onload = ab.onreadystatechange = callback;
+            // this should match your copy of the compiled notifier.js or notifier.min.js
+            ab.src = (("https:" == document.location.protocol) ? "https://ssljscdn" : "http://jscdn") + ".airbrake.io/notifier.min.js";
+            var p = document.getElementsByTagName('script')[0];
+            p.parentNode.insertBefore(ab, p);
+        }(function () {
+            Airbrake.setRequestType('GET');
+            Airbrake.setGuessFunctionName(true);
+            Airbrake.setKey('e5c169c339a327611421308985cb5815');
+            // set the environment
+            Airbrake.setEnvironment('dev');
+            // add any defaults
+            Airbrake.setErrorDefaults({
+                url: document.URL,
+                component: "flow",
+                action: "useflow",
+                user: window.pageData.currentUserId
+            });
+        }));
+        </script>
+    {% endif %}
+
+
     <script async data-main="{{ '/static/%s/main.js' % js_dir }}" src="{{ '/static/%s/ext/require-2.0.6.js' % js_dir }}">
     </script>
 
