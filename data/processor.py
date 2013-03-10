@@ -471,21 +471,15 @@ def import_schedule_items():
     print 'updated schedule items: ', num_updated
 
 def import_opendata_exam_schedules():
-
-    # FIXME(Sandy): If we're gonna be cronning this, we should have some sanity
-    # checks here to verify the file has content before dropping
-    # Detect weird things like < ~810 exams, etc and warn HipChat
-
+    """Import exam schedules data from the OpenData API"""
     today = datetime.today()
     file_name = os.path.join(
             os.path.dirname(__file__),
             '%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR, today.strftime('%Y_%m_%d')))
+
+    processed_exams = []
     with open(file_name, 'r') as f:
         data = json.load(f)
-
-        # FIXME(Sandy): Drop later on, after we process each item
-        # Everything should be fine by here, drop the old exams collection
-        m.Exam.objects._collection.drop()
 
         for exam_data in data:
             course_id = m.Course.code_to_id(exam_data.get('Course'))
@@ -533,7 +527,18 @@ def import_opendata_exam_schedules():
                 location=exam_data.get('Location'),
                 info_known=bool(start_date and end_date),
             )
-            exam.save()
+            processed_exams.append(exam)
+
+    # Do some sanity checks to make sure OpenData is being reasonable.
+    # TODO(Sandy): More sanity checks here welcome
+    if len(processed_exams) < 775:
+        # 775 is arbitrary. It just reminds us to check
+        raise ValueError('processor.py: exam schedule items found < 775')
+
+    # Everything should be fine by here, drop the old exams collection
+    m.Exam.objects._collection.drop()
+    for exam in processed_exams:
+        exam.save()
 
     # TODO(Sandy): When done, update time in exam.js
 
