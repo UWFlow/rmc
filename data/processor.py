@@ -483,6 +483,7 @@ def import_opendata_exam_schedules():
     with open(file_name, 'r') as f:
         data = json.load(f)
 
+        # FIXME(Sandy): Drop later on, after we process each item
         # Everything should be fine by here, drop the old exams collection
         m.Exam.objects._collection.drop()
 
