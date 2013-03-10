@@ -23,7 +23,9 @@
           <% if (author.id) { %>
             <a href="/profile/<%- author.id.$oid %>"><%- author.name %></a>
           <% } else if (author.short_program_name) { %>
-            <span class="muted">A</span>
+            <span class="muted">
+                A<%- ('aeiou'.indexOf(author.short_program_name[0].toLowerCase()) !== -1) ? 'n' : '' %>
+            </span>
             <%- author.short_program_name %>
             <span class="muted">student</span>
           <% } %>
