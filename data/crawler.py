@@ -298,16 +298,15 @@ def get_opendata_courses():
 
 def get_opendata_exam_schedule():
     api_key = API_UWATERLOO_API_KEY
-    errors = []
     url = 'http://api.uwaterloo.ca/public/v1/' + \
             '?key={api_key}&service=ExamSchedule'.format(api_key=api_key)
 
     data = get_data_from_url(url)
     try:
         data = data['response']['data']['result']
-    except Exception as e:
-        print "crawler.py: ExamSchedule API call failed:\n%s" % (data)
-        print e
+    except KeyError as e:
+        print "crawler.py: ExamSchedule API call failed with data:\n%s" % (data)
+        raise
 
     today = datetime.datetime.today()
     file_name = os.path.join(
@@ -315,12 +314,6 @@ def get_opendata_exam_schedule():
         '%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR, today.strftime('%Y_%m_%d')))
     with open(file_name, 'w') as f:
         json.dump(data, f)
-
-    print 'Found {num} errors'.format(num=len(errors))
-    count = 0
-    for error in errors:
-        count += 1
-        print count, ':', error
 
 def get_terms_offered():
     found = 0
