@@ -4,7 +4,7 @@
   <link rel="stylesheet" href="{{ '/static/css/course_page.css'|version }}">
 {% endblock %}
 
-{% block page_title %}{{ course_obj['code'] }}{% endblock %}
+{% block page_title %}University of Waterloo: {{ course_obj['code'] }} - {{ course_obj['name'] }}{% endblock %}
 
 {% block head_tags %}
   {# Needed to force google bot to fetch from __escaped_fragment__ url
