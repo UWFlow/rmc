@@ -478,17 +478,25 @@ def import_opendata_exam_schedules():
             '%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR, today.strftime('%Y_%m_%d')))
 
     processed_exams = []
+    errors = []
     with open(file_name, 'r') as f:
         data = json.load(f)
 
         for exam_data in data:
             course_id = m.Course.code_to_id(exam_data.get('Course'))
             sections = exam_data.get('Section')
+            day = exam_data.get('Day')
 
+            # Catch these to be more detailed in our errors
             if sections.endswith('Online'):
-                # Catch this to be less spammy with the Exception below, and to do
-                # something with these courses later
-                print "Skipping online course: %s %s" % (course_id, sections)
+                errors.append("Skipping online course: %s %s"
+                              % (course_id, sections))
+                continue
+            if 'Exam removed' in day:
+                errors.append("Skipping removed course: %s" % (course_id))
+                continue
+            if 'See http:' in day:
+                errors.append("Skipping url for course: %s" % (course_id))
                 continue
 
             # E.g. April 13, 2013
@@ -512,11 +520,7 @@ def import_opendata_exam_schedules():
                             time.mktime(
                                 time.strptime(end_date_string, date_format))))
             except Exception as exp:
-                # Right now this catches "See http://..." and removed exams
-                print "Could not get date for data (%s)" % (exam_data)
-                print exp
-                start_date = None
-                end_date = None
+                errors.append("Could not get date (%s)\n%s" % (exam_data, exp))
                 continue
 
             exam = m.Exam(
@@ -541,6 +545,7 @@ def import_opendata_exam_schedules():
         exam.save()
 
     # TODO(Sandy): When done, update time in exam.js
+    return errors
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
