@@ -1,6 +1,6 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course', 'prof', 'sign_in'],
-function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, _sign_in) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course', 'prof', 'sign_in', 'util'],
+function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, _sign_in, util) {
 
   var FETCH_DELAY_MS = 300;
 
@@ -11,24 +11,17 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
     search: function(path) {
       if (this.courseSearchView) return;
-
-      var queryString = {};
-
-      // From: http://stevenbenner.com/2010/03/javascript-regex-trick-parse-a-query-string-into-an-object/
-      var queryStringRE = new RegExp("([^?=&]+)(=([^&]*))?", "g");
-      path.replace(queryStringRE, function($0, $1, $2, $3) {
-        queryString[$1] = $3;
-      });
+      var queryParams = util.getQueryParams(path);
 
       this.courseSearchView = new CourseSearchView({
         sortMode: _.find(window.pageData.sortModes, function(sortMode) {
-          return (sortMode.name === queryString.sort_mode);
+          return (sortMode.name === queryParams.sort_mode);
         }) || window.pageData.sortModes[0],
         term: _.find(window.pageData.terms, function(term) {
-          return (term.value === queryString.term);
+          return (term.value === queryParams.term);
         }) || window.pageData.terms[0],
-        excludeTakenCourses: queryString.exclude_taken_courses || "no",
-        keywords: (queryString.keywords || '').replace('+',' ')
+        excludeTakenCourses: queryParams.exclude_taken_courses || "no",
+        keywords: (queryParams.keywords || '').replace('+',' ')
       });
 
       this.courseSearchView.on('update', _.bind(this.updateUrl, this));

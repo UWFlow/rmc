@@ -3,17 +3,22 @@ function(_, _s) {
 
   var NUM_RATINGS_SEGMENTS = 5;
 
-  // From http://stackoverflow.com/a/901144
-  var getQueryParam = function(name) {
-    name = name.replace(/[\[]/, "\\\[").replace(/[\]]/, "\\\]");
-    var regexS = "[\\?&]" + name + "=([^&#]*)";
-    var regex = new RegExp(regexS);
-    var results = regex.exec(window.location.search);
-    if (results == null) {
-      return "";
-    } else {
-      return decodeURIComponent(results[1].replace(/\+/g, " "));
+  var getQueryParam = function(name, url) {
+    return getQueryParams(url)[name];
+  };
+
+  var getQueryParams = function(url) {
+    if (!url) {
+      url = window.location.search;
     }
+
+    // From: http://stevenbenner.com/2010/03/javascript-regex-trick-parse-a-query-string-into-an-object/
+    var queryParams = {};
+    var queryStringRE = new RegExp("([^?=&]+)(=([^&]*))?", "g");
+    url.replace(queryStringRE, function($0, $1, $2, $3) {
+      queryParams[$1] = $3;
+    });
+    return queryParams;
   };
 
   /**
@@ -144,6 +149,7 @@ function(_, _s) {
 
   return {
     getQueryParam: getQueryParam,
+    getQueryParams: getQueryParams,
     capitalize: capitalize,
     pluralize: pluralize,
     random: random,
