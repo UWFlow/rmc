@@ -203,7 +203,6 @@ def courses():
     # TODO(mack): move into COURSES_SORT_MODES
     def clean_sort_modes(sort_mode):
         return {
-            'value': sort_mode['value'],
             'name': sort_mode['name'],
             'direction': sort_mode['direction'],
         }
@@ -584,12 +583,12 @@ def get_courses(course_ids):
 
 COURSES_SORT_MODES = [
     # TODO(david): Usefulness
-    { 'value': 'num_ratings', 'name': 'popular', 'direction': pymongo.DESCENDING, 'field': 'interest.count' },
-    { 'value': 'friends', 'name': 'friends taken' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
-    { 'value': 'interest', 'name': 'interesting', 'direction': pymongo.DESCENDING, 'field': 'interest.sorting_score' },
-    { 'value': 'easiness', 'name': 'easy' , 'direction': pymongo.DESCENDING, 'field': 'easiness.sorting_score' },
-    { 'value': 'easiness', 'name': 'hard' , 'direction': pymongo.ASCENDING, 'field': 'easiness.sorting_score' },
-    { 'value': 'alphabetical', 'name': 'course code', 'direction': pymongo.ASCENDING, 'field': 'id'},
+    { 'name': 'popular', 'direction': pymongo.DESCENDING, 'field': 'interest.count' },
+    { 'name': 'friends_taken' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
+    { 'name': 'interesting', 'direction': pymongo.DESCENDING, 'field': 'interest.sorting_score' },
+    { 'name': 'easy' , 'direction': pymongo.DESCENDING, 'field': 'easiness.sorting_score' },
+    { 'name': 'hard' , 'direction': pymongo.ASCENDING, 'field': 'easiness.sorting_score' },
+    { 'name': 'course code', 'direction': pymongo.ASCENDING, 'field': 'id'},
 ]
 COURSES_SORT_MODES_BY_NAME = {}
 for sort_mode in COURSES_SORT_MODES:
@@ -597,7 +596,7 @@ for sort_mode in COURSES_SORT_MODES:
 
 # Special sort instructions are needed for these sort modes
 # TODO(Sandy): deprecate overall and add usefulness
-RATING_SORT_MODES = ['overall', 'interest', 'easiness']
+RATING_SORT_MODES = ['overall', 'interesting', 'easy', 'hard']
 
 @app.route('/api/course-search', methods=['GET'])
 # TODO(mack): find a better name for function
@@ -611,9 +610,8 @@ def search_courses():
     request = flask.request
     keywords = request.values.get('keywords')
     term = request.values.get('term')
-    sort_mode = request.values.get('sort_mode', 'num_ratings')
-    name = request.values.get('name', 'popular')
-    default_direction = COURSES_SORT_MODES_BY_NAME[name]['direction']
+    sort_mode = request.values.get('sort_mode', 'popular')
+    default_direction = COURSES_SORT_MODES_BY_NAME[sort_mode]['direction']
     direction = int(request.values.get('direction', default_direction))
     count = int(request.values.get('count', 10))
     offset = int(request.values.get('offset', 0))
@@ -634,8 +632,7 @@ def search_courses():
             '$user_email': current_user.email,
             'keywords': str(keywords),
             'term': term,
-            'sort_mode': sort_mode,
-            'name': name,
+            'name': sort_mode,
             'direction': direction,
             'count': count,
             'offset': offset,
@@ -659,7 +656,7 @@ def search_courses():
     if term:
         filters['terms_offered'] = term
 
-    if exclude_taken_courses == "exclude":
+    if exclude_taken_courses == "yes":
         if current_user:
             ucs = (current_user.get_user_courses().only('course_id', 'term_id'))
             filters['id__nin'] = [
@@ -669,8 +666,7 @@ def search_courses():
         else:
             logging.error('Anonymous user tried excluding taken courses')
 
-    if sort_mode == 'friends':
-
+    if sort_mode == 'friends_taken':
         # TODO(mack): should only do if user is logged in
         friends = m.User.objects(id__in=current_user.friend_ids).only(
                 'course_history')
@@ -709,7 +705,7 @@ def search_courses():
             limited_courses.append(limited_courses_by_id[course_id])
 
     else:
-        sort_options = COURSES_SORT_MODES_BY_NAME[name]
+        sort_options = COURSES_SORT_MODES_BY_NAME[sort_mode]
 
         if sort_mode in RATING_SORT_MODES:
             sort_instr = '-' + sort_options['field']

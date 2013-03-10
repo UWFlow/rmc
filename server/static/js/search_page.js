@@ -4,15 +4,13 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
   var FETCH_DELAY_MS = 300;
 
-  var courseSearchView, courseSearchRouter;
-
   var CourseSearchRouter = RmcBackbone.Router.extend({
     routes: {
       '*path': 'search'
     },
 
     search: function(path) {
-      if (courseSearchView) return;
+      if (this.courseSearchView) return;
 
       var queryString = {};
 
@@ -22,19 +20,20 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         queryString[$1] = $3;
       });
 
-      var args = {
+      this.courseSearchView = new CourseSearchView({
         sortMode: _.find(window.pageData.sortModes, function(sortMode) {
-          return (sortMode.name == queryString.name && sortMode.value == queryString.sort_mode);
+          return (sortMode.name === queryString.sort_mode);
         }) || window.pageData.sortModes[0],
         term: _.find(window.pageData.terms, function(term) {
-          return (term.value == queryString.term);
+          return (term.value === queryString.term);
         }) || window.pageData.terms[0],
-        excludeTakenCourses: queryString.exclude_taken_courses,
+        excludeTakenCourses: queryString.exclude_taken_courses || "no",
         keywords: (queryString.keywords || '').replace('+',' ')
-      };
+      });
 
-      courseSearchView = new CourseSearchView(args);
-      $('#course-search-container').append(courseSearchView.render().$el);
+      this.courseSearchView.on('update', _.bind(this.updateUrl, this));
+
+      $('#course-search-container').append(this.courseSearchView.render().$el);
 
       if (!window.pageData.currentUserId) {
         _sign_in.renderBanner({
@@ -42,6 +41,42 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
           source: 'BANNER_SEARCH_PAGE',
           nextUrl: window.location.href
         });
+      }
+    },
+
+    /**
+     * Updates the URL of the page via pushState to reflect the current state of
+     * the search.  Will change the URL to e.g.
+     *
+     *  /courses?term=05&exclude_taken_courses=yes&keywords=calc
+     */
+    updateUrl: function() {
+      var queryParams = {};
+      var view = this.courseSearchView;
+
+      if (view.sortMode != window.pageData.sortModes[0]) {
+        queryParams.sort_mode = view.sortMode.name;
+      }
+
+      if (view.term.value) {
+        queryParams.term = view.term.value;
+      }
+
+      if (view.excludeTakenCourses === 'yes') {
+        queryParams.exclude_taken_courses = view.excludeTakenCourses;
+      }
+
+      if (view.keywords) {
+        queryParams.keywords = view.keywords;
+      }
+
+      var queryPart = "";
+      if (_.size(queryParams)) {
+        queryPart = "?" + $.param(queryParams);
+      }
+
+      if (Backbone.history.getFragment() != queryPart) {
+        this.navigate(queryPart);
       }
     }
   });
@@ -60,9 +95,15 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     initialize: function(options) {
       this.term = options.term;
       this.sortMode = options.sortMode;
-      if (pageData.currentUserId) {
-        this.excludeTakenCourses = options.excludeTakenCourses;
+      this.excludeTakenCourses = options.excludeTakenCourses;
+
+      if (!pageData.currentUserId) {
+        this.excludeTakenCourses = "no";
+        if (this.sortMode.name === "friends_taken") {
+          this.sortMode = window.pageData.sortModes[0];
+        }
       }
+
       this.keywords = options.keywords;
 
       this.courses = new _course.CourseCollection();
@@ -72,7 +113,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     getIconForMode: function(name) {
       return {
         'popular': 'icon-signal',
-        'friends taken': 'icon-group',
+        'friends_taken': 'icon-group',
         'interesting': 'icon-heart',
         'easy': 'icon-gift',
         'hard': 'icon-warning-sign',
@@ -100,7 +141,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         keywords: this.keywords
       }));
 
-      var $friendOption = this.$('.sort-options [data-value="friends taken"]');
+      var $friendOption = this.$('.sort-options [data-value="friends_taken"]');
       $friendOption.click(function(evt) {
         if (!pageData.currentUserId) {
           _sign_in.renderModal({
@@ -253,34 +294,11 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         offset: this.offset,
         count: this.count,
         term: this.term.value,
-        name: this.sortMode.name,
-        sort_mode: this.sortMode.value,
+        sort_mode: this.sortMode.name,
         keywords: this.keywords,
         exclude_taken_courses: this.excludeTakenCourses
       };
-
-      var queryParams = {};
-
-      if (this.sortMode != window.pageData.sortModes[0]) {
-        queryParams.name = this.sortMode.name;
-        queryParams.sort_mode = this.sortMode.value;
-      }
-
-      if (this.term.value) {
-        queryParams.term = this.term.value;
-      }
-
-      if (this.excludeTakenCourses) {
-        queryParams.exclude_taken_courses = this.excludeTakenCourses;
-      }
-
-      if (this.keywords) {
-        queryParams.keywords = this.keywords;
-      }
-
-      if (_.size(queryParams)) {
-        courseSearchRouter.navigate("?" + $.param(queryParams));
-      }
+      this.trigger('update');
 
       mixpanel.track('Course search request', args);
       mixpanel.people.increment({'Course search request': 1});
@@ -321,7 +339,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
   });
 
   var init = function() {
-    courseSearchRouter = new CourseSearchRouter();
+    new CourseSearchRouter();
 
     Backbone.history.start({
       pushState: true,
