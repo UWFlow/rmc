@@ -133,7 +133,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
      *  then they probably don't want to give more information and are done.
      * @return {bool} Whether or not the ratings/reviews are "mostly" filled in
      */
-    isMostlyFilledIn:function() {
+    isMostlyFilledIn: function() {
       var userCourse = this.get('user_course');
 
       var hasRating = function(rating) {
