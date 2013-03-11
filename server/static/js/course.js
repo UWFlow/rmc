@@ -136,19 +136,17 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     isMostlyFilledIn:function() {
       var userCourse = this.get('user_course');
 
-      var hasRating = function(flag, rating) {
-        return flag || Boolean(rating.get('rating'));
+      var hasRating = function(rating) {
+        return rating.has('rating');
       };
 
       var courseReview = userCourse.get('course_review');
-      var hasCourseReview = Boolean(courseReview.get('comment'));
-      var hasCourseRating =
-          _.reduce(courseReview.get('ratings').models, hasRating, false);
+      var hasCourseReview = !!courseReview.get('comment');
+      var hasCourseRating = courseReview.get('ratings').hasRated();
 
       var professorReview = userCourse.get('professor_review');
-      var hasProfessorReview = Boolean(professorReview.get('comment'));
-      var hasProfessorRating =
-          _.reduce(professorReview.get('ratings').models, hasRating, false);
+      var hasProfessorReview = !!professorReview.get('comment');
+      var hasProfessorRating = professorReview.get('ratings').hasRated();
 
       return hasCourseReview && hasCourseRating &&
              hasProfessorReview && hasProfessorRating;
