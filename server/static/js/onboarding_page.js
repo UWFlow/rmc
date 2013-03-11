@@ -147,4 +147,6 @@ function($, _, _s, transcript, _util, RmcBackbone, _user, __) {
   init();
 
   mixpanel.track('Impression: Onboarding page');
+
+  $(document.body).trigger('pageScriptComplete');
 });

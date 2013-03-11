@@ -148,4 +148,6 @@ function($, _, _s, __, _util, _schedule) {
   }
 
   mixpanel.track('Impression: Backfill Schedules Page');
+
+  $(document.body).trigger('pageScriptComplete');
 });

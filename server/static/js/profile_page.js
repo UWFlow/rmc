@@ -141,4 +141,6 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
   }
 
   mixpanel.track('Impression: Profile page');
+
+  $(document.body).trigger('pageScriptComplete');
 });

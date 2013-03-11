@@ -133,11 +133,8 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
       $('#user-points-placeholder').replaceWith(userPointsView.render().$el);
     }
 
-    var pageScriptDeferred = new $.Deferred();
     if (window.pageData.pageScript) {
-      require([window.pageData.pageScript], function() {
-        pageScriptDeferred.resolve();
-      });
+      require([window.pageData.pageScript]);
     }
 
     var $footer = $('footer');
@@ -148,10 +145,7 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
         //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
     }
 
-    // This is to be triggered once the entire page has been rendered;
-    // i.e. we have completed the domready function (i.e. at the end of the
-    // function) and the backbone views have been inserted into the dom
-    pageScriptDeferred.then(function() {
+    $(document.body).on('pageScriptComplete', function(evt) {
       $(document.body).data('rendered', true);
     });
   };

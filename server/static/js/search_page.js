@@ -343,4 +343,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
   init();
 
   mixpanel.track('Impression: Search page');
+
+  $(document.body).trigger('pageScriptComplete');
 });

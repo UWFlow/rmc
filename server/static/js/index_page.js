@@ -21,4 +21,6 @@ function(_facebook, $, _util, _sign_in) {
   });
 
   mixpanel.track('Impression: Landing page');
+
+  $(document.body).trigger('pageScriptComplete');
 });

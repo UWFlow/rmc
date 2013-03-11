@@ -17,4 +17,6 @@ function($) {
   });
 
   mixpanel.track('Impression: Unsubscribe page');
+
+  $(document.body).trigger('pageScriptComplete');
 });

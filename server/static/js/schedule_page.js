@@ -77,4 +77,5 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
     mixpanel.track('Impression: Schedule page');
   }
 
+  $(document.body).trigger('pageScriptComplete');
 });

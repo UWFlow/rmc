@@ -49,4 +49,6 @@ function($, course, tookThis, user, tips, prof, ratings, user_course, _review, _
   }
 
   mixpanel.track('Impression: Single course page');
+
+  $(document.body).trigger('pageScriptComplete');
 });
