@@ -1,3 +1,5 @@
+'use strict';
+
 var page = require('webpage').create();
 var system = require('system');
 
@@ -42,7 +44,8 @@ page.onLoadFinished = function() {
   waitFor(
     function() {
       return page.evaluate(function() {
-        return !!$(document.body).data('rendered');
+        return typeof jQuery !== 'undefined' &&
+          !!$(document.body).data('rendered');
       });
     },
     function() {
