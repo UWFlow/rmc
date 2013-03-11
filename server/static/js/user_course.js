@@ -588,13 +588,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         userCourse: this.userCourse,
         courseModel: this.courseModel
       });
-      this.courseView = new _course.CourseView({
-        courseModel: this.courseModel
-      });
-      this.courseInnerView = new _course.CourseInnerView({
-        userCourse: this.userCourse,
-        courseModel: this.courseModel
-      });
     },
 
     render: function() {
