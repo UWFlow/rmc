@@ -66,10 +66,9 @@ require.config({
 
 require(['ext/underscore', 'ext/underscore.string', 'util', 'ext/moment',
     'ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone',
-    'util', 'ext/moment', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
-    'points', 'user', 'facebook'],
-function(_, _s, util, moment, $, _, _s, Backbone, util, moment, __, __, toastr,
-_points, _user, _facebook) {
+    'ext/bootstrap', 'ext/cookie', 'ext/toastr', 'points', 'user', 'facebook'],
+function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
+  _user, _facebook) {
 
   // Add helpers functions to all templates
   (function() {
