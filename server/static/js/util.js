@@ -151,6 +151,13 @@ function(_, _s) {
     return getQueryParam('referrer') || getQueryParam('meow');
   };
 
+  var scrollToElementId = function(id) {
+    var scrollOffset = $('#' + id).offset().top;
+    // Compensate for nav bar height
+    var navBarOffset = $('#site-nav').height();
+    $('body').scrollTop(scrollOffset - navBarOffset);
+  };
+
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -165,7 +172,7 @@ function(_, _s) {
     truncatePreviewString: truncatePreviewString,
     getTimeDelta: getTimeDelta,
     getSiteBaseUrl: getSiteBaseUrl,
-    getReferrerId: getReferrerId
-
+    getReferrerId: getReferrerId,
+    scrollToElementId: scrollToElementId
   };
 });
