@@ -123,7 +123,36 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       } else {
         return mode;
       }
-    }
+    },
+
+    /**
+     *  Is the course model "mostly" filled in? The assumption is that if the
+     *  user:
+     *    1) rates at least one criterion for both the course and prof
+     *    2) reviews both the course and prof
+     *  then they probably don't want to give more information and are done.
+     * @return {bool} Whether or not the ratings/reviews are "mostly" filled in
+     */
+    isMostlyFilledIn:function() {
+      var userCourse = this.get('user_course');
+
+      var hasRating = function(flag, rating) {
+        return flag || Boolean(rating.get('rating'));
+      };
+
+      var courseReview = userCourse.get('course_review');
+      var hasCourseReview = Boolean(courseReview.get('comment'));
+      var hasCourseRating =
+          _.reduce(courseReview.get('ratings').models, hasRating, false);
+
+      var professorReview = userCourse.get('professor_review');
+      var hasProfessorReview = Boolean(professorReview.get('comment'));
+      var hasProfessorRating =
+          _.reduce(professorReview.get('ratings').models, hasRating, false);
+
+      return hasCourseReview && hasCourseRating &&
+             hasProfessorReview && hasProfessorRating;
+    },
   });
 
   /**
