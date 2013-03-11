@@ -6,6 +6,8 @@ import sys
 import rmc.models as m
 import rmc.shared.constants as c
 import rmc.shared.facebook as facebook
+import rmc.data.crawler as rmc_crawler
+import rmc.data.processor as rmc_processor
 
 # TODO(mack): remove duplication of fields throughout code
 # TODO(mack): deprecate overall rating
@@ -304,6 +306,15 @@ def update_mongo_points():
     print 'num_invites', num_invites
 
 
+def update_exam_schedule():
+    # Crawl data and store on disk
+    rmc_crawler.get_opendata_exam_schedule()
+    # Process the data on disk
+    errors = rmc_processor.import_opendata_exam_schedules()
+    print "%d exam schedule items found" % m.Exam.objects().count()
+    print "%d exam schedule items skipped" % len(errors)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     'all',
@@ -313,6 +324,7 @@ if __name__ == '__main__':
         'mongo_course_rating': update_mongo_course_rating,
         'mongo_course_professors': update_mongo_course_professors,
         'mongo_points': update_mongo_points,
+        'exam_schedule': update_exam_schedule,
     }
     parser.add_argument('mode',
             help='one of %s' % ','.join(mode_mapping.keys() + ['all']))
@@ -320,7 +332,11 @@ if __name__ == '__main__':
 
     if args.mode == 'all':
         for func in mode_mapping.values():
-            func()
+            try:
+                func()
+            except Exception as exp:
+                print "aggregator.py: function %s threw an exception" % (func)
+                print exp
     elif args.mode in mode_mapping:
         func = mode_mapping[args.mode]
         func()
