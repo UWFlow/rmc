@@ -127,5 +127,43 @@
     border-color: rgba(82, 168, 236, 0.8);
     border-top: 1px solid #DDD;
   }
+}
 
+.review-modal {
+  $modal-width: 880px;
+  left: 50%;
+  width: $modal-width;
+  margin-left: -$modal-width / 2;
+
+  .modal-header {
+    padding-bottom: 5px;
+  }
+
+  .greeting {
+    float: left;
+    margin-right: 8px;
+    margin-top: 2px;
+  }
+
+  // TODO(david): Copy-pasted from course.scss
+  .course-code {
+    font-size: 50px;
+    float: left;
+    margin-right: 8px;
+    letter-spacing: -1px;
+    font-weight: lighter;
+    color: $textColor;
+    margin-top: 6px;
+  }
+
+  .course-name {
+    float: left;
+    font-weight: lighter;
+    width: 300px;
+    position: relative;
+    top: -5px;
+    font-size: 18px;
+    line-height: 20px;
+    color: #555;
+  }
 }

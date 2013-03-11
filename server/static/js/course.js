@@ -256,7 +256,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
       this.courseModel = attributes.courseModel;
       this.userCourse = this.courseModel.get('user_course');
-      // TODO(mack): remove hardcode of '9999_99'
       // TODO(mack): Might not always be appropriate to just fetch
       // profileUserCourse like this since it's only gettable from
       // profile page

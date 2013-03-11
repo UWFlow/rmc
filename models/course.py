@@ -109,10 +109,11 @@ class Course(me.Document):
                 if not full_user_courses:
                     ucs.only(**limited_user_course_fields)
 
+                ucs = list(ucs)
                 uc_dicts = [uc.to_dict() for uc in ucs]
-                return course_dicts, uc_dicts
+                return course_dicts, uc_dicts, ucs
             else:
-                return course_dicts, []
+                return course_dicts, [], []
 
         uc_dicts = []
         if include_all_users or include_friends:
@@ -127,21 +128,22 @@ class Course(me.Document):
             if full_user_courses:
                 if not include_all_users:
                     query.setdefault('user_id__in', []).append(current_user.id)
-                ucs = _user_course.UserCourse.objects(**query)
+                ucs = list(_user_course.UserCourse.objects(**query))
                 uc_dicts = [uc.to_dict() for uc in ucs]
             else:
-                ucs = _user_course.UserCourse.objects(**query).only(
-                        *limited_user_course_fields)
+                ucs = list(_user_course.UserCourse.objects(**query).only(
+                        *limited_user_course_fields))
                 friend_uc_fields = ['id', 'user_id', 'course_id', 'term_name']
                 uc_dicts = [uc.to_dict(friend_uc_fields) for uc in ucs]
 
         # TODO(mack): optimize to not always get full user course
         # for current_user
-        current_ucs = _user_course.UserCourse.objects(
+        current_ucs = list(_user_course.UserCourse.objects(
             user_id=current_user.id,
             course_id__in=course_ids,
             id__nin=[uc_dict['id'] for uc_dict in uc_dicts],
-        )
+        ))
+        ucs += current_ucs
         uc_dicts += [uc.to_dict() for uc in current_ucs]
 
         current_user_course_by_course = {}
@@ -169,9 +171,7 @@ class Course(me.Document):
                 friend_uc_ids = [uc['id'] for uc in friend_ucs]
                 course_dict['friend_user_course_ids'] = friend_uc_ids
 
-        return course_dicts, uc_dicts
-
-
+        return course_dicts, uc_dicts, ucs
 
     def to_dict(self):
         """Returns information about a course to be sent down an API.

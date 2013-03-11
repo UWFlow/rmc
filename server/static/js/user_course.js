@@ -576,10 +576,48 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     }
   });
 
+  var ReviewModalView = RmcBackbone.View.extend({
+    el: '#review-modal-container',
+
+    initialize: function(options) {
+      this.template = _.template($('#review-modal-tpl').html());
+
+      this.userCourse = options.userCourse;
+      this.courseModel = options.courseModel;
+      this.userCourseView = new UserCourseView({
+        userCourse: this.userCourse,
+        courseModel: this.courseModel
+      });
+      this.courseView = new _course.CourseView({
+        courseModel: this.courseModel
+      });
+      this.courseInnerView = new _course.CourseInnerView({
+        userCourse: this.userCourse,
+        courseModel: this.courseModel
+      });
+    },
+
+    render: function() {
+      this.$el.html(this.template({
+        user: _user.UserCollection.getFromCache(
+                window.pageData.profileUserId.$oid),
+        course: this.courseModel,
+        userCourse: this.userCourse
+      }));
+      this.$('.user-course-placeholder').replaceWith(
+          this.userCourseView.render().el);
+      return this;
+    },
+
+    show: function() {
+      this.$('.review-modal').modal('show');
+    }
+  });
 
   return {
     UserCourse: UserCourse,
     UserCourses: UserCourses,
-    UserCourseView: UserCourseView
+    UserCourseView: UserCourseView,
+    ReviewModalView: ReviewModalView
   };
 });

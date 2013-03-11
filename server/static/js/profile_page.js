@@ -2,11 +2,11 @@ require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
 'raffle_unlock', 'schedule', 'sign_in'],
-function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
-    _exam, _raffle_unlock, _schedule, _sign_in) {
+function($, _, _s, _bootstrap, term, _course, friend, util, user, _user_course,
+  _prof, _exam, _raffle_unlock, _schedule, _sign_in) {
 
-  course.CourseCollection.addToCache(pageData.courseObjs);
-  uc.UserCourses.addToCache(pageData.userCourseObjs);
+  _course.CourseCollection.addToCache(pageData.courseObjs);
+  _user_course.UserCourses.addToCache(pageData.userCourseObjs);
   _prof.ProfCollection.addToCache(pageData.professorObjs);
 
   var profileUser = user.UserCollection.getFromCache(
@@ -137,6 +137,17 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
       showSharing: window.pageData.ownProfile
     });
     $schedulePlaceholder.replaceWith(scheduleView.el);
+  }
+
+  // Possibly show a modal pop-up to prompt user to review course
+  if (window.pageData.courseIdToReview) {
+    var courseToReview = _course.CourseCollection.getFromCache(
+        window.pageData.courseIdToReview);
+    var reviewModalView = new _user_course.ReviewModalView({
+      courseModel: courseToReview,
+      userCourse: courseToReview.get('user_course')
+    }).render();
+    reviewModalView.show();
   }
 
   mixpanel.track('Impression: Profile page');

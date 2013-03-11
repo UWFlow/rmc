@@ -77,3 +77,23 @@
   </span>
 </div>
 {% endcall %}
+
+{% call macros.us_template('review-modal-tpl') %}
+<div class="review-modal modal hide-initial fade">
+  <div class="modal-header clearfix">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+    <h3 class="greeting"><icon class="icon-pencil"></icon>&nbsp;
+      Hey <%- user.get('first_name') %>! What did you think of...
+    </h3>
+  </div>
+  <div class="modal-body">
+    <div class="course-code"><%- course.get('code') %></div>
+    <div class="course-name"><%- course.get('name') %></div>
+    <div class="user-course-placeholder"></div>
+  </div>
+  <div class="modal-footer">
+    [buttons go here]
+  </div>
+</div>
+{% endcall %}
+<div id="review-modal-container"></div>
