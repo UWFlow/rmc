@@ -171,6 +171,17 @@ function(_, _s) {
     return data;
   };
 
+  var scrollToElementId = function(id) {
+    // Compensate for nav bar height
+    var scrollOffset = $('#course-view-' + id).offset().top;
+    var navBarOffset = $('#site-nav').height();
+
+    $('body').animate({
+      scrollTop: scrollOffset - navBarOffset,
+      duration: 2000
+    });
+  };
+
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -187,6 +198,7 @@ function(_, _s) {
     getSiteBaseUrl: getSiteBaseUrl,
     getReferrerId: getReferrerId,
     storeUserData: storeUserData,
-    getUserData: getUserData
+    getUserData: getUserData,
+    scrollToElementId: scrollToElementId
   };
 });

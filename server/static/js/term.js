@@ -1,5 +1,6 @@
 define(
-['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course', 'util'],
+['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course',
+'util'],
 function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
 
   var TermModel = RmcBackbone.Model.extend({
@@ -54,7 +55,8 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
     },
 
     events: {
-      'click .term-name': 'toggleTermVisibility'
+      'click .term-name': 'toggleTermVisibility',
+      'expand': 'expandTerm'
     },
 
     // TODO(mack): remove duplicate with similar logic in CourseView
@@ -151,6 +153,34 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
       }
 
       this.template = _.template($('#profile-terms-tpl').html());
+    },
+
+    events: {
+      'autoScroll': 'scrollToNextCourseDelayed'
+    },
+
+    scrollToNextCourseDelayed: function(event, course) {
+      setTimeout(_.bind(this.scrollToNextCourse, this, event, course), 400);
+    },
+
+    scrollToNextCourse: function(event, course) {
+      // Get the list of courses (as displayed) after the triggering course
+      var courses = this.termCollection.reduce(function(list, term) {
+        return list.concat(term.get('courses').models);
+      }, []);
+      var remainingCourses = _.rest(courses, _.indexOf(courses, course) + 1);
+
+      // Scroll to the first non-filled-in course
+      var targetCourse = _.find(remainingCourses, function(remCourse) {
+        return !remCourse.get('user_course').isMostlyFilledIn();
+      });
+
+      // Expand the course card before we scroll to it
+      var userCourseId = targetCourse.get('user_course').get('id');
+      $('#' + 'course-view-' + userCourseId).trigger('expand');
+      _util.scrollToElementId(userCourseId);
+
+      mixpanel.track('Reviewing: Auto scroll', { course_id: course.get('id') });
     },
 
     render: function() {

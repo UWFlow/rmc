@@ -72,8 +72,15 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       ]);
     },
 
+    onDataChange: function(isRatingChange) {
+      if (this.isMostlyFilledIn()) {
+        this.trigger('mostlyFilledIn', isRatingChange);
+      }
+    },
+
     onRatingsChange: function(ratingType) {
       this.save();
+      this.onDataChange(true);
 
       this.logToGA(ratingType, 'RATING');
       mixpanel.track('Reviewing: Save Ratings', {
@@ -86,6 +93,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     onCommentsChange: function(reviewType) {
       // TODO(david): Make this fn more consistent with onRatingsChange (which
       //     calls this.save() first. This doesn't because view calls save).
+      this.onDataChange(false);
+
       this.logToGA(reviewType, 'REVIEW');
       mixpanel.track('Reviewing: Save comments', {
         review_type: reviewType,
@@ -245,6 +254,27 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
     hasReviewedProf: function() {
       return this.get('professor_review').get('comment');
+    },
+
+    /**
+     *  Is the course model "mostly" filled in? The assumption is that if the
+     *  user:
+     *    1) rates at least one criterion for both the course and prof
+     *    2) reviews both the course and prof
+     *  then they probably don't want to give more information and are done.
+     * @return {bool} Whether or not the ratings/reviews are "mostly" filled in
+     */
+    isMostlyFilledIn: function() {
+      var courseReview = this.get('course_review');
+      var professorReview = this.get('professor_review');
+
+      var hasCourseRating = courseReview.get('ratings').hasRated();
+      var hasProfessorRating = professorReview.get('ratings').hasRated();
+      var hasCourseReview = !!courseReview.get('comment');
+      var hasProfessorReview = !!professorReview.get('comment');
+
+      return hasProfessorRating && hasCourseRating &&
+             hasProfessorReview && hasCourseReview;
     }
   });
 
@@ -276,6 +306,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         placeholder: 'Comment about the professor and earn 50 points!',
         reviewType: 'PROFESSOR'
       });
+
+      // Auto scroll
+      this.userCourse.on('mostlyFilledIn', _.bind(this.tryAutoScroll, this));
+      // Don't auto scroll if the user is just editing their data
+      this.canAutoScroll = !this.userCourse.isMostlyFilledIn();
 
       courseReview.on('change:comment',
           _.bind(this.saveComments, this, this.courseCommentView));
@@ -377,6 +412,31 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
     events: {
       'change .prof-select': 'onProfSelect'
+    },
+
+    /**
+     * Only auto scroll if the user rated all fields for the professor.
+     * This heuristic tries to address the case where the user:
+     *  1) Reviews the prof
+     *  2) Rates the first prof criteria
+     *  3) Tries to rate another prof criteria
+     * If we don't prevent auto scroll, then 2) will trigger an auto-scroll.
+     * We don't consider course ratings because the user is likely done with the
+     * course portion by this point.
+     * @return {void}
+     */
+    tryAutoScroll: function(isRatingChange) {
+      if (isRatingChange) {
+        if (!this.userCourse.get('professor_review').get('ratings').allRated()) {
+          return;
+        }
+      }
+
+      if (this.canAutoScroll) {
+        this.$el.trigger('autoScroll', this.courseModel);
+        // Only auto scroll once
+        this.canAutoScroll = false;
+      }
     },
 
     logToGA: function(event, label) {
@@ -606,6 +666,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
       this.courseModel = _course.CourseCollection.getFromCache(courseId);
       this.userCourse = this.courseModel.get('user_course');
+
       this.userCourseView = new UserCourseView({
         userCourse: this.userCourse,
         courseModel: this.courseModel

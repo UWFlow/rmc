@@ -302,7 +302,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     render: function() {
-      this.$el.html(this.template({
+      var domId = 'course-view-' + this.courseModel.get('user_course_id');
+      this.$el.attr('id', domId).html(this.template({
         course: this.courseModel.toJSON(),
         user_course: this.userCourse,
         //star_uc: window.pageData.ownProfile ? this.userCourse : this.profileUserCourse
@@ -381,7 +382,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       'click .remove-course-btn': 'onCourseRemove',
       // TODO(david): Figure out a nicer interaction without requiring click
       'click .visible-section': 'toggleCourse',
-      'focus .new-review-input': 'expandNewReview'
+      'focus .new-review-input': 'expandNewReview',
+      'expand': 'expandCourse'
     },
 
     courseAdded: function() {
