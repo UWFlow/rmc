@@ -21,6 +21,9 @@ def ensure_dir(file_path):
 
 def generate_urls():
     urls = []
+    # Home page
+    urls.append('/')
+    # Course pages
     for course in m.Course.objects:
         course_id = course.id
         urls.append('course/' + course_id)

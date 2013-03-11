@@ -100,7 +100,10 @@ def before_request():
         return
 
     # Remove leading '/'s to be compatible with os.path.join()
-    path = re.sub('^/*', '', flask.request.path)
+    path = flask.request.path
+    if path and path[-1] == '/':
+        path += 'index'
+    path = re.sub('^/*', '', path)
     file_path = os.path.join(html_snapshots.HTML_DIR, path)
     try:
         with open(file_path, 'r') as f:
