@@ -147,6 +147,13 @@ function(_, _s) {
     return window.location.origin;
   };
 
+  var scrollToElementId = function(id) {
+    var scrollOffset = $('#' + id).offset().top;
+    // Compensate for nav bar height
+    var navBarOffset = $('#site-nav').height();
+    $('body').scrollTop(scrollOffset - navBarOffset);
+  };
+
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -160,6 +167,7 @@ function(_, _s) {
     userCourseTermIdComparator: userCourseTermIdComparator,
     truncatePreviewString: truncatePreviewString,
     getTimeDelta: getTimeDelta,
-    getSiteBaseUrl: getSiteBaseUrl
+    getSiteBaseUrl: getSiteBaseUrl,
+    scrollToElementId: scrollToElementId
   };
 });
