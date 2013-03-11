@@ -42,7 +42,8 @@ function(RmcBackbone, $, _, _course) {
   var ExamSchedule = RmcBackbone.Model.extend({
     defaults: {
       exams: new ExamCollection([null, null, null, null, null]),
-      term_name: 'Fall 2012'
+      term_name: 'Fall 2012',
+      last_updated_date: null
     }
   });
 

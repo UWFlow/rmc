@@ -322,6 +322,9 @@ def render_profile_page(profile_user_id, current_user=None):
 
     exam_objs = m.Exam.objects(course_id__in=current_course_ids)
     exam_dicts =  [e.to_dict() for e in exam_objs]
+    exam_updated_date = None
+    if exam_objs:
+        exam_updated_date = exam_objs[0].id.generation_time
 
     # NOTE: This implictly requires that the courses on the schedule are on the
     # transcript, since these course objects are needed by the schedule  on the
@@ -352,6 +355,7 @@ def render_profile_page(profile_user_id, current_user=None):
         own_profile=own_profile,
         has_courses=current_user.has_course_history,
         exam_objs=exam_dicts,
+        exam_updated_date=exam_updated_date,
         schedule_item_objs=schedule_item_dicts,
         has_shortlisted=current_user.has_shortlisted,
         show_import_schedule=show_import_schedule,

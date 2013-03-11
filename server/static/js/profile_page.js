@@ -117,7 +117,8 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
   if (examObjs && examObjs.length) {
     var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
     var examSchedule = new _exam.ExamSchedule({
-      exams: examCollection
+      exams: examCollection,
+      last_updated_date: window.pageData.examUpdatedDate
     });
     var examScheduleView = new _exam.ExamScheduleView({
       examSchedule: examSchedule
