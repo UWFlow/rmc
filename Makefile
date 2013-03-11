@@ -10,6 +10,9 @@ setup:
 	./setup.sh
 
 # TODO(mack): Find better way to vary command based on prod/dev
+# TODO(mack): Add command to clear cache directory:
+# - Mac OS X: ~/Library/Caches/Ofi\ Labs/PhantomJS
+# - Linux: Find out
 html_snapshots:
 	@if [ `whoami` = 'rmc' ]; then \
 		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:80; \
