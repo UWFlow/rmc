@@ -331,7 +331,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
     },
 
     render: function() {
-      this.$el.html(this.template({
+      var elementId = this.courseModel.get('user_course_id');
+      this.$el.attr('id', elementId).html(this.template({
         course: this.courseModel.toJSON(),
         user_course: this.userCourse,
         //star_uc: window.pageData.ownProfile ? this.userCourse : this.profileUserCourse
