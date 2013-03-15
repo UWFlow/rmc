@@ -385,6 +385,7 @@ def login():
         middle_name = req.form.get('middle_name')
         last_name = req.form.get('last_name')
         email = req.form.get('email')
+        referrer = req.form.get('referrer')
 
         now = datetime.now()
         user_obj = {
@@ -399,6 +400,7 @@ def login():
 #TODO(Sandy): Count visits properly
             'join_date': now,
             'join_source': m.User.JoinSource.FACEBOOK,
+            'referrer': referrer,
             'num_visits': 1,
             'last_visited': now,
             'friend_fbids': friend_fbids,

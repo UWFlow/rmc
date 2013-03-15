@@ -1,6 +1,6 @@
 define(
-['ext/jquery', 'ext/underscore', 'ext/cookie'],
-function($, _, __) {
+['ext/jquery', 'ext/underscore', 'ext/cookie', 'util'],
+function($, _, __, util_) {
 
   var fbApiInit = false;
   var fbAppId;
@@ -66,6 +66,7 @@ function($, _, __) {
     // a way of verifying the request. Maybe that's what Facebook Signed
     // Requests are for? There are two corresponding server-side FIXMEs for this
     params.fb_signed_request = authResp.signedRequest;
+    params.referrer = util_.getQueryParam('referrer');
     // TODO(Sandy): When switching over to Flask sessions be sure to remove
     // these old cookies
     $.cookie('fbid', authResp.userID, { expires: 365, path: '/' });
@@ -157,16 +158,15 @@ function($, _, __) {
     });
   };
 
-  // TODO(Sandy): Don't hardcode this?
-  var dialogBaseUrl = 'http://uwflow.com';
+  var indexUrl = location.protocol + '//' + location.host;
   var logoPath = '/static/img/logo/flow_75x75.png';
 
   var showSendDialogProfile = function(cb) {
     FB.ui({
       method: 'send',
       name: 'Flow',
-      link: dialogBaseUrl,
-      picture: dialogBaseUrl + logoPath,
+      link: indexUrl + '?referrer=' + pageData.currentUserId.$oid,
+      picture: indexUrl + logoPath,
       description: 'Plan your courses with friends in mind!'
     }, cb);
   };
@@ -181,7 +181,7 @@ function($, _, __) {
    *    - picture (optional)
    */
   var showFeedDialog = function(options) {
-    var picture = options.picture || dialogBaseUrl + logoPath;
+    var picture = options.picture || indexUrl + logoPath;
     FB.ui({
       method: 'feed',
       link: options.link,
