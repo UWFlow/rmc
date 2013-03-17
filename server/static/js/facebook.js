@@ -66,7 +66,7 @@ function($, _, __, util_) {
     // a way of verifying the request. Maybe that's what Facebook Signed
     // Requests are for? There are two corresponding server-side FIXMEs for this
     params.fb_signed_request = authResp.signedRequest;
-    params.referrer = util_.getQueryParam('referrer');
+    params.referrer_id = util_.getQueryParam('referrer');
     // TODO(Sandy): When switching over to Flask sessions be sure to remove
     // these old cookies
     $.cookie('fbid', authResp.userID, { expires: 365, path: '/' });

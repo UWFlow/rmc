@@ -140,6 +140,10 @@ function($, _, _s, _bootstrap, term, course, friend, util, user, uc, _prof,
     $schedulePlaceholder.replaceWith(scheduleView.el);
   }
 
+  $('#referral-alert .referral-link-box').bind('click', function(evt) {
+    $(this).select();
+  });
+
   mixpanel.track('Impression: Profile page');
 
   $(document.body).trigger('pageScriptComplete');

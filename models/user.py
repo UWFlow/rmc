@@ -28,7 +28,7 @@ class User(me.Document):
             'fbid',
             # TODO(mack): need to create the 'api_key' index on prod
             'api_key',
-            'referrer',
+            'referrer_id',
         ],
     }
 
@@ -38,7 +38,7 @@ class User(me.Document):
     # for now, just in case; can remove it when sure that info is in _id
     join_date = me.DateTimeField(required=True)
     join_source = me.IntField(required=True, choices=[JoinSource.FACEBOOK])
-    referrer = me.ObjectIdField(required=False)
+    referrer_id = me.ObjectIdField(required=False)
 
     # eg. Mack
     first_name = me.StringField(required=True)

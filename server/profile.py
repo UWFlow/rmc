@@ -332,6 +332,9 @@ def render_profile_page(profile_user_id, current_user=None):
     # corresponding item is added to the transcript.
     schedule_item_dicts = profile_user.get_schedule_item_dicts()
 
+    referrals = m.User.objects(referrer_id=current_user.id)
+    referral_objs = [referral.to_dict() for referral in referrals]
+
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
         rmclogger.LOG_EVENT_PROFILE, {
@@ -344,6 +347,7 @@ def render_profile_page(profile_user_id, current_user=None):
         page_script='profile_page.js',
         transcript_obj=ordered_transcript,
         user_objs=user_dicts.values(),
+        referral_objs=referral_objs,
         user_course_objs=user_course_dicts.values(),
         course_objs=course_dicts.values(),
         professor_objs=professor_dicts.values(),

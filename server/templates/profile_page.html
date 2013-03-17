@@ -33,6 +33,50 @@
     </p>
   {% endif %}
 
+  {% if own_profile %}
+    <div class="alert fade in alert-success" id="referral-alert">
+      <button type="button" class="close" data-dismiss="alert">×</button>
+      <h1>
+        <i class="icon-group"></i>
+        Refer friends, win prizes!
+      </h1>
+      {% set referral_url = 'http://uwflow.com?referrer=%s' % current_user_id %}
+      <p class="lead">
+        Get friends to sign up using referral link:
+      </p>
+      <div class="referral-link-container">
+        <input class="referral-link-box" type="url" value="{{ referral_url|safe }}">
+      </div>
+      <p class="lead">
+        The more referrals, the more chances to win a
+        <a href="#"
+            rel="tooltip"
+            title="4 gift cards valued at $25 each">
+          Tim Horton's gift card!
+        </a>
+        <a href="#"
+            class="icon-time"
+            rel="tooltip"
+            data-html="true"
+            title="Contest ends Sunday, March 25<sup>th</sup>">
+        </a>
+      </p>
+      <hr>
+      <p class="lead">
+        <strong>Referrals so far: {{ referral_objs|length }}</strong><br>
+      </p>
+      <div class="referred-pics">
+        {% for referral_obj in referral_objs -%}
+          <a href="{{ '/profile/%s' % referral_obj['id'] }}"
+              class="referred-pic"><!--
+        --><img src="{{ referral_obj['fb_pic_url'] }}"
+              data-title="{{ referral_obj['name'] }}"
+              rel="tooltip"></a>
+        {%- endfor %}
+      </div>
+    </div>
+  {% endif %}
+
   {# TODO(david): Make this backbone model view #}
   {% if show_import_schedule_button %}
     <div class="alert fade in">

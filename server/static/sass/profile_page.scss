@@ -8,6 +8,32 @@
 @import 'schedule';
 @import 'sign_in';
 
+#referral-alert {
+  .referral-link-container {
+    margin-top: -15px;
+    margin-bottom: 20px;
+
+    .referral-link-box {
+      height: 36px;
+      line-height: 24px;
+      font-size: 24px;
+      width: 620px;
+    }
+  }
+
+  .referred-pics {
+    padding-left: 10px;
+    margin-top: -7px;
+    margin-bottom: 10px;
+
+    .referred-pic {
+      display: inline-block;
+      margin-right: 5px;
+      margin-bottom: 5px;
+    }
+  }
+}
+
 #shortlist-alert {
   padding-bottom: 18px;
 
