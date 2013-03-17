@@ -66,7 +66,7 @@ class User(me.Document):
     # use the site
     friend_fbids = me.ListField(me.StringField())
 
-    # eg. list of user objetids, all of whom joined from a referral by this user
+    # eg. list of user objectids, all of whom joined from a referral by this user
     referred_ids = me.ListField(me.ObjectIdField())
 
     birth_date = me.DateTimeField( )
