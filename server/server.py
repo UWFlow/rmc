@@ -377,55 +377,50 @@ def login():
             'fb_access_token': fb_access_token,
         })
 
-    # TODO(Sandy): Can remove the try except now becaues we're uisng form.get, same for all the other lines
-    try:
-        friend_fbids = flask.json.loads(req.form.get('friend_fbids'))
-        gender = req.form.get('gender')
-        first_name = req.form.get('first_name')
-        middle_name = req.form.get('middle_name')
-        last_name = req.form.get('last_name')
-        email = req.form.get('email')
+    # Sign up the new user
+    friend_fbids = flask.json.loads(req.form.get('friend_fbids'))
+    gender = req.form.get('gender')
+    first_name = req.form.get('first_name')
+    middle_name = req.form.get('middle_name')
+    last_name = req.form.get('last_name')
+    email = req.form.get('email')
 
-        now = datetime.now()
-        user_obj = {
-            'fbid': fbid,
-            'first_name': first_name,
-            'middle_name': middle_name,
-            'last_name': last_name,
-            'email': email,
-            'gender': gender,
-            'fb_access_token': fb_access_token,
-            'fb_access_token_expiry_date': fb_access_token_expiry_date,
+    now = datetime.now()
+    user_obj = {
+        'fbid': fbid,
+        'first_name': first_name,
+        'middle_name': middle_name,
+        'last_name': last_name,
+        'email': email,
+        'gender': gender,
+        'fb_access_token': fb_access_token,
+        'fb_access_token_expiry_date': fb_access_token_expiry_date,
 #TODO(Sandy): Count visits properly
-            'join_date': now,
-            'join_source': m.User.JoinSource.FACEBOOK,
-            'num_visits': 1,
-            'last_visited': now,
-            'friend_fbids': friend_fbids,
+        'join_date': now,
+        'join_source': m.User.JoinSource.FACEBOOK,
+        'num_visits': 1,
+        'last_visited': now,
+        'friend_fbids': friend_fbids,
 #TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
-        }
-        user = m.User(**user_obj)
-        user.save()
+    }
+    user = m.User(**user_obj)
+    user.save()
 
-        rmclogger.log_event(
-            rmclogger.LOG_CATEGORY_IMPRESSION,
-            rmclogger.LOG_EVENT_LOGIN, {
-                'new_user': True,
-                'user_id': user.id,
-            },
-        )
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_IMPRESSION,
+        rmclogger.LOG_EVENT_LOGIN, {
+            'new_user': True,
+            'user_id': user.id,
+        },
+    )
 
-        expiry_date_timestamp = time.mktime(
-                fb_access_token_expiry_date.timetuple())
-        return util.json_dumps({
-            'fb_access_token_expires_on': expiry_date_timestamp,
-            'fb_access_token': fb_access_token,
-        })
-    except KeyError as ex:
-        # Invalid key (shouldn't be happening)
-# TODO(Sandy): redirect to landing page, or nothing
-        logging.error('Exception while saving user: %s' % ex)
-        return 'Error'
+    expiry_date_timestamp = time.mktime(
+            fb_access_token_expiry_date.timetuple())
+    return util.json_dumps({
+        'fb_access_token_expires_on': expiry_date_timestamp,
+        'fb_access_token': fb_access_token,
+    })
+
     return ''
 
 
