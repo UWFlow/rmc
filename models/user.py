@@ -66,6 +66,9 @@ class User(me.Document):
     # use the site
     friend_fbids = me.ListField(me.StringField())
 
+    # eg. list of user objetids, all of whom joined from a referral by this user
+    referred_ids = me.ListField(me.ObjectIdField())
+
     birth_date = me.DateTimeField( )
 
     last_visited = me.DateTimeField()
@@ -247,6 +250,21 @@ class User(me.Document):
             first_id = user_id_two
             second_id = user_id_one
         return 'mutual_courses:%s:%s' %  (first_id, second_id)
+
+    @classmethod
+    def refer(cls, referer_id, referee_id):
+        """Associate referee_id as a user referred by referer_id"""
+        try:
+            referer_user = User.objects.with_id(referer_id)
+            referee_user = User.objects.with_id(referee_id)
+        except me.ValidationError:
+            logging.warn("User.refer: invalid user id(s) %s %s"
+                         % (referer_id, referee_id))
+
+        if referer_user and referee_user:
+            # Both users exists
+            referer_user.referred_ids.append(referee_id)
+            referer_user.save()
 
     def mutual_courses_redis_key(self, other_user_id):
         return User.cls_mutual_courses_redis_key(self.id, other_user_id)

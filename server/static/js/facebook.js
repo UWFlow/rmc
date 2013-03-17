@@ -1,6 +1,6 @@
 define(
-['ext/jquery', 'ext/underscore', 'ext/cookie'],
-function($, _, __) {
+['ext/jquery', 'ext/underscore', 'ext/cookie', 'util'],
+function($, _, __, _util) {
 
   var fbApiInit = false;
   var fbAppId;
@@ -149,7 +149,8 @@ function($, _, __) {
             'middle_name': me.middle_name,
             'last_name': me.last_name,
             'email': me.email,
-            'gender': me.gender
+            'gender': me.gender,
+            'referer_user_id': _util.getRefererUserId()
           };
           login(authResponse, params, attributes.source, attributes.nextUrl);
         });

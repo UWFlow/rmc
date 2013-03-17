@@ -9,6 +9,9 @@ function(_facebook, $, _util, _sign_in) {
   if (next) {
     nextUrl = '/profile?next=' + next;
   }
+
+  _util.setRefererUserId(_util.getQueryParam('referer'));
+
   _facebook.initConnectButton({
     source: 'HOME',
     nextUrl: nextUrl
