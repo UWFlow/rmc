@@ -26,7 +26,7 @@
 {% endcall %}
 
 {% call macros.us_template('prof-expandable-reviews-tpl') %}
-<div class="well expandable-prof">
+<div class="well expandable-prof <%- numHidden < 1 ? "no-hidden" : "" %>">
   <div class="row-fluid">
     <div class="span6">
       <div class="prof-card-placeholder"></div>
@@ -45,7 +45,9 @@
     </div>
   </div>
   <div class="reviews-collection-placeholder"></div>
-  <a class="toggle-reviews">See <%- numHidden %> more
-    <%- pluralize(numHidden, "review") %> &raquo;</a>
+  <% if (numHidden > 0) { %>
+    <a class="toggle-reviews">See <%- numHidden %> more
+      <%- pluralize(numHidden, "review") %> &raquo;</a>
+  <% } %>
 </div>
 {% endcall %}

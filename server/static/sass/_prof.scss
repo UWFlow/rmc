@@ -5,6 +5,10 @@
   padding-bottom: 52px;
   background-image: url(/static/img/lightpaperfibers.png);
 
+  &.no-hidden {
+    padding-bottom: 21px;
+  }
+
   .prof-picture {
     float: left;
     width: 30%;
