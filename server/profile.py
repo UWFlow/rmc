@@ -116,6 +116,10 @@ def render_profile_page(profile_user_id, current_user=None):
                 if time_delta.days > RESHOW_ONBOARDING_DELAY_DAYS:
                     show_onboarding =  True
 
+        # See https://uwflow.uservoice.com/admin/tickets/62
+        if profile_user_id == '50b8ce2cd89d62310645ca78':
+            show_onboarding = False
+
         if show_onboarding:
             onboarding_url = '/onboarding'
             if flask.request.query_string:
