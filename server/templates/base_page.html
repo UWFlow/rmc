@@ -22,6 +22,19 @@
     {% endblock %}
 
     <!-- Javascript -->
+    <script>
+      // console shim for older ie browsers
+      var console = console || {};
+      (function() {
+        var methods = ['log', 'info', 'warn', 'debug', 'trace', 'error'];
+        for (var i = 0; i < methods.length; ++i) {
+          var method = methods[i];
+          if (!console[method]) {
+            console[method] = function() {};
+          }
+        }
+      })();
+    </script>
     {% block head_scripts %}
     {% endblock %}
 
