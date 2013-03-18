@@ -24,13 +24,13 @@
     <!-- Javascript -->
     <script>
       // console shim for older ie browsers
-      var console = console || {};
+      window.console = window.console || {};
       (function() {
         var methods = ['log', 'info', 'warn', 'debug', 'trace', 'error'];
         for (var i = 0; i < methods.length; ++i) {
           var method = methods[i];
-          if (!console[method]) {
-            console[method] = function() {};
+          if (!window.console[method]) {
+            window.console[method] = function() {};
           }
         }
       })();
