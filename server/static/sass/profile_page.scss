@@ -9,16 +9,39 @@
 @import 'sign_in';
 
 #referral-alert {
+  $border-color: darken($successBorder, 5%);
+
+  .refer-heading {
+    border-bottom: 1px solid $border-color;
+    font-size: 42px;
+  }
+
+  .get-friends {
+    font-size: 32px;
+  }
+
   .referral-link-container {
-    margin-top: -15px;
-    margin-bottom: 20px;
+    margin-top: -6px;
+    margin-bottom: 5px;
 
     .referral-link-box {
       height: 36px;
-      line-height: 24px;
-      font-size: 24px;
-      width: 620px;
+      line-height: 21px;
+      font-size: 21px;
+      width: 489px;
     }
+  }
+
+  .prize-name {
+    display: block;
+    font-size: 37px;
+    margin-top: 7px;
+    font-weight: bold;
+  }
+
+  .referrals-so-far {
+    border-top: 1px solid $border-color;
+    padding-top: 5px;
   }
 
   .referred-pics {

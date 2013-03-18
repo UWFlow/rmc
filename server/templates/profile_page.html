@@ -35,34 +35,25 @@
 
   {% if own_profile %}
     <div class="alert fade in alert-success" id="referral-alert">
-      <button type="button" class="close" data-dismiss="alert">×</button>
-      <h1>
-        <i class="icon-group"></i>
+      <h1 class="refer-heading">
+        <i class="icon-group"></i>&nbsp;
         Refer friends, win prizes!
       </h1>
       {% set referral_url = 'http://uwflow.com?referrer=%s' % current_user_id %}
-      <p class="lead">
+      <p class="lead get-friends">
         Get friends to sign up using referral link:
       </p>
       <div class="referral-link-container">
         <input class="referral-link-box" type="url" value="{{ referral_url|safe }}">
       </div>
       <p class="lead">
-        The more referrals, the more chances to win a
-        <a href="#"
-            rel="tooltip"
-            title="4 gift cards valued at $25 each">
-          Tim Horton's gift card!
-        </a>
-        <a href="#"
-            class="icon-time"
-            rel="tooltip"
-            data-html="true"
-            title="Contest ends Sunday, March 25<sup>th</sup>">
-        </a>
+        The more referrals, the more chances to win one of
+        <span class="prize-name">four $25 Tim Hortons gift cards!</span>
       </p>
-      <hr>
       <p class="lead">
+        Contest ends Sunday, March 25<sup>th</sup>.
+      </p>
+      <p class="lead referrals-so-far">
         <strong>Referrals so far: {{ referral_objs|length }}</strong><br>
       </p>
       <div class="referred-pics">
