@@ -1,6 +1,6 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/cookie', 'util'],
-function($, _, __, util_) {
+function($, _, __, _util) {
 
   var fbApiInit = false;
   var fbAppId;
@@ -66,7 +66,7 @@ function($, _, __, util_) {
     // a way of verifying the request. Maybe that's what Facebook Signed
     // Requests are for? There are two corresponding server-side FIXMEs for this
     params.fb_signed_request = authResp.signedRequest;
-    params.referrer_id = util_.getQueryParam('referrer');
+    params.referrer_id = _util.getQueryParam('referrer') || _util.getQueryParam('meow');
     // TODO(Sandy): When switching over to Flask sessions be sure to remove
     // these old cookies
     $.cookie('fbid', authResp.userID, { expires: 365, path: '/' });
@@ -165,7 +165,7 @@ function($, _, __, util_) {
     FB.ui({
       method: 'send',
       name: 'Flow',
-      link: indexUrl + '?referrer=' + pageData.currentUserId.$oid,
+      link: indexUrl + '?meow=' + pageData.currentUserId.$oid,
       picture: indexUrl + logoPath,
       description: 'Plan your courses with friends in mind!'
     }, cb);
