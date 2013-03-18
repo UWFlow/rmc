@@ -136,13 +136,15 @@
   margin-left: -$modal-width / 2;
 
   .modal-header {
-    padding-bottom: 5px;
+    padding-bottom: 12px;
+    padding-top: 14px;
   }
 
   .greeting {
     float: left;
-    margin-right: 8px;
+    margin-right: 14px;
     margin-top: 2px;
+    font-weight: normal;
   }
 
   // TODO(david): Copy-pasted from course.scss
@@ -159,7 +161,7 @@
   .course-name {
     float: left;
     font-weight: lighter;
-    width: 300px;
+    width: 270px;  // TODO(david): Dynamically change width on course code width
     position: relative;
     top: -5px;
     font-size: 18px;

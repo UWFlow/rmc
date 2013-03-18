@@ -140,6 +140,7 @@ function($, _, _s, _bootstrap, term, _course, friend, util, user, _user_course,
   }
 
   // Possibly show a modal pop-up to prompt user to review course
+  // XXX: also on query param
   if (window.pageData.courseIdToReview) {
     var courseToReview = _course.CourseCollection.getFromCache(
         window.pageData.courseIdToReview);

@@ -53,6 +53,12 @@
   white-space: nowrap;
 }
 
+// See http://stackoverflow.com/a/12090055
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Overrides
 

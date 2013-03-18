@@ -599,11 +599,18 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       }));
       this.$('.user-course-placeholder').replaceWith(
           this.userCourseView.render().el);
+      this.$('.modal').on('hide', this.onModalHide);
+
       return this;
     },
 
     show: function() {
       this.$('.review-modal').modal('show');
+      $('body').addClass('stop-scrolling');
+    },
+
+    onModalHide: function() {
+      $('body').removeClass('stop-scrolling');
     }
   });
 
