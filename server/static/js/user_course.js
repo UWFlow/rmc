@@ -333,6 +333,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         initSelection : function (element, callback) {
           // Select2 is weird
         },
+        formatNoMatches: function(term) {
+          return 'Type to add new prof...';
+        },
         allowClear: true,
         data: this.courseModel.get('professors')
           .chain()
