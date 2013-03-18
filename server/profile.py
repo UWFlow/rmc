@@ -11,7 +11,7 @@ import rmc.shared.util as util
 
 
 # Local constants
-RESHOW_ONBOARDING_DELAY_DAYS = 5
+RESHOW_ONBOARDING_DELAY_DAYS = 45
 RESHOW_SCHEDULE_DELAY_DAYS = 5
 
 def render_schedule_page(profile_user_id):
