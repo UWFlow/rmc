@@ -102,6 +102,7 @@ class Course(me.Document):
         course_dicts = [course.to_dict() for course in courses]
         course_ids = [c['id'] for c in course_dicts]
 
+        ucs = []
         if not current_user:
             if include_all_users:
                 ucs = _user_course.UserCourse.objects(
