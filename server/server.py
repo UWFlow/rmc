@@ -577,6 +577,13 @@ def get_courses(course_ids):
         'professor_objs': professor_objs,
     })
 
+@app.route('/api/course/to_review', methods=['GET'])
+@view_helpers.login_required
+def next_course_to_review():
+    current_user = view_helpers.get_current_user()
+    uc = current_user.next_course_to_review() if current_user else None
+    return util.json_dumps(uc.to_dict() if uc else {})
+
 COURSES_SORT_MODES = [
     # TODO(david): Usefulness
     { 'value': 'num_ratings', 'name': 'popular', 'direction': pymongo.DESCENDING, 'field': 'interest.count' },

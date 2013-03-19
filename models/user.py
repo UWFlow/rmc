@@ -440,5 +440,9 @@ class User(me.Document):
         self.save()
         return self.api_key
 
+    def next_course_to_review(self):
+        user_courses = _user_course.UserCourse.objects(user_id=self.id)
+        return _user_course.UserCourse.select_course_to_review(user_courses)
+
     def __repr__(self):
         return "<User: %s>" % self.name.encode('utf-8')

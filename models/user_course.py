@@ -195,11 +195,12 @@ class UserCourse(me.Document):
         return UserCourse.objects(course_id=course_id,
                 course_review__comment_date__exists=True)
 
+    # TODO(david): This would be a good function to unit test
     @classmethod
     def select_course_to_review(cls, user_courses):
         """Selects the optimal next course out of a given list to review.
 
-        The algorithm works as follow:
+        The algorithm works as follows:
 
         Filter courses that...
             - the user can review

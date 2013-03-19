@@ -467,7 +467,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       'focus .comments': 'onFocus',
       'click .save-review': 'onSave',
       'click .share-review': 'onShare',
-      'keyup .comments': 'allowSave',
+      'change .comments': 'allowSave',
       'click .privacy-tip .dropdown-menu li': 'onPrivacySelect'
     },
 
@@ -585,8 +585,17 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     initialize: function(options) {
       this.template = _.template($('#review-modal-tpl').html());
 
-      this.userCourse = options.userCourse;
-      this.courseModel = options.courseModel;
+      this.initWithCourseId(options.courseId);
+
+      this.$el.on('show', '.modal', this.onModalShow)
+              .on('hide', '.modal', this.onModalHide);
+    },
+
+    initWithCourseId: function(courseId) {
+      this.courseId = courseId;
+
+      this.courseModel = _course.CourseCollection.getFromCache(courseId);
+      this.userCourse = this.courseModel.get('user_course');
       this.userCourseView = new UserCourseView({
         userCourse: this.userCourse,
         courseModel: this.courseModel
@@ -602,18 +611,45 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       }));
       this.$('.user-course-placeholder').replaceWith(
           this.userCourseView.render().el);
-      this.$('.modal').on('hide', this.onModalHide);
 
       return this;
     },
 
     show: function() {
       this.$('.review-modal').modal('show');
+    },
+
+    hide: function() {
+      this.$('.review-modal').modal('hide');
+    },
+
+    events: {
+      'click .btn-review-another': 'onReviewAnotherClick'
+    },
+
+    onModalShow: function() {
       $('body').addClass('stop-scrolling');
     },
 
     onModalHide: function() {
       $('body').removeClass('stop-scrolling');
+    },
+
+    onReviewAnotherClick: function() {
+      this.hide();
+
+      // Fetch from API another course
+      $.getJSON('/api/course/to_review', _.bind(function(data) {
+        if (data.course_id) {
+          this.switchToCourse(data.course_id);
+        }
+      }, this));
+    },
+
+    switchToCourse: function(nextCourseId) {
+      // Re-render ourselves with the new course
+      this.initWithCourseId(nextCourseId);
+      this.render().show();  // TODO(david): Don't hide & show the backdrop
     }
   });
 

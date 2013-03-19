@@ -136,14 +136,13 @@
   margin-left: -$modal-width / 2;
 
   .modal-header {
-    padding-bottom: 12px;
+    padding-bottom: 8px;  // TODO(david): Why do some course names take more room?
     padding-top: 14px;
   }
 
   .greeting {
     float: left;
     margin-right: 14px;
-    margin-top: 2px;
     font-weight: normal;
   }
 
@@ -167,5 +166,10 @@
     font-size: 18px;
     line-height: 20px;
     color: #555;
+  }
+
+  .cancel-review-modal {
+    color: #999;
+    float: left;
   }
 }

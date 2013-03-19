@@ -11,6 +11,7 @@ function($, _, _s, _bootstrap, term, _course, friend, util, user, _user_course,
 
   var profileUser = user.UserCollection.getFromCache(
     pageData.profileUserId.$oid);
+
   var currentUser;
   if (pageData.currentUserId) {
     currentUser = user.UserCollection.getFromCache(
@@ -142,13 +143,9 @@ function($, _, _s, _bootstrap, term, _course, friend, util, user, _user_course,
   // Possibly show a modal pop-up to prompt user to review course
   // XXX: also on query param
   if (window.pageData.courseIdToReview) {
-    var courseToReview = _course.CourseCollection.getFromCache(
-        window.pageData.courseIdToReview);
-    var reviewModalView = new _user_course.ReviewModalView({
-      courseModel: courseToReview,
-      userCourse: courseToReview.get('user_course')
-    }).render();
-    reviewModalView.show();
+    new _user_course.ReviewModalView({
+      courseId: window.pageData.courseIdToReview
+    }).render().show();
   }
 
   mixpanel.track('Impression: Profile page');
