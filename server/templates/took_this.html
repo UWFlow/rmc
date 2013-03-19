@@ -8,8 +8,7 @@ course? #}
     <a href="/">Connect with Facebook</a> to see which of your friends are taking
     this course!
   </p>
-<% } %>
-<% if (!num_friends_current && !num_friends_future && !num_friends_past) { %>
+<% } else if (!num_friends_current && !num_friends_future && !num_friends_past) { %>
   <p>
     None of your friends have taken this course.
   </p>
