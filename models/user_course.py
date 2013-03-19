@@ -1,3 +1,4 @@
+import datetime
 import itertools
 
 import mongoengine as me
@@ -195,6 +196,19 @@ class UserCourse(me.Document):
         return UserCourse.objects(course_id=course_id,
                 course_review__comment_date__exists=True)
 
+    def select_for_review(self, current_user):
+        """Mark this course as having been selected for the given user."""
+        # Don't mark at all if admin user spoofing
+        if current_user.id != self.user_id: return
+
+        current_user.last_prompted_for_review = datetime.datetime.now()
+        # TODO(david): Is there a way to auto-save changed models at end of
+        #     request?
+        current_user.save()
+
+        self.review_prompted = True
+        self.save()
+
     # TODO(david): This would be a good function to unit test
     @classmethod
     def select_course_to_review(cls, user_courses):
@@ -216,6 +230,7 @@ class UserCourse(me.Document):
             if not user_course.reviewable: return False
 
             # Filter out courses that we've prompted before
+            # TODO(david): Just weigh such courses less instead of fitler out
             if user_course.review_prompted: return False
 
             # Filter out courses that user has written a course review

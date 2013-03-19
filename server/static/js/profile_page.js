@@ -2,7 +2,7 @@ require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
 'raffle_unlock', 'schedule', 'sign_in'],
-function($, _, _s, _bootstrap, term, _course, friend, util, user, _user_course,
+function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
   _prof, _exam, _raffle_unlock, _schedule, _sign_in) {
 
   _course.CourseCollection.addToCache(pageData.courseObjs);
@@ -19,7 +19,7 @@ function($, _, _s, _bootstrap, term, _course, friend, util, user, _user_course,
   }
 
   // Show the add schedule pop-up on a hash URL
-  var showScheduleModal = !!util.getQueryParam('import-schedule');
+  var showScheduleModal = !!_util.getQueryParam('import-schedule');
 
   // For demo account, cancel some AJAX calls on this page and pop-up a log-in
   // dialog
@@ -141,11 +141,13 @@ function($, _, _s, _bootstrap, term, _course, friend, util, user, _user_course,
   }
 
   // Possibly show a modal pop-up to prompt user to review course
-  // XXX: also on query param
-  if (window.pageData.courseIdToReview) {
-    new _user_course.ReviewModalView({
-      courseId: window.pageData.courseIdToReview
-    }).render().show();
+  if (window.pageData.courseIdToReview || _util.getQueryParam('review_modal')) {
+    // TODO(david): This should be encapsulated in a convenience fn in user_course.js
+    var courseId = window.pageData.courseIdToReview;
+    var reviewModal = new _user_course.ReviewModalView({ courseId: courseId });
+    if (courseId) {
+      reviewModal.render().show();
+    }
   }
 
   mixpanel.track('Impression: Profile page');

@@ -325,12 +325,15 @@ def render_profile_page(profile_user_id, current_user=None):
 
     # Set the course to prompt the user to review if it's time
     course_id_to_review = None
-    if own_profile and True:  # TODO
+    if own_profile and profile_user.should_prompt_review():
         profile_user_courses = filter(lambda uc: uc.user_id == profile_user.id,
                 user_course_list)
         uc_to_review = m.UserCourse.select_course_to_review(
                 profile_user_courses)
         course_id_to_review = uc_to_review and uc_to_review.course_id
+
+        if uc_to_review:
+            uc_to_review.select_for_review(current_user)
 
     # NOTE: This implictly requires that the courses on the schedule are on the
     # transcript, since these course objects are needed by the schedule  on the

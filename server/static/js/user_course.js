@@ -585,7 +585,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     initialize: function(options) {
       this.template = _.template($('#review-modal-tpl').html());
 
-      this.initWithCourseId(options.courseId);
+      if (options.courseId) {
+        this.initWithCourseId(options.courseId);
+      } else {
+        this.showNextCourse();
+      }
 
       this.$el.on('show', '.modal', this.onModalShow)
               .on('hide', '.modal', this.onModalHide);
@@ -637,9 +641,12 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
     onReviewAnotherClick: function() {
       this.hide();
+      this.showNextCourse();
+    },
 
+    showNextCourse: function() {
       // Fetch from API another course
-      $.getJSON('/api/course/to_review', _.bind(function(data) {
+      $.getJSON('/api/user/course/to_review', _.bind(function(data) {
         if (data.course_id) {
           this.switchToCourse(data.course_id);
         }
