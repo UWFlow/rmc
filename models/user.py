@@ -118,6 +118,7 @@ class User(me.Document):
     sent_raffle_end_notifier_email = me.BooleanField(default=False)
     sent_schedule_sharing_notifier_email = me.BooleanField(default=False)
     sent_course_enrollment_feb_8_email = me.BooleanField(default=False)
+    sent_referral_contest_email = me.BooleanField(default=False)
 
     email_unsubscribed = me.BooleanField(default=False)
 
