@@ -74,6 +74,4 @@ class Term(me.Document):
 
     @classmethod
     def is_shortlist_term(cls, term_id):
-        if term_id == Term.SHORTLIST_TERM_ID:
-            return True
-        return False
+        return term_id == Term.SHORTLIST_TERM_ID

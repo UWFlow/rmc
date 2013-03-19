@@ -53,6 +53,12 @@
   white-space: nowrap;
 }
 
+// See http://stackoverflow.com/a/12090055
+.stop-scrolling {
+  height: 100%;
+  overflow: hidden;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Overrides
 
@@ -63,6 +69,11 @@
 
 .navbar-search .search-query {
   line-height: 17px;
+}
+
+// To get Bootstrap tooltip on top of Bootstrap modal
+.tooltip {
+    z-index: 2000 !important;
 }
 
 .tooltip-inner {

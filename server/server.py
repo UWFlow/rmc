@@ -185,12 +185,6 @@ def demo_profile():
 def profile_page(profile_user_id):
     return profile.render_profile_page(profile_user_id)
 
-@app.route('/profile', defaults={'profile_user_id': None})
-@app.route('/profile/<string:profile_user_id>')
-@view_helpers.login_required
-def profile_page(profile_user_id):
-    return profile.render_profile_page(profile_user_id)
-
 @app.route('/schedule', defaults={'profile_user_id': None})
 @app.route('/schedule/<string:profile_user_id>')
 def schedule_page(profile_user_id):
@@ -245,9 +239,10 @@ def course_page(course_id):
 
     current_user = view_helpers.get_current_user()
 
-    course_dict_list, user_course_dict_list = m.Course.get_course_and_user_course_dicts(
-            [course], current_user, include_all_users=True,
-            include_friends=True, full_user_courses=True)
+    course_dict_list, user_course_dict_list, user_course_list = (
+            m.Course.get_course_and_user_course_dicts(
+                [course], current_user, include_all_users=True,
+                include_friends=True, full_user_courses=True))
 
     professor_dict_list = m.Professor.get_full_professors_for_course(
             course, current_user)
@@ -725,8 +720,10 @@ def search_courses():
 
     has_more = len(limited_courses) == count
 
-    course_dict_list, user_course_dict_list = m.Course.get_course_and_user_course_dicts(
-            limited_courses, current_user, include_friends=True, full_user_courses=False)
+    course_dict_list, user_course_dict_list, user_course_list = (
+            m.Course.get_course_and_user_course_dicts(
+                limited_courses, current_user, include_friends=True,
+                full_user_courses=False))
     professor_dict_list = m.Professor.get_reduced_professors_for_courses(
             limited_courses)
 
@@ -1099,7 +1096,7 @@ def user_course():
         # returns a 400
         raise exceptions.ImATeapot('No course_id or term_id set')
 
-    if term_id > util.get_current_term_id():
+    if not m.UserCourse.can_review(term_id):
         logging.warning("%s attempted to rate %s in future/shortlist term %s"
                 % (user.id, course_id, term_id))
         raise exceptions.ImATeapot('Can\'t review a course in the future or shortlist')
@@ -1216,6 +1213,16 @@ def user_course_share():
         'points_gained': points_gained,
     })
 
+@app.route('/api/user/course/to_review', methods=['GET'])
+@view_helpers.login_required
+def next_course_to_review():
+    current_user = view_helpers.get_current_user()
+    uc = current_user.next_course_to_review() if current_user else None
+    if not uc:
+        return util.json_dumps({})
+
+    uc.select_for_review(current_user)
+    return util.json_dumps(uc.to_dict())
 
 @app.route('/api/invite_friend', methods=['POST'])
 @view_helpers.login_required
@@ -1341,5 +1348,5 @@ if __name__ == '__main__':
         ]
     })
 
-    #toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
+    toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
     app.run()

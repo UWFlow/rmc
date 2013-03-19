@@ -17,6 +17,8 @@ from rmc.shared import facebook
 from rmc.shared import rmclogger
 from rmc.shared import util
 
+PROMPT_TO_REVIEW_DELAY_DAYS = 60
+
 class User(me.Document):
 
     class JoinSource(object):
@@ -135,6 +137,8 @@ class User(me.Document):
 
     # API key that grants user to login_required APIs
     api_key = me.StringField()
+
+    last_prompted_for_review = me.DateTimeField(default=datetime.datetime.min)
 
     @property
     def name(self):
@@ -441,6 +445,16 @@ class User(me.Document):
         self.api_key = base64.b64encode(raw_api_key)
         self.save()
         return self.api_key
+
+    def next_course_to_review(self):
+        user_courses = _user_course.UserCourse.objects(user_id=self.id)
+        return _user_course.UserCourse.select_course_to_review(user_courses)
+
+    def should_prompt_review(self):
+        now = datetime.datetime.now()
+        elapsed = min(now - self.last_prompted_for_review,
+                now - self.join_date)
+        return elapsed.days > PROMPT_TO_REVIEW_DELAY_DAYS
 
     def __repr__(self):
         return "<User: %s>" % self.name.encode('utf-8')

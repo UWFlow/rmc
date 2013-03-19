@@ -206,8 +206,9 @@ def render_profile_page(profile_user_id, current_user=None):
         professor_dicts[professor_obj['id']] = professor_obj
 
     # Convert courses to dicts
-    course_dict_list, user_course_dict_list = m.Course.get_course_and_user_course_dicts(
-        transcript_courses, current_user, include_friends=own_profile)
+    course_dict_list, user_course_dict_list, user_course_list = (
+            m.Course.get_course_and_user_course_dicts(
+                transcript_courses, current_user, include_friends=own_profile))
     course_dicts = {}
     for course_dict in course_dict_list:
         course_dicts[course_dict['id']] = course_dict
@@ -253,7 +254,6 @@ def render_profile_page(profile_user_id, current_user=None):
 
     for course in friend_courses:
         course_dicts[course.id] = course.to_dict()
-
 
     def filter_course_ids(course_ids):
         return [course_id for course_id in course_ids
@@ -330,6 +330,18 @@ def render_profile_page(profile_user_id, current_user=None):
     if exam_objs:
         exam_updated_date = exam_objs[0].id.generation_time
 
+    # Set the course to prompt the user to review if it's time
+    course_id_to_review = None
+    if own_profile and profile_user.should_prompt_review():
+        profile_user_courses = filter(lambda uc: uc.user_id == profile_user.id,
+                user_course_list)
+        uc_to_review = m.UserCourse.select_course_to_review(
+                profile_user_courses)
+        course_id_to_review = uc_to_review and uc_to_review.course_id
+
+        if uc_to_review:
+            uc_to_review.select_for_review(current_user)
+
     # NOTE: This implictly requires that the courses on the schedule are on the
     # transcript, since these course objects are needed by the schedule  on the
     # frontend. This should be the case since when we add a schedule item, a
@@ -367,5 +379,7 @@ def render_profile_page(profile_user_id, current_user=None):
         schedule_item_objs=schedule_item_dicts,
         has_shortlisted=current_user.has_shortlisted,
         show_import_schedule=show_import_schedule,
-        show_import_schedule_button=own_profile and (not current_user.has_schedule),
+        show_import_schedule_button=own_profile and (not
+                current_user.has_schedule),
+        course_id_to_review=course_id_to_review,
     )

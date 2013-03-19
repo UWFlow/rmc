@@ -1,3 +1,4 @@
+import datetime
 import itertools
 
 import mongoengine as me
@@ -7,6 +8,7 @@ import points as _points
 import professor
 import rating
 import review
+import rmc.shared.util as util
 import term
 
 
@@ -92,6 +94,9 @@ class UserCourse(me.Document):
     course_review = me.EmbeddedDocumentField(review.CourseReview, default=review.CourseReview())
     professor_review = me.EmbeddedDocumentField(review.ProfessorReview, default=review.ProfessorReview())
 
+    # Whether we've prompted the user to review this course before
+    review_prompted = me.BooleanField(default=False)
+
     DEFAULT_TO_DICT_FIELDS = [
         'id',
         'user_id',
@@ -114,6 +119,15 @@ class UserCourse(me.Document):
     @property
     def term_name(self):
         return term.Term.name_from_id(self.term_id)
+
+    @staticmethod
+    def can_review(term_id):
+        return (not term.Term.is_shortlist_term(term_id) and
+                term_id <= util.get_current_term_id())
+
+    @property
+    def reviewable(self):
+        return UserCourse.can_review(self.term_id)
 
     @property
     def has_reviewed(self):
@@ -173,6 +187,65 @@ class UserCourse(me.Document):
             cur_professor.save()
 
         super(UserCourse, self).save(*args, **kwargs)
+
+    def __repr__(self):
+        return "<UserCourse: %s, %s>" % (self.user_id, self.course_id)
+
+    @classmethod
+    def num_course_reviews(cls, course_id):
+        return UserCourse.objects(course_id=course_id,
+                course_review__comment_date__exists=True)
+
+    def select_for_review(self, current_user):
+        """Mark this course as having been selected for the given user."""
+        # Don't mark at all if admin user spoofing
+        if current_user.id != self.user_id: return
+
+        current_user.last_prompted_for_review = datetime.datetime.now()
+        # TODO(david): Is there a way to auto-save changed models at end of
+        #     request?
+        current_user.save()
+
+        self.review_prompted = True
+        self.save()
+
+    # TODO(david): This would be a good function to unit test
+    @classmethod
+    def select_course_to_review(cls, user_courses):
+        """Selects the optimal next course out of a given list to review.
+
+        The algorithm works as follows:
+
+        Filter courses that...
+            - the user can review
+            - we have never prompted the user to review before
+            - the user has not written a course review for
+
+        Then sort by...
+            - least # of other reviews written
+            - user has taken course recently
+        """
+        def can_select(user_course):
+            # Filter out courses user can't review yet (eg. shortlist, future)
+            if not user_course.reviewable: return False
+
+            # Filter out courses that we've prompted before
+            # TODO(david): Just weigh such courses less instead of fitler out
+            if user_course.review_prompted: return False
+
+            # Filter out courses that user has written a course review
+            if user_course.course_review.comment_date: return False
+
+            return True
+
+        user_courses = filter(can_select, user_courses)
+
+        # Sort by least reviews we have for that course
+        user_courses.sort(key=lambda uc: cls.num_course_reviews(uc.course_id))
+
+        # Finally, pick the most recent course of the bunch
+        user_courses.sort(key=lambda uc: uc.term_id, reverse=True)
+        return user_courses[0] if user_courses else None
 
 
 # TODO(david): Should be static method of ProfCourse

@@ -333,6 +333,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         initSelection : function (element, callback) {
           // Select2 is weird
         },
+        formatNoMatches: function(term) {
+          return 'Type to add new prof...';
+        },
         allowClear: true,
         data: this.courseModel.get('professors')
           .chain()
@@ -464,7 +467,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       'focus .comments': 'onFocus',
       'click .save-review': 'onSave',
       'click .share-review': 'onShare',
-      'keyup .comments': 'allowSave',
+      'change .comments': 'allowSave',
       'click .privacy-tip .dropdown-menu li': 'onPrivacySelect'
     },
 
@@ -576,10 +579,137 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     }
   });
 
+  var ReviewModalView = RmcBackbone.View.extend({
+    el: '#review-modal-container',
+
+    initialize: function(options) {
+      this.template = _.template($('#review-modal-tpl').html());
+
+      if (options.courseId) {
+        this.initWithCourseId(options.courseId);
+      } else {
+        this.showNextCourse();
+      }
+
+      this.$el.on('show', '.modal', this.onModalShow)
+              .on('hide', '.modal', this.onModalHide);
+    },
+
+    initWithCourseId: function(courseId) {
+      this.courseId = courseId;
+
+      this.courseModel = _course.CourseCollection.getFromCache(courseId);
+      this.userCourse = this.courseModel.get('user_course');
+      this.userCourseView = new UserCourseView({
+        userCourse: this.userCourse,
+        courseModel: this.courseModel
+      });
+      this.reviewStarsView = new ReviewStarsView({
+        userCourse: this.userCourse
+      });
+    },
+
+    render: function() {
+      this.$el.html(this.template({
+        user: _user.UserCollection.getFromCache(
+                window.pageData.profileUserId.$oid),
+        course: this.courseModel,
+        userCourse: this.userCourse
+      }));
+      this.$('.user-course-placeholder').replaceWith(
+          this.userCourseView.render().el);
+      this.$('.review-stars-placeholder').replaceWith(
+          this.reviewStarsView.render().el);
+
+      mixpanel.track('Prompt review course', {
+        course_id: this.courseModel.get('id')
+      });
+      mixpanel.people.increment({'Prompted for review': 1});
+
+      return this;
+    },
+
+    show: function() {
+      this.$('.review-modal').modal('show');
+    },
+
+    hide: function() {
+      this.$('.review-modal').modal('hide');
+    },
+
+    events: {
+      'click .btn-review-another': 'onReviewAnotherClick'
+    },
+
+    onModalShow: function() {
+      $('body').addClass('stop-scrolling');
+    },
+
+    onModalHide: function() {
+      $('body').removeClass('stop-scrolling');
+    },
+
+    onReviewAnotherClick: function() {
+      this.hide();
+      this.showNextCourse();
+    },
+
+    showNextCourse: function() {
+      // Fetch from API another course
+      $.getJSON('/api/user/course/to_review', _.bind(function(data) {
+        if (data.course_id) {
+          this.switchToCourse(data.course_id);
+        }
+      }, this));
+    },
+
+    switchToCourse: function(nextCourseId) {
+      // Re-render ourselves with the new course
+      this.initWithCourseId(nextCourseId);
+      this.render().show();  // TODO(david): Don't hide & show the backdrop
+    }
+  });
+
+  var ReviewStarsView = RmcBackbone.View.extend({
+    className: 'review-stars',
+
+    initialize: function(options) {
+      this.template = _.template($('#review-stars-tpl').html());
+      this.userCourse = options.userCourse;
+
+      this.userCourse.on('sync', this.onSaveUserReview, this);
+    },
+
+    render: function() {
+      this.$el.html(this.template({ user_course: this.userCourse }));
+      window.setTimeout(_.bind(function() {
+        this.$('[title]').tooltip();
+      }, this), 2000);
+      return this;
+    },
+
+    onSaveUserReview: function() {
+      // TODO(david): Dedupe this code
+      if (this.userCourse.hasRatedCourse()) {
+        this.$('.rated-course').addClass('done');
+      }
+      if (this.userCourse.hasReviewedCourse()) {
+        this.$('.reviewed-course').addClass('done');
+      }
+      if (this.userCourse.hasRatedProf()) {
+        this.$('.rated-prof').addClass('done');
+      }
+      if (this.userCourse.hasReviewedProf()) {
+        this.$('.reviewed-prof').addClass('done');
+      }
+    }
+  });
 
   return {
     UserCourse: UserCourse,
     UserCourses: UserCourses,
-    UserCourseView: UserCourseView
+    UserCourseView: UserCourseView,
+    ReviewModalView: ReviewModalView,
+    ReviewStarsView: ReviewStarsView
   };
 });
