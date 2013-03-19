@@ -143,8 +143,10 @@ def index():
     # TODO(mack): checking for logout flag probably no longer necessary since
     # we are now clearing cookie before redirecting to home page, so
     # get_current_user() would return None
-    logout = bool(flask.request.values.get('logout'))
-    if not logout and view_helpers.get_current_user():
+    request = flask.request
+    logout = bool(request.values.get('logout'))
+    referrer_id = request.values.get('meow') or request.values.get('referrer')
+    if not logout and not referrer_id and view_helpers.get_current_user():
         return flask.make_response(flask.redirect('profile'))
 
     rmclogger.log_event(
