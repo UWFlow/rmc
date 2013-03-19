@@ -81,18 +81,20 @@
 {% call macros.us_template('review-modal-tpl') %}
 <div class="review-modal modal hide-initial fade">
   <div class="modal-header clearfix">
-    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
     <h3 class="greeting"><icon class="icon-pencil"></icon>&nbsp;
-      Hey <%- user.get('first_name') %>! What did you think of
+      Hey <%- user.get('first_name') %>! What did you think of...
     </h3>
-    <div class="course-code"><%- course.get('code') %></div>
-    <div class="course-name"><%- course.get('name') %></div>
+    <div class="course-heading clearfix">
+      <div class="course-code"><%- course.get('code') %></div>
+      <div class="course-name"><%- course.get('name') %></div>
+      <div class="review-stars-placeholder"></div>
+    </div>
   </div>
   <div class="modal-body">
     <div class="user-course-placeholder"></div>
   </div>
   <div class="modal-footer">
-    <a class="cancel-review-modal" data-dismiss="modal">Cancel</a>
+    <a class="cancel-review-modal" data-dismiss="modal">Done reviewing</a>
     <button class="btn btn-primary btn-review-another">
       <i class="icon-arrow-right"></i> Review another course
     </button>
@@ -100,3 +102,21 @@
 </div>
 {% endcall %}
 <div id="review-modal-container"></div>
+
+{% call macros.us_template('review-stars-tpl') %}
+{# Using HTML entities instead of CSS pseudo-elements because
+transitions are broken for them on Chrome #}
+<span title="Rate this course to earn this star." class="badge-holder">
+  <i class="rated-course <%- user_course.hasRatedCourse() ? 'done' : '' %>">&#xf005;</i>
+</span>
+<span title="Review this course to earn this star." class="badge-holder">
+  <i class="reviewed-course <%- user_course.hasReviewedCourse() ? 'done' : '' %>">&#xf005;</i>
+</span>
+<br>
+<span title="Rate the prof to earn this star." class="badge-holder">
+  <i class="rated-prof <%- user_course.hasRatedProf() ? 'done' : '' %>">&#xf005;</i>
+</span>
+<span title="Review the prof to earn this star." class="badge-holder">
+  <i class="reviewed-prof <%- user_course.hasReviewedProf() ? 'done' : '' %>">&#xf005;</i>
+</span>
+{% endcall %}

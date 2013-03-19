@@ -604,6 +604,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         userCourse: this.userCourse,
         courseModel: this.courseModel
       });
+      this.reviewStarsView = new ReviewStarsView({
+        userCourse: this.userCourse
+      });
     },
 
     render: function() {
@@ -615,6 +618,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       }));
       this.$('.user-course-placeholder').replaceWith(
           this.userCourseView.render().el);
+      this.$('.review-stars-placeholder').replaceWith(
+          this.reviewStarsView.render().el);
 
       mixpanel.track('Prompt review course', {
         course_id: this.courseModel.get('id')
@@ -665,10 +670,46 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     }
   });
 
+  var ReviewStarsView = RmcBackbone.View.extend({
+    className: 'review-stars',
+
+    initialize: function(options) {
+      this.template = _.template($('#review-stars-tpl').html());
+      this.userCourse = options.userCourse;
+
+      this.userCourse.on('sync', this.onSaveUserReview, this);
+    },
+
+    render: function() {
+      this.$el.html(this.template({ user_course: this.userCourse }));
+      window.setTimeout(_.bind(function() {
+        this.$('[title]').tooltip();
+      }, this), 2000);
+      return this;
+    },
+
+    onSaveUserReview: function() {
+      // TODO(david): Dedupe this code
+      if (this.userCourse.hasRatedCourse()) {
+        this.$('.rated-course').addClass('done');
+      }
+      if (this.userCourse.hasReviewedCourse()) {
+        this.$('.reviewed-course').addClass('done');
+      }
+      if (this.userCourse.hasRatedProf()) {
+        this.$('.rated-prof').addClass('done');
+      }
+      if (this.userCourse.hasReviewedProf()) {
+        this.$('.reviewed-prof').addClass('done');
+      }
+    }
+  });
+
   return {
     UserCourse: UserCourse,
     UserCourses: UserCourses,
     UserCourseView: UserCourseView,
-    ReviewModalView: ReviewModalView
+    ReviewModalView: ReviewModalView,
+    ReviewStarsView: ReviewStarsView
   };
 });

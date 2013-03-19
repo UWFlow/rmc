@@ -71,6 +71,11 @@
   line-height: 17px;
 }
 
+// To get Bootstrap tooltip on top of Bootstrap modal
+.tooltip {
+    z-index: 2000 !important;
+}
+
 .tooltip-inner {
   line-height: 18px;
   font-size: 11px;

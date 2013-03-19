@@ -141,9 +141,14 @@
   }
 
   .greeting {
-    float: left;
     margin-right: 14px;
-    font-weight: normal;
+  }
+
+  .course-heading {
+    clear: left;
+    margin-top: 10px;
+    margin-left: 27px;
+    min-height: 40px;
   }
 
   // TODO(david): Copy-pasted from course.scss
@@ -160,7 +165,7 @@
   .course-name {
     float: left;
     font-weight: lighter;
-    width: 270px;  // TODO(david): Dynamically change width on course code width
+    width: 300px;
     position: relative;
     top: -5px;
     font-size: 18px;
@@ -168,8 +173,71 @@
     color: #555;
   }
 
+  .review-stars {
+    right: -3px;
+    position: absolute;
+    margin-top: -15px;
+  }
+
   .cancel-review-modal {
     color: #999;
     float: left;
   }
 }
+
+.review-stars {
+  width: 66px;
+  display: inline-block;
+  text-align: left; // TODO(david): Figure out why text-align: center screws alignment
+  height: 60px;
+  font-size: 24px;
+  @include box-sizing(border-box);
+  // TODO(david): Show a sash/large ribbon after all stars filled in, or
+  //     always show
+
+  .badge-holder {
+    display: inline-block;
+    width: 16px;
+    margin-top: 7px;
+    margin-right: 7px;
+
+    &:after {
+      content: "\f006";
+      font-style: normal;
+      color: rgba(100, 100, 100, 0.2);
+      font-family: FontAwesome;
+    }
+
+    i {
+        font-style: normal;
+        color: $yellow;
+        font-family: FontAwesome;
+        position: absolute;
+        opacity: 0.0;
+        @include transform(scale(10.0));
+
+        // Hack for bootstrap tooltip having too large hover target
+        z-index: -1;
+
+        // Hack for top of star being cut off at large font sizes
+        padding-top: 10px;
+        margin-top: -9px;
+
+        // Gradient text from http://css-tricks.com/snippets/css/gradient-text/
+        background: -webkit-gradient(linear, left top, right bottom, from(#FEFE57), to(#FAD24F));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+      &.done {
+        display: inline-block;
+        opacity: 1.0;
+        @include transform(scale(1.0));
+        @include transition(transform 0.3s ease-out,
+                            opacity 1s ease-out,
+                            text-shadow 1s ease-out);
+        z-index: 1;
+      }
+    }
+  }
+}
+

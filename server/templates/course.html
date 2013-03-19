@@ -28,26 +28,8 @@
     <div class="rating-box-placeholder"></div>
     <div class="voting-placeholder"></div>
     <div class="sample-friends-placeholder"></div>
-
-    {# TODO(david): Separate this out into its own view+model #}
+    <div class="review-stars-placeholder"></div>
     <% if (profile_user_course && profile_user_course.hasTaken()) { %>
-      <div class="sash">
-        {# Using HTML entities instead of CSS pseudo-elements because
-        transitions are broken for them on Chrome #}
-        <span title="Rate this course to earn this star." class="badge-holder">
-          <i class="rated-course <%- profile_user_course.hasRatedCourse() ? 'done' : '' %>">&#xf005;</i>
-        </span>
-        <span title="Review this course to earn this star." class="badge-holder">
-          <i class="reviewed-course <%- profile_user_course.hasReviewedCourse() ? 'done' : '' %>">&#xf005;</i>
-        </span>
-        <br>
-        <span title="Rate the prof to earn this star." class="badge-holder">
-          <i class="rated-prof <%- profile_user_course.hasRatedProf() ? 'done' : '' %>">&#xf005;</i>
-        </span>
-        <span title="Review the prof to earn this star." class="badge-holder">
-          <i class="reviewed-prof <%- profile_user_course.hasReviewedProf() ? 'done' : '' %>">&#xf005;</i>
-        </span>
-      </div>
     <% } %>
 
     {# TODO(david): This is really dumb. Fix in a better way. #}

@@ -145,68 +145,13 @@ $inner-padding: 18px;
       color: #555;
     }
 
-    .sash {
+    .review-stars {
       position: absolute;
       right: 257px;
-      width: 66px;
       margin-top: -22px;
       display: inline-block;
-      text-align: left; // TODO(david): Figure out why text-align: center screws alignment
       padding-left: 8px;
-      height: 60px;
       padding-top: 2px;
-      font-size: 24px;
-      @include box-sizing(border-box);
-      // TODO(david): Show a sash/large ribbon after all stars filled in, or
-      //     always show
-
-      .badge-holder {
-        display: inline-block;
-        width: 16px;
-        margin-top: 7px;
-        margin-right: 7px;
-
-        &:after {
-          content: "\f006";
-          font-style: normal;
-          color: rgba(100, 100, 100, 0.2);
-          font-family: FontAwesome;
-        }
-
-        i {
-            font-style: normal;
-            color: $yellow;
-            font-family: FontAwesome;
-            position: absolute;
-            opacity: 0.0;
-            @include transform(scale(10.0));
-
-            // Hack for bootstrap tooltip having too large hover target
-            z-index: -1;
-
-            // Hack for top of star being cut off at large font sizes
-            padding-top: 10px;
-            margin-top: -9px;
-
-            // Gradient text from http://css-tricks.com/snippets/css/gradient-text/
-            background: -webkit-gradient(linear, left top, right bottom, from(#FEFE57), to(#FAD24F));
-            //background: -webkit-gradient(linear, left top, right bottom, from(lighten($flowBlue, 10%)), to(darken($flowBlue, 5%)));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-
-
-          &.done {
-            display: inline-block;
-            opacity: 1.0;
-            @include transform(scale(1.0));
-            @include transition(transform 0.3s ease-out,
-                                opacity 1s ease-out,
-                                text-shadow 1s ease-out);
-            z-index: 1;
-          }
-        }
-      }
-
     }
 
     .rating-box {

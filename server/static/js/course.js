@@ -262,54 +262,17 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       this.profileUserCourse = this.courseModel.get('profile_user_course');
       this.otherProfile = pageData.ownProfile === false;
 
-      if (this.userCourse) {
-        // TODO(mack): ensure that save actually is save of review
-        this.userCourse.bind('sync', _.bind(function(model, response, options) {
-          this.onSaveUserReview();
-        }, this));
+      if (this.userCourse && this.profileUserCourse &&
+          this.profileUserCourse.hasTaken()) {
+        var _user_course = require('user_course');
+        this.reviewStarsView = new _user_course.ReviewStarsView({
+          userCourse: this.userCourse
+        });
       }
 
       this.canShowAddReview =
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
       this.template = _.template($('#course-tpl').html());
-    },
-
-    onSaveUserReview: function() {
-      // TODO(david): Dedupe this code
-      if (this.userCourse.hasRatedCourse()) {
-        this.$('.sash .rated-course').addClass('done');
-      }
-      if (this.userCourse.hasReviewedCourse()) {
-        this.$('.sash .reviewed-course').addClass('done');
-      }
-      if (this.userCourse.hasRatedProf()) {
-        this.$('.sash .rated-prof').addClass('done');
-      }
-      if (this.userCourse.hasReviewedProf()) {
-        this.$('.sash .reviewed-prof').addClass('done');
-      }
-    },
-
-    getReviewLevel: function(userCourse) {
-      var count = 0;
-
-      if (!userCourse) {
-        return count;
-      }
-
-      var countReview = function(review) {
-        if (review.get('comment')) {
-          count += 1;
-        }
-        if (review.get('ratings').hasRated()) {
-          count += 1;
-        }
-      };
-
-      countReview(userCourse.get('course_review'));
-      countReview(userCourse.get('professor_review'));
-
-      return count;
     },
 
     updateAddCourseTooltip: function() {
@@ -343,11 +306,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         course: this.courseModel.toJSON(),
         user_course: this.userCourse,
         //star_uc: window.pageData.ownProfile ? this.userCourse : this.profileUserCourse
-        user_course_review_level:
-          this.userCourse && this.getReviewLevel(this.userCourse),
         profile_user_course: this.profileUserCourse,
-        profile_user_course_review_level:
-          this.profileUserCourse && this.getReviewLevel(this.profileUserCourse),
         other_profile: this.otherProfile,
         mode: this.courseModel.getInteractMode()
       }));
@@ -401,6 +360,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         this.resizeBounded = true;
       }
       _.defer(_.bind(this.onResize, this));
+
+      if (this.reviewStarsView) {
+        this.$('.review-stars-placeholder').replaceWith(
+            this.reviewStarsView.render().el);
+      }
 
       return this;
     },
