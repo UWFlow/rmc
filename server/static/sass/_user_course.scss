@@ -134,6 +134,7 @@
   left: 50%;
   width: $modal-width;
   margin-left: -$modal-width / 2;
+  overflow-x: hidden;
 
   .modal-header {
     padding-bottom: 8px;  // TODO(david): Why do some course names take more room?
