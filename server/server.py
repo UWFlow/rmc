@@ -406,10 +406,6 @@ def login():
     user = m.User(**user_obj)
     user.save()
 
-    referer_user_id = req.form.get('referer_user_id')
-    if referer_user_id:
-        m.User.refer(referer_user_id, user.id)
-
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
         rmclogger.LOG_EVENT_LOGIN, {

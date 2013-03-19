@@ -147,14 +147,6 @@ function(_, _s) {
     return window.location.origin;
   };
 
-  var setRefererUserId = function(userId) {
-    $.cookie('referer_user_id', userId, { expires: 30, path: '/' });
-  };
-
-  var getRefererUserId = function() {
-    return $.cookie('referer_user_id');
-  };
-
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -168,8 +160,6 @@ function(_, _s) {
     userCourseTermIdComparator: userCourseTermIdComparator,
     truncatePreviewString: truncatePreviewString,
     getTimeDelta: getTimeDelta,
-    getSiteBaseUrl: getSiteBaseUrl,
-    setRefererUserId: setRefererUserId,
-    getRefererUserId: getRefererUserId
+    getSiteBaseUrl: getSiteBaseUrl
   };
 });
