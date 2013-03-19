@@ -11,13 +11,26 @@
 #referral-alert {
   $border-color: darken($successBorder, 5%);
 
+  background-image: url(/static/img/amazon-box.png);
+  background-repeat: no-repeat;
+  background-size: 408px 307px;
+
+  @media (min-width: 1200px) {
+    background-position: top right 20px;
+  }
+
+  @media (max-width: 1199px) {
+    background-position: top left 446px;
+  }
+
   .refer-heading {
     border-bottom: 1px solid $border-color;
-    font-size: 42px;
+    font-size: 38px;
+    display: inline-block;
   }
 
   .get-friends {
-    font-size: 32px;
+    font-size: 28px;
   }
 
   .referral-link-container {
@@ -28,13 +41,13 @@
       height: 36px;
       line-height: 21px;
       font-size: 21px;
-      width: 489px;
+      width: 435px;
     }
   }
 
   .prize-name {
     display: block;
-    font-size: 37px;
+    font-size: 38px;
     margin-top: 7px;
     font-weight: bold;
   }
