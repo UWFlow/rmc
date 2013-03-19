@@ -146,14 +146,16 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
   });
 
   // Possibly show a modal pop-up to prompt user to review course
-  if (window.pageData.courseIdToReview || _util.getQueryParam('review_modal')) {
-    // TODO(david): This should be encapsulated in a convenience fn in user_course.js
-    var courseId = window.pageData.courseIdToReview;
-    var reviewModal = new _user_course.ReviewModalView({ courseId: courseId });
-    if (courseId) {
-      reviewModal.render().show();
+  window.setTimeout(function() {
+    if (window.pageData.courseIdToReview || _util.getQueryParam('review_modal')) {
+      // TODO(david): This should be encapsulated in a convenience fn in user_course.js
+      var courseId = window.pageData.courseIdToReview;
+      var reviewModal = new _user_course.ReviewModalView({ courseId: courseId });
+      if (courseId) {
+        reviewModal.render().show();
+      }
     }
-  }
+  }, 1000);
 
   mixpanel.track('Impression: Profile page');
 
