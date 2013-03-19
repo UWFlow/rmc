@@ -146,6 +146,7 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
     }
 
     $(document.body).on('pageScriptComplete', function(evt) {
+      $('[rel="tooltip"]').tooltip();
       $(document.body).data('rendered', true);
     });
   };

@@ -384,6 +384,7 @@ def login():
     middle_name = req.form.get('middle_name')
     last_name = req.form.get('last_name')
     email = req.form.get('email')
+    referrer_id = req.form.get('referrer_id')
 
     now = datetime.now()
     user_obj = {
@@ -398,6 +399,7 @@ def login():
 #TODO(Sandy): Count visits properly
         'join_date': now,
         'join_source': m.User.JoinSource.FACEBOOK,
+        'referrer_id': referrer_id,
         'num_visits': 1,
         'last_visited': now,
         'friend_fbids': friend_fbids,
@@ -411,6 +413,7 @@ def login():
         rmclogger.LOG_EVENT_LOGIN, {
             'new_user': True,
             'user_id': user.id,
+            'referrer_id': referrer_id,
         },
     )
 

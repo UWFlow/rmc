@@ -1,6 +1,6 @@
 define(
-['ext/jquery', 'ext/underscore', 'ext/cookie'],
-function($, _, __) {
+['ext/jquery', 'ext/underscore', 'ext/cookie', 'util'],
+function($, _, __, _util) {
 
   var fbApiInit = false;
   var fbAppId;
@@ -66,6 +66,8 @@ function($, _, __) {
     // a way of verifying the request. Maybe that's what Facebook Signed
     // Requests are for? There are two corresponding server-side FIXMEs for this
     params.fb_signed_request = authResp.signedRequest;
+    var referrerId = $.cookie('referrer_id');
+    params.referrer_id = referrerId;
     // TODO(Sandy): When switching over to Flask sessions be sure to remove
     // these old cookies
     $.cookie('fbid', authResp.userID, { expires: 365, path: '/' });
@@ -83,6 +85,11 @@ function($, _, __) {
       'FACEBOOK_CONNECT_' + String(source).toUpperCase()
     ]);
     mixpanel.track('Facebook Connect', { source: source });
+    if (referrerId) {
+      // This is not a fully accurate calculation of sign ups via referral
+      // link, but should be close.
+      mixpanel.track('Facebook Connect Referral ', { referrerId: referrerId });
+    }
 
     $.ajax('/login', {
       data: params,
@@ -157,16 +164,14 @@ function($, _, __) {
     });
   };
 
-  // TODO(Sandy): Don't hardcode this?
-  var dialogBaseUrl = 'http://uwflow.com';
   var logoPath = '/static/img/logo/flow_75x75.png';
 
   var showSendDialogProfile = function(cb) {
     FB.ui({
       method: 'send',
       name: 'Flow',
-      link: dialogBaseUrl,
-      picture: dialogBaseUrl + logoPath,
+      link: _util.getSiteBaseUrl() + '?meow=' + pageData.currentUserId.$oid,
+      picture: _util.getSiteBaseUrl() + logoPath,
       description: 'Plan your courses with friends in mind!'
     }, cb);
   };
@@ -181,7 +186,7 @@ function($, _, __) {
    *    - picture (optional)
    */
   var showFeedDialog = function(options) {
-    var picture = options.picture || dialogBaseUrl + logoPath;
+    var picture = options.picture || _util.getSiteBaseUrl() + logoPath;
     FB.ui({
       method: 'feed',
       link: options.link,

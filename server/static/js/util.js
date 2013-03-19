@@ -147,6 +147,10 @@ function(_, _s) {
     return window.location.origin;
   };
 
+  var getReferrerId = function() {
+    return getQueryParam('referrer') || getQueryParam('meow');
+  };
+
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -160,6 +164,8 @@ function(_, _s) {
     userCourseTermIdComparator: userCourseTermIdComparator,
     truncatePreviewString: truncatePreviewString,
     getTimeDelta: getTimeDelta,
-    getSiteBaseUrl: getSiteBaseUrl
+    getSiteBaseUrl: getSiteBaseUrl,
+    getReferrerId: getReferrerId
+
   };
 });
