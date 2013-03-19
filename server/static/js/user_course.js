@@ -616,6 +616,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.$('.user-course-placeholder').replaceWith(
           this.userCourseView.render().el);
 
+      mixpanel.track('Prompt review course', {
+        course_id: this.courseModel.get('id')
+      });
+      mixpanel.people.increment({'Prompted for review': 1});
+
       return this;
     },
 
