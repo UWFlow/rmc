@@ -630,7 +630,7 @@ def search_courses():
         sift.track('search', {
             '$user_id': str(current_user.id),
             '$user_email': current_user.email,
-            'keywords': str(keywords),
+            'keywords': unicode(keywords).encode('utf8'),
             'term': term,
             'name': sort_mode,
             'direction': direction,
