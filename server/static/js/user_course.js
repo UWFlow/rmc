@@ -532,13 +532,14 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.showShare();
       // Give UI feedback with toastr
       var msg = '';
+      var profName = this.userCourse.get('professor') ?
+          this.userCourse.get('professor').get('name') : 'professor';
+      var courseCode = this.userCourse.get('course') ?
+          this.userCourse.get('course').get('code') : 'course';
       if (this.reviewType === 'COURSE') {
-        msg = _s.sprintf('Comments on %s saved!',
-            this.userCourse.get('course').get('code'));
+        msg = _s.sprintf('Comments on %s saved!', courseCode);
       } else if (this.reviewType === 'PROFESSOR') {
-        msg = _s.sprintf('Comments on %s for %s saved!',
-            this.userCourse.get('professor').get('name'),
-            this.userCourse.get('course').get('code'));
+        msg = _s.sprintf('Comments on %s for %s saved!', profName, courseCode);
       }
       toastr.success(msg);
     },
