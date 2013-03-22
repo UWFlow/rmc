@@ -114,10 +114,14 @@ def count_user_joined_date(cmp_op):
             join_count += 1
     return join_count
 
-def users_joined_after(date=(datetime.now() - timedelta(hours=24))):
+def users_joined_after(date=None):
+    if date is None:
+        date = datetime.now() - timedelta(hours=24)
     return count_user_joined_date(date.__le__)
 
-def users_joined_before(date=(datetime.now() - timedelta(hours=24))):
+def users_joined_before(date=None):
+    if date is None:
+        date = datetime.now() - timedelta(hours=24)
     return count_user_joined_date(date.__ge__)
 
 def latest_reviews(n=5):
