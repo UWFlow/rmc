@@ -402,7 +402,10 @@ def login():
     }
     referrer_id = req.form.get('referrer_id')
     if referrer_id:
-        user_obj['referrer_id'] = referrer_id
+        try:
+            user_obj['referrer_id'] = bson.ObjectId(referrer_id)
+        except:
+            pass
 
     user = m.User(**user_obj)
     user.save()
