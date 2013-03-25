@@ -34,10 +34,11 @@ function(_facebook, $, _util, _sign_in, _cookie, _moment) {
 
   window.setTimeout(function() {
     $('#referral-contest').fadeIn(1000);
-  }, 500);
+  }, 1000);
 
+  var contestEnd = moment('2013-03-25 23:59:59 -0400', 'YYYY-MM-DD HH:mm:ss Z');
   window.setInterval(function() {
-    var duration = moment.duration(moment('2013-03-25 23:59:59 -0400').diff());
+    var duration = moment.duration(contestEnd.diff());
     $('#referral-contest')
       .find('.contest-hours').text(duration.hours()).end()
       .find('.contest-mins').text(duration.minutes()).end()
