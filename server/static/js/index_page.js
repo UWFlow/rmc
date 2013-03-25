@@ -36,7 +36,7 @@ function(_facebook, $, _util, _sign_in, _cookie, _moment) {
     $('#referral-contest').fadeIn(1000);
   }, 1000);
 
-  var contestEnd = moment('2013-03-25 23:59:59 -0400', 'YYYY-MM-DD HH:mm:ss Z');
+  var contestEnd = moment('2013-03-26 11:59:59 -0400', 'YYYY-MM-DD HH:mm:ss Z');
   window.setInterval(function() {
     var duration = moment.duration(contestEnd.diff());
     $('#referral-contest')
