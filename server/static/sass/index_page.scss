@@ -173,3 +173,43 @@ footer {
   margin-top: 5px;
   font-size: 12px;
 }
+
+#referral-contest {
+  $width: 750px;
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  width: $width;
+  margin-left: -$width / 2;
+  box-shadow: 0 0 40px rgba($flowBlue, 0.5);
+  padding-right: 0;
+
+  .icon-gift {
+    float: left;
+    font-size: 67px;
+    margin-top: 9px;
+    margin-right: 20px;
+  }
+
+  .contest-description {
+    font-size: 22px;
+    font-weight: 200;
+    display: inline-block;
+    border-bottom: 2px solid rgba(#468847, 0.8);
+    padding-bottom: 8px;
+    margin-bottom: 5px;
+  }
+
+  .contest-ending {
+    font-size: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    opacity: 0.8;
+    display: inline-block;
+
+    .contest-hours, .contest-mins, .contest-secs {
+      font-weight: bold;
+      color: #333;
+    }
+  }
+}
