@@ -115,11 +115,11 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
         }
       ));
 
-      _.defer(function() {
+      _.defer(_.bind(function() {
         this.$('.mutual-taking').tooltip({
           placement: 'in top'
         });
-      });
+      }, this));
 
       return this;
     }
