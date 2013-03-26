@@ -1,6 +1,7 @@
 define(
-['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course'],
-function(RmcBackbone, _, _course, jqSlide, _user_course) {
+['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course',
+'util'],
+function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {
@@ -49,7 +50,8 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
     },
 
     events: {
-      'click .term-name': 'toggleTermVisibility'
+      'click .term-name': 'toggleTermVisibility',
+      'expand': 'expandTerm'
     },
 
     // TODO(mack): remove duplicate with similar logic in CourseView
@@ -144,6 +146,36 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
       }
 
       this.template = _.template($('#profile-terms-tpl').html());
+    },
+
+    events: {
+      'mostlyFilledIn': 'scrollToNextCourseDelayed'
+    },
+
+    scrollToNextCourseDelayed: function(event, course) {
+      setTimeout(_.bind(this.scrollToNextCourse, this, event, course), 400);
+    },
+
+    scrollToNextCourse: function(event, course) {
+      // Get the list of courses (as displayed) after the triggering course
+      var courses = this.termCollection.reduce(function(list, term) {
+        return list.concat(term.get('courses').models);
+      }, []);
+      var remainingCourses = _.rest(courses, _.indexOf(courses, course) + 1);
+
+      // Scroll to the first non-filled-in course after this one
+      _.every(remainingCourses, function(remCourse) {
+        remUserCourse = remCourse.get('user_course');
+
+        if (!remUserCourse.isMostlyFilledIn()) {
+          var elementId = remUserCourse.get('id');
+          // Expand before we can scroll to it
+          $('#' + elementId).trigger('expand');
+          _util.scrollToElementId(elementId);
+          return false;
+        }
+        return true;
+      });
     },
 
     render: function() {

@@ -151,7 +151,11 @@ function(_, _s) {
     var scrollOffset = $('#' + id).offset().top;
     // Compensate for nav bar height
     var navBarOffset = $('#site-nav').height();
-    $('body').scrollTop(scrollOffset - navBarOffset);
+    $('body')
+      .animate({
+        scrollTop: scrollOffset - navBarOffset,
+        duration: 2000
+      });
   };
 
   return {

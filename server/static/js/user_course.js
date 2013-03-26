@@ -59,6 +59,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       courseReview.on('change:comment', _.bind(this.onCommentsChange, this, 'COURSE'));
       profReview.on('change:comment', _.bind(this.onCommentsChange, this, 'PROFESSOR'));
 
+      // Don't auto scroll because the user is probably editting their data
+      this.canAutoScroll = !this.isMostlyFilledIn();
+
       this.on('sync', _.bind(this.onSync, this));
     },
 
@@ -72,8 +75,19 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       ]);
     },
 
+    onDataChange: function() {
+      if (this.canAutoScroll && this.isMostlyFilledIn()) {
+        // Trigger an event on the CourseView
+        var elementId = this.get('id');
+        $('#' + elementId).trigger('mostlyFilledIn', this.get('course'));
+        // Only auto scroll once
+        this.canAutoScroll = false;
+      }
+    },
+
     onRatingsChange: function(ratingType) {
       this.save();
+      this.onDataChange();
 
       this.logToGA(ratingType, 'RATING');
       mixpanel.track('Reviewing: Save Ratings', {
@@ -86,6 +100,8 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     onCommentsChange: function(reviewType) {
       // TODO(david): Make this fn more consistent with onRatingsChange (which
       //     calls this.save() first. This doesn't because view calls save).
+      this.onDataChange();
+
       this.logToGA(reviewType, 'REVIEW');
       mixpanel.track('Reviewing: Save comments', {
         review_type: reviewType,
@@ -240,6 +256,31 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
     hasReviewedProf: function() {
       return this.get('professor_review').get('comment');
+    },
+
+    /**
+     *  Is the course model "mostly" filled in? The assumption is that if the
+     *  user:
+     *    1) rates at least one criterion for both the course and prof
+     *    2) reviews both the course and prof
+     *  then they probably don't want to give more information and are done.
+     * @return {bool} Whether or not the ratings/reviews are "mostly" filled in
+     */
+    isMostlyFilledIn: function() {
+      var hasRating = function(rating) {
+        return rating.has('rating');
+      };
+
+      var courseReview = this.get('course_review');
+      var hasCourseReview = !!courseReview.get('comment');
+      var hasCourseRating = courseReview.get('ratings').hasRated();
+
+      var professorReview = this.get('professor_review');
+      var hasProfessorReview = !!professorReview.get('comment');
+      var hasProfessorRating = professorReview.get('ratings').hasRated();
+
+      return hasCourseReview && hasCourseRating &&
+             hasProfessorReview && hasProfessorRating;
     }
   });
 
