@@ -123,34 +123,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       } else {
         return mode;
       }
-    },
-
-    /**
-     *  Is the course model "mostly" filled in? The assumption is that if the
-     *  user:
-     *    1) rates at least one criterion for both the course and prof
-     *    2) reviews both the course and prof
-     *  then they probably don't want to give more information and are done.
-     * @return {bool} Whether or not the ratings/reviews are "mostly" filled in
-     */
-    isMostlyFilledIn: function() {
-      var userCourse = this.get('user_course');
-
-      var hasRating = function(rating) {
-        return rating.has('rating');
-      };
-
-      var courseReview = userCourse.get('course_review');
-      var hasCourseReview = !!courseReview.get('comment');
-      var hasCourseRating = courseReview.get('ratings').hasRated();
-
-      var professorReview = userCourse.get('professor_review');
-      var hasProfessorReview = !!professorReview.get('comment');
-      var hasProfessorRating = professorReview.get('ratings').hasRated();
-
-      return hasCourseReview && hasCourseRating &&
-             hasProfessorReview && hasProfessorRating;
-    },
+    }
   });
 
   /**
@@ -409,7 +382,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       'click .remove-course-btn': 'onCourseRemove',
       // TODO(david): Figure out a nicer interaction without requiring click
       'click .visible-section': 'toggleCourse',
-      'focus .new-review-input': 'expandNewReview'
+      'focus .new-review-input': 'expandNewReview',
+      'expand': 'expandCourse'
     },
 
     courseAdded: function() {
