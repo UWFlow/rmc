@@ -31,17 +31,4 @@ function(_facebook, $, _util, _sign_in, _cookie, _moment) {
   mixpanel.track('Impression: Landing page');
 
   $(document.body).trigger('pageScriptComplete');
-
-  window.setTimeout(function() {
-    $('#referral-contest').fadeIn(1000);
-  }, 1000);
-
-  var contestEnd = moment('2013-03-26 11:59:59 -0400', 'YYYY-MM-DD HH:mm:ss Z');
-  window.setInterval(function() {
-    var duration = moment.duration(contestEnd.diff());
-    $('#referral-contest')
-      .find('.contest-hours').text(duration.hours()).end()
-      .find('.contest-mins').text(duration.minutes()).end()
-      .find('.contest-secs').text(duration.seconds()).end();
-  }, 1000);
 });
