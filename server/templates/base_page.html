@@ -304,14 +304,24 @@
 
     {# UserVoice #}
     {% if nav_item != 'landing' %}
-    <script type="text/javascript">
-      var uvOptions = {};
-      (function() {
-        var uv = document.createElement('script'); uv.type = 'text/javascript'; uv.async = true;
-        uv.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'widget.uservoice.com/TfZSPWdiQIEAbHMnlV7w.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(uv, s);
-      })();
-    </script>
+      <!-- UserVoice JavaScript SDK (only needed once on a page) -->
+      <script>(function(){var uv=document.createElement('script');uv.type='text/javascript';uv.async=true;uv.src='//widget.uservoice.com/XetvuDYSrFuHAEj2C93CQ.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(uv,s)})()</script>
+
+      <!-- A tab to launch the Classic Widget -->
+      <script>
+      UserVoice = window.UserVoice || [];
+      UserVoice.push(['showTab', 'classic_widget', {
+        mode: 'full',
+        primary_color: '#cc6d00',
+        link_color: '#007dbf',
+        default_mode: 'feedback',
+        forum_id: 179420,
+        tab_label: 'Feedback',
+        tab_color: '#0a93b5',
+        tab_position: 'middle-left',
+        tab_inverted: false
+      }]);
+      </script>
     {% endif %}
 
     {# Intercom.io #}
