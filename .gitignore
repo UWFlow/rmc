@@ -9,3 +9,6 @@ server/Gemfile.lock
 dump.rdb
 secrets.py
 dump
+
+# Ignore daily generated exam files
+data/exam_schedules/uw_exams_*
