@@ -10,7 +10,7 @@ NOTE: First search for multiple courses on one line and split them
 /^[A-Z]\{2,\}\s.*[A-Z]\{2,\}\s\d\{3\}\s/
 
 :%s/Winter 2013//g
-:%s/^Final Examination Schedule//g
+:%s/Final Examination Schedule//g
 :%s/^Exam Section(s) Day Date Start Time End Time Location//g
 :%s/\n[0-9][0-9]*\n//g
 :g/^[A-Z]\{2,\}.*Exam removed from the schedule/d
