@@ -1,7 +1,5 @@
-Winter 2013
-Final Examination Schedule
-1
-Exam Section(s) Day Date Start Time End Time Location
+
+
 ACTSC 231 001 Thursday April 18, 2013 7:30 PM 10:00 PM M3 1006
 ACTSC 232 001 Saturday April 20, 2013 12:30 PM 3:00 PM M3 1006
 ACTSC 331 001 Thursday April 25, 2013 4:00 PM 6:30 PM PAC 1
@@ -20,7 +18,6 @@ AFM 102 001 to 004 Tuesday April 16, 2013 4:00 PM 6:30 PM PAC 1,2,3,4,5,6,7
 AFM 121 001 to 005 Friday April 12, 2013 7:30 PM 10:00 PM PAC 1,4,5,6
 AFM 123 001 to 003 Saturday April 20, 2013 12:30 PM 3:00 PM PAC 1,2,3,4,5,6
 AFM 131 001 Wednesday April 24, 2013 12:30 PM 3:00 PM PAC 11,12
-AFM 131  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 AFM 231 001 Monday April 15, 2013 9:00 AM 11:30 AM M3 1006
 AFM 371 001 to 003 Tuesday April 16, 2013 4:00 PM 6:30 PM PAC 8,11,12
 AFM 372 001 Tuesday April 16, 2013 4:00 PM 6:30 PM PAC 8,11,12
@@ -28,14 +25,10 @@ AFM 391 001 to 003 Thursday April 11, 2013 4:00 PM 6:30 PM PAC 4,5
 AFM 451 001 to 003 Thursday April 11, 2013 4:00 PM 6:30 PM CPH 1346,E2 1310
 AFM 452 001 Monday April 22, 2013 7:30 PM 10:00 PM HH 2104
 AFM 472 001,002 Monday April 22, 2013 9:00 AM 11:30 AM E2 1310
-AFM 473 001 Saturday April 13, 2013 7:30 PM 10:00 PM RCH 306Winter 2013
-Final Examination Schedule
-2
-Exam Section(s) Day Date Start Time End Time Location
+
 AFM 475 001 Thursday April 18, 2013 9:00 AM 11:30 AM PAC 3
 AFM 481 001 to 003 Monday April 15, 2013 9:00 AM 11:30 AM RCH 103,105,110
 AFM 491 001 to 003 Saturday April 20, 2013 12:30 PM 3:00 PM PAC 7,8
-AHS 150  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 AMATH 231 001 Monday April 15, 2013 12:30 PM 3:00 PM PAC 9,10
 AMATH 242 001 Thursday April 25, 2013 4:00 PM 6:30 PM PAC 2
 AMATH 250 001 Monday April 22, 2013 4:00 PM 6:30 PM PAC 1,2
@@ -58,25 +51,22 @@ ANTH 201 001 Monday April 15, 2013 7:30 PM 10:00 PM AL 105
 ANTH 202 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAS 2086
 ANTH 233 001 Friday April 19, 2013 9:00 AM 11:30 AM PAS 1229
 ANTH 290 001 Monday April 22, 2013 12:30 PM 3:00 PM AL 105
-ANTH 321 001 Thursday April 11, 2013 12:30 PM 3:00 PM PAS 1241Winter 2013
-Final Examination Schedule
-3
-Exam Section(s) Day Date Start Time End Time Location
+ANTH 321 001 Thursday April 11, 2013 12:30 PM 3:00 PM PAS 1241
+
 ANTH 330 001 Saturday April 13, 2013 12:30 PM 3:00 PM AL 105
 APPLS 304R 001 Monday April 15, 2013 9:00 AM 11:30 AM REN 2102
 APPLS 306R 001 Tuesday April 16, 2013 9:00 AM 11:30 AM REN 2102
 ARBUS 102 001 to 003 Saturday April 20, 2013 12:30 PM 3:00 PM PAC 1,2,3,4,5,6
 ARBUS 202 001 Tuesday April 23, 2013 7:30 PM 10:00 PM RCH 301,302
-ARBUS 302 001,002 Friday April 19, 2013 7:30 PM 10:00 PM PAC 1,2
-ARBUS 302 003,004 Friday April 19, 2013 7:30 PM 10:00 PM PAC 4,5
-ARBUS 302 005 Friday April 19, 2013 7:30 PM 10:00 PM PAC 6
+ARBUS 302 001,002 Friday April 19, 2013 7:30 PM 8:30 PM PAC 1,2
+ARBUS 302 003,004 Friday April 19, 2013 7:30 PM 9:30 PM PAC 4,5
+ARBUS 302 005 Friday April 19, 2013 7:30 PM 9:30 PM PAC 6
 ARTS 190 001 Tuesday April 23, 2013 4:00 PM 6:00 PM AL 105
 BIOL 112 001 Monday April 15, 2013 12:30 PM 3:00 PM DC 1350
 BIOL 120 001 Friday April 19, 2013 4:00 PM 6:30 PM PAC 7,8
 BIOL 165 001 Monday April 22, 2013 7:30 PM 10:00 PM PAC 1,2,4,5
 BIOL 211 001 Friday April 12, 2013 7:30 PM 10:00 PM PAC 7,8,9,10
 BIOL 239 001 to 003 Tuesday April 23, 2013 12:30 PM 3:00 PM PAC 1,2,3,4,5,6,7,8,9,10
-BIOL 240  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 BIOL 241 001 Wednesday April 24, 2013 12:30 PM 3:00 PM PAC 4,5,6,7
 BIOL 273 001,002 Thursday April 11, 2013 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,11,12
 BIOL 273L 001 to 009 Friday April 19, 2013 9:00 AM 10:00 AM DC 1350,1351
@@ -88,10 +78,8 @@ BIOL 346 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 301
 BIOL 351 001 Thursday April 11, 2013 7:30 PM 10:00 PM MC 2034,2035
 BIOL 359 001 Wednesday April 17, 2013 12:30 PM 3:00 PM PAC 1,2,3,9
 BIOL 361 001 Saturday April 20, 2013 4:00 PM 6:30 PM MC 2017,2054
-BIOL 365 001 Thursday April 25, 2013 7:30 PM 10:00 PM PAC 9Winter 2013
-Final Examination Schedule
-4
-Exam Section(s) Day Date Start Time End Time Location
+BIOL 365 001 Thursday April 25, 2013 7:30 PM 10:00 PM PAC 9
+
 BIOL 366 001 Monday April 22, 2013 9:00 AM 11:30 AM PAC 9,10
 BIOL 371 001 Tuesday April 23, 2013 12:30 PM 3:00 PM RCH 211
 BIOL 373 001 Thursday April 11, 2013 12:30 PM 3:00 PM PAC 4,5,6,7
@@ -109,49 +97,13 @@ BIOL 450 001 Friday April 12, 2013 9:00 AM 11:30 AM PAC 11,12
 BIOL 457 001 Tuesday April 16, 2013 9:00 AM 11:30 AM RCH 309
 BIOL 465 001 Wednesday April 24, 2013 12:30 PM 3:00 PM RCH 205
 BIOL 467 001 Saturday April 20, 2013 12:30 PM 3:00 PM PAC 9
-BUS 111W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
 BUS 121W 001 to 012 Saturday April 13, 2013 12:30 PM 3:00 PM PAC 6,7,8
-BUS 227W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 231W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 288W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 352W  See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 353W  See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 357W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 362W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 383W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLUWinter 2013
-Final Examination Schedule
-5
-Exam Section(s) Day Date Start Time End Time Location
-BUS 387W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 393W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 397W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 403W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 412W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 413W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 423W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 429W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 433W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 435W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 443W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 451W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 452W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 453W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 463W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 464W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 466W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 467W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 473W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 477W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 481W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
-BUS 483W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
 CHE 101 001 Tuesday April 16, 2013 12:30 PM 3:00 PM RCH 301
 CHE 121 001 Wednesday April 24, 2013 7:30 PM 10:00 PM MC 1085
 CHE 161 001 Saturday April 20, 2013 12:30 PM 3:00 PM DC 1350
 CHE 200 001 Friday April 19, 2013 12:30 PM 3:00 PM E6 2024,4022
-CHE 220 001 Wednesday April 24, 2013 12:30 PM 3:00 PM PAC 3,8Winter 2013
-Final Examination Schedule
-6
-Exam Section(s) Day Date Start Time End Time Location
+CHE 220 001 Wednesday April 24, 2013 12:30 PM 3:00 PM PAC 3,8
+
 CHE 230 001 Monday April 15, 2013 4:00 PM 6:30 PM E6 2024,4022
 CHE 311 001 Friday April 19, 2013 12:30 PM 3:00 PM RCH 211
 CHE 312 001 Friday April 19, 2013 12:30 PM 3:00 PM DWE 2527,2529
@@ -174,24 +126,19 @@ CHE 624 001 Thursday April 11, 2013 9:00 AM 11:30 AM RCH 110
 CHE 672 001 Friday April 12, 2013 12:30 PM 3:00 PM E6 2024,4022
 CHE 674 001 Tuesday April 16, 2013 4:00 PM 6:30 PM DWE 2527,2529
 CHEM 120 001 Thursday April 25, 2013 9:00 AM 11:30 AM PAC 1,2,3
-CHEM 123 001 to 004 Tuesday April 16, 2013 9:00 AM 11:30 AM
-PAC 1,2,3,4,5,6,7,8,9,10,11,12,
-RCH 103,105
+CHEM 123 001 to 004 Tuesday April 16, 2013 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7,8,9,10,11,12 RCH 103,105
 CHEM 123L 001 to 012 Thursday April 18, 2013 7:30 PM 9:30 PM PAC 1,2,3,4,5,6,7,8,9,10,11,12
 CHEM 212 001 Wednesday April 17, 2013 4:00 PM 6:30 PM PAC 5
 CHEM 221 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 9
-CHEM 233 001 Thursday April 18, 2013 4:00 PM 6:30 PM MC 2034Winter 2013
-Final Examination Schedule
-7
-Exam Section(s) Day Date Start Time End Time Location
+CHEM 233 001 Thursday April 18, 2013 4:00 PM 6:30 PM MC 2034
+
 CHEM 237 001 Thursday April 18, 2013 12:30 PM 3:00 PM PAC 8,11,12
-CHEM 237L 002 to 005 Tuesday April 16, 2013 7:30 PM 9:30 PM DC 1350CHEM 254 001 Monday April 22, 2013 9:00 AM 11:30 AM PAC 11,12
+CHEM 237L 002 to 005 Tuesday April 16, 2013 7:30 PM 9:30 PM DC 1350
+CHEM 254 001 Monday April 22, 2013 9:00 AM 11:30 AM PAC 11,12
 CHEM 262 001 Thursday April 11, 2013 9:00 AM 11:30 AM RCH 301
 CHEM 265 001 Thursday April 25, 2013 7:30 PM 10:00 PM PAC 5
 CHEM 267 001,002 Tuesday April 16, 2013 12:30 PM 3:00 PM PAC 4,5,6,7
-CHEM 267  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 CHEM 313 001 Friday April 19, 2013 12:30 PM 3:00 PM PAC 3
-CHEM 333 001 Exam removed from the schedule.  Contact instructor for further information.
 CHEM 350 001 Wednesday April 24, 2013 9:00 AM 11:30 AM PAC 11
 CHEM 357 001 Wednesday April 17, 2013 7:30 PM 10:00 PM DC 1350
 CHEM 360 001 Tuesday April 16, 2013 9:00 AM 11:30 AM RCH 204,211
@@ -209,10 +156,8 @@ CHEM 740 001 Monday April 15, 2013 9:00 AM 11:30 AM EIT 2053
 CHEM 750 002 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 206
 CHEM 773 001 Tuesday April 16, 2013 12:30 PM 3:00 PM RCH 206
 CHINA 101R 001 Wednesday April 24, 2013 7:30 PM 10:00 PM REN 2106
-CHINA 102R 001 Saturday April 13, 2013 7:30 PM 10:00 PM REN 2106Winter 2013
-Final Examination Schedule
-8
-Exam Section(s) Day Date Start Time End Time Location
+CHINA 102R 001 Saturday April 13, 2013 7:30 PM 10:00 PM REN 2106
+
 CHINA 120R 001 Thursday April 25, 2013 7:30 PM 10:00 PM REN 2107
 CHINA 200R 001 Saturday April 13, 2013 7:30 PM 10:00 PM REN 2107
 CHINA 201R 001 Wednesday April 24, 2013 7:30 PM 10:00 PM REN 2107
@@ -238,46 +183,36 @@ CIVE 554 001 Monday April 22, 2013 9:00 AM 11:30 AM CPH 3604
 CIVE 583 001 Monday April 22, 2013 7:30 PM 10:00 PM CPH 3602
 CIVE 596 001 Monday April 15, 2013 12:30 PM 3:00 PM RCH 103,105
 CLAS 103 001 Monday April 22, 2013 12:30 PM 2:30 PM RCH 103,105
-CLAS 104  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-CLAS 205 001 Wednesday April 24, 2013 7:30 PM 9:30 PM DC 1350Winter 2013
-Final Examination Schedule
-9
-Exam Section(s) Day Date Start Time End Time LocationCLAS 221 001 Monday April 15, 2013 7:30 PM 10:00 PM AL 105
+CLAS 205 001 Wednesday April 24, 2013 7:30 PM 9:30 PM DC 1350
+
+CLAS 221 001 Monday April 15, 2013 7:30 PM 10:00 PM AL 105
 CLAS 230 001 Wednesday April 17, 2013 9:00 AM 11:00 AM EV3 1408
 CLAS 232 001 Tuesday April 16, 2013 12:30 PM 2:30 PM ML 354
 CLAS 321 001 Thursday April 11, 2013 12:30 PM 3:00 PM PAS 1241
 CLAS 342 001 Friday April 12, 2013 9:00 AM 11:00 AM RCH 209
 CLAS 351 001 Wednesday April 17, 2013 12:30 PM 2:30 PM RCH 205
-CLAS 361  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 CLAS 486 001 Saturday April 13, 2013 9:00 AM 11:00 AM RCH 205
 CM 730 001 Friday April 19, 2013 9:00 AM 11:30 AM RCH 205
 CM 761 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 12
 CM 764 001 Thursday April 18, 2013 4:00 PM 6:30 PM PAC 9,10
-CO 227 001 Exam removed from the schedule.  Contact instructor for further information.
 CO 250 001,002 Wednesday April 24, 2013 4:00 PM 6:30 PM PAC 1,2,3
-CO 327 001 Exam removed from the schedule.  Contact instructor for further information.
 CO 331 001 Thursday April 11, 2013 7:30 PM 10:00 PM MC 2017
 CO 367 001 Monday April 15, 2013 7:30 PM 10:00 PM PAC 3
 CO 370 001 Friday April 19, 2013 12:30 PM 3:00 PM PAC 6
 CO 372 001 Friday April 19, 2013 9:00 AM 11:30 AM RCH 301,309
-CO 444 001 Exam removed from the schedule.  Contact instructor for further information.
 CO 452 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 204
 CO 481 001 Thursday April 18, 2013 9:00 AM 11:30 AM PAC 6
 CO 487 001 Monday April 15, 2013 9:00 AM 11:30 AM MC 4020,4021
-CO 644 001 Exam removed from the schedule.  Contact instructor for further information.
 CO 652 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 204
 CO 687 001 Monday April 15, 2013 9:00 AM 11:30 AM MC 4020,4021
 COMM 231 001 Monday April 15, 2013 7:30 PM 10:00 PM PAC 4,5
-COMM 321 001 Wednesday April 17, 2013 7:30 PM 10:00 PM PAC 12Winter 2013
-Final Examination Schedule
-10
-Exam Section(s) Day Date Start Time End Time Location
+COMM 321 001 Wednesday April 17, 2013 7:30 PM 10:00 PM PAC 12
+
 COMM 421 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 307
 COMM 432 001 Monday April 22, 2013 7:30 PM 10:00 PM PAC 8
 CROAT 102 001 Friday April 12, 2013 4:00 PM 6:30 PM ML 311
-CROAT 102  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 CROAT 202 001 Thursday April 11, 2013 12:30 PM 3:00 PM ML 311
-CS 100  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-scheduleCS 115 001 to 004 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 4,5,6,7
+CS 115 001 to 004 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 4,5,6,7
 CS 116 001 to 009 Thursday April 18, 2013 12:30 PM 3:00 PM PAC 1,2,3,4,5,6,7
 CS 135 001,002 Thursday April 11, 2013 9:00 AM 11:30 AM M3 1006
 CS 136 001 to 006 Thursday April 18, 2013 4:00 PM 6:30 PM PAC 1,2,3,4,5
@@ -297,10 +232,8 @@ CS 343 001 Monday April 22, 2013 12:30 PM 3:00 PM RCH 302
 CS 348 001 Tuesday April 16, 2013 4:00 PM 6:30 PM DC 1350
 CS 349 001,002 Friday April 12, 2013 7:30 PM 10:00 PM PAC 2,3
 CS 350 001,002 Wednesday April 24, 2013 9:00 AM 11:30 AM PAC 1
-CS 360 001 Wednesday April 24, 2013 7:30 PM 10:00 PM MC 4020Winter 2013
-Final Examination Schedule
-11
-Exam Section(s) Day Date Start Time End Time Location
+CS 360 001 Wednesday April 24, 2013 7:30 PM 10:00 PM MC 4020
+
 CS 365 001 Saturday April 13, 2013 4:00 PM 6:30 PM RCH 205
 CS 370 001 Thursday April 25, 2013 4:00 PM 6:30 PM PAC 4
 CS 371 001 Thursday April 25, 2013 4:00 PM 6:30 PM PAC 2
@@ -308,7 +241,6 @@ CS 430 001 Monday April 22, 2013 9:00 AM 11:30 AM RCH 301
 CS 432 001 Wednesday April 24, 2013 12:30 PM 3:00 PM RCH 103
 CS 436 001 Thursday April 25, 2013 9:00 AM 11:30 AM PAC 9,10
 CS 442 001 Monday April 15, 2013 12:30 PM 3:00 PM RCH 301
-CS 444 001 Exam removed from the schedule.  Contact instructor for further information.
 CS 445 001 Friday April 12, 2013 9:00 AM 11:30 AM PAC 9,10
 CS 446 001 Thursday April 18, 2013 4:00 PM 6:30 PM MC 2035
 CS 447 001 Monday April 15, 2013 7:30 PM 10:00 PM PAC 1,2
@@ -317,7 +249,6 @@ CS 452 001 Thursday April 11, 2013 4:00 PM 6:30 PM RCH 206
 CS 454 001,002 Tuesday April 23, 2013 12:30 PM 3:00 PM RCH 103,105
 CS 456 001 Saturday April 20, 2013 12:30 PM 3:00 PM MC 2034,2035
 CS 458 001,002 Wednesday April 17, 2013 9:00 AM 11:30 AM RCH 302,305
-CS 462 001 Exam removed from the schedule.  Contact instructor for further information.
 CS 467 001 Thursday April 18, 2013 9:00 AM 11:30 AM PAC 6
 CS 473 001 Saturday April 13, 2013 9:00 AM 11:30 AM RCH 306
 CS 475 001 Friday April 12, 2013 12:30 PM 3:00 PM RCH 306
@@ -327,13 +258,10 @@ CS 484 001 Friday April 12, 2013 9:00 AM 11:30 AM RCH 211
 CS 485 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 302
 CS 486 001 Saturday April 13, 2013 12:30 PM 3:00 PM PAC 5
 CS 487 001 Friday April 19, 2013 9:00 AM 11:30 AM RCH 205
-CS 488 001 Wednesday April 24, 2013 12:30 PM 3:00 PM RCH 105Winter 2013
-Final Examination Schedule
-12
-Exam Section(s) Day Date Start Time End Time Location
+CS 488 001 Wednesday April 24, 2013 12:30 PM 3:00 PM RCH 105
+
 CS 490 001 Monday April 22, 2013 12:30 PM 3:00 PM RCH 306
 CS 642 001 Monday April 15, 2013 12:30 PM 3:00 PM RCH 301
-CS 644 001 Exam removed from the schedule.  Contact instructor for further information.
 CS 645 001 Friday April 12, 2013 9:00 AM 11:30 AM PAC 9,10
 CS 646 001 Thursday April 18, 2013 4:00 PM 6:30 PM MC 2035
 CS 647 001 Monday April 15, 2013 7:30 PM 10:00 PM PAC 1,2
@@ -342,7 +270,6 @@ CS 652 001 Thursday April 11, 2013 4:00 PM 6:30 PM RCH 206
 CS 654 001,002 Tuesday April 23, 2013 12:30 PM 3:00 PM RCH 103,105
 CS 656 001 Saturday April 20, 2013 12:30 PM 3:00 PM MC 2034,2035
 CS 658 001,002 Wednesday April 17, 2013 9:00 AM 11:30 AM RCH 302,305
-CS 662 001 Exam removed from the schedule.  Contact instructor for further information.
 CS 673 001 Saturday April 13, 2013 9:00 AM 11:30 AM RCH 306
 CS 675 001 Friday April 12, 2013 12:30 PM 3:00 PM RCH 306
 CS 676 001 Thursday April 25, 2013 12:30 PM 3:00 PM PAC 1
@@ -352,15 +279,11 @@ CS 685 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 302
 CS 686 001 Saturday April 13, 2013 12:30 PM 3:00 PM PAC 5
 CS 687 001 Friday April 19, 2013 9:00 AM 11:30 AM RCH 205
 DRAMA 387 001 Monday April 15, 2013 9:00 AM 11:30 AM STJ 2011
-DRAMA 387  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-DUTCH 101  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 DUTCH 102 001 Tuesday April 23, 2013 12:30 PM 3:00 PM ML 246
 EARTH 122 001 Wednesday April 24, 2013 4:00 PM 6:00 PM DC 1350,1351
 EARTH 122L 001 to 003 Monday April 15, 2013 7:30 PM 10:00 PM PAC 11,12
-EARTH 221 001 Thursday April 18, 2013 12:30 PM 3:00 PM MC 1085Winter 2013
-Final Examination Schedule
-13
-Exam Section(s) Day Date Start Time End Time Location
+EARTH 221 001 Thursday April 18, 2013 12:30 PM 3:00 PM MC 1085
+
 EARTH 238 001 Saturday April 13, 2013 9:00 AM 11:30 AM RCH 301
 EARTH 270 001 Saturday April 20, 2013 12:30 PM 3:00 PM PAC 11,12
 EARTH 333 001 Friday April 19, 2013 4:00 PM 6:30 PM PAC 9,10
@@ -387,10 +310,8 @@ ECE 290 001,002 Monday April 22, 2013 12:30 PM 3:00 PM PAC 2,3
 ECE 316 001 Monday April 15, 2013 4:00 PM 6:30 PM RCH 103,105
 ECE 318 001,002 Friday April 12, 2013 9:00 AM 11:30 AM RCH 103,105,110
 ECE 327 001 Monday April 22, 2013 12:30 PM 3:00 PM PAC 9,10
-ECE 331 001 Thursday April 11, 2013 12:30 PM 3:00 PM PAC 12Winter 2013
-Final Examination Schedule
-14
-Exam Section(s) Day Date Start Time End Time Location
+ECE 331 001 Thursday April 11, 2013 12:30 PM 3:00 PM PAC 12
+
 ECE 351 001 Thursday April 25, 2013 12:30 PM 3:00 PM PAC 4
 ECE 356 001 Tuesday April 23, 2013 7:30 PM 10:00 PM PAC 3
 ECE 358 001 Thursday April 25, 2013 12:30 PM 3:00 PM PAC 5
@@ -417,10 +338,8 @@ ECE 477 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 11
 ECE 488 001 Thursday April 11, 2013 4:00 PM 6:30 PM PAC 1
 ECE 653 001 Monday April 15, 2013 7:30 PM 10:00 PM PAC 1,2
 ECE 656 001 Thursday April 18, 2013 4:00 PM 6:30 PM PAC 11,12
-ECE 730 001 Thursday April 11, 2013 9:00 AM 11:30 AM PAC 9,10Winter 2013
-Final Examination Schedule
-15
-Exam Section(s) Day Date Start Time End Time Location
+ECE 730 001 Thursday April 11, 2013 9:00 AM 11:30 AM PAC 9,10
+
 ECE 730 002 Saturday April 20, 2013 9:00 AM 11:30 AM MC 2038
 ECE 770 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 11
 ECON 101 001,003 Wednesday April 17, 2013 7:30 PM 10:00 PM PAC 4,5,6,7,11
@@ -431,8 +350,6 @@ ECON 102 003 Thursday April 11, 2013 7:30 PM 10:00 PM DC 1350,1351
 ECON 102 004 Thursday April 11, 2013 7:30 PM 10:00 PM PAC 1,2,3
 ECON 102 005 Thursday April 11, 2013 7:30 PM 10:00 PM MC 4020,4021,4059,4061
 ECON 102 006 Thursday April 11, 2013 7:30 PM 10:00 PM M3 1006,MC 1085
-ECON 102  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-ECON 140W See http://www.wlu.ca/page.php?grp_id=1366&p=14566 WLU
 ECON 201 001 Friday April 19, 2013 4:00 PM 6:30 PM PAC 4
 ECON 201 002 Friday April 19, 2013 4:00 PM 6:30 PM PAC 5
 ECON 201 003 Friday April 19, 2013 4:00 PM 6:30 PM PAC 6
@@ -447,17 +364,14 @@ ECON 254 001 Thursday April 25, 2013 9:00 AM 11:30 AM PAC 11
 ECON 301 001 Wednesday April 17, 2013 7:30 PM 9:30 PM MC 4020
 ECON 301 002 Wednesday April 17, 2013 7:30 PM 10:00 PM MC 2017,2054
 ECON 302 001,002 Wednesday April 24, 2013 12:30 PM 3:00 PM PAC 1,2
-ECON 304 001 Thursday April 11, 2013 7:30 PM 10:00 PM PAC 11,12Winter 2013
-Final Examination Schedule
-16
-Exam Section(s) Day Date Start Time End Time Location
+ECON 304 001 Thursday April 11, 2013 7:30 PM 10:00 PM PAC 11,12
+
 ECON 321 001 Monday April 15, 2013 4:00 PM 6:00 PM RCH 204,211
 ECON 321 002 Monday April 15, 2013 4:00 PM 6:30 PM PAC 9,10
 ECON 332 001,002 Saturday April 20, 2013 4:00 PM 6:00 PM DC 1350,1351
 ECON 344 001,002 Friday April 19, 2013 7:30 PM 8:30 PM PAC 1,2
 ECON 344 003,004 Friday April 19, 2013 7:30 PM 9:30 PM PAC 4,5
 ECON 344 005 Friday April 19, 2013 7:30 PM 9:30 PM PAC 6
-ECON 361  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ECON 371 001 Monday April 22, 2013 7:30 PM 10:00 PM PAC 7
 ECON 372 001 Tuesday April 23, 2013 7:30 PM 10:00 PM PAC 7
 ECON 401 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 2
@@ -465,58 +379,36 @@ ECON 402 001 Thursday April 25, 2013 12:30 PM 3:00 PM PAC 6
 ECON 405 001 Wednesday April 17, 2013 4:00 PM 6:30 PM PAC 6
 ECON 421 001 Friday April 12, 2013 12:30 PM 2:30 PM RCH 305
 ECON 483 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 308
-ELPE 100  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENBUS 302 001 Wednesday April 17, 2013 9:00 AM 11:30 AM DC 1350
 ENGL 101A 001 Wednesday April 24, 2013 12:30 PM 3:00 PM RCH 306
 ENGL 101A 002 Thursday April 25, 2013 12:30 PM 3:00 PM STJ 3014
-ENGL 101B 002 Exam removed from the schedule.  Contact instructor for further information.
 ENGL 102B 001 Thursday April 25, 2013 4:00 PM 6:30 PM REN 2106
-ENGL 102B  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENGL 104 002 Thursday April 18, 2013 9:00 AM 11:30 AM PAC 7
-ENGL 108A 001 Thursday April 11, 2013 9:00 AM 11:00 AM RCH 211
 ENGL 108F 001 Wednesday April 17, 2013 12:30 PM 3:00 PM STJ 3014
 ENGL 108F 002 Wednesday April 17, 2013 12:30 PM 3:00 PM PAC 10
 ENGL 108H 001 Monday April 22, 2013 12:30 PM 3:00 PM RCH 308
-ENGL 108M 001 Thursday April 25, 2013 4:00 PM 6:30 PM PAC 5Winter 2013
-Final Examination Schedule
-17
-Exam Section(s) Day Date Start Time End Time Location
-ENGL 109  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
+ENGL 108M 001 Thursday April 25, 2013 4:00 PM 6:30 PM PAC 5
 ENGL 129R 001 Friday April 12, 2013 4:00 PM 6:30 PM REN 2107
 ENGL 190 001 Thursday April 25, 2013 12:30 PM 3:00 PM AL 105
-ENGL 190  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-ENGL 200A  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENGL 200B 001 Tuesday April 23, 2013 4:00 PM 6:30 PM PAC 4
-ENGL 200B  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-ENGL 202A  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENGL 208B 001 Wednesday April 17, 2013 7:30 PM 10:00 PM STJ 2017
-ENGL 208C  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENGL 208E 001 Saturday April 13, 2013 12:30 PM 3:00 PM REN 2107
 ENGL 208M 001 Wednesday April 24, 2013 7:30 PM 10:00 PM STJ 3015
 ENGL 208N 001 Thursday April 18, 2013 9:00 AM 11:30 AM STJ 2011
 ENGL 210E 001 Thursday April 25, 2013 7:30 PM 10:00 PM PAC 7
-ENGL 210F  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENGL 247 001 Wednesday April 24, 2013 7:30 PM 10:00 PM MC 4040
-ENGL 251A  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENGL 251B 002 Thursday April 11, 2013 9:00 AM 11:30 AM STJ 3012
 ENGL 251B 003 Monday April 15, 2013 9:00 AM 11:30 AM STJ 3012
 ENGL 251B 004 Monday April 15, 2013 12:30 PM 3:00 PM RCH 308
 ENGL 251B 005 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 211
-ENGL 251B  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-ENGL 306A 001 Monday April 22, 2013 4:00 PM 6:30 PM PAC 12
 ENGL 309G 001 Saturday April 20, 2013 4:00 PM 6:30 PM PAC 9,10
 ENGL 310B 001 Monday April 22, 2013 9:00 AM 11:30 AM STJ 3015
-ENGL 315  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-ENGL 318 001 Thursday April 11, 2013 9:00 AM 11:30 AM STJ 2011Winter 2013
-Final Examination Schedule
-18
-Exam Section(s) Day Date Start Time End Time Location
+ENGL 318 001 Thursday April 11, 2013 9:00 AM 11:30 AM STJ 2011
+
 ENGL 363 001 Monday April 15, 2013 9:00 AM 11:30 AM STJ 2011
-ENGL 363  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENGL 371 001 Wednesday April 17, 2013 12:30 PM 3:00 PM STJ 3027
 ENGL 377R 001 Thursday April 11, 2013 9:00 AM 11:30 AM REN 2104
 ENGL 430B 001 Tuesday April 23, 2013 12:30 PM 3:00 PM STJ 3015
-ENGL 460B  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 ENVE 221 001 Monday April 22, 2013 9:00 AM 11:30 AM CPH 3607
 ENVE 224 001 Saturday April 20, 2013 9:00 AM 11:30 AM RCH 211
 ENVE 275 001 Tuesday April 23, 2013 7:30 PM 10:00 PM RCH 305
@@ -533,30 +425,18 @@ ERS 383 001 Wednesday April 17, 2013 7:30 PM 10:00 PM RCH 301
 ERS 404 001 Tuesday April 16, 2013 12:30 PM 3:00 PM RCH 112
 ESL 102R 001 to 009 Thursday April 11, 2013 12:30 PM 3:00 PM STJ 1036
 ESL 129R 001,002 Friday April 12, 2013 4:00 PM 6:30 PM REN 2106
-ESL 129R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 FINE 204 001 Thursday April 18, 2013 12:30 PM 3:00 PM AL 208
 FINE 364 001 Monday April 22, 2013 12:30 PM 3:00 PM ML 246
 FR 151 001 to 004 Monday April 15, 2013 7:30 PM 9:30 PM DC 1350,1351
-FR 151  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-scheduleWinter 2013
-Final Examination Schedule
-19
-Exam Section(s) Day Date Start Time End Time Location
 FR 152 001 to 006 Thursday April 11, 2013 4:00 PM 6:00 PM RCH 301,302
-FR 152  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 FR 192A 001 to 004 Monday April 22, 2013 9:00 AM 11:00 AM DC 1350
-FR 192A  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 FR 192B 001 to 005 Tuesday April 23, 2013 9:00 AM 11:00 AM RCH 301,302
-FR 192B  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 FR 197 001 Tuesday April 23, 2013 4:00 PM 6:00 PM AL 208
 FR 251 001 Saturday April 13, 2013 7:30 PM 9:30 PM AL 124
-FR 251  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 FR 252 001,002 Saturday April 20, 2013 12:30 PM 2:30 PM EV3 1408
 FR 263 001 Thursday April 11, 2013 9:00 AM 11:00 AM AL 208
-FR 276  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-FR 292  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-scheduleFR 297 001 Thursday April 25, 2013 12:30 PM 2:30 PM AL 124
-FR 297  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
+FR 297 001 Thursday April 25, 2013 12:30 PM 2:30 PM AL 124
 FR 354 001 Wednesday April 17, 2013 4:00 PM 6:00 PM ML 349
-FR 355  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 FR 363 001 Monday April 22, 2013 12:30 PM 2:30 PM ML 349
 FR 452 001 Friday April 12, 2013 9:00 AM 11:00 AM ML 349
 FR 486 001 Thursday April 11, 2013 9:00 AM 11:30 AM ML 315
@@ -565,11 +445,7 @@ GENE 121 001 Friday April 19, 2013 9:00 AM 11:30 AM PAC 6
 GENE 121 002 Friday April 19, 2013 9:00 AM 11:30 AM PAC 9,10
 GENE 123 001 to 004 Thursday April 11, 2013 12:30 PM 3:00 PM PAC 1,2,3,8
 GENE 411 001 Tuesday April 23, 2013 7:30 PM 10:00 PM PAC 9
-GENE 412 001 Exam removed from the schedule.  Contact instructor for further information.
-GEOG 102 001 Monday April 15, 2013 4:00 PM 6:30 PM RCH 301,302,305Winter 2013
-Final Examination Schedule
-20
-Exam Section(s) Day Date Start Time End Time Location
+GEOG 102 001 Monday April 15, 2013 4:00 PM 6:30 PM RCH 301,302,305
 GEOG 208 001 Saturday April 20, 2013 4:00 PM 6:30 PM PAC 7,8
 GEOG 209 001 Wednesday April 17, 2013 12:30 PM 3:00 PM PAC 11,12
 GEOG 271 001 Friday April 19, 2013 9:00 AM 11:30 AM RCH 302,305
@@ -579,10 +455,7 @@ GEOG 351 001 Monday April 22, 2013 12:30 PM 3:00 PM RCH 307
 GEOG 368 001 Thursday April 18, 2013 9:00 AM 11:30 AM PAC 11,12
 GEOG 407 001 Friday April 12, 2013 12:30 PM 3:00 PM RCH 308
 GER 101 001 to 004 Wednesday April 17, 2013 4:00 PM 6:30 PM HH 1101
-GER 101  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 GER 102 001,002 Monday April 15, 2013 7:30 PM 10:00 PM AL 208
-GER 102  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-GER 201  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 GER 202 001 Thursday April 11, 2013 12:30 PM 3:00 PM ML 246
 GER 204 001 Wednesday April 17, 2013 7:30 PM 10:00 PM EV1 132
 GER 308 001 Wednesday April 24, 2013 4:00 PM 6:30 PM ML 246
@@ -596,21 +469,17 @@ HIST 191 001 Thursday April 25, 2013 12:30 PM 3:00 PM RCH 204
 HIST 226 001 Friday April 19, 2013 4:00 PM 6:30 PM QNC 2501,2502
 HIST 227 001 Thursday April 25, 2013 9:00 AM 11:30 AM AL 208
 HIST 235 001 Tuesday April 23, 2013 7:30 PM 10:00 PM CGC 1111
-HIST 258 001 Thursday April 18, 2013 12:30 PM 2:30 PM RCH 308Winter 2013
-Final Examination Schedule
-21
-Exam Section(s) Day Date Start Time End Time Location
-HIST 260 001 Monday April 22, 2013 12:30 PM 3:00 PM RCH 205
+HIST 258 001 Thursday April 18, 2013 12:30 PM 2:30 PM RCH 308
+
 HIST 262 001 Thursday April 25, 2013 7:30 PM 10:00 PM AL 208
 HIST 265 001 Tuesday April 23, 2013 7:30 PM 10:00 PM AL 105
-HIST 304 001 Friday April 12, 2013 4:00 PM 6:30 PM RCH 306
 HIST 311 001 Friday April 19, 2013 9:00 AM 11:30 AM HH 1102
 HIST 316 001 Tuesday April 16, 2013 7:30 PM 10:00 PM HH 2107
-HIST 317 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 205
 HIST 340 001 Thursday April 11, 2013 7:30 PM 10:00 PM RCH 306
 HIST 351 001 Monday April 22, 2013 7:30 PM 10:00 PM CGC 1111
 HIST 379 001 Tuesday April 23, 2013 9:00 AM 11:30 AM CGC 1300
-HIST 385 001 Friday April 12, 2013 7:30 PM 10:00 PM STJ 3015HIST 391 003 Monday April 15, 2013 12:30 PM 3:00 PM HH 2107
+HIST 385 001 Friday April 12, 2013 7:30 PM 10:00 PM STJ 3015
+HIST 391 003 Monday April 15, 2013 12:30 PM 3:00 PM HH 2107
 HLTH 102 001,002 Wednesday April 17, 2013 12:30 PM 3:00 PM M3 1006
 HLTH 210 001 Wednesday April 17, 2013 4:00 PM 6:00 PM M3 1006
 HLTH 360 001 Friday April 19, 2013 7:30 PM 10:00 PM PAC 3
@@ -625,10 +494,8 @@ INTEG 275 001 Thursday April 18, 2013 12:30 PM 3:00 PM AL 208
 JAPAN 101R 001,002 Monday April 22, 2013 7:30 PM 9:30 PM STJ 1036
 JAPAN 102R 001 Tuesday April 23, 2013 9:00 AM 11:00 AM REN 2107
 JAPAN 201R 001 Friday April 12, 2013 12:30 PM 3:00 PM REN 2107
-JAPAN 202R 001 Thursday April 11, 2013 9:00 AM 11:30 AM REN 2107Winter 2013
-Final Examination Schedule
-22
-Exam Section(s) Day Date Start Time End Time Location
+JAPAN 202R 001 Thursday April 11, 2013 9:00 AM 11:30 AM REN 2107
+
 JAPAN 301R 001 Monday April 22, 2013 9:00 AM 11:30 AM REN 2102
 JS 205 001 Thursday April 11, 2013 7:30 PM 10:00 PM CGC 1111
 JS 306A 001 Wednesday April 17, 2013 9:00 AM 11:30 AM PAS 2086
@@ -649,27 +516,19 @@ KIN 428 001 Tuesday April 23, 2013 12:30 PM 3:00 PM RCH 301
 KIN 471 001 Friday April 12, 2013 12:30 PM 3:00 PM PAC 8
 LAT 102 001,002 Friday April 12, 2013 12:30 PM 2:30 PM RCH 309
 LAT 202 001 Thursday April 11, 2013 9:00 AM 11:00 AM RCH 205
-LS 101  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 LS 280 001 Tuesday April 23, 2013 12:30 PM 3:00 PM CPH 1346
 LS 321 001 Thursday April 25, 2013 4:00 PM 6:30 PM RCH 301
 LS 403 001 Tuesday April 16, 2013 7:30 PM 10:00 PM PAS 1241
 MATBUS 470 001 Friday April 12, 2013 12:30 PM 3:00 PM PAC 7
 MATBUS 471 001 Saturday April 13, 2013 12:30 PM 3:00 PM PAC 4
-MATBUS 472 001 Wednesday April 17, 2013 9:00 AM 11:30 AM RCH 110Winter 2013
-Final Examination Schedule
-23
-Exam Section(s) Day Date Start Time End Time Location
-MATH 103  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
+MATBUS 472 001 Wednesday April 17, 2013 9:00 AM 11:30 AM RCH 110
+
 MATH 104 001 Monday April 15, 2013 12:30 PM 3:00 PM DC 1351
-MATH 104  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 MATH 106 001 Monday April 22, 2013 4:00 PM 6:30 PM PAC 3
-MATH 106  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 MATH 118 001 to 004 Monday April 15, 2013 12:30 PM 3:00 PM PAC 6,7,8,11,12
 MATH 119 001 to 003 Monday April 15, 2013 4:00 PM 6:30 PM PAC 1,2,3,8
 MATH 127 001 to 003 Friday April 12, 2013 9:00 AM 11:30 AM PAC 1,2,3
-MATH 127  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 MATH 128 001 to 006 Monday April 15, 2013 12:30 PM 3:00 PM PAC 1,2,3,4,5
-MATH 128  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 MATH 135 001 to 006 Monday April 22, 2013 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7
 MATH 136 001 to 008,081 Wednesday April 17, 2013 9:00 AM 11:30 AM PAC 1,2,3,4,5,6,7,8,11,12
 MATH 137 001,002 Friday April 12, 2013 9:00 AM 11:30 AM DC 1350,1351
@@ -681,14 +540,11 @@ MATH 207 001 Saturday April 13, 2013 9:00 AM 11:30 AM RCH 206
 MATH 211 001,002 Friday April 19, 2013 7:30 PM 10:00 PM PAC 7,8
 MATH 215 001,002 Wednesday April 24, 2013 12:30 PM 3:00 PM M3 1006
 MATH 217 001 Saturday April 13, 2013 9:00 AM 11:30 AM RCH 302
-MATH 225  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 MATH 228 001 Saturday April 13, 2013 7:30 PM 10:00 PM RCH 205
 MATH 235 001 to 003 Thursday April 11, 2013 4:00 PM 6:30 PM PAC 3,8
 MATH 237 001 to 003 Tuesday April 23, 2013 7:30 PM 10:00 PM PAC 4,5
-MATH 239 001 to 003 Saturday April 13, 2013 12:30 PM 3:00 PM PAC 1,2,3Winter 2013
-Final Examination Schedule
-24
-Exam Section(s) Day Date Start Time End Time Location
+MATH 239 001 to 003 Saturday April 13, 2013 12:30 PM 3:00 PM PAC 1,2,3
+
 MATH 247 001 Tuesday April 23, 2013 12:30 PM 3:00 PM MC 4041
 MATH 249 001 Saturday April 13, 2013 7:30 PM 10:00 PM RCH 206
 ME 115 001 Monday April 22, 2013 12:30 PM 3:00 PM PAC 1
@@ -715,10 +571,8 @@ ME 538 001 Thursday April 18, 2013 7:30 PM 10:00 PM CPH 3679
 ME 547 001 Monday April 22, 2013 12:30 PM 3:00 PM CPH 3679
 ME 555 001 Wednesday April 24, 2013 4:00 PM 6:30 PM CPH 3679
 ME 557 001 Tuesday April 16, 2013 9:00 AM 11:30 AM CPH 3679
-ME 563 001 Friday April 19, 2013 12:30 PM 3:00 PM CPH 3679Winter 2013
-Final Examination Schedule
-25
-Exam Section(s) Day Date Start Time End Time Location
+ME 563 001 Friday April 19, 2013 12:30 PM 3:00 PM CPH 3679
+
 ME 564 001 Tuesday April 23, 2013 7:30 PM 10:00 PM E5 3101,3102
 ME 567 001 Friday April 12, 2013 9:00 AM 11:30 AM CPH 3679
 ME 571 001 Monday April 15, 2013 12:30 PM 3:00 PM DWE 2527
@@ -728,27 +582,20 @@ ME 599 002 Thursday April 11, 2013 12:30 PM 3:00 PM CPH 3679
 ME 760 002 Saturday April 13, 2013 12:30 PM 3:00 PM E5 3101,3102
 ME 765 001 Friday April 12, 2013 9:00 AM 11:30 AM CPH 3679
 MEDVL 205 001 Wednesday April 24, 2013 7:30 PM 9:30 PM DC 1350
-MEDVL 260 001 Monday April 22, 2013 12:30 PM 3:00 PM RCH 205
-MEDVL 304 001 Friday April 12, 2013 4:00 PM 6:30 PM RCH 306
 MNS 102 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 305
 MSCI 131 001 Saturday April 13, 2013 7:30 PM 10:00 PM RCH 301
-MSCI 211  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 MSCI 261 001 Wednesday April 17, 2013 12:30 PM 3:00 PM PAC 6
 MSCI 261 002,003 Wednesday April 17, 2013 12:30 PM 3:00 PM PAC 7,8
 MSCI 311 001,002 Tuesday April 16, 2013 9:00 AM 11:30 AM DC 1350,1351
 MSCI 331 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 3
 MSCI 334 001 Thursday April 11, 2013 7:30 PM 10:00 PM PAC 9,10
-MSCI 423 001 Tuesday April 16, 2013 7:30 PM 10:00 PM PAC 12
 MSCI 431 001,002 Thursday April 18, 2013 12:30 PM 3:00 PM PAC 9,10
 MSCI 432 001 Thursday April 25, 2013 12:30 PM 3:00 PM PAC 3
 MSCI 436 001 Saturday April 20, 2013 12:30 PM 3:00 PM E2 1303
 MSCI 541 001 Saturday April 13, 2013 7:30 PM 10:00 PM CPH 4333
 MSCI 555 001 Wednesday April 24, 2013 4:00 PM 6:30 PM CPH 4333
-MSCI 599 001 Exam removed from the schedule.  Contact instructor for further information.
-MSCI 700 001 Wednesday April 24, 2013 4:00 PM 6:30 PM CPH 4333Winter 2013
-Final Examination Schedule
-26
-Exam Section(s) Day Date Start Time End Time Location
+MSCI 700 001 Wednesday April 24, 2013 4:00 PM 6:30 PM CPH 4333
+
 MSCI 720 001 Saturday April 13, 2013 7:30 PM 10:00 PM CPH 4333
 MTE 201 001 Monday April 15, 2013 9:00 AM 11:30 AM DWE 1501,1502,3522
 MTE 202 001 Friday April 19, 2013 12:30 PM 3:00 PM RCH 302,305
@@ -775,10 +622,8 @@ NE 469 001 Thursday April 18, 2013 4:00 PM 6:30 PM MC 4040
 NE 469 002 Tuesday April 16, 2013 12:30 PM 3:00 PM RCH 205
 NE 479 001 Thursday April 11, 2013 9:00 AM 11:30 AM PAC 9,10
 NE 479 002 Saturday April 20, 2013 9:00 AM 11:30 AM MC 2038
-NE 489 001 Wednesday April 17, 2013 9:00 AM 11:30 AM RCH 306Winter 2013
-Final Examination Schedule
-27
-Exam Section(s) Day Date Start Time End Time Location
+NE 489 001 Wednesday April 17, 2013 9:00 AM 11:30 AM RCH 306
+
 NE 489 002 Wednesday April 24, 2013 9:00 AM 11:30 AM PAC 12
 NE 499 001 Monday April 15, 2013 12:30 PM 3:00 PM RCH 302
 NE 499 002 Tuesday April 16, 2013 12:30 PM 3:00 PM RCH 206
@@ -801,47 +646,33 @@ OPTOM 342B 001 Monday April 15, 2013 4:00 PM 6:30 PM REV 200
 OPTOM 365 001 Saturday April 13, 2013 4:00 PM 6:30 PM REV 200
 OPTOM 367 001 Thursday April 11, 2013 4:00 PM 6:30 PM REV 200
 OPTOM 377 001 Wednesday April 17, 2013 4:00 PM 6:30 PM REV 200
-PACS 201  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PACS 202 001 Thursday April 18, 2013 7:30 PM 10:00 PM DC 1350,1351
 PACS 301 001 Thursday April 11, 2013 9:00 AM 11:30 AM CGC 1300
 PACS 312 001 Tuesday April 23, 2013 7:30 PM 10:00 PM CGC 1302
-PHIL 100J 001 Monday April 22, 2013 7:30 PM 10:00 PM STJ 3014Winter 2013
-Final Examination Schedule
-28
-Exam Section(s) Day Date Start Time End Time Location
+PHIL 100J 001 Monday April 22, 2013 7:30 PM 10:00 PM STJ 3014
+
 PHIL 100J 002 Friday April 12, 2013 4:00 PM 6:30 PM STJ 3014
 PHIL 110A 001 Wednesday April 24, 2013 7:30 PM 10:00 PM AL 124
-PHIL 110B  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PHIL 118J 001 Saturday April 20, 2013 9:00 AM 11:30 AM STJ 3014
 PHIL 145 001 Friday April 12, 2013 7:30 PM 10:00 PM RCH 301,302
-PHIL 145  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-PHIL 202  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PHIL 208 001 Tuesday April 23, 2013 9:00 AM 11:30 AM AL 105
 PHIL 209 001 Friday April 12, 2013 9:00 AM 11:30 AM STJ 3015
 PHIL 215 001 Tuesday April 23, 2013 7:30 PM 10:00 PM RCH 301,302
 PHIL 215 002 Wednesday April 24, 2013 7:30 PM 10:00 PM STJ 2017
-PHIL 221  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PHIL 250A 001 Wednesday April 24, 2013 9:00 AM 11:30 AM AL 105
-PHIL 265  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-PHIL 315 001 Exam removed from the schedule.  Contact instructor for further information.
-PHIL 380  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PHYS 111 001 Saturday April 20, 2013 9:00 AM 11:30 AM PAC 4,5,6,11,12
 PHYS 112 001 to 003 Saturday April 20, 2013 9:00 AM 11:30 AM PAC 1,2,3,7,8,9
 PHYS 112L 001 to 022 Wednesday April 24, 2013 7:30 PM 8:30 PM PAC 4,5,6,7
-PHYS 121  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PHYS 122 001,002 Saturday April 20, 2013 9:00 AM 11:30 AM DC 1350,1351
 PHYS 122L 001 to 004 Wednesday April 24, 2013 7:30 PM 8:30 PM PAC 1
 PHYS 125 001,002 Wednesday April 24, 2013 9:00 AM 11:30 AM PAC 3,8
 PHYS 132L 001 to 004 Wednesday April 24, 2013 7:30 PM 8:30 PM PAC 2
 PHYS 175 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 103
 PHYS 191 001 Saturday April 20, 2013 9:00 AM 11:30 AM DC 1350,1351
-PHYS 223  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-scheduleWinter 2013
-Final Examination Schedule
-29
-Exam Section(s) Day Date Start Time End Time LocationPHYS 234 001 Friday April 19, 2013 4:00 PM 6:30 PM PAC 3
+
+PHYS 234 001 Friday April 19, 2013 4:00 PM 6:30 PM PAC 3
 PHYS 239 001 Tuesday April 16, 2013 7:30 PM 10:00 PM PHY 342
 PHYS 242 001 Thursday April 11, 2013 9:00 AM 11:30 AM RCH 307
-PHYS 246  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PHYS 263 001 Tuesday April 23, 2013 12:30 PM 3:00 PM RCH 307
 PHYS 275 001 Friday April 12, 2013 9:00 AM 11:30 AM RCH 112
 PHYS 280 001 Friday April 12, 2013 12:30 PM 3:00 PM RCH 307
@@ -849,7 +680,6 @@ PHYS 335 001 Thursday April 25, 2013 7:30 PM 10:00 PM PAC 2
 PHYS 359 001 Saturday April 13, 2013 4:00 PM 6:30 PM RCH 301
 PHYS 365 001 Saturday April 20, 2013 9:00 AM 11:30 AM PHY 313
 PHYS 375 001 Saturday April 20, 2013 4:00 PM 6:30 PM PAC 3
-PHYS 380  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PHYS 435 001 Monday April 15, 2013 4:00 PM 6:30 PM PHY 308
 PHYS 441B 001 Wednesday April 17, 2013 12:30 PM 3:00 PM RCH 309
 PHYS 445 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PHY 308
@@ -861,12 +691,11 @@ PLAN 281 001 Tuesday April 16, 2013 7:30 PM 10:00 PM PAC 7,8
 PLAN 341 001 Thursday April 18, 2013 9:00 AM 11:30 AM PAC 11,12
 PLAN 471 001 Wednesday April 17, 2013 7:30 PM 10:00 PM MC 1085
 PLAN 478 001 Saturday April 20, 2013 7:30 PM 3:00 PM CPH 3607
-PLAN 630 001 Wednesday April 17, 2013 7:30 PM 10:00 PM MC 1085PMATH 331 001 Thursday April 11, 2013 4:00 PM 6:30 PM PAC 2
+PLAN 630 001 Wednesday April 17, 2013 7:30 PM 10:00 PM MC 1085
+PMATH 331 001 Thursday April 11, 2013 4:00 PM 6:30 PM PAC 2
 PMATH 332 001 Friday April 12, 2013 4:00 PM 6:30 PM RCH 307
-PMATH 336 001 Friday April 19, 2013 7:30 PM 10:00 PM PAC 12Winter 2013
-Final Examination Schedule
-30
-Exam Section(s) Day Date Start Time End Time Location
+PMATH 336 001 Friday April 19, 2013 7:30 PM 10:00 PM PAC 12
+
 PMATH 340 001 Thursday April 25, 2013 7:30 PM 10:00 PM PAC 4
 PMATH 346 001 Wednesday April 24, 2013 9:00 AM 11:30 AM PAC 5
 PMATH 352 001 Monday April 22, 2013 9:00 AM 11:30 AM RCH 305
@@ -874,9 +703,7 @@ PMATH 365 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 8
 PMATH 399 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 8
 PMATH 441 001 Friday April 12, 2013 4:00 PM 6:30 PM RCH 305
 PMATH 450 001 Monday April 15, 2013 7:30 PM 10:00 PM PAC 6
-PMATH 467 001 Thursday April 11, 2013 4:00 PM 6:30 PM RCH 306
 PMATH 641 001 Friday April 12, 2013 4:00 PM 6:30 PM RCH 305
-PMATH 667 001 Thursday April 11, 2013 4:00 PM 6:30 PM RCH 306
 PORT 102 001 Friday April 19, 2013 9:00 AM 11:00 AM RCH 206
 PSCI 110 001 Friday April 19, 2013 12:30 PM 2:30 PM DC 1350,1351,MC 1085
 PSCI 226 001 Wednesday April 24, 2013 4:00 PM 6:30 PM PAC 8
@@ -887,19 +714,13 @@ PSCI 355 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 10
 PSCI 432 001 Tuesday April 16, 2013 12:30 PM 3:00 PM RCH 112
 PSYCH 101 001 Saturday April 20, 2013 7:30 PM 9:30 PM PAC 1,2,3,4,5,6,9
 PSYCH 101 002 Saturday April 20, 2013 7:30 PM 9:30 PM PAC 7,8,10,11,12
-PSYCH 101  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-PSYCH 207  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PSYCH 211 001 Monday April 22, 2013 4:00 PM 6:30 PM PAC 4,5,6,7
 PSYCH 212R 001 Monday April 15, 2013 9:00 AM 11:30 AM REN 2106
 PSYCH 253 001 Monday April 15, 2013 4:00 PM 6:30 PM PAC 4,5,11,12
 PSYCH 257 001 Thursday April 18, 2013 9:00 AM 11:00 AM DC 1350,1351,MC 1085
-PSYCH 261 001 Thursday April 25, 2013 4:00 PM 6:00 PM DC 1350,1351Winter 2013
-Final Examination Schedule
-31
-Exam Section(s) Day Date Start Time End Time Location
+PSYCH 261 001 Thursday April 25, 2013 4:00 PM 6:00 PM DC 1350,1351
 PSYCH 292 001 Saturday April 20, 2013 9:00 AM 11:30 AM M3 1006,MC 1056
 PSYCH 306 001 Wednesday April 24, 2013 7:30 PM 10:00 PM DC 1351
-PSYCH 312  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 PSYCH 318 001 Tuesday April 16, 2013 9:00 AM 11:30 AM STJ 3014
 PSYCH 321 001 Tuesday April 23, 2013 12:30 PM 3:00 PM RCH 110,112
 PSYCH 322R 001 Tuesday April 16, 2013 12:30 PM 3:00 PM REN 2102,2107
@@ -914,21 +735,14 @@ REC 200 001 Wednesday April 17, 2013 9:00 AM 10:30 AM M3 1006
 REC 205 001 Thursday April 25, 2013 4:00 PM 5:00 PM M3 1006
 REC 306 001 Thursday April 11, 2013 4:00 PM 6:30 PM HH 138
 REC 383 001 Tuesday April 16, 2013 4:00 PM 6:30 PM DC 1351
-REC 415 001 Exam removed from the schedule.  Contact instructor for further information.
 REES 274 001 Thursday April 11, 2013 9:00 AM 11:30 AM ML 311
 REES 364 001 Monday April 22, 2013 12:30 PM 3:00 PM ML 246
-RS 100  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-RS 110  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 RS 151 001 Monday April 22, 2013 9:00 AM 11:30 AM STJ 3027
 RS 232 001 Thursday April 11, 2013 7:30 PM 10:00 PM CGC 1111
-RS 235  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 RS 240 001 Tuesday April 23, 2013 7:30 PM 10:00 PM CGC 1111
-RS 254 001 Thursday April 11, 2013 9:00 AM 11:30 AM STJ 2017Winter 2013
-Final Examination Schedule
-32
-Exam Section(s) Day Date Start Time End Time Location
+RS 254 001 Thursday April 11, 2013 9:00 AM 11:30 AM STJ 2017
+
 RS 331 001 Wednesday April 17, 2013 9:00 AM 11:30 AM PAS 2086
-RS 342 001 Friday April 12, 2013 4:00 PM 6:30 PM RCH 306
 RS 343 001 Tuesday April 23, 2013 9:00 AM 11:30 AM CGC 1300
 RS 375 001 Friday April 12, 2013 7:30 PM 9:30 PM STJ 3016
 RUSS 101 001 Tuesday April 23, 2013 9:00 AM 11:30 AM ML 246
@@ -940,9 +754,7 @@ SCI 227 001 Wednesday April 24, 2013 12:30 PM 2:00 PM RCH 307
 SCI 238 001 Tuesday April 23, 2013 7:30 PM 10:00 PM PAC 1,2
 SCI 250 001 Thursday April 25, 2013 12:30 PM 3:00 PM PAC 8
 SDS 131R 001 to 003 Friday April 12, 2013 9:00 AM 11:30 AM STJ 1036
-SDS 131R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 SDS 150R 001 Monday April 15, 2013 9:00 AM 11:30 AM STJ 2017
-SDS 150R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-scheduleSDS 250R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 SE 350 001 Thursday April 18, 2013 12:30 PM 3:00 PM DC 1351
 SE 380 001 Monday April 15, 2013 4:00 PM 6:30 PM RCH 110,112
 SE 465 001 Monday April 15, 2013 7:30 PM 10:00 PM PAC 1,2
@@ -952,40 +764,24 @@ SI 202R 001 Saturday April 13, 2013 12:30 PM 2:30 PM REN 2106
 SMF 204 001 Friday April 12, 2013 12:30 PM 3:00 PM STJ 1036
 SMF 230 001 Monday April 22, 2013 9:00 AM 11:30 AM STJ 3016
 SMF 305 001 Monday April 15, 2013 7:30 PM 10:00 PM STJ 3027
-SMF 317 001 Thursday April 11, 2013 12:30 PM 3:00 PM RCH 205Winter 2013
-Final Examination Schedule
-33
-Exam Section(s) Day Date Start Time End Time Location
 SOC 101 001 Tuesday April 16, 2013 7:30 PM 10:00 PM PAC 1,2,3,4,5,6,11
-SOC 101  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-SOC 202 001 Thursday April 18, 2013 9:00 AM 11:30 AM AL 208SOC 222  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
+SOC 202 001 Thursday April 18, 2013 9:00 AM 11:30 AM AL 208
 SOC 223 001 Monday April 22, 2013 9:00 AM 11:30 AM PAS 2083
-SOC 224R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 SOC 226 001 Tuesday April 16, 2013 12:30 PM 3:00 PM PAS 1229
 SOC 227 001 Thursday April 18, 2013 4:00 PM 6:30 PM HH 1101,1102
-SOC 229  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-SOC 232  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 SOC 248 001 Tuesday April 16, 2013 7:30 PM 10:00 PM PAS 2083
 SOC 256 001 Wednesday April 24, 2013 7:30 PM 9:30 PM PAS 2083
 SOC 280 001 Tuesday April 23, 2013 12:30 PM 3:00 PM CPH 1346
 SOC 321 001 Thursday April 25, 2013 4:00 PM 6:30 PM RCH 301
 SOC 325 001 Thursday April 11, 2013 7:30 PM 10:00 PM HH 1101
 SOC 326 001 Saturday April 20, 2013 7:30 PM 9:30 PM PAS 1229
-SOC 370  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-scheduleSOCWK 120R 001 Tuesday April 16, 2013 12:30 PM 3:00 PM REN 2106
+SOCWK 120R 001 Tuesday April 16, 2013 12:30 PM 3:00 PM REN 2106
 SOCWK 220R 001 Tuesday April 16, 2013 7:30 PM 10:00 PM REN 2102,2107
 SOCWK 221R 001 Thursday April 11, 2013 7:30 PM 10:00 PM REN 2106
-SOCWK 221R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-SOCWK 222R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 SOCWK 300R 001 Thursday April 11, 2013 9:00 AM 11:30 AM REN 2106
-SOCWK 300R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-SOCWK 320R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-SOCWK 355R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-SPAN 101 001 to 005 Tuesday April 16, 2013 4:00 PM 6:00 PM M3 1006Winter 2013
-Final Examination Schedule
-34
-Exam Section(s) Day Date Start Time End Time Location
+SPAN 101 001 to 005 Tuesday April 16, 2013 4:00 PM 6:00 PM M3 1006
+
 SPAN 102 001,002 Tuesday April 16, 2013 4:00 PM 6:00 PM MC 1085
-SPAN 102  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 SPAN 201A 001 Thursday April 11, 2013 12:30 PM 2:30 PM RCH 105
 SPAN 201B 001,002 Monday April 22, 2013 9:00 AM 11:00 AM RCH 309
 STAT 202 001 Thursday April 25, 2013 9:00 AM 11:30 AM PAC 4,5,6,7
@@ -1010,17 +806,12 @@ STAT 450 001 Saturday April 13, 2013 7:30 PM 10:00 PM RCH 302,305
 STAT 454 001 Tuesday April 16, 2013 7:30 PM 10:00 PM PAC 9,10
 STAT 840 001 Tuesday April 23, 2013 9:00 AM 11:30 AM PAC 12
 STAT 844 001 Thursday April 18, 2013 4:00 PM 6:30 PM PAC 9,10
-STAT 850 001 Saturday April 13, 2013 7:30 PM 10:00 PM RCH 302,305Winter 2013
-Final Examination Schedule
-35
-Exam Section(s) Day Date Start Time End Time Location
+STAT 850 001 Saturday April 13, 2013 7:30 PM 10:00 PM RCH 302,305
+
 STAT 854 001 Tuesday April 16, 2013 7:30 PM 10:00 PM PAC 9,10
 SWREN 120R 001 Tuesday April 16, 2013 12:30 PM 3:00 PM REN 2106
 SWREN 220R 001 Tuesday April 16, 2013 7:30 PM 10:00 PM REN 2102,2107
 SWREN 221R 001 Thursday April 11, 2013 7:30 PM 10:00 PM REN 2106
-SWREN 222R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-SWREN 224R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
-SWREN 250R  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 SWREN 300R 001 Thursday April 11, 2013 9:00 AM 11:30 AM REN 2106
 SYDE 182 001 Wednesday April 17, 2013 9:00 AM 11:30 AM DWE 1501,1502,3522
 SYDE 211 001 Tuesday April 16, 2013 4:00 PM 6:30 PM E5 6006,6008
@@ -1035,7 +826,5 @@ SYDE 352 001 Friday April 12, 2013 4:00 PM 6:30 PM E5 6006,6008
 SYDE 372 001 Friday April 19, 2013 4:00 PM 6:30 PM E5 6006,6008
 SYDE 384 001 Thursday April 18, 2013 12:30 PM 3:00 PM E5 6006,6008
 SYDE 444 001 Tuesday April 16, 2013 9:00 AM 11:30 AM E5 6006,6008
-WS 101  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 WS 208E 001 Saturday April 13, 2013 12:30 PM 3:00 PM REN 2107
-WS 222  081 Online See https://uwaterloo.ca/quest/help/students/how-do-i/online-exam-schedule
 WS 306 001 Thursday April 11, 2013 4:00 PM 6:30 PM HH 138
