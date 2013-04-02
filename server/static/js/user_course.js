@@ -59,7 +59,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       courseReview.on('change:comment', _.bind(this.onCommentsChange, this, 'COURSE'));
       profReview.on('change:comment', _.bind(this.onCommentsChange, this, 'PROFESSOR'));
 
-      // Don't auto scroll because the user is probably editting their data
+      // Don't auto scroll because the user is probably editing their data
       this.canAutoScroll = !this.isMostlyFilledIn();
 
       this.on('sync', _.bind(this.onSync, this));
@@ -267,10 +267,6 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
      * @return {bool} Whether or not the ratings/reviews are "mostly" filled in
      */
     isMostlyFilledIn: function() {
-      var hasRating = function(rating) {
-        return rating.has('rating');
-      };
-
       var courseReview = this.get('course_review');
       var hasCourseReview = !!courseReview.get('comment');
       var hasCourseRating = courseReview.get('ratings').hasRated();
