@@ -164,18 +164,14 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
       var remainingCourses = _.rest(courses, _.indexOf(courses, course) + 1);
 
       // Scroll to the first non-filled-in course after this one
-      _.every(remainingCourses, function(remCourse) {
-        remUserCourse = remCourse.get('user_course');
-
-        if (!remUserCourse.isMostlyFilledIn()) {
-          var elementId = remUserCourse.get('id');
-          // Expand before we can scroll to it
-          $('#' + elementId).trigger('expand');
-          _util.scrollToElementId(elementId);
-          return false;
-        }
-        return true;
+      var targetCourse = _.find(remainingCourses, function(remCourse) {
+        return !remCourse.get('user_course').isMostlyFilledIn();
       });
+
+      // Expand before we can scroll to it
+      var elementId = targetCourse.get('user_course').get('id');
+      $('#' + elementId).trigger('expand');
+      _util.scrollToElementId(elementId);
     },
 
     render: function() {
