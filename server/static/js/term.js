@@ -154,6 +154,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
 
     scrollToNextCourseDelayed: function(event, course) {
       setTimeout(_.bind(this.scrollToNextCourse, this, event, course), 400);
+      mixpanel.track('Reviewing: Auto scroll', { course_id: course.get('id') });
     },
 
     scrollToNextCourse: function(event, course) {
