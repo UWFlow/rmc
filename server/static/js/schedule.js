@@ -353,7 +353,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       } else {
         endDate = moment(startDate).clone().add('days', 4).toDate();
       }
-      console.log(startDate, endDate);
 
       this.set({ start_date: startDate, end_date: endDate });
     },
