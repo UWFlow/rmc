@@ -21,6 +21,7 @@ def render_schedule_page(profile_user_id):
         'last_program_year_id': profile_user.get_latest_program_year_id(),
     })
 
+    # TODO(david): Show exam slots here as well (see render_profile_page)
     schedule_item_dicts = profile_user.get_schedule_item_dicts()
 
     course_ids = [si['course_id'] for si in schedule_item_dicts]
@@ -346,7 +347,7 @@ def render_profile_page(profile_user_id, current_user=None):
     # transcript, since these course objects are needed by the schedule  on the
     # frontend. This should be the case since when we add a schedule item, a
     # corresponding item is added to the transcript.
-    schedule_item_dicts = profile_user.get_schedule_item_dicts()
+    schedule_item_dicts = profile_user.get_schedule_item_dicts(exam_objs)
 
     referrals = m.User.objects(referrer_id=current_user.id)
     referral_objs = [referral.to_dict() for referral in referrals]

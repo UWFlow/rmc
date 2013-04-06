@@ -390,10 +390,15 @@ class User(me.Document):
         # We only have friends from Facebook right now, so just set it
         self.friend_ids = [f.id for f in fb_friends]
 
-    def get_schedule_item_dicts(self):
+    def get_schedule_item_dicts(self, exam_objs=None):
         schedule_item_objs = _user_schedule_item.UserScheduleItem.objects(
                 user_id=self.id, term_id=util.get_current_term_id())
-        return [si.to_dict() for si in schedule_item_objs]
+        dicts = [si.to_dict() for si in schedule_item_objs]
+
+        if exam_objs:
+            dicts.extend(e.to_schedule_obj().to_dict() for e in exam_objs)
+
+        return dicts
 
     def get_all_schedule_items(self):
         return _user_schedule_item.UserScheduleItem.objects(user_id=self.id)

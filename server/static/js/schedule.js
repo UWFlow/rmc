@@ -123,11 +123,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         LAB: 'red',
         SEM: 'yellow',
         TST: 'orange',
+        EXAM: 'orange',  // This is our custom section label for final exams
         PRJ: 'purple'
       }[sectionType];
 
-      // TODO(david): Actually hash the section type to get a color, to be more
-      //     extensible to new unknown section type designations.
       return cssClass || 'gray';
     },
 
@@ -375,7 +374,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     }
   });
 
-  // TODO(jlfwong): Resizing
   var ScheduleView = RmcBackbone.View.extend({
     template: _.template($("#schedule-tpl").html()),
 
