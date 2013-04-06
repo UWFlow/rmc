@@ -374,13 +374,13 @@ def render_profile_page(profile_user_id, current_user=None):
         profile_user_id=profile_user.id,
         current_user_id=current_user.id,
         own_profile=own_profile,
-        has_courses=current_user.has_course_history,
+        has_courses=profile_user.has_course_history,
         exam_objs=exam_dicts,
         exam_updated_date=exam_updated_date,
         schedule_item_objs=schedule_item_dicts,
-        has_shortlisted=current_user.has_shortlisted,
+        has_shortlisted=profile_user.has_shortlisted,
         show_import_schedule=show_import_schedule,
         show_import_schedule_button=own_profile and (not
-                current_user.has_schedule),
+                profile_user.has_schedule),
         course_id_to_review=course_id_to_review,
     )
