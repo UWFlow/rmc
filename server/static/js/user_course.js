@@ -127,6 +127,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       return this.get('user').get('program_name');
     },
 
+    getProfName: function() {
+      var prof = this.get('professor');
+      return prof ? prof.get('name') : '';
+    },
+
     getOverallRating: function() {
       return this.get('course_review').get('ratings').find(function(rating) {
         return rating.get('name') === 'interest';
@@ -145,7 +150,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         description = this.get('course_review').get('comment');
       } else if (reviewType === 'PROFESSOR') {
         name = 'I commented on my ' + courseCode + ' professor ' +
-            this.get('professor').get('name');
+            this.getProfName();
         description = this.get('professor_review').get('comment');
       }
       description = _util.truncatePreviewString(description, 50);
