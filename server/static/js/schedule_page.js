@@ -15,7 +15,7 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   var scheduleItems = new _schedule.ScheduleItemCollection(
     pageData.scheduleItemObjs);
 
-  var schedule = new _schedule.Schedule();
+  var schedule = new _schedule.Schedule({ schedule_items: scheduleItems });
   var scheduleView = _schedule.initScheduleView({
     schedule: schedule,
     scheduleItems: scheduleItems,

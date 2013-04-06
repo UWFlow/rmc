@@ -332,7 +332,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
   var Schedule = RmcBackbone.Model.extend({
     defaults: {
       start_date: null,
-      end_date: null
+      end_date: null,
+      schedule_items: null
     },
 
     initialize: function() {
@@ -341,36 +342,37 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       }
     },
 
+    setWeek: function(startDate) {
+      // Check if there's events on the 6th and 7th days to display weekend
+      var sixthDay = moment(startDate).clone().add('days', 5).toDate();
+      var seventhDay = moment(startDate).clone().add('days', 6).toDate();
+      var endDate = null;
+      if (!this.get('schedule_items').forDay(sixthDay).isEmpty() ||
+          !this.get('schedule_items').forDay(seventhDay).isEmpty()) {
+        endDate = seventhDay;
+      } else {
+        endDate = moment(startDate).clone().add('days', 4).toDate();
+      }
+      console.log(startDate, endDate);
+
+      this.set({ start_date: startDate, end_date: endDate });
+    },
+
     setCurrWeek: function() {
       var currMoment = moment();
 
-      // In out calendar, let us consider saturday to be the start of a week,
-      // since people probably aren't interested in classes of the week that
-      // just passed
-      if (currMoment.day() > 5) {
-        currMoment.add('days', 7);
-      }
-
-      // The default start and end dates are the Monday and Friday of
-      // the current week respectively
-      this.set({
-          start_date: currMoment.day(1).sod().toDate(),
-          end_date: currMoment.day(5).sod().toDate()
-      });
+      // Start the week on the Monday of the current week
+      this.setWeek(currMoment.day(1).sod().toDate());
     },
 
     setNextWeek: function() {
-      this.set({
-        start_date: moment(this.get('start_date')).clone().add('days', 7).toDate(),
-        end_date: moment(this.get('end_date')).clone().add('days', 7).toDate()
-      });
+      this.setWeek(
+          moment(this.get('start_date')).clone().add('days', 7).toDate());
     },
 
     setPrevWeek: function() {
-      this.set({
-        start_date: moment(this.get('start_date')).clone().subtract('days', 7).toDate(),
-        end_date: moment(this.get('end_date')).clone().subtract('days', 7).toDate()
-      });
+      this.setWeek(
+          moment(this.get('start_date')).clone().subtract('days', 7).toDate());
     }
   });
 
@@ -718,7 +720,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     var width = options.width;
     var scheduleItems = options.scheduleItems;
 
-    var schedule = options.schedule || new Schedule();
+    var schedule = options.schedule || new Schedule({
+      schedule_items: scheduleItems
+    });
     var scheduleView = new ScheduleView({
       schedule: schedule,
       maxStartHour: 8,
