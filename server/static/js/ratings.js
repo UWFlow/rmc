@@ -189,6 +189,12 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
       return this.any(function(rating) {
         return _.isNumber(rating.get('rating'));
       });
+    },
+
+    allRated: function() {
+      return this.all(function(rating) {
+        return _.isNumber(rating.get('rating'));
+      });
     }
   });
 

@@ -75,7 +75,21 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       ]);
     },
 
-    onDataChange: function() {
+    onDataChange: function(strictMode) {
+      if (strictMode) {
+        // Only auto scroll if the user rated and reviewed all fields for prof
+        // This heuristic tries to address the case where the user:
+        //  1) Reviews the prof
+        //  2) Rates the first prof criteria
+        //  3) Tries to rate another prof criteria
+        // We should prevent auto scroll for 3).
+        // We don't consider course ratings because the user is likely done with
+        // the course portion by this point.
+        if (!this.get('professor_review').get('ratings').allRated()) {
+          return;
+        }
+      }
+
       if (this.canAutoScroll && this.isMostlyFilledIn()) {
         // Trigger an event on the CourseView
         var elementId = this.get('id');
@@ -87,7 +101,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
     onRatingsChange: function(ratingType) {
       this.save();
-      this.onDataChange();
+      this.onDataChange(true);
 
       this.logToGA(ratingType, 'RATING');
       mixpanel.track('Reviewing: Save Ratings', {
@@ -100,7 +114,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     onCommentsChange: function(reviewType) {
       // TODO(david): Make this fn more consistent with onRatingsChange (which
       //     calls this.save() first. This doesn't because view calls save).
-      this.onDataChange();
+      this.onDataChange(false);
 
       this.logToGA(reviewType, 'REVIEW');
       mixpanel.track('Reviewing: Save comments', {
