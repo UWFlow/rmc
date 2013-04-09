@@ -105,12 +105,14 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
   };
 
   (function() {
-    // Override bootstrap with saner defaults
-    var overrides = {
-      animation: false
-    };
-    _.extend($.fn.tooltip.defaults, overrides);
-    _.extend($.fn.popover.defaults, overrides);
+    if ($.fn.tooltip !== undefined && $.fn.popover !== undefined) {
+      // Override bootstrap with saner defaults
+      var overrides = {
+        animation: false
+      };
+      _.extend($.fn.tooltip.defaults, overrides);
+      _.extend($.fn.popover.defaults, overrides);
+    }
   })();
 
   // TODO(mack): separate code inside into functions
