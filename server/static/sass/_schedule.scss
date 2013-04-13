@@ -15,7 +15,7 @@ $toolbarBg: #FAFAFA;
     vertical-align: bottom;
 
     border-bottom: 1px solid $wellBorderColor;
-    padding: 10px 15px;
+    padding: 8px 15px;
     background: $toolbarBg;
 
     $height: 22px;
@@ -126,10 +126,10 @@ $toolbarBg: #FAFAFA;
     @include transition(all 100ms cubic-bezier(0.51, 0.01, 0.37, 0.98) 50ms);
 
     border-width: 1px;
-    padding: 1px 4px;
+    padding: 1px 3px;
     position: absolute;
     font-size: 14px;
-    line-height: 14px;
+    line-height: 12px;
     @include box-sizing(border-box);
     border-color: darken($wellBorderColor, 10%);
     border-left-width: 3px;  // TODO(david): Make this look less like Schedule+
@@ -156,7 +156,7 @@ $toolbarBg: #FAFAFA;
     .time-loc-info {
       color: #666;
       font-size: 13px;
-      line-height: 13px;
+      line-height: 11px;
     }
   }
 
