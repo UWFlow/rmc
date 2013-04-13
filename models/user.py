@@ -391,8 +391,17 @@ class User(me.Document):
         self.friend_ids = [f.id for f in fb_friends]
 
     def get_schedule_item_dicts(self, exam_objs=None):
+        """Gets all schedule items for this user starting no later than a year
+        ago.
+
+        Args:
+            exam_objs: Optional exam objects to convert to UserScheduleItem and
+                add to return list.
+        Returns: a list of UserScheduleItem models as dicts.
+        """
+        one_year_ago = datetime.datetime.now() - datetime.timedelta(days=365)
         schedule_item_objs = _user_schedule_item.UserScheduleItem.objects(
-                user_id=self.id, term_id=util.get_current_term_id())
+                user_id=self.id, start_date__gte=one_year_ago)
         dicts = [si.to_dict() for si in schedule_item_objs]
 
         if exam_objs:
