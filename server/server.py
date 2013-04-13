@@ -810,6 +810,7 @@ def upload_schedule():
 
     schedule_data = util.json_loads(req.form.get('schedule_data'))
     processed_items = schedule_data['processed_items']
+    failed_items = schedule_data['failed_items']
     term_name = schedule_data['term_name']
     term_id = m.Term.id_from_name(term_name)
 
@@ -825,8 +826,10 @@ def upload_schedule():
         },
     )
 
+    now = datetime.now()
+
     user.last_good_schedule_paste = req.form.get('schedule_text')
-    user.last_good_schedule_paste_date = datetime.now()
+    user.last_good_schedule_paste_date = now
     user.save()
 
     # Remove existing schedule items for the user for the given term
@@ -877,6 +880,23 @@ def upload_schedule():
 
         except KeyError:
             logging.error("Invalid item in uploaded schedule: %s" % (item))
+
+    # Add courses that failed to fully parse, probably due to unavailable times
+    for course_id in set(failed_items):
+        fsi = m.FailedScheduleItem(
+            user_id=user.id,
+            course_id=course_id,
+            parsed_date=now,
+        )
+
+        try:
+            fsi.save()
+        except me.NotUniqueError as ex:
+            # This should never happen since we're iterating over a set
+            logging.warn('WTF this should never happen.')
+            logging.warn('Duplicate error FailedScheduleItem.save(): %s' % ex)
+
+        user.add_course(course_id, term_id)
 
     user.schedules_imported += 1
     user.save()

@@ -409,6 +409,12 @@ class User(me.Document):
 
         return dicts
 
+    def get_failed_schedule_item_dicts(self):
+        one_year_ago = datetime.datetime.now() - datetime.timedelta(days=365)
+        schedule_item_objs = _user_schedule_item.FailedScheduleItem.objects(
+                user_id=self.id, parsed_date__gte=one_year_ago)
+        return [si.to_dict() for si in schedule_item_objs]
+
     def get_all_schedule_items(self):
         return _user_schedule_item.UserScheduleItem.objects(user_id=self.id)
 

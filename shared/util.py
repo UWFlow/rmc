@@ -122,3 +122,12 @@ def eastern_to_utc(date):
 
 def utc_date(date, tz):
     return tz.normalize(tz.localize(date)).astimezone(pytz.utc)
+
+def to_dict(doc, fields):
+    """Warning: Using this convenience fn is probably not as efficient as the
+    plain old manually building up a dict."""
+    def map_field(prop):
+        val = getattr(doc, prop)
+        return val.to_dict() if hasattr(val, 'to_dict') else val
+
+    return { f: map_field(f) for f in fields }

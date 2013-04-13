@@ -333,12 +333,22 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     defaults: {
       start_date: null,
       end_date: null,
-      schedule_items: null
+      schedule_items: null,
+      failed_schedule_items: null
     },
 
     initialize: function() {
       if (!this.get('start_date') || !this.get('end_date')) {
         this.setCurrWeek();
+      }
+
+      if (this.has('failed_schedule_items')) {
+        this.set('courses_not_shown',
+          _.chain(this.get('failed_schedule_items'))
+            .pluck('course_id')
+            .uniq()
+            .value()
+        );
       }
     },
 
@@ -405,7 +415,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     render: function() {
       this.$el.html(this.template({
         start_date: this.schedule.get('start_date'),
-        end_date: this.schedule.get('end_date')
+        end_date: this.schedule.get('end_date'),
+        // TODO(david): Only show for appropriate term
+        courses_not_shown: this.schedule.get('courses_not_shown')
       }));
 
       // Remove any existing days and hour labels
@@ -720,7 +732,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     var scheduleItems = options.scheduleItems;
 
     var schedule = options.schedule || new Schedule({
-      schedule_items: scheduleItems
+      schedule_items: scheduleItems,
+      failed_schedule_items: options.failedScheduleItems
     });
     var scheduleView = new ScheduleView({
       schedule: schedule,
@@ -917,6 +930,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var bodyRe = getBodyRe();
       // Extract each of the class items
       var classItems = extractMatches(rawItem, bodyRe);
+
+      if (!classItems.length) {  // No class items extracted.
+        failedItems.push(courseId);
+      }
 
       _.each(classItems, _.bind(function(cId, classItem) {
         var classMatches = getBodyRe().exec(classItem);

@@ -348,6 +348,7 @@ def render_profile_page(profile_user_id, current_user=None):
     # frontend. This should be the case since when we add a schedule item, a
     # corresponding item is added to the transcript.
     schedule_item_dicts = profile_user.get_schedule_item_dicts(exam_objs)
+    failed_schedule_item_dicts = profile_user.get_failed_schedule_item_dicts()
 
     referrals = m.User.objects(referrer_id=current_user.id)
     referral_objs = [referral.to_dict() for referral in referrals]
@@ -378,6 +379,7 @@ def render_profile_page(profile_user_id, current_user=None):
         exam_objs=exam_dicts,
         exam_updated_date=exam_updated_date,
         schedule_item_objs=schedule_item_dicts,
+        failed_schedule_item_objs=failed_schedule_item_dicts,
         has_shortlisted=profile_user.has_shortlisted,
         show_import_schedule=show_import_schedule,
         show_import_schedule_button=own_profile and (not

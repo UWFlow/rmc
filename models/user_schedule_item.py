@@ -1,5 +1,7 @@
 import mongoengine as me
 
+from rmc.shared import util
+
 class UserScheduleItem(me.Document):
     meta = {
         'indexes': [
@@ -70,3 +72,26 @@ class UserScheduleItem(me.Document):
             self.start_date,
             self.end_date,
         )
+
+
+class FailedScheduleItem(me.Document):
+    meta = {
+        'indexes': [
+            'user_id',
+            'parsed_date',
+        ],
+    }
+
+    user_id = me.ObjectIdField(unique_with=['course_id', 'parsed_date'])
+    course_id = me.StringField(required=True)
+    parsed_date = me.DateTimeField(required=True)
+
+    TO_DICT_FIELDS = ['id', 'user_id', 'course_id', 'parsed_date']
+
+    def to_dict(self):
+        return util.to_dict(self, FailedScheduleItem.TO_DICT_FIELDS)
+
+    def __repr__(self):
+        return "<FailedScheduleItem: %s, %s, %s, %s %s, %s-%s>" % (
+            self.user_id, self.course_id, self.parsed_date)
+

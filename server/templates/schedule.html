@@ -37,48 +37,56 @@
 {% endcall %}
 
 {% call macros.us_template('schedule-tpl') %}
-<div class="schedule-nav">
-  <div class="date-range">
-    <% var start_moment = moment(start_date); %>
-    <% var end_moment = moment(end_date); %>
-    <% if (end_moment.year() !== start_moment.year()) { %>
+<div class="schedule-frame">
+  <div class="schedule-nav">
+    <div class="date-range">
+      <% var start_moment = moment(start_date); %>
+      <% var end_moment = moment(end_date); %>
+      <% if (end_moment.year() !== start_moment.year()) { %>
       <%- moment(start_date).format('MMMM Do, YYYY') %>
       -
       <%- moment(end_date).format('MMMM Do, YYYY') %>
-    <% } else if (end_moment.month() !== start_moment.month()) { %>
+      <% } else if (end_moment.month() !== start_moment.month()) { %>
       <%- moment(start_date).format('MMMM Do') %>
       -
       <%- moment(end_date).format('MMMM Do, YYYY') %>
-    <% } else if (end_moment.date() !== start_moment.date()) { %>
+      <% } else if (end_moment.date() !== start_moment.date()) { %>
       <%- moment(start_date).format('MMMM Do') %>
       -
       <%- moment(end_date).format('Do, YYYY') %>
-    <% } else { %>
+      <% } else { %>
       <%- moment(start_date).format('MMMM Do, YYYY') %>
-    <% } %>
-  </div>
-  <div class="buttons">
-    <button class="btn curr-week-btn">Current Week</button>
-    <div class="btn-group prev-next-week-btns">
-      <button class="btn prev-week-btn">
-        <i class="icon-chevron-left"></i>
-      </button>
-      <button class="btn next-week-btn">
-        <i class="icon-chevron-right"></i>
-      </button>
+      <% } %>
+    </div>
+    <div class="buttons">
+      <button class="btn curr-week-btn">Current Week</button>
+      <div class="btn-group prev-next-week-btns">
+        <button class="btn prev-week-btn">
+          <i class="icon-chevron-left"></i>
+        </button>
+        <button class="btn next-week-btn">
+          <i class="icon-chevron-right"></i>
+        </button>
+      </div>
     </div>
   </div>
-</div>
-<div class="times">
+  <div class="times">
     <div class="header">
     </div>
     <div class="hour-label-container">
     </div>
+  </div>
+  <div class="day-container clearfix">
+  </div>
+  <div class="clearfix"></div>
+  <div class="schedule-share-placeholder"></div>
 </div>
-<div class="day-container clearfix">
-</div>
-<div class="clearfix"></div>
-<div class="schedule-share-placeholder"></div>
+<% if (courses_not_shown.length) { %>
+  <div class="courses-not-shown alert alert-warning">
+    Yo! <strong><%- courses_not_shown.join(', ').toUpperCase() %></strong> not
+    shown above because meeting times are TBA. Reimport when times are known.
+  </div>
+<% } %>
 {% endcall %}
 
 {# TODO(Sandy): consider generalizing this if we need it later #}

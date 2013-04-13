@@ -135,6 +135,7 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     var $schedulePlaceholder = $("#class-schedule-placeholder");
     var scheduleView = _schedule.initScheduleView({
       scheduleItems: scheduleItems,
+      failedScheduleItems: window.pageData.failedScheduleItemObjs,
       width: $schedulePlaceholder.outerWidth(),
       showSharing: window.pageData.ownProfile
     });

@@ -3,10 +3,12 @@
 $toolbarBg: #FAFAFA;
 
 .class-schedule {
-  border: 1px solid $wellBorderColor;
-  position: relative;
-  background: white;
-  @include border-radius(4px);
+  .schedule-frame {
+    border: 1px solid $wellBorderColor;
+    position: relative;
+    background: white;
+    @include border-radius(4px);
+  }
 
   .schedule-nav {
     @extend .clearfix;
@@ -162,6 +164,10 @@ $toolbarBg: #FAFAFA;
     position: relative;
     height: 100%;
     border-top: 1px solid $wellBorderColor;
+  }
+
+  .courses-not-shown {
+    margin-top: 10px;
   }
 }
 
