@@ -81,7 +81,7 @@
   <div class="clearfix"></div>
   <div class="schedule-share-placeholder"></div>
 </div>
-<% if (courses_not_shown.length) { %>
+<% if (courses_not_shown && courses_not_shown.length) { %>
   <div class="courses-not-shown alert alert-warning">
     Yo! <strong><%- courses_not_shown.join(', ').toUpperCase() %></strong> not
     shown above because meeting times are TBA. Reimport when times are known.
