@@ -117,14 +117,19 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
   var examObjs = window.pageData.examObjs;
   if (examObjs && examObjs.length) {
     var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
-    var examSchedule = new _exam.ExamSchedule({
-      exams: examCollection,
-      last_updated_date: window.pageData.examUpdatedDate
-    });
-    var examScheduleView = new _exam.ExamScheduleView({
-      examSchedule: examSchedule
-    });
-    $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
+
+    // Only show this "final exams" section if there are actually exams taking
+    // place in the future
+    if (examCollection.latestExam().get('end_date') >= new Date()) {
+      var examSchedule = new _exam.ExamSchedule({
+        exams: examCollection,
+        last_updated_date: window.pageData.examUpdatedDate
+      });
+      var examScheduleView = new _exam.ExamScheduleView({
+        examSchedule: examSchedule
+      });
+      $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
+    }
   }
 
   // Render the schedule if possible
