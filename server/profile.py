@@ -60,7 +60,10 @@ def render_schedule_page(profile_user_id):
 def render_schedule_ical_feed(profile_user_secret_id):
     profile_user = m.User.objects(secret_id=profile_user_secret_id).first()
 
-    # TODO(jlfwong): Handle profile user does not exist case
+    if profile_user is None:
+        logging.error("No profile user with secret id '%s'" %
+            profile_user_secret_id)
+        return ''
 
     # TODO(david): Show exam slots here as well (see render_profile_page)
     schedule_item_dict_list = profile_user.get_schedule_item_dicts()
