@@ -79,6 +79,8 @@ def render_schedule_ical_feed(profile_user_secret_id):
         )
 
     cal = icalendar.Calendar()
+    cal.add('x-wr-calname', 'uwflow.com schedule')
+    cal.add('x-wr-caldesc', 'Schedule exported from http://uwflow.com')
 
     for schedule_item_dict in schedule_item_dict_list:
         event = icalendar.Event()
