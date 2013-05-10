@@ -187,6 +187,14 @@ def demo_profile():
 def profile_page(profile_user_id):
     return profile.render_profile_page(profile_user_id)
 
+# TODO(jlfwong): This is a bad privacy pattern. This is privacy through
+# obscurity, but profile IDs are discoverable via profile pictures of
+# friends-of-friends
+@app.route('/schedule/ical/<string:profile_user_id>')
+def schedule_page_ical(profile_user_id):
+    logging.info('ICAL')
+    return profile.render_schedule_ical_feed(profile_user_id)
+
 @app.route('/schedule', defaults={'profile_user_id': None})
 @app.route('/schedule/<string:profile_user_id>')
 def schedule_page(profile_user_id):

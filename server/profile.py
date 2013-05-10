@@ -3,6 +3,7 @@ import logging
 
 import bson
 import flask
+import icalendar
 
 import rmc.models as m
 import rmc.server.view_helpers as view_helpers
@@ -55,6 +56,50 @@ def render_schedule_page(profile_user_id):
         course_objs=course_dicts,
         show_printable=flask.request.values.get('print'),
     )
+
+def render_schedule_ical_feed(profile_user_id):
+    profile_user = m.User.objects.with_id(profile_user_id)
+
+    # TODO(david): Show exam slots here as well (see render_profile_page)
+    schedule_item_dict_list = profile_user.get_schedule_item_dicts()
+
+    course_ids = set([sid['course_id'] for sid in schedule_item_dict_list])
+
+    limited_course_list = (m.Course.objects(id__in=course_ids)
+        .only('id', 'department_id', 'number'))
+
+    humanized_course_id = {}
+
+    for limited_course in limited_course_list:
+        humanized_course_id[limited_course.id] = (
+            limited_course.department_id.upper() + ' ' +
+            limited_course.number
+        )
+
+    cal = icalendar.Calendar()
+
+    for schedule_item_dict in schedule_item_dict_list:
+        event = icalendar.Event()
+        summary_fmt = '%(course_id)s - %(section_type)s %(section_num)s'
+        summary = summary_fmt % {
+            'course_id': humanized_course_id[schedule_item_dict['course_id']],
+            'section_type': schedule_item_dict['section_type'],
+            'section_num': schedule_item_dict['section_num'],
+        }
+        event.add('summary', summary)
+        # TODO(jlfwong): DTSTAMP is actually supposed to be when the event was
+        # created, not when it is. Not sure what to put here
+        event.add('dtstamp', schedule_item_dict['start_date'])
+        event.add('dtstart', schedule_item_dict['start_date'])
+        event.add('dtend', schedule_item_dict['end_date'])
+
+        logging.info('%s %s (%s)' % (summary, schedule_item_dict['start_date'], schedule_item_dict['id']))
+
+        cal.add_component(event)
+
+    response = flask.make_response(cal.to_ical())
+    response.headers["Content-type"] = "text/calendar"
+    return response
 
 
 def render_profile_page(profile_user_id, current_user=None):
