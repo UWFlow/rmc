@@ -57,8 +57,10 @@ def render_schedule_page(profile_user_id):
         show_printable=flask.request.values.get('print'),
     )
 
-def render_schedule_ical_feed(profile_user_id):
-    profile_user = m.User.objects.with_id(profile_user_id)
+def render_schedule_ical_feed(profile_user_secret_id):
+    profile_user = m.User.objects(secret_id=profile_user_secret_id).first()
+
+    # TODO(jlfwong): Handle profile user does not exist case
 
     # TODO(david): Show exam slots here as well (see render_profile_page)
     schedule_item_dict_list = profile_user.get_schedule_item_dicts()
@@ -141,6 +143,11 @@ def render_profile_page(profile_user_id, current_user=None):
         if profile_user is None:
             logging.warn('profile_user is None')
             return view_helpers.redirect_to_profile(current_user)
+
+    if own_profile:
+        profile_user_secret_id = profile_user.get_secret_id()
+    else:
+        profile_user_secret_id = None
 
     show_import_schedule = False
     # Redirect the user appropriately... to /onboarding if they have no course
@@ -419,6 +426,7 @@ def render_profile_page(profile_user_id, current_user=None):
         profile_obj=profile_dict,
         profile_user_id=profile_user.id,
         current_user_id=current_user.id,
+        profile_user_secret_id=profile_user_secret_id,
         own_profile=own_profile,
         has_courses=profile_user.has_course_history,
         exam_objs=exam_dicts,

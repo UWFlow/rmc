@@ -2,6 +2,8 @@ import base64
 import datetime
 import hashlib
 import itertools
+import random
+import string
 import time
 import uuid
 
@@ -19,6 +21,10 @@ from rmc.shared import util
 
 PROMPT_TO_REVIEW_DELAY_DAYS = 60
 
+# TODO(jlfwong): Use a random generator that's cryptographically secure instead
+def generate_secret_id(size=9, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for x in range(size))
+
 class User(me.Document):
 
     class JoinSource(object):
@@ -34,7 +40,12 @@ class User(me.Document):
         ],
     }
 
-    # id = me.ObjectIdField(primary_key=True)
+    # Randomly generated ID used to access some subset of user's information
+    # without going through any ACL. Used for e.g. sharing schedules with non
+    # flow users.
+    #
+    # e.g. A8RLLZTMX
+    secret_id = me.StringField()
 
     # TODO(mack): join_date should be encapsulate in _id, but store it
     # for now, just in case; can remove it when sure that info is in _id
@@ -417,6 +428,13 @@ class User(me.Document):
 
     def get_all_schedule_items(self):
         return _user_schedule_item.UserScheduleItem.objects(user_id=self.id)
+
+    def get_secret_id(self):
+        if self.secret_id is None:
+            self.secret_id = generate_secret_id()
+            self.save()
+
+        return self.secret_id
 
     def add_course(self, course_id, term_id, program_year_id=None):
         '''
