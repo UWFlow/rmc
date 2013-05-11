@@ -404,6 +404,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       if (this.showSharing) {
         this.scheduleShareView = new ScheduleShareView({
           url: getPublicScheduleLink(),
+          iCalUrl: getICalScheduleUrl(),
           schedule: this.schedule
         });
       }
@@ -755,6 +756,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
   var getPublicScheduleLink = function() {
     return _util.getSiteBaseUrl() +
         '/schedule/' + window.pageData.currentUserId.$oid;
+  };
+
+  var getICalScheduleUrl = function() {
+    return _util.getSiteBaseUrl() +
+        '/schedule/ical/' + window.pageData.profileUserSecretId + ".ics";
   };
 
   // TODO(jlfwong): Remove me - move to profile.js and make data come from
