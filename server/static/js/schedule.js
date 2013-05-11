@@ -670,7 +670,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     events: {
       'click .facebook-btn': 'shareScheduleFacebook',
       'click .link-box': 'onFocus',
-      'click .reimport-btn': 'openImportModal'
+      'click .reimport-btn': 'openImportModal',
+      'click .google-calendar-export-btn': 'logGoogleCalendarExport',
+      'click .icalendar-export-btn': 'logICalendarExport'
       // TODO(Sandy): Restore text after clicking away?
     },
 
@@ -696,6 +698,18 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
             }, this)
       });
       this.logShareIntent('Facebook');
+    },
+
+    logGoogleCalendarExport: function() {
+      mixpanel.track('Schedule Export', {
+        ExportType: 'Google Calendar'
+      });
+    },
+
+    logICalendarExport: function() {
+      mixpanel.track('Schedule Export', {
+        ExportType: 'iCalendar'
+      });
     },
 
     logShareIntent: function(shareMethod) {
