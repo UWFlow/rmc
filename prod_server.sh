@@ -18,5 +18,6 @@ uwsgi \
   --master \
   --workers 4 \
   --daemonize /home/rmc/logs/uwsgi.log \
+  --buffer-size 32768 \
   --pidfile $1
 
