@@ -15,8 +15,7 @@ import rmc.shared.util as util
 RESHOW_ONBOARDING_DELAY_DAYS = 45
 RESHOW_SCHEDULE_DELAY_DAYS = 5
 
-def render_schedule_page(profile_user_id):
-    profile_user = m.User.objects.with_id(profile_user_id)
+def render_schedule_page(profile_user):
     profile_dict = profile_user.to_dict()
     profile_dict.update({
         'last_program_year_id': profile_user.get_latest_program_year_id(),

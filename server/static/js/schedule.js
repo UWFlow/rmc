@@ -769,7 +769,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
   var getPublicScheduleLink = function() {
     return _util.getSiteBaseUrl() +
-        '/schedule/' + window.pageData.currentUserId.$oid;
+        '/schedule/' + window.pageData.profileUserSecretId;
   };
 
   var getICalScheduleUrl = function() {
