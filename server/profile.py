@@ -89,7 +89,7 @@ def render_schedule_ical_feed(profile_user_secret_id):
         event = icalendar.Event()
         summary_fmt = '%(course_id)s - %(section_type)s %(section_num)s'
         summary = summary_fmt % {
-            'course_id': humanized_course_id[schedule_item_dict['course_id']],
+            'course_id': humanized_course_id.get(schedule_item_dict['course_id'], schedule_item_dict['course_id']),
             'section_type': schedule_item_dict['section_type'],
             'section_num': schedule_item_dict['section_num'],
         }
@@ -99,8 +99,6 @@ def render_schedule_ical_feed(profile_user_secret_id):
         event.add('dtstamp', schedule_item_dict['start_date'])
         event.add('dtstart', schedule_item_dict['start_date'])
         event.add('dtend', schedule_item_dict['end_date'])
-
-        logging.info('%s %s (%s)' % (summary, schedule_item_dict['start_date'], schedule_item_dict['id']))
 
         cal.add_component(event)
 
