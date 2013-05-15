@@ -65,6 +65,10 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       this.on('sync', _.bind(this.onSync, this));
     },
 
+    disableAutoScroll: function() {
+      this.canAutoScroll = false;
+    },
+
     // TODO(david): Copied from UserCourseView
     logToGA: function(event, label) {
       _gaq.push([
@@ -77,12 +81,12 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
     onDataChange: function(strictMode) {
       if (strictMode) {
-        // Only auto scroll if the user rated and reviewed all fields for prof
+        // Only auto scroll if the user rated all fields for prof
         // This heuristic tries to address the case where the user:
         //  1) Reviews the prof
         //  2) Rates the first prof criteria
         //  3) Tries to rate another prof criteria
-        // We should prevent auto scroll for 3).
+        // If we don't prevent auto scroll, then 2) will trigger an auto-scroll.
         // We don't consider course ratings because the user is likely done with
         // the course portion by this point.
         if (!this.get('professor_review').get('ratings').allRated()) {
@@ -657,6 +661,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
       this.courseModel = _course.CourseCollection.getFromCache(courseId);
       this.userCourse = this.courseModel.get('user_course');
+      this.userCourse.disableAutoScroll();
       this.userCourseView = new UserCourseView({
         userCourse: this.userCourse,
         courseModel: this.courseModel
