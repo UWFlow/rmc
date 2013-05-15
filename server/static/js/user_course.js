@@ -59,14 +59,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       courseReview.on('change:comment', _.bind(this.onCommentsChange, this, 'COURSE'));
       profReview.on('change:comment', _.bind(this.onCommentsChange, this, 'PROFESSOR'));
 
-      // Don't auto scroll because the user is probably editing their data
-      this.canAutoScroll = !this.isMostlyFilledIn();
-
       this.on('sync', _.bind(this.onSync, this));
-    },
-
-    disableAutoScroll: function() {
-      this.canAutoScroll = false;
     },
 
     // TODO(david): Copied from UserCourseView
@@ -79,27 +72,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       ]);
     },
 
-    onDataChange: function(strictMode) {
-      if (strictMode) {
-        // Only auto scroll if the user rated all fields for prof
-        // This heuristic tries to address the case where the user:
-        //  1) Reviews the prof
-        //  2) Rates the first prof criteria
-        //  3) Tries to rate another prof criteria
-        // If we don't prevent auto scroll, then 2) will trigger an auto-scroll.
-        // We don't consider course ratings because the user is likely done with
-        // the course portion by this point.
-        if (!this.get('professor_review').get('ratings').allRated()) {
-          return;
-        }
-      }
-
-      if (this.canAutoScroll && this.isMostlyFilledIn()) {
-        // Trigger an event on the CourseView
-        var elementId = this.get('id');
-        $('#' + elementId).trigger('mostlyFilledIn', this.get('course'));
-        // Only auto scroll once
-        this.canAutoScroll = false;
+    onDataChange: function(isRatingChange) {
+      if (this.isMostlyFilledIn()) {
+        this.trigger('mostlyFilledIn', isRatingChange);
       }
     },
 
@@ -332,6 +307,11 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
         reviewType: 'PROFESSOR'
       });
 
+      // Auto scroll
+      this.userCourse.on('mostlyFilledIn', _.bind(this.doAutoScroll, this));
+      // Don't auto scroll if the user is just editing their data
+      this.canAutoScroll = !this.userCourse.isMostlyFilledIn();
+
       courseReview.on('change:comment',
           _.bind(this.saveComments, this, this.courseCommentView));
       profReview.on('change:comment',
@@ -432,6 +412,31 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
     events: {
       'change .prof-select': 'onProfSelect'
+    },
+
+    /**
+     * Only auto scroll if the user rated all fields for the professor.
+     * This heuristic tries to address the case where the user:
+     *  1) Reviews the prof
+     *  2) Rates the first prof criteria
+     *  3) Tries to rate another prof criteria
+     * If we don't prevent auto scroll, then 2) will trigger an auto-scroll.
+     * We don't consider course ratings because the user is likely done with the
+     * course portion by this point.
+     * @return {void}
+     */
+    doAutoScroll: function(isRatingChange) {
+      if (isRatingChange) {
+        if (!this.userCourse.get('professor_review').get('ratings').allRated()) {
+          return;
+        }
+      }
+
+      if (this.canAutoScroll) {
+        this.$el.trigger('autoScroll', this.courseModel);
+        // Only auto scroll once
+        this.canAutoScroll = false;
+      }
     },
 
     logToGA: function(event, label) {
@@ -661,7 +666,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
       this.courseModel = _course.CourseCollection.getFromCache(courseId);
       this.userCourse = this.courseModel.get('user_course');
-      this.userCourse.disableAutoScroll();
+
       this.userCourseView = new UserCourseView({
         userCourse: this.userCourse,
         courseModel: this.courseModel

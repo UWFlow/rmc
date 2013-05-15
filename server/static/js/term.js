@@ -149,7 +149,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
     },
 
     events: {
-      'mostlyFilledIn': 'scrollToNextCourseDelayed'
+      'autoScroll': 'scrollToNextCourseDelayed'
     },
 
     scrollToNextCourseDelayed: function(event, course) {
