@@ -266,15 +266,15 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
      */
     isMostlyFilledIn: function() {
       var courseReview = this.get('course_review');
-      var hasCourseReview = !!courseReview.get('comment');
-      var hasCourseRating = courseReview.get('ratings').hasRated();
-
       var professorReview = this.get('professor_review');
-      var hasProfessorReview = !!professorReview.get('comment');
-      var hasProfessorRating = professorReview.get('ratings').hasRated();
 
-      return hasCourseReview && hasCourseRating &&
-             hasProfessorReview && hasProfessorRating;
+      var hasCourseRating = courseReview.get('ratings').hasRated();
+      var hasProfessorRating = professorReview.get('ratings').hasRated();
+      var hasCourseReview = !!courseReview.get('comment');
+      var hasProfessorReview = !!professorReview.get('comment');
+
+      return hasProfessorRating && hasCourseRating &&
+             hasProfessorReview && hasCourseReview;
     }
   });
 
@@ -308,7 +308,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       });
 
       // Auto scroll
-      this.userCourse.on('mostlyFilledIn', _.bind(this.doAutoScroll, this));
+      this.userCourse.on('mostlyFilledIn', _.bind(this.tryAutoScroll, this));
       // Don't auto scroll if the user is just editing their data
       this.canAutoScroll = !this.userCourse.isMostlyFilledIn();
 
@@ -425,7 +425,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
      * course portion by this point.
      * @return {void}
      */
-    doAutoScroll: function(isRatingChange) {
+    tryAutoScroll: function(isRatingChange) {
       if (isRatingChange) {
         if (!this.userCourse.get('professor_review').get('ratings').allRated()) {
           return;

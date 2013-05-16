@@ -152,14 +152,14 @@ function(_, _s) {
   };
 
   var scrollToElementId = function(id) {
-    var scrollOffset = $('#' + id).offset().top;
     // Compensate for nav bar height
+    var scrollOffset = $('#course-view-' + id).offset().top;
     var navBarOffset = $('#site-nav').height();
-    $('body')
-      .animate({
-        scrollTop: scrollOffset - navBarOffset,
-        duration: 2000
-      });
+
+    $('body').animate({
+      scrollTop: scrollOffset - navBarOffset,
+      duration: 2000
+    });
   };
 
   return {

@@ -164,15 +164,15 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
       }, []);
       var remainingCourses = _.rest(courses, _.indexOf(courses, course) + 1);
 
-      // Scroll to the first non-filled-in course after this one
+      // Scroll to the first non-filled-in course
       var targetCourse = _.find(remainingCourses, function(remCourse) {
         return !remCourse.get('user_course').isMostlyFilledIn();
       });
 
-      // Expand before we can scroll to it
-      var elementId = targetCourse.get('user_course').get('id');
-      $('#' + elementId).trigger('expand');
-      _util.scrollToElementId(elementId);
+      // Expand the course card before we scroll to it
+      var userCourseId = targetCourse.get('user_course').get('id');
+      $('#' + 'course-view-' + userCourseId).trigger('expand');
+      _util.scrollToElementId(userCourseId);
     },
 
     render: function() {
