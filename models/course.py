@@ -1,4 +1,5 @@
 import re
+import collections
 
 import mongoengine as me
 
@@ -6,6 +7,7 @@ import professor
 import rating
 from rmc.shared import util
 import user_course as _user_course
+import user as _user
 
 class Course(me.Document):
     meta = {
@@ -76,6 +78,7 @@ class Course(me.Document):
             'interest': self.interest.to_dict(),
             'usefulness': self.usefulness.to_dict(),
             'easiness': self.easiness.to_dict(),
+            'gender_ratio': self.gender_ratio.to_dict()
         }
 
     # TODO(david): Cache function result
@@ -88,6 +91,36 @@ class Course(me.Document):
             return professors.all()
         else:
             return professors.only('id', 'first_name', 'last_name')
+
+    def get_all_user_courses(self):
+        return _user_course.UserCourse.objects(course_id=self.id)
+
+    def get_all_users(self):
+        ucs = self.get_all_user_courses().only('user_id')
+        user_course_ids = [uc.user_id for uc in ucs]
+
+        return _user.User.objects(id__in=user_course_ids)
+
+    def get_gender_histogram(self):
+        users = self.get_all_users().only('gender')
+        return collections.Counter([u.gender for u in users])
+
+    @property
+    def gender_ratio(self):
+        gender_counter = self.get_gender_histogram()
+
+        n_male = gender_counter['male']
+        n_female = gender_counter['female']
+
+        gender_rating = rating.AggregateRating()
+        gender_rating.count = n_male + n_female
+
+        if n_male + n_female == 0:
+            gender_rating.rating = float('nan')
+        else:
+            gender_rating.rating = 1.0 * n_male / (n_male + n_female)
+
+        return gender_rating
 
     # TODO(mack): this function is way too overloaded, even to separate into
     # multiple functions based on usage
