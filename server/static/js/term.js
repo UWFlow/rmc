@@ -1,6 +1,6 @@
 define(
-['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course'],
-function(RmcBackbone, _, _course, jqSlide, _user_course) {
+['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course', 'util'],
+function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {
@@ -28,7 +28,8 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
         canShowAddReview: pageData.ownProfile
       });
 
-      this.expand = options.expand;
+      var savedExpanded = _util.getUserData(this.getTermExpandedKey());
+      this.expand = savedExpanded == null ? options.expand : savedExpanded;
     },
 
     render: function(options) {
@@ -48,17 +49,23 @@ function(RmcBackbone, _, _course, jqSlide, _user_course) {
       return this;
     },
 
+    getTermExpandedKey: function() {
+      return 'termExpanded:' + this.termModel.get('id');
+    },
+
     events: {
       'click .term-name': 'toggleTermVisibility'
     },
 
     // TODO(mack): remove duplicate with similar logic in CourseView
     toggleTermVisibility: function(evt) {
-      if (this.$('.course-collection').is(':visible')) {
+      var termVisible = this.$('.course-collection').is(':visible');
+      if (termVisible) {
         this.collapseTerm(evt);
       } else {
         this.expandTerm(evt);
       }
+      _util.storeUserData(this.getTermExpandedKey(), !termVisible);
     },
 
     expandTerm: function(evt) {

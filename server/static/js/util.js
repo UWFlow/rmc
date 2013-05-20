@@ -151,6 +151,26 @@ function(_, _s) {
     return getQueryParam('referrer') || getQueryParam('meow');
   };
 
+  var getCurrentUserId = function() {
+    return window.pageData.currentUserId ? pageData.currentUserId.$oid : null;
+  };
+
+  var storeUserData = function(key, value) {
+    var userId = getCurrentUserId() || '';
+    window.localStorage[userId + '|' + key] = JSON.stringify(value);
+  };
+
+  var getUserData = function(key) {
+    var userId = getCurrentUserId() || '';
+    var data = window.localStorage[userId + '|' + key];
+    if (data != null) {
+      try {
+        return JSON.parse(data);
+      } catch (e) {}
+    }
+    return data;
+  };
+
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -165,7 +185,8 @@ function(_, _s) {
     truncatePreviewString: truncatePreviewString,
     getTimeDelta: getTimeDelta,
     getSiteBaseUrl: getSiteBaseUrl,
-    getReferrerId: getReferrerId
-
+    getReferrerId: getReferrerId,
+    storeUserData: storeUserData,
+    getUserData: getUserData
   };
 });
