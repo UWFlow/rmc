@@ -18,6 +18,10 @@ icalendar==3.4
 # Useful for local development, e.g. by tools/devshell.py
 ipython==0.13.1
 
+# Used for testing
+nose==1.1.2
+freezegun==0.1.4
+
 # Useful for profiling and debugging
 Flask-DebugToolbar==0.7.1
 

@@ -1,7 +1,8 @@
 SHELL=/bin/bash
 
 .PHONY: local setup import_menlo import_critiques aggregate_data init_data \
-        prod_import prod_import_mongo html_snapshots sitemap deploy clean
+        prod_import prod_import_mongo html_snapshots sitemap deploy clean \
+        test
 
 local:
 	./local_server.sh
@@ -59,9 +60,8 @@ deploy:
 stats:
 	PYTHONPATH=.. python analytics/stats.py
 
-# TODO(david): Actually run a test runner
 test:
-	PYTHONPATH=.. python shared/util_test.py
+	PYTHONPATH=.. nosetests
 
 clean:
 	find . -name '*.pyc' -delete

@@ -17,6 +17,8 @@ def json_dumps(obj):
     return json_util.dumps(obj).replace('</', '<\\/')
 
 def dict_to_list(dikt):
+    # TODO(jlfwong): This function's name is horribly misleading about what it
+    # does - rename and document
     update_with_name = lambda key, val: dict(val, **{ 'name': key })
     return [update_with_name(k, v) for k, v in dikt.iteritems()]
 
@@ -124,6 +126,8 @@ def utc_date(date, tz):
     return tz.normalize(tz.localize(date)).astimezone(pytz.utc)
 
 def to_dict(doc, fields):
+    # TODO(jlfwong): This looks like it's only used in one place and should
+    # be killed off
     """Warning: Using this convenience fn is probably not as efficient as the
     plain old manually building up a dict."""
     def map_field(prop):
