@@ -324,7 +324,7 @@ if __name__ == '__main__':
         'mongo_course_rating': update_mongo_course_rating,
         'mongo_course_professors': update_mongo_course_professors,
         'mongo_points': update_mongo_points,
-        #'exam_schedule': update_exam_schedule,
+        'exam_schedule': update_exam_schedule,
     }
     parser.add_argument('mode',
             help='one of %s' % ','.join(mode_mapping.keys() + ['all']))

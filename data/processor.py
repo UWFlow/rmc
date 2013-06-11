@@ -535,9 +535,12 @@ def import_opendata_exam_schedules():
 
     # Do some sanity checks to make sure OpenData is being reasonable.
     # TODO(Sandy): More sanity checks here welcome
-    if len(processed_exams) < 775:
-        # 775 is arbitrary. It just reminds us to check
-        raise ValueError('processor.py: exam schedule items found < 775')
+    # This number is arbitrary and just reminds us to double-check
+    # TODO(Sandy): This ranges from 775 (Fall & Winter) to 325 (Spring)
+    EXAM_ITEMS_THRESHOLD = 325
+    if len(processed_exams) < EXAM_ITEMS_THRESHOLD:
+        raise ValueError("processor.py: too few exam items %d (< %d)"
+                         % (len(processed_exams), EXAM_ITEMS_THRESHOLD))
 
     # Everything should be fine by here, drop the old exams collection
     m.Exam.objects._collection.drop()
