@@ -61,3 +61,6 @@ class Exam(me.Document):
             'info_known': self.info_known,
             'url': self.url,
         }
+
+    def __repr__(self):
+        return "<Exam: %s - %s>" % (self.course_id, self.sections)
