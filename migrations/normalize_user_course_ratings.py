@@ -3,8 +3,6 @@ import rmc.shared.constants as c
 
 import mongoengine as me
 
-me.connect(c.MONGO_DB_RMC)
-
 def normalize_user_course_ratings():
     """Normalize user course ratings to be 0/1 for Yes/No. Before it was
     0.2,0.4,0.6,0.8.1.0 OR possible 0.0,0.25,0.5,0.75,1.0"""
@@ -49,4 +47,6 @@ def normalize_user_course_ratings():
     print 'Updated %d reviews' % num_changes[0]
 
 if __name__ == '__main__':
+    me.connect(c.MONGO_DB_RMC)
+
     normalize_user_course_ratings()

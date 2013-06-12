@@ -6,7 +6,7 @@ import freezegun
 
 import rmc.shared.util as util
 
-class TestUtils(unittest.TestCase):
+class UtilTest(unittest.TestCase):
     def test_json_loads(self):
         self.assertEquals({'foo':1}, util.json_loads('{"foo":1}'))
 

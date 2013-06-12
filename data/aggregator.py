@@ -13,7 +13,6 @@ import rmc.data.processor as rmc_processor
 # TODO(mack): deprecate overall rating
 
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
-mongoengine.connect(c.MONGO_DB_RMC)
 
 PROFESSOR_RATING_FIELDS = [
     'easiness',
@@ -316,6 +315,8 @@ def update_exam_schedule():
 
 
 if __name__ == '__main__':
+    mongoengine.connect(c.MONGO_DB_RMC)
+
     parser = argparse.ArgumentParser()
     'all',
     mode_mapping = {

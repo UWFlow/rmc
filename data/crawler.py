@@ -20,8 +20,6 @@ API_UWATERLOO_API_KEY = 'ead3606c6f096657ebd283b58bf316b6'
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
-me.connect(c.MONGO_DB_RMC)
-
 errors = []
 
 
@@ -376,6 +374,8 @@ def get_terms_offered():
 
 
 if __name__ == '__main__':
+    me.connect(c.MONGO_DB_RMC)
+
     parser = argparse.ArgumentParser()
     supported_modes = ['departments', 'ucalendar_courses', 'opendata_courses',
             'uwdata_courses', 'terms_offered']
