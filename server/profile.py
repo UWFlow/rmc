@@ -64,8 +64,12 @@ def render_schedule_ical_feed(profile_user_secret_id):
             profile_user_secret_id)
         return ''
 
-    # TODO(david): Show exam slots here as well (see render_profile_page)
-    schedule_item_dict_list = profile_user.get_schedule_item_dicts()
+    current_term_course_ids = [uc.course_id for uc in (profile_user.get_user_courses()
+            .filter(term_id=util.get_current_term_id())
+            .only('course_id'))]
+
+    exams = m.Exam.objects(course_id__in=current_term_course_ids)
+    schedule_item_dict_list = profile_user.get_schedule_item_dicts(exam_objs=exams)
 
     course_ids = set([sid['course_id'] for sid in schedule_item_dict_list])
 
