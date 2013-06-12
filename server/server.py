@@ -295,6 +295,13 @@ def course_page(course_id):
         },
     )
 
+    exam_objs = m.Exam.objects(course_id=course_id)
+    exam_dict_list = [e.to_dict() for e in exam_objs]
+
+    exam_updated_date = None
+    if exam_objs:
+        exam_updated_date = exam_objs[0].id.generation_time
+
     return flask.render_template('course_page.html',
         page_script='course_page.js',
         course_obj=course_dict_list[0],
@@ -302,6 +309,8 @@ def course_page(course_id):
         tip_objs=tip_dict_list,
         user_course_objs=user_course_dict_list,
         user_objs=user_dicts.values(),
+        exam_objs=exam_dict_list,
+        exam_updated_date=exam_updated_date,
         current_user_id=current_user.id if current_user else None,
     )
 

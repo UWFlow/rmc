@@ -4,61 +4,7 @@
 <div class="row-fluid">
   <div class="span12">
     <h1>On-campus final exams</h1>
-    <table class="exam-table table table-striped table-bordered table-rounded">
-      <caption>
-        Your <%- term_name %> final exam schedule
-      </caption>
-      <thead>
-        <tr>
-          <th>Course</th>
-          <th>Section(s)</th>
-          <th>Date</th>
-          <th>Time</th>
-          <th>Location</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% _.each(exams.groupedByCourse(), function(courseExams) { %>
-        <tr>
-          <td>
-            <a class="course-code" href="/course/<%- courseExams[0].get('course_id') %>">
-              <%- courseExams[0].getCourseCode() %>
-            </a>
-          </td>
-          <td>
-            <% _.each(courseExams, function(exam) { %>
-            <p>
-              <%- exam.get('sections') %>
-            </p>
-            <% }); %>
-          </td>
-          <td>
-            <% _.each(courseExams, function(exam) { %>
-            <p>
-              <%- moment(exam.get('start_date')).format('MMM Do (dddd)') %>
-            </p>
-            <% }); %>
-          </td>
-          <td>
-            <% _.each(courseExams, function(exam) { %>
-            <p>
-              <%- moment(exam.get('start_date')).format('h:mm a') %>
-              &ndash;
-              <%- moment(exam.get('end_date')).format('h:mm a') %>
-            </p>
-            <% }); %>
-          </td>
-          <td>
-            <% _.each(courseExams, function(exam) { %>
-            <p>
-              <%- exam.get('location') %>
-            </p>
-            <% }); %>
-          </td>
-        </tr>
-        <% }); %>
-      </tbody>
-    </table>
+    <div class='exam-schedule-table-placeholder'></div>
     <small class="last-updated">
       Last updated <%- moment(last_updated_date).format('MMM. D, YYYY') %> from
       <a href="http://www.registrar.uwaterloo.ca/exams/schedule.pdf"
@@ -69,4 +15,85 @@
     </small>
   </div>
 </div>
+{% endcall %}
+
+{% call macros.us_template('course-exam-schedule-tpl') %}
+<div class="row-fluid">
+  <div class="span12">
+    <h2>Final Exam</h2>
+    <div class='exam-schedule-table-placeholder'></div>
+    <small class="last-updated">
+      Last updated <%- moment(last_updated_date).format('MMM. D, YYYY') %> from
+      <a href="http://www.registrar.uwaterloo.ca/exams/schedule.pdf"
+          target="_blank">
+        Spring 2013 Final Examination Schedule.
+      </a>
+     </small>
+  </div>
+</div>
+{% endcall %}
+
+{% call macros.us_template('exam-schedule-tpl') %}
+{% endcall %}
+
+{% call macros.us_template('exam-schedule-table-tpl') %}
+<table class="exam-table table table-striped table-bordered table-rounded">
+<% if (caption) { %>
+  <caption><%- caption %></caption>
+<% } %>
+  <thead>
+    <tr>
+      <% if (showCourseCode) { %>
+      <th>Course</th>
+      <% } %>
+      <th>Section(s)</th>
+      <th>Date</th>
+      <th>Time</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% _.each(exams.groupedByCourse(), function(courseExams) { %>
+    <tr>
+      <% if (showCourseCode) { %>
+      <td>
+        <a class="course-code" href="/course/<%- courseExams[0].get('course_id') %>">
+          <%- courseExams[0].getCourseCode() %>
+        </a>
+      </td>
+      <% } %>
+      <td>
+        <% _.each(courseExams, function(exam) { %>
+        <p>
+          <%- exam.get('sections') %>
+        </p>
+        <% }); %>
+      </td>
+      <td>
+        <% _.each(courseExams, function(exam) { %>
+        <p>
+          <%- moment(exam.get('start_date')).format('MMM Do (dddd)') %>
+        </p>
+        <% }); %>
+      </td>
+      <td>
+        <% _.each(courseExams, function(exam) { %>
+        <p>
+          <%- moment(exam.get('start_date')).format('h:mm a') %>
+          &ndash;
+          <%- moment(exam.get('end_date')).format('h:mm a') %>
+        </p>
+        <% }); %>
+      </td>
+      <td>
+        <% _.each(courseExams, function(exam) { %>
+        <p>
+          <%- exam.get('location') %>
+        </p>
+        <% }); %>
+      </td>
+    </tr>
+    <% }); %>
+  </tbody>
+</table>
 {% endcall %}
