@@ -36,7 +36,6 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course, _re
         examSchedule: examSchedule
       });
 
-      // TODO(jlfwong): Hide exam info container by default
       $('#exam-info-container')
         .html(courseExamScheduleView.render().el)
         .show();

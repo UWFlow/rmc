@@ -46,7 +46,6 @@ function(RmcBackbone, $, _, _course) {
   var ExamSchedule = RmcBackbone.Model.extend({
     defaults: {
       exams: new ExamCollection([null, null, null, null, null]),
-      // TODO(jlfwong): Stop hardcoding this
       last_updated_date: null
     }
   });
@@ -60,7 +59,6 @@ function(RmcBackbone, $, _, _course) {
 
       this.examScheduleTableView = new ExamScheduleTableView({
         examSchedule: this.examSchedule,
-        caption: 'Your ' + this.examSchedule.get('term_name') + 'final exam schedule',
         showCourseCode: true
       });
     },
@@ -82,7 +80,6 @@ function(RmcBackbone, $, _, _course) {
 
       this.examScheduleTableView = new ExamScheduleTableView({
         examSchedule: this.examSchedule,
-        caption: null,
         showCourseCode: false
       });
     },
@@ -100,7 +97,6 @@ function(RmcBackbone, $, _, _course) {
 
     initialize: function(options) {
       this.templateOptions = {
-        caption: options.caption,
         showCourseCode: !!options.showCourseCode
       };
       this.examSchedule = options.examSchedule;

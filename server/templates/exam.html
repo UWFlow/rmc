@@ -33,14 +33,8 @@
 </div>
 {% endcall %}
 
-{% call macros.us_template('exam-schedule-tpl') %}
-{% endcall %}
-
 {% call macros.us_template('exam-schedule-table-tpl') %}
 <table class="exam-table table table-striped table-bordered table-rounded">
-<% if (caption) { %>
-  <caption><%- caption %></caption>
-<% } %>
   <thead>
     <tr>
       <% if (showCourseCode) { %>
