@@ -46,7 +46,6 @@ function(RmcBackbone, $, _, _course) {
   var ExamSchedule = RmcBackbone.Model.extend({
     defaults: {
       exams: new ExamCollection([null, null, null, null, null]),
-      term_name: 'Fall 2012',
       last_updated_date: null
     }
   });
@@ -57,10 +56,58 @@ function(RmcBackbone, $, _, _course) {
     initialize: function(options) {
       this.examSchedule = options.examSchedule;
       this.template = _.template($('#exam-schedule-tpl').html());
+
+      this.examScheduleTableView = new ExamScheduleTableView({
+        examSchedule: this.examSchedule,
+        showCourseCode: true
+      });
     },
 
     render: function() {
       this.$el.html(this.template(this.examSchedule.toJSON()));
+      this.$('.exam-schedule-table-placeholder')
+        .replaceWith(this.examScheduleTableView.render().el);
+      return this;
+    }
+  });
+
+  var CourseExamScheduleView = RmcBackbone.View.extend({
+    className: 'exam-schedule',
+
+    initialize: function(options) {
+      this.examSchedule = options.examSchedule;
+      this.template = _.template($('#course-exam-schedule-tpl').html());
+
+      this.examScheduleTableView = new ExamScheduleTableView({
+        examSchedule: this.examSchedule,
+        showCourseCode: false
+      });
+    },
+
+    render: function() {
+      this.$el.html(this.template(this.examSchedule.toJSON()));
+      this.$('.exam-schedule-table-placeholder')
+        .replaceWith(this.examScheduleTableView.render().el);
+      return this;
+    }
+  });
+
+  var ExamScheduleTableView = RmcBackbone.View.extend({
+    className: 'course-exam-schedule-table',
+
+    initialize: function(options) {
+      this.templateOptions = {
+        showCourseCode: !!options.showCourseCode
+      };
+      this.examSchedule = options.examSchedule;
+      this.template = _.template($('#exam-schedule-table-tpl').html());
+    },
+
+    render: function() {
+      this.$el.html(this.template(
+        _.extend(this.templateOptions, this.examSchedule.toJSON())
+      ));
+
       return this;
     }
   });
@@ -69,6 +116,7 @@ function(RmcBackbone, $, _, _course) {
     Exam: Exam,
     ExamCollection: ExamCollection,
     ExamSchedule: ExamSchedule,
-    ExamScheduleView: ExamScheduleView
+    ExamScheduleView: ExamScheduleView,
+    CourseExamScheduleView: CourseExamScheduleView
   };
 });

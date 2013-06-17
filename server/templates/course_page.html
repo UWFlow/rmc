@@ -32,6 +32,7 @@
     <div class="span9">
       {# TODO(david): Spinner #}
       <div id="course-inner-container"></div>
+      <div id="exam-info-container" class="hide-initial"></div>
       <div id="tips-collection-container"></div>
       <h2>{{ course_obj['professor_ids']|length }} Professors</h2>
       <div id="professor-review-container"></div>
@@ -46,6 +47,8 @@
   window.pageData.userCourseObjs = {{ user_course_objs|tojson|safe }};
   window.pageData.userObjs = {{ user_objs|tojson|safe }};
   window.pageData.professorObjs = {{ professor_objs|tojson|safe }};
+  window.pageData.examObjs = {{ exam_objs|tojson|safe }};
+  window.pageData.examUpdatedDate = {{ exam_updated_date|tojson|safe }};
 </script>
 {% endblock %}
 
@@ -58,6 +61,7 @@
   {% include 'term.html' %}
   {% include 'ratings.html' %}
   {% include 'user_course.html' %}
+  {% include 'exam.html' %}
   {% include 'review.html' %}
   {% include 'sign_in.html' %}
 {% endblock %}
