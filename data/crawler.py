@@ -144,8 +144,9 @@ def get_ucalendar_courses():
         }
 
 
+    curr_dir = os.path.dirname(os.path.realpath(__file__))
     for department in m.Department.objects:
-        file_path = os.path.join(sys.path[0], '%s/%s.txt' % (
+        file_path = os.path.join(curr_dir, '%s/%s.txt' % (
             c.UCALENDAR_COURSES_DATA_DIR, department.id))
         #if file_exists(file_path):
         #    print 'Skipping: %s' % department.id

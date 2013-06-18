@@ -15,7 +15,7 @@ import sys
 
 def import_departments():
 
-    m.Department.objects._collection.drop()
+    #m.Department.objects._collection.drop()
 
     def clean_uwdata_department(department):
         return {
@@ -59,7 +59,8 @@ def import_departments():
     print 'imported departments:', m.Department.objects.count()
 
 def import_courses():
-    m.Course.objects._collection.drop()
+
+    #m.Course.objects._collection.drop()
 
     def get_department_name_from_file_path(file_path):
         return re.findall(r'([^/]*).txt$', file_path)[0].lower()
@@ -150,7 +151,7 @@ def import_courses():
     ]
 
 
-    for source in sources:
+    for idx, source in enumerate(sources):
         source['added'] = 0
         source['ignored'] = 0
         for file_name in glob.glob(os.path.join(
@@ -169,7 +170,8 @@ def import_courses():
                 courses = courses.values()
             for course in courses:
                 course = source['clean_fn'](dep_name, course)
-                if course and not m.Course.objects.with_id(course['id']):
+                if course and (idx == 0 or
+                        not m.Course.objects.with_id(course['id'])):
                     m.Course(**course).save()
                     source['added'] += 1
                 else:
