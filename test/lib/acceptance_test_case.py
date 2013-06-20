@@ -17,7 +17,13 @@ class AcceptanceTestCase(model_test_case.ModelTestCase):
         chromedriver_path = subprocess.check_output(['which', 'chromedriver'])
         chromedriver_path = chromedriver_path.strip()
 
-        AcceptanceTestCase.chromedriver_service = service.Service(chromedriver_path)
+        AcceptanceTestCase.chromedriver_service = service.Service(
+            executable_path=chromedriver_path,
+            service_args=['--silent'],
+            log_path=os.path.join(
+                os.getcwd(), 'test', 'logs', 'chromedriver.log'
+            )
+        )
         AcceptanceTestCase.chromedriver_service.start()
 
         test_server_path = os.path.join(
