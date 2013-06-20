@@ -28,8 +28,6 @@ VERSION = int(time.time())
 
 app = flask.Flask(__name__)
 
-app.config.from_envvar('FLASK_CONFIG')
-
 SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
 
 flask_render_template = flask.render_template
@@ -56,29 +54,6 @@ def render_template(*args, **kwargs):
     })
     return flask_render_template(*args, **kwargs)
 flask.render_template = render_template
-
-if not app.debug:
-    from logging.handlers import TimedRotatingFileHandler
-    logging.basicConfig(level=logging.INFO)
-
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s in'
-            ' %(module)s:%(lineno)d %(message)s')
-
-    file_handler = TimedRotatingFileHandler(filename=app.config['LOG_PATH'],
-            when='D')
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(formatter)
-    app.logger.addHandler(file_handler)
-    logging.getLogger('').addHandler(file_handler)  # Root handler
-
-    from log_handler import HipChatHandler
-    hipchat_handler = HipChatHandler(s.HIPCHAT_TOKEN, s.HIPCHAT_HACK_ROOM_ID,
-            notify=True, color='red', sender='Flask')
-    hipchat_handler.setLevel(logging.WARN)
-    hipchat_handler.setFormatter(formatter)
-    logging.getLogger('').addHandler(hipchat_handler)
-else:
-    logging.basicConfig(level=logging.DEBUG)
 
 # Initialize sift stuff after logging has been initialized
 sift = rmc_sift.RmcSift(api_key=c.SIFT_API_KEY)
@@ -933,10 +908,8 @@ def upload_schedule():
 
     return ''
 
-# Create the directory for storing schedules if it does not exist
-SCHEDULE_DIR = os.path.join(app.config['LOG_DIR'], 'schedules')
-if not os.path.exists(SCHEDULE_DIR):
-    os.makedirs(SCHEDULE_DIR)
+def get_schedule_dir():
+    return os.path.join(app.config['LOG_DIR'], 'schedules')
 
 @app.route('/api/schedule/log', methods=['POST'])
 @view_helpers.login_required
@@ -944,7 +917,7 @@ def schedule_log():
     user = view_helpers.get_current_user()
 
     file_name = '%d.txt' % int(time.time())
-    file_path = os.path.join(SCHEDULE_DIR, file_name)
+    file_path = os.path.join(get_schedule_dir(), file_name)
     with open(file_path, 'w') as f:
         f.write(flask.request.form['schedule'].encode('utf-8'))
 
@@ -1039,10 +1012,9 @@ def remove_transcript():
     return ''
 
 
-# Create the directory for storing transcripts if it does not exist
-TRANSCRIPT_DIR = os.path.join(app.config['LOG_DIR'], 'transcripts')
-if not os.path.exists(TRANSCRIPT_DIR):
-    os.makedirs(TRANSCRIPT_DIR)
+
+def get_transcript_dir():
+    return os.path.join(app.config['LOG_DIR'], 'transcripts')
 
 @app.route('/api/transcript/log', methods=['POST'])
 @view_helpers.login_required
@@ -1050,7 +1022,7 @@ def transcript_log():
     user = view_helpers.get_current_user()
 
     file_name = '%d.txt' % int(time.time())
-    file_path = os.path.join(TRANSCRIPT_DIR, file_name)
+    file_path = os.path.join(get_transcript_dir(), file_name)
     with open(file_path, 'w') as f:
         f.write(flask.request.form['transcript'].encode('utf-8'))
 
@@ -1399,4 +1371,39 @@ if __name__ == '__main__':
 
     toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
+    app.config.from_envvar('FLASK_CONFIG')
+
+    if not app.debug:
+        from logging.handlers import TimedRotatingFileHandler
+        logging.basicConfig(level=logging.INFO)
+
+        formatter = logging.Formatter('%(asctime)s - %(levelname)s in'
+                ' %(module)s:%(lineno)d %(message)s')
+
+        file_handler = TimedRotatingFileHandler(filename=app.config['LOG_PATH'],
+                when='D')
+        file_handler.setLevel(logging.INFO)
+        file_handler.setFormatter(formatter)
+        app.logger.addHandler(file_handler)
+        logging.getLogger('').addHandler(file_handler)  # Root handler
+
+        from log_handler import HipChatHandler
+        hipchat_handler = HipChatHandler(s.HIPCHAT_TOKEN, s.HIPCHAT_HACK_ROOM_ID,
+                notify=True, color='red', sender='Flask')
+        hipchat_handler.setLevel(logging.WARN)
+        hipchat_handler.setFormatter(formatter)
+        logging.getLogger('').addHandler(hipchat_handler)
+    else:
+        logging.basicConfig(level=logging.DEBUG)
+
+    # Create the directory for storing schedules if it does not exist
+    schedule_dir = get_schedule_dir()
+    if not os.path.exists(schedule_dir):
+        os.makedirs(schedule_dir)
+
+    # create the directory for storing transcripts if it does not exist
+    transcript_dir = get_transcript_dir()
+    if not os.path.exists(transcript_dir):
+        os.makedirs(transcript_dir)
+
     app.run()

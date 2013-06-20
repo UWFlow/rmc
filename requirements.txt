@@ -21,6 +21,7 @@ ipython==0.13.1
 # Used for testing
 nose==1.1.2
 freezegun==0.1.4
+selenium==2.33.0
 
 # Useful for profiling and debugging
 Flask-DebugToolbar==0.7.1

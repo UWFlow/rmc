@@ -1,6 +1,5 @@
 import os
 
-from rmc.config.flask_base import *
 import rmc.shared.secrets as s
 
 JS_DIR = 'js'
