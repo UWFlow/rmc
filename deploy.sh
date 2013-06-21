@@ -12,9 +12,16 @@
 
 set -e  # Bail on errors
 
-cd $HOME/rmc
+REPOS_DIR="$HOME/repos"
 
-git pull
+# Generate a new directory name to clone to
+NEW_CLONE=$REPOS_DIR/rmc-`date +%s`
+
+# Clone into new directory
+echo "Cloning rmc"
+git clone git@github.com:divad12/rmc.git $NEW_CLONE > /dev/null
+
+cd $NEW_CLONE
 
 # TODO(david): Use virtualenv so we don't have to sudo pip install
 echo "Installing requirements"
@@ -26,6 +33,18 @@ compass compile server --output-style compressed --force
 echo "Compiling js"
 ( cd server && node r.js -o build.js )
 
+echo "Symlink newly cloned rmc into place"
+ln -snf $NEW_CLONE $HOME/rmc
+
+echo "Restarting rmc_daemon"
 sudo service rmc_daemon restart
 
+echo "Removing old rmc clones"
+cd $REPOS_DIR
+for old in $(ls | head -n -2)
+do
+    rm -rf $old
+done
+
+cd $HOME/rmc
 PYTHONPATH=$HOME python notify_deploy.py $DEPLOYER
