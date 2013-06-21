@@ -52,3 +52,4 @@ class AcceptanceTestCase(model_test_case.ModelTestCase):
     def tearDownClass(cls):
         model_test_case.ModelTestCase.tearDownClass()
         os.killpg(AcceptanceTestCase.test_server_proc.pid, signal.SIGTERM)
+        AcceptanceTestCase.chromedriver_service.stop()
