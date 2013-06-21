@@ -15,7 +15,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
       this.courseSearchView = new CourseSearchView({
         sortMode: _.find(window.pageData.sortModes, function(sortMode) {
-          return (sortMode.name === queryParams.sort_mode);
+          return (sortMode.name.replace(' ', '+') === queryParams.sort_mode);
         }) || window.pageData.sortModes[0],
         term: _.find(window.pageData.terms, function(term) {
           return (term.value === queryParams.term);
