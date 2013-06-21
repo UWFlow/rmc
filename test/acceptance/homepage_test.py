@@ -12,7 +12,7 @@ class HomepageTest(testlib.AcceptanceTestCase):
         self.assertTrue(element.is_displayed())
 
     def test_homepage_loads(self):
-        self.driver.get('http://localhost:4321/')
+        self.driver.get('http://localhost:5001/')
 
         self._assert_has_link_to('/courses')
         self._assert_has_link_to('/profile/demo')

@@ -6,6 +6,8 @@ function($, _, __, _util) {
   var fbAppId;
   if (window.pageData.env === 'dev') {
     fbAppId = '289196947861602';
+  } else if (window.pageData.env === 'test') {
+    fbAppId = '194130524079471';
   } else {
     fbAppId = '219309734863464';
   }
