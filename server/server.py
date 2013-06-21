@@ -29,6 +29,7 @@ VERSION = int(time.time())
 app = flask.Flask(__name__)
 
 app.config.from_envvar('FLASK_CONFIG')
+me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
 SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -1398,5 +1399,4 @@ if __name__ == '__main__':
     })
 
     toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
-    me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
     app.run()

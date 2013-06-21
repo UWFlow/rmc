@@ -1,7 +1,8 @@
+import rmc.html_snapshots.utils as utils
+
 import os
 import sys
 
-import rmc.html_snapshots.utils as utils
 
 def generate_sitemap():
     if len(sys.argv) < 2:
