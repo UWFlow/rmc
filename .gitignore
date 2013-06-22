@@ -6,6 +6,7 @@ server/static/sitemap.txt
 server/static/css/
 server/static/js_prod/
 server/Gemfile.lock
+shared_data/
 dump.rdb
 secrets.py
 dump

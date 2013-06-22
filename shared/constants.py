@@ -1,3 +1,11 @@
+import getpass
+IS_PROD = getpass.getuser() == 'rmc'
+
+if IS_PROD:
+    SHARED_DATA_DIR = '/home/rmc/data'
+else:
+    SHARED_DATA_DIR = 'shared_data'
+
 # define cross file constants here
 
 MONGO_HOST = 'localhost'

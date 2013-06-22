@@ -5,7 +5,7 @@ import mongoengine as me
 import os
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
-HTML_DIR = os.path.join(FILE_DIR, 'html')
+HTML_DIR = os.path.join(c.SHARED_DATA_DIR, 'html_snapshots')
 
 me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
