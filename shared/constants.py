@@ -1,5 +1,5 @@
-import getpass
-IS_PROD = getpass.getuser() == 'rmc'
+import os
+IS_PROD = os.path.isdir('/home/rmc')
 
 if IS_PROD:
     SHARED_DATA_DIR = '/home/rmc/data'
