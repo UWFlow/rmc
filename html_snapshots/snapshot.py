@@ -1,8 +1,10 @@
-import rmc.html_snapshots.utils as utils
-
 import os
 import subprocess
 import sys
+
+import mongoengine as me
+
+import rmc.html_snapshots.utils as utils
 
 def crawl_page(url):
     args = [
@@ -49,4 +51,5 @@ def generate_snapshots():
         utils.write(file_path, rendered_html)
 
 if __name__ == "__main__":
+    me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
     generate_snapshots()
