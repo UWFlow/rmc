@@ -1,8 +1,6 @@
 import mongoengine as me
 import logging
 
-# TODO(jlfwong): From what I can tell, this isn't being used as an actual model
-# any more - it's just being used as a collection of static methods
 class Term(me.Document):
 
     SHORTLIST_TERM_ID = '9999_99'

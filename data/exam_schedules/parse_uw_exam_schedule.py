@@ -13,6 +13,8 @@ import rmc.models as m
 import rmc.shared.constants as c
 import rmc.shared.util as rmc_util
 
+mongoengine.connect(c.MONGO_DB_RMC)
+
 # TODO(Sandy): move into better place
 def safe_list_get(l, idx, default=''):
     try:
@@ -128,8 +130,6 @@ def parse_exam_schedule(exam_file_name):
 
 
 if __name__ == '__main__':
-    mongoengine.connect(c.MONGO_DB_RMC)
-
     parser = argparse.ArgumentParser()
     parser.add_argument('exam_file', help='Processed exam file (see notes)')
     args = parser.parse_args()
