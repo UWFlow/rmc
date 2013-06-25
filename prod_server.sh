@@ -14,7 +14,7 @@ uwsgi \
   --socket /tmp/uwsgi.sock \
   --chmod-socket 666 \
   --env FLASK_CONFIG=/home/rmc/rmc/config/flask_prod.py \
-  --wsgi-file rmc/server/server.wsgi \
+  --wsgi-file /home/rmc/rmc/server/server.wsgi \
   --callable app \
   --master \
   --workers 4 \
