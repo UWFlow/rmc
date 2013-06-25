@@ -1347,29 +1347,7 @@ def verify_webmaster():
     response.headers["Content-Type"] = "text/plain"
     return response
 
-
-if __name__ == '__main__':
-    # Late import since this isn't used on production
-    import flask_debugtoolbar
-
-    app.debug = True
-    app.config.update({
-        'SECRET_KEY' : 'TODO(jlfwong)',
-        'DEBUG_TB_INTERCEPT_REDIRECTS' : False,
-        'DEBUG_TB_PROFILER_ENABLED' : True,
-        'DEBUG_TB_PANELS' : [
-            'flask_debugtoolbar.panels.versions.VersionDebugPanel',
-            'flask_debugtoolbar.panels.timer.TimerDebugPanel',
-            'flask_debugtoolbar.panels.headers.HeaderDebugPanel',
-            'flask_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
-            'flask_debugtoolbar.panels.template.TemplateDebugPanel',
-            'flask_debugtoolbar.panels.logger.LoggingPanel',
-            'flask_debugtoolbar.panels.profiler.ProfilerDebugPanel',
-            'flask_debugtoolbar_lineprofilerpanel.panels.LineProfilerPanel'
-        ]
-    })
-
-    toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
+def before_app_run():
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
     app.config.from_envvar('FLASK_CONFIG')
 
@@ -1406,4 +1384,28 @@ if __name__ == '__main__':
     if not os.path.exists(transcript_dir):
         os.makedirs(transcript_dir)
 
+if __name__ == '__main__':
+    before_app_run()
+
+    # Late import since this isn't used on production
+    import flask_debugtoolbar
+
+    app.debug = True
+    app.config.update({
+        'SECRET_KEY' : 'TODO(jlfwong)',
+        'DEBUG_TB_INTERCEPT_REDIRECTS' : False,
+        'DEBUG_TB_PROFILER_ENABLED' : True,
+        'DEBUG_TB_PANELS' : [
+            'flask_debugtoolbar.panels.versions.VersionDebugPanel',
+            'flask_debugtoolbar.panels.timer.TimerDebugPanel',
+            'flask_debugtoolbar.panels.headers.HeaderDebugPanel',
+            'flask_debugtoolbar.panels.request_vars.RequestVarsDebugPanel',
+            'flask_debugtoolbar.panels.template.TemplateDebugPanel',
+            'flask_debugtoolbar.panels.logger.LoggingPanel',
+            'flask_debugtoolbar.panels.profiler.ProfilerDebugPanel',
+            'flask_debugtoolbar_lineprofilerpanel.panels.LineProfilerPanel'
+        ]
+    })
+
+    toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
     app.run()
