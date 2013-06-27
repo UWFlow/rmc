@@ -32,9 +32,11 @@ class AcceptanceTestCase(model_test_case.ModelTestCase):
 
         # For explanation of why os.setsid is necessary here, see
         # http://stackoverflow.com/q/4789837/303911
+        env={'PYTHONPATH':'..'}
+        env.update(os.environ)
         AcceptanceTestCase.test_server_proc = subprocess.Popen(
-            ['/usr/bin/python', test_server_path],
-            env={'PYTHONPATH':'..'},
+            ['/usr/bin/env', 'python', test_server_path],
+            env=env,
             preexec_fn=os.setsid
         )
         time.sleep(1)
