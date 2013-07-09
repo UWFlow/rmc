@@ -1,0 +1,296 @@
+								
+	
+			
+	
+						
+	
+		
+	
+
+	
+
+
+	
+James Wong
+	
+	
+ 								
+	
+My Academics
+		
+Course Selection (Undergrad only)
+		
+Enroll
+
+								
+ 
+	
+ 																				
+	
+my class schedule
+		
+add
+		
+drop
+		
+swap
+		
+component swap
+		
+appointments
+		
+search for classes
+
+																				
+ 
+
+	
+My Class Schedule
+
+
+	
+			
+	
+List View
+Weekly Calendar View
+	
+Select Display Option
+
+
+	
+	
+	
+Spring 2013 | Undergraduate | University of Waterloo
+
+
+	
+			
+	
+CS 488 - Intro to Computer Graphics
+	
+	
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+ 
+	
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+3370
+001
+LEC
+TTh 8:30AM - 9:50AM
+MC   4040
+William Cowan
+05/06/2013 - 07/30/2013
+
+
+	
+Exam Information
+ 
+
+
+	
+ECE 358 - Computer Networks
+	
+	
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+ 
+	
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+3077
+001
+LEC
+MF 8:30AM - 9:50AM
+QNC 1502
+Kshirasagar Naik
+05/06/2013 - 07/30/2013
+3078
+101
+TUT
+T 7:00PM - 7:50PM
+QNC 1502
+Staff
+05/06/2013 - 07/30/2013
+3166
+201
+LAB
+ 
+TBA
+Staff
+05/06/2013 - 07/30/2013
+
+
+	
+Exam Information
+ 
+
+	
+MUSIC 140 - Popular Music & Culture
+	
+	
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+ 
+	
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+2446
+001
+LEC
+Th 7:00PM - 9:50PM
+STP 105
+Simon Wood
+05/06/2013 - 07/30/2013
+
+
+	
+Exam Information
+ 
+
+	
+SE 401 - Seminar
+	
+	
+Status	Units	Grading	Grade
+Enrolled
+0.00
+Non-Graded Component
+ 
+	
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4106
+001
+SEM
+T 11:30AM - 12:20PM
+RCH   307
+Patrick Lam
+05/06/2013 - 07/30/2013
+
+
+	
+Exam Information
+ 
+
+	
+SE 464 - Software Desgn & Architectures
+	
+	
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+ 
+	
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4107
+001
+LEC
+MWF 11:30AM - 12:20PM
+MC   2038
+Krzysztof Czarnecki
+05/06/2013 - 07/30/2013
+4108
+101
+TUT
+F 12:30PM - 1:20PM
+MC   2038
+Krzysztof Czarnecki
+05/06/2013 - 07/30/2013
+4111
+201
+LAB
+TBA
+TBA
+Staff
+05/06/2013 - 07/30/2013
+
+
+	
+Exam Information
+ 
+
+	
+SE 490 - Design Project 1
+	
+	
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+ 
+	
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4117
+001
+LEC
+MW 12:30PM - 1:20PM
+MC   2038
+Krzysztof Czarnecki
+05/06/2013 - 07/30/2013
+4118
+101
+PRJ
+TBA
+TBA
+Staff
+05/06/2013 - 07/30/2013
+
+
+	
+Exam Information
+ 
+
+	
+WKRPT 400 - Work-term Report
+	
+	
+Status	Units	Grading	Grade	Requirement Designation
+Enrolled
+0.13
+Not Included in GPA
+ 
+Degree Requirement, Not in Average (Taken)
+	
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4110
+006
+PRJ
+ 
+TBA
+Mahesh Tripunitara
+05/06/2013 - 07/30/2013
+
+
+	
+Exam Information
+ 
+
+	
+Printer Friendly Page
+	
+								
+	
+
+	
+ 	My Academics	 	 	 	Course Selection (undergrad Only)	 	 	 	Enroll	 	 
+ 
+	
+ 	My Class Schedule	 	 	 	Add	 	 	 	Drop	 	 	 	Swap	 	 	 	Component Swap	 	 	 	Appointments	 	 	 	Search For Classes	 	 
+ 		
+
+
+	
+		
+	
+
+	
+
+
+
+
+

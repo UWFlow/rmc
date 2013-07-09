@@ -44,6 +44,13 @@ class AcceptanceTestCase(model_test_case.ModelTestCase):
     def setUp(self):
         super(AcceptanceTestCase, self).setUp()
 
+        # Seed test database
+        subprocess.check_output([
+            'mongorestore', '--drop', os.path.join(
+                os.getcwd(), 'test', 'fixtures', 'dump'
+            )
+        ])
+
         self.driver = webdriver.Remote(AcceptanceTestCase.chromedriver_service.service_url, {})
 
     def tearDown(self):

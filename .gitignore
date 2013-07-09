@@ -10,7 +10,7 @@ server/Gemfile.lock
 shared_data/
 dump.rdb
 secrets.py
-dump
+dump/*
 
 # Ignore daily generated exam files
 data/exam_schedules/uw_exams_*
