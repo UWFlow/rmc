@@ -10,6 +10,9 @@ from bson import json_util, ObjectId
 import rmc.shared.constants as c
 
 
+NUM_DAYS_FRESH_DATA = 2 * 365
+
+
 def json_loads(json_str):
     return json_util.loads(json_str)
 
@@ -136,8 +139,11 @@ def to_dict(doc, fields):
 
     return { f: map_field(f) for f in fields }
 
-def freshness_filter(objs, to_date_func):
-    # Only return results from within the past 2 non-leap years
-    date_limit = datetime.datetime.now() - datetime.timedelta(days=2 * 365)
+def freshness_filter(objs, to_date_func, num_days=None):
+    """Return results from within the past num_days days."""
+    if num_days is None:
+        num_days = NUM_DAYS_FRESH_DATA
+
+    date_limit = datetime.datetime.now() - datetime.timedelta(days=num_days)
 
     return filter(lambda obj: to_date_func(obj) and to_date_func(obj) >= date_limit, objs)
