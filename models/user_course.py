@@ -14,11 +14,23 @@ import term
 
 def get_freshest_user_courses(cls, num_days=None):
     """Wrapper around util.freshness_filter for User/Menlo Courses"""
-    course_review_getter = lambda uc: uc.course_review.comment_date
-    prof_review_getter = lambda uc: uc.professor_review.comment_date
-    return list(set(
-        util.freshness_filter(cls.objects, course_review_getter, num_days) +
-        util.freshness_filter(cls.objects, prof_review_getter, num_days)))
+    def date_getter(uc):
+        """Get the latest not None date"""
+        cr_date = uc.course_review.comment_date
+        pr_date = uc.professor_review.comment_date
+
+        if cr_date and pr_date:
+            date = max(cr_date, pr_date)
+        elif cr_date:
+            date = cr_date
+        elif pr_date:
+            date = pr_date
+        else:
+            date = None
+
+        return date
+
+    return util.freshness_filter(cls.objects, date_getter)
 
 
 class CritiqueCourse(me.Document):
