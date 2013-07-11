@@ -12,6 +12,15 @@ import rmc.shared.util as util
 import term
 
 
+def get_freshest_user_courses(cls, num_days=None):
+    """Wrapper around util.freshness_filter for User/Menlo Courses"""
+    course_review_getter = lambda uc: uc.course_review.comment_date
+    prof_review_getter = lambda uc: uc.professor_review.comment_date
+    return list(set(
+        util.freshness_filter(cls.objects, course_review_getter, num_days) +
+        util.freshness_filter(cls.objects, prof_review_getter, num_days)))
+
+
 class CritiqueCourse(me.Document):
     meta = {
         'indexes': [
@@ -52,6 +61,11 @@ class MenloCourse(me.Document):
 
     course_review = me.EmbeddedDocumentField(review.CourseReview)
     professor_review = me.EmbeddedDocumentField(review.ProfessorReview)
+
+    @classmethod
+    def get_freshest(cls, num_days=None):
+        """Filter out stale MenloCourses that we don't want to display."""
+        return get_freshest_user_courses(cls, num_days)
 
 
 class UserCourse(me.Document):
@@ -158,6 +172,11 @@ class UserCourse(me.Document):
             points += _points.PointSource.SHARE_PROFESSOR_REVIEW
 
         return points
+
+    @classmethod
+    def get_freshest(cls, num_days=None):
+        """Filter out stale UserCourses that we don't want to display."""
+        return get_freshest_user_courses(cls, num_days)
 
     def to_dict(self, fields=DEFAULT_TO_DICT_FIELDS):
         # NOTE: DO NOT MODIFY parameter `fields` in this fn, because it's

@@ -98,20 +98,10 @@ def update_mongo_course_rating():
             ('overall', overall),
         ]
 
-    # Don't display old ratings
-    course_review_getter = lambda uc: uc.course_review.comment_date
-    prof_review_getter = lambda uc: uc.professor_review.comment_date
-    fresh_menlo_courses = list(set(
-        rmc_util.freshness_filter(m.MenloCourse.objects, course_review_getter) +
-        rmc_util.freshness_filter(m.MenloCourse.objects, prof_review_getter)))
-    fresh_user_courses = list(set(
-        rmc_util.freshness_filter(m.UserCourse.objects, course_review_getter) +
-        rmc_util.freshness_filter(m.UserCourse.objects, prof_review_getter)))
-
     courses = {}
     args = [courses, get_rating_fn]
-    increment_ratings(*(args + [get_fields_fn, fresh_menlo_courses]))
-    increment_ratings(*(args + [get_fields_fn, fresh_user_courses]))
+    increment_ratings(*(args + [get_fields_fn, m.MenloCourse.get_freshest()]))
+    increment_ratings(*(args + [get_fields_fn, m.UserCourse.get_freshest()]))
     # TODO(mack): add back course critiques
     #increment_aggregate_ratings(*(args + [get_aggregate_fields_fn, m.CritiqueCourse.objects]))
 
@@ -186,20 +176,10 @@ def update_redis_course_professor_rating():
             ('passion', uc.passion),
         ]
 
-    # Don't display old ratings
-    course_review_getter = lambda uc: uc.course_review.comment_date
-    prof_review_getter = lambda uc: uc.professor_review.comment_date
-    fresh_menlo_courses = list(set(
-        rmc_util.freshness_filter(m.MenloCourse.objects, course_review_getter) +
-        rmc_util.freshness_filter(m.MenloCourse.objects, prof_review_getter)))
-    fresh_user_courses = list(set(
-        rmc_util.freshness_filter(m.UserCourse.objects, course_review_getter) +
-        rmc_util.freshness_filter(m.UserCourse.objects, prof_review_getter)))
-
     courses = {}
     args = [courses, get_rating_fn]
-    increment_ratings(*(args + [get_fields_fn, fresh_menlo_courses]))
-    increment_ratings(*(args + [get_fields_fn, fresh_user_courses]))
+    increment_ratings(*(args + [get_fields_fn, m.MenloCourse.get_freshest()]))
+    increment_ratings(*(args + [get_fields_fn, m.UserCourse.get_freshest()]))
     increment_aggregate_ratings(*(args + [get_aggregate_fields_fn, m.CritiqueCourse.objects]))
 
     count = [0]
