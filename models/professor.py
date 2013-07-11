@@ -176,6 +176,10 @@ class Professor(me.Document):
             course_review_dicts = [uc.professor_review.to_dict(current_user,
                 getattr(uc, 'user_id', None)) for uc in ucs]
 
+            # Don't show older reviews
+            course_review_dicts = util.freshness_filter(
+                    course_review_dicts, lambda review: review['comment_date'])
+
             dict_.update({
                 'course_ratings': self.get_ratings_for_course(course_id),
                 'course_reviews': course_review_dicts,

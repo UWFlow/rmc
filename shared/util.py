@@ -135,3 +135,9 @@ def to_dict(doc, fields):
         return val.to_dict() if hasattr(val, 'to_dict') else val
 
     return { f: map_field(f) for f in fields }
+
+def freshness_filter(objs, to_date_func):
+    # Only return results from within the past 2 non-leap years
+    date_limit = datetime.datetime.now() - datetime.timedelta(days=2 * 365)
+
+    return filter(lambda obj: to_date_func(obj) and to_date_func(obj) >= date_limit, objs)

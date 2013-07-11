@@ -261,6 +261,10 @@ def course_page(course_id):
             if len(uc_dict['course_review']['comment']) >=
                 m.review.CourseReview.MIN_REVIEW_LENGTH]
 
+    # Don't show older reviews
+    tip_dict_list = util.freshness_filter(
+            tip_dict_list, lambda review: review['comment_date'])
+
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
         rmclogger.LOG_EVENT_SINGLE_COURSE, {
