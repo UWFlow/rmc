@@ -146,4 +146,5 @@ def freshness_filter(objs, to_date_func, num_days=None):
 
     date_limit = datetime.datetime.now() - datetime.timedelta(days=num_days)
 
-    return filter(lambda obj: to_date_func(obj) and to_date_func(obj) >= date_limit, objs)
+    return filter(lambda obj: to_date_func(obj) and
+                              to_date_func(obj) >= date_limit, objs)
