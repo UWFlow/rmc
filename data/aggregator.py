@@ -124,6 +124,16 @@ def update_mongo_course_rating():
     print 'saved ratings for %d courses in mongodb' % count[0]
 
 
+def update_mongo_course_gender_stats():
+    count = 0
+
+    for course in m.Course.objects():
+        course.gender_stats = course.get_current_gender_stats()
+        course.save()
+        count += 1
+
+    print 'updated gender stats for %d courses in mongodb' % count
+
 def update_mongo_course_professors():
 
     count = 0
@@ -318,12 +328,13 @@ if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC)
 
     parser = argparse.ArgumentParser()
-    'all',
+
     mode_mapping = {
         'redis_course_professor_rating': update_redis_course_professor_rating,
         'redis_friend_mutual_courses': update_redis_friend_mutual_courses,
         'mongo_course_rating': update_mongo_course_rating,
         'mongo_course_professors': update_mongo_course_professors,
+        'mongo_course_gender_stats': update_mongo_course_gender_stats,
         'mongo_points': update_mongo_points,
         'exam_schedule': update_exam_schedule,
     }

@@ -10,7 +10,6 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     'usefulness': 'useful',
     'clarity': 'clear',
     'passion': 'engaging',
-    'gender_ratio': '% Male',
     '': ''
   };
 

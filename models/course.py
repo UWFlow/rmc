@@ -9,6 +9,23 @@ from rmc.shared import util
 import user_course as _user_course
 import user as _user
 
+class GenderStats(me.EmbeddedDocument):
+    male_count = me.IntField(default=0)
+    female_count = me.IntField(default=0)
+    other_count = me.IntField(default=0)
+
+    def to_dict(self):
+        return {
+            'male': self.male_count,
+            'female': self.female_count,
+            'other': self.other_count
+        }
+
+    def __repr__(self):
+        return "GenderStats(male_count=%r, female_count=%r, other_count=%r)" % (
+            self.male_count, self.female_count, self.other_count
+        )
+
 class Course(me.Document):
     meta = {
         'indexes': [
@@ -45,6 +62,8 @@ class Course(me.Document):
     # TODO(mack): deprecate overall rating
     overall = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
+    gender_stats = me.EmbeddedDocumentField(GenderStats, default=GenderStats())
+
     professor_ids = me.ListField(me.StringField())
 
     antireqs = me.StringField()
@@ -77,8 +96,7 @@ class Course(me.Document):
         return {
             'interest': self.interest.to_dict(),
             'usefulness': self.usefulness.to_dict(),
-            'easiness': self.easiness.to_dict(),
-            'gender_ratio': self.gender_ratio.to_dict()
+            'easiness': self.easiness.to_dict()
         }
 
     # TODO(david): Cache function result
@@ -101,26 +119,21 @@ class Course(me.Document):
 
         return _user.User.objects(id__in=user_course_ids)
 
-    def get_gender_histogram(self):
+    def get_current_gender_stats(self):
+        """Find the exact current gender stats for the course.
+
+        This information is based exclusively on UserCourses.
+
+        For performance reasons, use the cached Course.gender_info instead.
+        """
         users = self.get_all_users().only('gender')
-        return collections.Counter([u.gender for u in users])
+        histogram = collections.Counter([u.gender for u in users])
 
-    @property
-    def gender_ratio(self):
-        gender_counter = self.get_gender_histogram()
-
-        n_male = gender_counter['male']
-        n_female = gender_counter['female']
-
-        gender_rating = rating.AggregateRating()
-        gender_rating.count = n_male + n_female
-
-        if n_male + n_female == 0:
-            gender_rating.rating = float('nan')
-        else:
-            gender_rating.rating = 1.0 * n_male / (n_male + n_female)
-
-        return gender_rating
+        return GenderStats(
+            male_count=histogram.get('male', 0),
+            female_count=histogram.get('female', 0),
+            other_count=histogram.get(None, 0)
+        )
 
     # TODO(mack): this function is way too overloaded, even to separate into
     # multiple functions based on usage
@@ -224,6 +237,7 @@ class Course(me.Document):
             'name': self.name,
             'description': self.description,
             'terms_offered': self.terms_offered,
+            'gender_stats': self.gender_stats.to_dict(),
             # TODO(mack): create user models for friends
             #'friends': [1647810326, 518430508, 541400376],
             'ratings': util.dict_to_list(self.get_ratings()),
