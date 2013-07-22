@@ -60,9 +60,6 @@ deploy:
 stats:
 	PYTHONPATH=.. python analytics/stats.py
 
-welcome_email:
-	PYTHONPATH=.. python emails/welcome_email.py
-
 test:
 	PYTHONPATH=.. nosetests
 
