@@ -821,7 +821,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
     var getPartialBodyRe = function() {
       var daysOfWeekRe = /([MThWF]{0,6})/;
-      var timeRe = ampm ? /([1]{0,1}\d\:[0-5]\d[AP]M)/ : /([1]{0,1}\d\:[0-5]\d)/;
+      var timeRe = ampm ? /([12]{0,1}\d\:[0-5]\d[AP]M)/ : /([12]{0,1}\d\:[0-5]\d)/;
       var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
       // This could be a room, or 'TBA'
       var locationRe = /([\-\w ,]+)/;
