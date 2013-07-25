@@ -167,7 +167,7 @@ def schedule_page_ical(profile_user_secret_id):
 
 @app.route('/schedule/<string:profile_user_secret_id>')
 def schedule_page(profile_user_secret_id):
-    profile_user = m.User.objects(secret_id=profile_user_secret_id).first()
+    profile_user = m.User.objects(secret_id=profile_user_secret_id.upper()).first()
 
     # TODO(jlfwong): This should be removed, but I'm not sure whether the page
     # should just 404 or whether we should redirect or what exactly the right

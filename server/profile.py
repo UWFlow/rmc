@@ -57,7 +57,7 @@ def render_schedule_page(profile_user):
     )
 
 def render_schedule_ical_feed(profile_user_secret_id):
-    profile_user = m.User.objects(secret_id=profile_user_secret_id).first()
+    profile_user = m.User.objects(secret_id=profile_user_secret_id.upper()).first()
 
     if profile_user is None:
         logging.error("No profile user with secret id '%s'" %
