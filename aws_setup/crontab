@@ -2,6 +2,9 @@ SHELL=/bin/sh
 
 MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gmail.com
 
-# Aggregate ratings, mutual courses, etc...
+# Daily: Aggregate ratings, mutual courses, etc...
 0 7 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py all
+# Weekly: Update local time (amazon ses complains if time is too far off when sending emails)
+0 0 * * 0  sudo /usr/sbin/ntpdate pool.ntp.org
+# Daily: Send welcome emails
 0 3 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/emails/sender.py -f welcome
