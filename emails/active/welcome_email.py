@@ -18,7 +18,7 @@ def html_body_renderer(user):
 
     if not user.has_schedule:
         welcome_email_body += \
-        """<p>Did you know that you can <a href="http://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This gives easy access to your course schedule for you and your friends.</p>
+        """<p>Did you know that you can <a href="http://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This lets you easily view it and share it with friends.</p>
 
         <img src="http://uwflow.com/static/img/class-schedule-screenshot-small.png">"""
 
