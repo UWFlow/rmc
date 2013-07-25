@@ -16,6 +16,9 @@ cd $HOME/rmc
 
 git pull
 
+# Update cronjobs
+cat aws_setup/crontab | crontab -
+
 # TODO(david): Use virtualenv so we don't have to sudo pip install
 echo "Installing requirements"
 sudo pip install -r requirements.txt

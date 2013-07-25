@@ -3,9 +3,6 @@
 # Terminate script on error
 set -e
 
-# Update cronjobs
-cat aws_setup/crontab | crontab -
-
 # Ruby stuffs: Install bundler so we can grab other gems
 echo "Installing bundler"
 gem install bundler
