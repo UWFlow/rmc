@@ -339,7 +339,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
     initialize: function() {
       if (!this.get('start_date') || !this.get('end_date')) {
-        this.setCurrWeek();
+        this.setBestWeek();
       }
 
       if (this.has('failed_schedule_items')) {
@@ -349,6 +349,31 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
             .uniq()
             .value()
         );
+      }
+    },
+
+    setBestWeek: function() {
+      var startOfCurrWeek = moment().day(1).sod();
+
+      // Find the closest week in the future with schedule items, or failing
+      // that the closest week in the past with schedule items
+      var futureItems = this.get('schedule_items').filter(function(item) {
+        return startOfCurrWeek.unix() <= moment(item.get('start_date')).unix();
+      });
+
+      if (futureItems.length > 0) {
+        futureItems = _(futureItems).sortBy(function(item) {
+          return moment(item.get('start_date')).unix();
+        });
+        this.setWeek(moment(futureItems[0].get('start_date')).day(1).sod().toDate());
+      } else {
+        var pastItems = this.get('schedule_items').filter(function(item) {
+          return startOfCurrWeek.unix() > moment(item.get('start_date')).unix();
+        });
+        pastItems = _(pastItems).sortBy(function(item) {
+          return moment(item.get('start_date')).unix();
+        });
+        this.setWeek(moment(pastItems[pastItems.length-1].get('start_date')).day(1).sod().toDate());
       }
     },
 
