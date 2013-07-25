@@ -18,17 +18,13 @@ def html_body_renderer(user):
 
     if not user.has_schedule:
         welcome_email_body += \
-        """<p>Did you know that you can <a href="http://uwflow.com/profile?import-schedule=1">upload your class schedule</a> onto Flow? This gives easy access to your course schedule for you and your friends.</p>
+        """<p>Did you know that you can <a href="http://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This gives easy access to your course schedule for you and your friends.</p>
 
         <img src="http://uwflow.com/static/img/class-schedule-screenshot-small.png">"""
 
     if not user.has_course_history:
-        if not user.has_schedule:
-            welcome_email_body += \
-            """<p>We'd also love it if you could <a href="http://uwflow.com/onboarding">upload your Quest transcript</a> and review some courses. Taking just 10 minutes to share your opinion can really help out your friends and fellow UW students!</p>"""
-        else:
-            welcome_email_body += \
-            """<p>We'd love it if you could <a href="http://uwflow.com/onboarding">upload your Quest transcript</a> and review some courses. Taking just 10 minutes to share your opinion can really help out your friends and fellow UW students!</p>"""
+        welcome_email_body += \
+        """<p>If you <a href="http://uwflow.com/onboarding">upload your Quest transcript</a>, you'll be able to track courses you've taken, rate and review them, and let your friends see what you've taken!</p>"""
     else:
         welcome_email_body += \
         """<p>We'd love it if you could <a href="http://uwflow.com/profile?review_modal=1">review some courses</a>. Taking just 10 minutes to share your opinion can really help out your friends and fellow UW students!</p>"""
@@ -48,8 +44,7 @@ def pre_send(user):
     time_delta = datetime.now() - user.join_date
     # Send to users who signed up 2 or 3 days. Send for both days to handle
     # possible corner cases, since cron to sends email just once a day
-    return not user.sent_welcome_email and (
-            time_delta.days >= 2 and time_delta.days <= 3)
+    return not user.sent_welcome_email and 2 <= time_delta.days <= 3
 
 def post_send(user):
     user.sent_welcome_email = True

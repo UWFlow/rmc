@@ -43,9 +43,8 @@ def get_to_send_users(pre_send=None):
 def batch_send(to_send_users, title_renderer, body_renderer=None,
         html_body_renderer=None, pre_send=None, post_send=None):
 
-    if not body_renderer and not html_body_renderer:
-        print 'Cannot render email because no renderer provided. Aborting.'
-        return
+    assert body_renderer or html_body_renderer, \
+            'Cannot render email because no renderer provided. Aborting.'
 
     num_sent = 0
     for user in to_send_users:
