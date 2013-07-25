@@ -4,4 +4,4 @@ MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gm
 
 # Aggregate ratings, mutual courses, etc...
 0 7 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py all
-0 3 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/sender.py -f welcome
+0 3 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/emails/sender.py -f welcome
