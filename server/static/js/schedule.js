@@ -365,7 +365,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         futureItems = _(futureItems).sortBy(function(item) {
           return moment(item.get('start_date')).unix();
         });
-        this.setWeek(moment(futureItems[0].get('start_date')).day(1).sod().toDate());
+        this.setWeek(moment(futureItems[0].get('start_date')).clone().day(1).sod().toDate());
       } else {
         var pastItems = this.get('schedule_items').filter(function(item) {
           return startOfCurrWeek.unix() > moment(item.get('start_date')).unix();
@@ -373,7 +373,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         pastItems = _(pastItems).sortBy(function(item) {
           return moment(item.get('start_date')).unix();
         });
-        this.setWeek(moment(pastItems[pastItems.length-1].get('start_date')).day(1).sod().toDate());
+        this.setWeek(moment(pastItems[pastItems.length-1].get('start_date')).clone().day(1).sod().toDate());
       }
     },
 
