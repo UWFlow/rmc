@@ -714,7 +714,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       _facebook.showFeedDialog({
         link: getPublicScheduleLink(),
         // TODO(david): Don't hardcode term
-        name: 'Check out my Winter 2013 class schedule!',
+        name: 'Check out my Fall 2013 class schedule!',
         description: 'Flow is a social course planning app for Waterloo' +
             ' students. Connect to see what your friends are taking!',
         picture: 'http://uwflow.com/static/img/class-schedule-screenshot.png',
