@@ -93,9 +93,9 @@
       var _gaq = _gaq || [];
       _gaq.push(['_setAccount', '{{ ga_property_id }}']);
       _gaq.push(['_trackPageview']);
-      if ('{{ env }}' == 'dev') {
+      {% if env == 'dev' -%}
         _gaq.push(['_setDomainName', 'none']);
-      }
+      {%- endif %}
 
       (function() {
         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
@@ -110,11 +110,11 @@
       g=a[f]=[]:f="mixpanel";g.people=g.people||[];h="disable track track_pageview track_links track_forms register register_once unregister identify name_tag set_config people.identify people.set people.increment".split(" ");for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.1})(document,window.mixpanel||[]);
       {# TODO(Sandy): Change the dev key to a completely different account so
                       we don't waste data points #}
-      if ({{ env|tojson|safe }} == 'prod') {
+      {% if env == 'prod' %}
         mixpanel.init("0a5e88bd3f288fe8a2d8adf94b452212");
-      } else {
+      {% else %}
         mixpanel.init("31525266c483a1eb7fdb9353474370c9");
-      }
+      {% endif %}
 
       {% if current_user %}
         {# We want these "Super Properties" sent on every event #}
