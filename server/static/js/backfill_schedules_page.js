@@ -74,6 +74,20 @@ function($, _, _s, __, _util, _schedule) {
     });
   });
 
+  $('#backfill-userid-btn').click(function(evt) {
+    var userId = $('#backfill-userid-input').val()
+
+    if ($(this).hasClass('disabled') || userId === '') {
+      return false;
+    }
+    $('button').addClass('disabled');
+
+    $logger.append('<div class="text-info">Backfill user ' + userId + '</div>');
+
+    var users = [{ $oid: userId }];
+    processUsers(users);
+  });
+
   function processUsers(userIds) {
     var idx = 0;
     var failedCount = 0;
