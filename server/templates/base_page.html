@@ -14,9 +14,17 @@
     {% endblock %}
 
     <!-- CSS stylesheets -->
-    {# TODO(mack): make fonts work locally, rather than fetching from google #}
-    <link rel="stylesheet"
-    href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600">
+    {# For local development, use local fonts for faster load times (especially
+    when internet is crappy), but serve out of Google Fonts on production
+    because Google's CDN has some magic to detect and serve fonts that aren't
+    broken if the user is on Windows. #}
+    {% if env == 'dev' %}
+      <link rel="stylesheet" href="/static/css/fonts.css">
+    {% else %}
+      <link rel="stylesheet"
+      href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600">
+    {% endif %}
+
     <link rel="stylesheet" href="{{ '/static/css/ext.css'|version }}">
     {% block stylesheets %}
     {% endblock %}
