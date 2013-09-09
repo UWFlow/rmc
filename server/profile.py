@@ -103,6 +103,12 @@ def render_schedule_ical_feed(profile_user_secret_id):
         event.add('dtstart', schedule_item_dict['start_date'])
         event.add('dtend', schedule_item_dict['end_date'])
 
+        # TODO(david): There should be a method on a ScheduleItem to return
+        #     a location string, except we have this stupid pattern of
+        #     returning dicts from functions instead of objects.
+        event.add('location', '%s %s' % (schedule_item_dict['building'],
+                schedule_item_dict['room']))
+
         cal.add_component(event)
 
     response = flask.make_response(cal.to_ical())
