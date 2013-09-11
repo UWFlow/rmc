@@ -348,6 +348,7 @@ def login():
     fbid = fb_data['fbid']
     fb_access_token= fb_data['access_token']
     fb_access_token_expiry_date = fb_data['expires_on']
+    is_invalid = fb_data['is_invalid']
 
     # FIXME[uw](mack): Someone could pass fake fb_access_token for an fbid, need to
     # validate on facebook before creating the user. (Sandy): See the note above on using signed_request
@@ -355,7 +356,7 @@ def login():
     if user:
         user.fb_access_token = fb_access_token
         user.fb_access_token_expiry_date = fb_access_token_expiry_date
-        user.fb_access_token_invalid = False
+        user.fb_access_token_invalid = is_invalid
         user.save()
 
         rmclogger.log_event(
@@ -774,13 +775,14 @@ def renew_fb():
     fb_data = facebook.get_fb_data(fbsr, app.config)
     access_token = fb_data['access_token']
     expires_on = fb_data['expires_on']
+    is_invalid = fb_data['is_invalid']
 
     if expires_on > current_user.fb_access_token_expiry_date:
         # Only use the new token if it expires later. It might be the case that
         # get_fb_data failed to grab a new token
         current_user.fb_access_token_expiry_date = expires_on
         current_user.fb_access_token = access_token
-        current_user.fb_access_token_invalid = False
+        current_user.fb_access_token_invalid = is_invalid
 
         # Update the user's fb friend list, since it's likely outdated by now
         try:

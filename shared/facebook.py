@@ -159,6 +159,8 @@ def get_fb_data(signed_request, config):
     # TODO(Sandy): Migrate to Flask sessions so null tokens won't be a problem
     fb_access_token = fbsr_data.get('user_id')
     fb_access_token_expiry_date = datetime.now()
+    is_invalid = True
+
     code = fbsr_data.get('code')
     if code:
         result_dict = code_for_token(code, config)
@@ -173,6 +175,7 @@ def get_fb_data(signed_request, config):
                 fb_access_token = long_access_token
                 fb_access_token_expiry_date = datetime.fromtimestamp(
                         int(time.time()) + int(token_expires_in) - 10)
+                is_invalid = False
             else:
                 logging.warn('Failed to exchange (%s) for long access token'
                         % short_access_token)
@@ -186,6 +189,7 @@ def get_fb_data(signed_request, config):
         'access_token': fb_access_token,
         'expires_on': fb_access_token_expiry_date,
         'fbid': fbsr_data['user_id'],
+        'is_invalid' : is_invalid,
     }
 
 class FacebookOAuthException(Exception):
