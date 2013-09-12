@@ -362,7 +362,8 @@ class User(me.Document):
         # Delete all their user course objects
         _user_course.UserCourse.objects(user_id=self.id).delete()
 
-        # TODO(mack): delete UserScheduleItems for this user
+        # Delete all their UserScheduleItem objects
+        _user_schedule_item.UserScheduleItem.objects(user_id=self.id).delete()
 
         # TODO(mack): delete mutual course information from redis?
         # should be fine for now since we are removing this user from their
