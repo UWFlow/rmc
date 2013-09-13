@@ -4,6 +4,7 @@ import logging
 import bson
 import flask
 import icalendar
+import pytz
 
 import rmc.models as m
 import rmc.server.view_helpers as view_helpers
@@ -97,11 +98,18 @@ def render_schedule_ical_feed(profile_user_secret_id):
             'section_num': schedule_item_dict['section_num'],
         }
         event.add('summary', summary)
+
+        # We need to make sure we explicitly specify a timezone in the
+        # datetimes we emit to the ICS file, otherwise, some calendars (eg.
+        # Calendar.app) will interpret the time as local time (instead of UTC,
+        # which is what we store our datetime as).
+        to_utc = pytz.utc.localize
+
         # TODO(jlfwong): DTSTAMP is actually supposed to be when the event was
         # created, not when it is. Not sure what to put here
-        event.add('dtstamp', schedule_item_dict['start_date'])
-        event.add('dtstart', schedule_item_dict['start_date'])
-        event.add('dtend', schedule_item_dict['end_date'])
+        event.add('dtstamp', to_utc(schedule_item_dict['start_date']))
+        event.add('dtstart', to_utc(schedule_item_dict['start_date']))
+        event.add('dtend', to_utc(schedule_item_dict['end_date']))
 
         # TODO(david): There should be a method on a ScheduleItem to return
         #     a location string, except we have this stupid pattern of
