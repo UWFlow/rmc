@@ -17,7 +17,6 @@ header {
 }
 
 .reviews {
-
   .review {
     margin-bottom: 20px;
     line-height: 20px;
@@ -28,6 +27,12 @@ header {
 
     .review-type {
       font-size: 12px;
+      display: inline-block;
+    }
+
+    .review-date {
+      font-size: 12px;
+      display: inline-block;
     }
   }
 }

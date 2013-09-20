@@ -57,6 +57,7 @@
   <div class="review-course-id"><%- review.course_id.toUpperCase() %></div>
   <div class="review-text"><%- review.text %></div>
   <div class="review-type"><%- review.type %></div>
+  @ <div class="review-date"><%- moment(review.date.$date).format() %></div>
 </div>
 {% endcall %}
 {% endblock %}
