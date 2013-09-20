@@ -1,13 +1,23 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# There's some code in this file that checks for whether a field has been rated
+# incorrectly (eg. `if course_review.interest`). Also, there's very slow code
+# that loads all records in a collection into memory that should be converted
+# to Mongo queries.
+# TODO(david): Clean up this file and fix all the issues. Until then, please be
+#     wary of what you use.
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
 from collections import defaultdict
-from datetime import datetime
-from datetime import timedelta
+from datetime import datetime, timedelta
 import csv
 import mongoengine as me
 import rmc.models as m
 import rmc.shared.constants as c
 import rmc.shared.util as _util
 import sys
-import time
+
+from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
 
 def truncate_datetime(dt):
     return dt - timedelta(
@@ -16,60 +26,51 @@ def truncate_datetime(dt):
             seconds=dt.second,
             microseconds=dt.microsecond)
 
+@line_profile
 def generic_stats(show_all=False):
-    users = m.User.objects()
-    ucs = m.UserCourse.objects()
+    num_ucs = m.UserCourse.objects().count()
 
-    num_users = len(users)
+    num_users = m.User.objects.count()
+    num_users_with_transcript = m.User.objects(
+            transcripts_imported__gt=0).count()
 
-    num_users_with_transcript = sum(
-            [1 if user.transcripts_imported else 0 for user in users])
+    num_course_reviews = m.UserCourse.objects(
+            course_review__comment__ne='').count()
+    num_professor_reviews = m.UserCourse.objects(
+            professor_review__comment__ne='').count()
 
-    num_ucs = len(ucs)
+    # TODO(david): Make rating_fields a class method
+    num_course_ratings = 0
+    for rating in m.CourseReview().rating_fields():
+        query = {}
+        query['course_review__%s__ne' % rating] = None
+        num_course_ratings += m.UserCourse.objects(**query).count()
 
-    if show_all:
-        # UserCourse Course/Prof Reviews/Ratings
-        uc_crev = 0
-        uc_prev = 0
-        uc_crat = 0
-        uc_prat = 0
-        for uc in ucs:
-            cr = uc.course_review
-            pr = uc.professor_review
-            if cr.comment:
-                uc_crev += 1
-            if cr.interest:
-                uc_crat += 1
-            if cr.easiness:
-                uc_crat += 1
-            if cr.usefulness:
-                uc_crat += 1
-            if pr.comment:
-                uc_prev += 1
-            if pr.clarity:
-                uc_prat += 1
-            if pr.passion:
-                uc_prat += 1
+    num_professor_ratings = 0
+    for rating in m.ProfessorReview().rating_fields():
+        query = {}
+        query['professor_review__%s__ne' % rating] = None
+        num_professor_ratings += m.UserCourse.objects(**query).count()
 
-    today = datetime.now() - timedelta(hours=24)
-    signups = users_joined_after()
+    yesterday = datetime.now() - timedelta(hours=24)
+    signups = users_joined_after(yesterday)
 
     result = {
-        'num_users': len(users),
+        'num_users': num_users,
         'num_users_with_transcript': num_users_with_transcript,
-        'num_ucs': len(ucs),
+        'num_ucs': num_ucs,
         'num_signups_today': signups,
-        'num_signups_start_time': today,
+        'num_signups_start_time': yesterday,
         'epoch': datetime.now(),
     }
     if show_all:
         result.update({
-            'num_reviews': uc_crev + uc_prev,
-            'num_ratings': uc_crat + uc_prat,
-            'num_course_reviews': uc_crev,
-            'num_professor_reviews': uc_prev,
-            'num_course_ratings': uc_crat,
-            'num_professor_ratings': uc_prat,
+            'num_reviews': num_course_reviews + num_professor_reviews,
+            'num_ratings': num_course_ratings + num_professor_ratings,
+            'num_course_reviews': num_course_reviews,
+            'num_professor_reviews': num_professor_reviews,
+            'num_course_ratings': num_course_ratings,
+            'num_professor_ratings': num_professor_ratings,
         })
 
     return result
@@ -105,29 +106,27 @@ Users signed up since a day ago (%s)
         data['num_signups_today'],
     )
 
-def count_user_joined_date(cmp_op):
-    """Count the number of users that cmp_op(join_date) returns true for"""
-    users = m.User.objects()
-    join_count = 0
-    for user in users:
-        if cmp_op(user.join_date):
-            join_count += 1
-    return join_count
-
+# Inclusive
 def users_joined_after(date=None):
     if date is None:
         date = datetime.now() - timedelta(hours=24)
-    return count_user_joined_date(date.__le__)
+    return m.User.objects(join_date__gte=date).count()
 
+# Exclusive
 def users_joined_before(date=None):
     if date is None:
         date = datetime.now() - timedelta(hours=24)
-    return count_user_joined_date(date.__ge__)
+    return m.User.objects(join_date__lt=date).count()
 
 def latest_reviews(n=5):
     tups = []
 
-    for uc in m.UserCourse.objects():
+    recent_ucs_by_course = m.UserCourse.objects().order_by(
+            '-course_review__comment_date').limit(n)
+    recent_ucs_by_prof = m.UserCourse.objects().order_by(
+            '-prof_review__comment_date').limit(n)
+
+    for uc in (set(recent_ucs_by_course) & set(recent_ucs_by_prof)):
         cr_date = uc.course_review.comment_date
         pr_date = uc.professor_review.comment_date
         if cr_date:
@@ -145,7 +144,7 @@ def latest_reviews(n=5):
             'course_id': uc.course_id,
             'professor_id': uc.professor_id,
             'text': getattr(uc, rev_type).comment,
-            'time': date,
+            'date': date,
             'type': rev_type,
         })
         if len(result) == n:
