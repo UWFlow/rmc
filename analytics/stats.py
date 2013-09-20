@@ -17,7 +17,6 @@ import rmc.shared.constants as c
 import rmc.shared.util as _util
 import sys
 
-from flask_debugtoolbar_lineprofilerpanel.profile import line_profile
 
 def truncate_datetime(dt):
     return dt - timedelta(
@@ -26,7 +25,6 @@ def truncate_datetime(dt):
             seconds=dt.second,
             microseconds=dt.microsecond)
 
-@line_profile
 def generic_stats(show_all=False):
     num_ucs = m.UserCourse.objects().count()
 
