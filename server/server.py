@@ -1302,12 +1302,16 @@ def last_schedule_paste():
         'last_schedule_paste': last_schedule_paste,
     })
 
-@app.route('/admin/api/generic-stats', methods=['POST'])
-@view_helpers.admin_required
+# TODO(david): Move this somewhere else.
 def dashboard_data():
     data = rmc_stats.generic_stats(show_all=True)
     data['latest_reviews'] = rmc_stats.latest_reviews(n=5)
     return data
+
+@app.route('/admin/api/generic-stats', methods=['POST'])
+@view_helpers.admin_required
+def generic_stats():
+    return util.json_dumps(dashboard_data())
 
 @app.route('/dashboard', methods=['GET'])
 @view_helpers.admin_required

@@ -124,7 +124,7 @@ def latest_reviews(n=5):
     recent_ucs_by_prof = m.UserCourse.objects().order_by(
             '-prof_review__comment_date').limit(n)
 
-    for uc in (set(recent_ucs_by_course) & set(recent_ucs_by_prof)):
+    for uc in (set(recent_ucs_by_course) | set(recent_ucs_by_prof)):
         cr_date = uc.course_review.comment_date
         pr_date = uc.professor_review.comment_date
         if cr_date:
