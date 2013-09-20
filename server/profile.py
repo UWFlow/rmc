@@ -153,7 +153,7 @@ def render_profile_page(profile_user_id, current_user=None):
         # Allow only friends to view profile
         if not (profile_user_id in current_user.friend_ids or (
                 current_user.is_admin and flask.request.values.get('admin'))):
-            logging.warn("User (%s) tried to access non-friend profile (%s)"
+            logging.info("User (%s) tried to access non-friend profile (%s)"
                     % (current_user.id, profile_user_id))
             return view_helpers.redirect_to_profile(current_user)
 
