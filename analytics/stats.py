@@ -40,14 +40,12 @@ def generic_stats(show_all=False):
     # TODO(david): Make rating_fields a class method
     num_course_ratings = 0
     for rating in m.CourseReview().rating_fields():
-        query = {}
-        query['course_review__%s__ne' % rating] = None
+        query = { 'course_review__%s__ne' % rating: None }
         num_course_ratings += m.UserCourse.objects(**query).count()
 
     num_professor_ratings = 0
     for rating in m.ProfessorReview().rating_fields():
-        query = {}
-        query['professor_review__%s__ne' % rating] = None
+        query = { 'professor_review__%s__ne' % rating: None }
         num_professor_ratings += m.UserCourse.objects(**query).count()
 
     yesterday = datetime.now() - timedelta(hours=24)
