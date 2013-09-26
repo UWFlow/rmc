@@ -168,13 +168,11 @@ function($, _, __, _util) {
 
   var logoPath = '/static/img/logo/flow_75x75.png';
 
+  // Facebook will use the title, description, and images properties of the url
   var showSendDialogProfile = function(cb) {
     FB.ui({
       method: 'send',
-      name: 'Flow',
-      link: _util.getSiteBaseUrl() + '?meow=' + pageData.currentUserId.$oid,
-      picture: _util.getSiteBaseUrl() + logoPath,
-      description: 'Plan your courses with friends in mind!'
+      link: _util.getSiteBaseUrl() + '?meow=' + pageData.currentUserId.$oid
     }, cb);
   };
 
