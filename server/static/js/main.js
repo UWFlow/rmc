@@ -140,11 +140,11 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
     }
 
     var $footer = $('footer');
-    if ($footer.length && window.location.pathname !== '/') {
+    if ($footer.length &&
+          !_.contains(['/', '/courses'], window.location.pathname)) {
       // TODO(david): Use jpg and have it fade out into bg color
       $footer.css('background',
         'url(/static/img/footer_uw_sphere_short.png) right top no-repeat');
-        //'url(/static/img/footer_background_2000_min.png) center center no-repeat');
     }
 
     $(document.body).on('pageScriptComplete', function(evt) {
