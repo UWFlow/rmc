@@ -3,6 +3,7 @@ import logging
 import werkzeug.exceptions as exceptions
 
 import flask
+import mongoengine as me
 import redis
 import urllib
 
@@ -60,7 +61,7 @@ def get_current_user():
                 as_user = m.User.objects.with_id(oid)
                 req.current_user = as_user
                 req.as_user_override = True
-            except:
+            except me.base.ValidationError:
                 logging.warn("Bad as_oid (%s) in get_current_user()" % oid)
         elif fbid:
             as_user = m.User.objects(fbid=fbid).first()
