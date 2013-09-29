@@ -9,6 +9,10 @@ import urllib
 import rmc.models as m
 import rmc.shared.constants as c
 
+
+SESSION_COOKIE_KEY_USER_ID = 'user_id'
+
+
 _redis_instance = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
 
@@ -18,6 +22,12 @@ def get_redis_instance():
 # TODO(mack): checking that path starts with '/api/' seems brittle
 def is_api_request():
     return flask.request.path.find('/api/') == 0
+
+def logout_current_user():
+    flask.session.pop(SESSION_COOKIE_KEY_USER_ID, None)
+
+def login_as_user(user):
+    flask.session[SESSION_COOKIE_KEY_USER_ID] = user.id
 
 def get_current_user():
     """
@@ -29,10 +39,6 @@ def get_current_user():
     if hasattr(req, 'current_user'):
         return req.current_user
 
-    # TODO(Sandy): Eventually support non-fb users?
-    fbid = req.cookies.get('fbid')
-    fb_access_token = req.cookies.get('fb_access_token')
-
     api_key = req.values.get('api_key')
     if api_key and is_api_request():
         req.current_user = m.User.objects(api_key=api_key).first()
@@ -40,12 +46,11 @@ def get_current_user():
             # TODO(mack): change exceptions to not return html, but just the
             # error text
             raise exceptions.ImATeapot('Invalid api key %s' % api_key)
-
-    elif fbid is None or fb_access_token is None:
-        req.current_user = None
+    elif SESSION_COOKIE_KEY_USER_ID in flask.session:
+        user_id = flask.session[SESSION_COOKIE_KEY_USER_ID]
+        req.current_user = m.User.objects.with_id(user_id)
     else:
-        req.current_user = m.User.objects(
-                fbid=fbid, fb_access_token=fb_access_token).first()
+        req.current_user = None
 
     if req.current_user and req.current_user.is_admin:
         oid = req.values.get('as_oid', '')
@@ -70,14 +75,11 @@ def get_current_user():
 def login_required_func():
     current_user = get_current_user()
 
-    user_logging = current_user.id if current_user else current_user
+    user_logging = current_user.id if current_user else None
     logging.info("login_required: current_user (%s)" % user_logging)
     if not current_user:
         next_url = urllib.quote_plus(flask.request.url)
-        resp = flask.make_response(flask.redirect('/?next=%s' % next_url))
-        resp.set_cookie('fbid', None)
-        resp.set_cookie('fb_access_token', None)
-        return resp
+        return flask.redirect('/?next=%s' % next_url)
 
 def login_required(f):
     @functools.wraps(f)

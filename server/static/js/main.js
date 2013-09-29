@@ -119,9 +119,6 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
   var onDomReady = function() {
     $('.navbar [title]').tooltip({ placement: 'bottom' });
     $('.navbar .signout-btn').click(function() {
-      $.removeCookie('fbid', { path: '/' });
-      $.removeCookie('fb_access_token', { path: '/' });
-      $.removeCookie('fb_access_token_expires_in', { path: '/' });
       window.location.href = '/?logout=1';
     });
 
