@@ -448,7 +448,7 @@ def login_as_demo_user():
         logging.error("Accessed non-existant test/demo account %s" % fbid)
         return flask.redirect('/profile')
 
-    flask.session['user_id'] = user.id
+    view_helpers.login_as_user(user)
     return flask.redirect('/profile/%s' % user.id, 302)
 
 @app.route('/unsubscribe', methods=['GET'])
