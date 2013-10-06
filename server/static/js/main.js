@@ -119,9 +119,6 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
   var onDomReady = function() {
     $('.navbar [title]').tooltip({ placement: 'bottom' });
     $('.navbar .signout-btn').click(function() {
-      $.removeCookie('fbid', { path: '/' });
-      $.removeCookie('fb_access_token', { path: '/' });
-      $.removeCookie('fb_access_token_expires_in', { path: '/' });
       window.location.href = '/?logout=1';
     });
 
@@ -151,6 +148,13 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
       $('[rel="tooltip"]').tooltip();
       $(document.body).data('rendered', true);
     });
+
+    // TODO(Sandy): Uncomment this after testing the new login stuff a bit
+    // TODO(Sandy): We don't use these cookies anymore, so remove them from the
+    // client. This code block can be removed in a few months (Sept 29, 2013)
+    //$.removeCookie('fbid', { path: '/' });
+    //$.removeCookie('fb_access_token', { path: '/' });
+    //$.removeCookie('fb_access_token_expires_on', { path: '/' });
   };
 
 
