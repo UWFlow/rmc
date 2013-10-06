@@ -1361,7 +1361,7 @@ if __name__ == '__main__':
 
     app.debug = True
     app.config.update({
-        'SECRET_KEY' : 'TODO(jlfwong)',
+        'SECRET_KEY' : s.FLASK_SECRET_KEY,
         'DEBUG_TB_INTERCEPT_REDIRECTS' : False,
         'DEBUG_TB_PROFILER_ENABLED' : True,
         'DEBUG_TB_PANELS' : [
