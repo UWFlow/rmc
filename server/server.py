@@ -114,12 +114,13 @@ def index():
     # Redirect logged-in users to profile
     # TODO(Sandy): If we request extra permissions from FB, we'll need to show them the landing page to let them to
     # Connect again and accept the new permissions. Alternatively, we could use other means of requesting for new perms
-    # TODO(mack): checking for logout flag probably no longer necessary since
-    # we are now clearing cookie before redirecting to home page, so
-    # get_current_user() would return None
     request = flask.request
     logout = bool(request.values.get('logout'))
     referrer_id = request.values.get('meow') or request.values.get('referrer')
+
+    if logout:
+        view_helpers.logout_current_user()
+
     if not logout and not referrer_id and view_helpers.get_current_user():
         return flask.make_response(flask.redirect('profile'))
 
@@ -322,27 +323,19 @@ def onboarding():
 def login():
     req = flask.request
 
-    # TODO(Sandy): Use Flask Sessions instead of raw cookie
-    # http://flask.pocoo.org/docs/quickstart/#sessions
-
-    # TODO(Sandy): No need to send fbid either. fbsr is all we need!
-    fbid = req.cookies.get('fbid')
     fbsr = req.form.get('fb_signed_request')
 
     # TODO(Sandy): Change log category because this isn't API?
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_API,
         rmclogger.LOG_EVENT_LOGIN, {
-            'fbid': fbid,
             'fbsr': fbsr,
             'request_form': req.form,
         },
     )
 
-    if (fbid is None or
-        fbsr is None):
-            logging.warn('No fbsr set')
-            raise exceptions.ImATeapot('No fbsr set')
+    if (fbsr is None):
+        raise exceptions.ImATeapot('No fbsr set')
 
     fb_data = facebook.get_fb_data(fbsr, app.config)
     fbid = fb_data['fbid']
@@ -350,14 +343,14 @@ def login():
     fb_access_token_expiry_date = fb_data['expires_on']
     is_invalid = fb_data['is_invalid']
 
-    # FIXME[uw](mack): Someone could pass fake fb_access_token for an fbid, need to
-    # validate on facebook before creating the user. (Sandy): See the note above on using signed_request
     user = m.User.objects(fbid=fbid).first()
     if user:
+        # Existing user. Update with latest FB info
         user.fb_access_token = fb_access_token
         user.fb_access_token_expiry_date = fb_access_token_expiry_date
         user.fb_access_token_invalid = is_invalid
         user.save()
+        view_helpers.login_as_user(user)
 
         rmclogger.log_event(
             rmclogger.LOG_CATEGORY_IMPRESSION,
@@ -367,12 +360,7 @@ def login():
             },
         )
 
-        expiry_date_timestamp = time.mktime(
-                fb_access_token_expiry_date.timetuple())
-        return util.json_dumps({
-            'fb_access_token_expires_on': expiry_date_timestamp,
-            'fb_access_token': fb_access_token,
-        })
+        return ''
 
     # Sign up the new user
     friend_fbids = flask.json.loads(req.form.get('friend_fbids'))
@@ -409,6 +397,7 @@ def login():
 
     user = m.User(**user_obj)
     user.save()
+    view_helpers.login_as_user(user)
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,
@@ -418,13 +407,6 @@ def login():
             'referrer_id': referrer_id,
         },
     )
-
-    expiry_date_timestamp = time.mktime(
-            fb_access_token_expiry_date.timetuple())
-    return util.json_dumps({
-        'fb_access_token_expires_on': expiry_date_timestamp,
-        'fb_access_token': fb_access_token,
-    })
 
     return ''
 
@@ -466,11 +448,8 @@ def login_as_demo_user():
         logging.error("Accessed non-existant test/demo account %s" % fbid)
         return flask.redirect('/profile')
 
-    resp = flask.make_response(flask.redirect('/profile/%s' % user.id, 302))
-    # Set user's cookies to mimic demo account
-    resp.set_cookie('fbid', user.fbid)
-    resp.set_cookie('fb_access_token', user.fb_access_token)
-    return resp
+    view_helpers.login_as_user(user)
+    return flask.redirect('/profile/%s' % user.id, 302)
 
 @app.route('/unsubscribe', methods=['GET'])
 def unsubscribe_page():
@@ -796,12 +775,7 @@ def renew_fb():
 
         current_user.save()
 
-    expiry_date_timestamp = time.mktime(
-            expires_on.timetuple())
-    return util.json_dumps({
-        'fb_access_token_expires_on': expiry_date_timestamp,
-        'fb_access_token': access_token,
-    })
+    return ''
 
 @app.route('/api/schedule', methods=['POST'])
 @view_helpers.login_required
@@ -1387,7 +1361,7 @@ if __name__ == '__main__':
 
     app.debug = True
     app.config.update({
-        'SECRET_KEY' : 'TODO(jlfwong)',
+        'SECRET_KEY' : s.FLASK_SECRET_KEY,
         'DEBUG_TB_INTERCEPT_REDIRECTS' : False,
         'DEBUG_TB_PROFILER_ENABLED' : True,
         'DEBUG_TB_PANELS' : [
