@@ -50,6 +50,18 @@ function($, _, __, _util) {
     ref.parentNode.insertBefore(js, ref);
   }(document));
 
+  var setFBToken = function(data) {
+    $.cookie('fb_access_token',
+        data.fb_access_token, { expires: 365, path: '/' });
+    $.cookie('fb_access_token_expires_on',
+        data.fb_access_token_expires_on, { expires: 365, path: '/' });
+  };
+
+  var removeFBToken = function() {
+    $.removeCookie('fb_access_token', { path: '/' });
+    $.removeCookie('fb_access_token_expires_on', { path: '/' });
+  };
+
   var login = function(authResp, params, source, nextUrl) {
     // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
     // others to hijack someonne's session. We should probably look into
@@ -58,6 +70,9 @@ function($, _, __, _util) {
     params.fb_signed_request = authResp.signedRequest;
     var referrerId = $.cookie('referrer_id');
     params.referrer_id = referrerId;
+    // TODO(Sandy): When switching over to Flask sessions be sure to remove
+    // these old cookies
+    $.cookie('fbid', authResp.userID, { expires: 365, path: '/' });
     // TODO(Sandy): This assumes the /login request will succeed, which may not
     // be the case. But if we make this request in the success handler, it might
     // not get logged at all (due to redirect). We could setTimeout it, but that
@@ -83,6 +98,7 @@ function($, _, __, _util) {
       dataType: 'json',
       type: 'POST',
       success: function(data) {
+        setFBToken(data);
         // Fail safe to make sure at least we sent off the _gaq trackEvent
         _gaq.push(function() {
           if (nextUrl) {
@@ -94,6 +110,7 @@ function($, _, __, _util) {
         });
       },
       error: function(xhr) {
+        removeFBToken();
         window.location.href = '/';
       }
     });
@@ -199,6 +216,9 @@ function($, _, __, _util) {
       $.ajax('/api/renew-fb', {
         data: { fb_signed_request: fbSignedRequest },
         dataType: 'json',
+        success: function(data) {
+          setFBToken(data);
+        },
         type: 'POST',
         error: function(xhr) {
           // TODO(Sandy): Maybe code here to delay the next renew request? The
