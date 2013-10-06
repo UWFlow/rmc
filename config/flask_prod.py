@@ -10,3 +10,4 @@ LOG_DIR = '/home/rmc/logs'
 LOG_PATH = os.path.join(LOG_DIR, 'server/server.log')
 FB_APP_ID = '219309734863464'
 FB_APP_SECRET = s.FB_APP_SECRET_PROD
+SECRET_KEY = s.FLASK_SECRET_KEY
