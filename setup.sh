@@ -3,36 +3,58 @@
 # Terminate script on error
 set -e
 
-# Ruby stuffs: Install bundler so we can grab other gems
-echo "Installing bundler"
-gem install bundler
+install_gems() {
+    if ! which bundle >/dev/null 2>&1; then
+        # Ruby stuffs: Install bundler so we can grab other gems
+        echo "Installing bundler"
+        gem install bundler
+    fi
 
-echo "Setup bundle"
-( cd server && bundle install )
+    echo "Installing gems"
+    ( cd server && bundle install )
+}
 
-echo "Setup compass"
-( cd server && compass init --config config.rb )
+install_pip() {
+    # Python stuffs: Install pip and virtualenv before we install any packages
+    echo "Installing pip"
+    sudo easy_install pip
+}
 
-# Python stuffs: Install pip and virtualenv before we install any packages
-echo "Installing pip"
-easy_install pip
+install_virtualenv() {
+    if ! which virtualenv >/dev/null 2>&1; then
+        echo "Installing virtualenv"
+        pip install virtualenv
+    fi
 
-echo "Installing virtualenv"
-pip install virtualenv
+    VENV_DIR="$HOME/.virtualenv"
+    RMC_VENV_DIR="$VENV_DIR/rmc"
 
-VENV_DIR="$HOME/.virtualenv"
-RMC_VENV_DIR="$VENV_DIR/rmc"
-echo "Creating virtualenv in $VENV_DIR"
-mkdir $VENV_DIR
-virtualenv $RMC_VENV_DIR
-# TODO(Sandy): Hmm shouldn't even need to run this script with sudo (at least
-# for the gems, probably not for pip stuff either). Fix it next time I set up
-# TODO(Sandy): Couldn't find a better way to do this. Is this dangerous?
-# chown -R $SUDO_USER $VENV_DIR
+    if [ ! -d "$VENV_DIR" ]; then
+        echo "Creating virtualenv in $VENV_DIR"
+        mkdir -p $VENV_DIR
+    fi
 
-echo "Activating virtualenv/rmc"
-source $RMC_VENV_DIR/bin/activate
+    virtualenv $RMC_VENV_DIR
+    # TODO(Sandy): Hmm shouldn't even need to run this script with sudo (at least
+    # for the gems, probably not for pip stuff either). Fix it next time I set up
+    # TODO(Sandy): Couldn't find a better way to do this. Is this dangerous?
+    # chown -R $SUDO_USER $VENV_DIR
 
-# Rest of Python stuff, under virtualenv
-echo "Install pip requirements"
-( pip install -r requirements.txt )
+    echo "Activating virtualenv/rmc"
+    source $RMC_VENV_DIR/bin/activate
+}
+
+
+install_pip_requirements() {
+    # Rest of Python stuff, under virtualenv
+    echo "Install pip requirements"
+    ( pip install -r requirements.txt )
+}
+
+# Get password up front
+sudo echo
+
+install_gems
+install_pip
+install_virtualenv
+install_pip_requirements

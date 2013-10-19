@@ -28,7 +28,7 @@ Flask-DebugToolbar==0.7.1
 
 # NOTE(jlfwong): Since I *just* started working on this, version might fluctuate
 # a lot, so please do not hardcode a version number here
-Flask-DebugToolbar-LineProfilerPanel
+Flask-DebugToolbar-LineProfilerPanel==1.0.2
 
 # For async-processing using Redis. This is currently only used for Sift Science
 # testing. For real async we should probably use Celery + RabbitMQ
