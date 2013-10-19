@@ -59,7 +59,6 @@ Here's what an example session might look like:
 
     In [1]: m.User.objects(first_name__in=['Jamie', 'David', 'Sandy', 'Mack'], 
     last_name__in=['Wong', 'Hu', 'Duan', 'Wu'])
-    Out[1]: [<User: David Hu>, <User: Mack Duan>, <User: Sandy Wu>, <User: Jamie 
-Wong>]
+    Out[1]: [<User: David Hu>, <User: Mack Duan>, <User: Sandy Wu>, <User: Jamie Wong>]
 
 [virtualenv]: http://www.virtualenv.org/en/latest/
