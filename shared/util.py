@@ -22,6 +22,7 @@ def dict_to_list(dikt):
     update_with_name = lambda key, val: dict(val, **{ 'name': key })
     return [update_with_name(k, v) for k, v in dikt.iteritems()]
 
+# TODO(david): Why is this even here... should be in term.py
 def get_term_id_for_date(the_date):
     # From http://ugradcalendar.uwaterloo.ca/page/uWaterloo-Calendar-Events-and-Academic-Deadlines
     # Seems should be usually right; just not sure of Spring term always
