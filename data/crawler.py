@@ -413,7 +413,8 @@ def get_opendata_sections():
     for term_id in [current_term_id, next_term_id]:
         quest_term_id = m.Term.get_quest_id_from_term_id(term_id)
         course_sections = {}
-        for course in m.Course.objects:
+        # We resolve the query (list()) because Mongo's cursors can time out
+        for course in list(m.Course.objects):
             sections = get_course_sections_from_opendata(
                     course.department_id, course.number, quest_term_id)
             course_sections[course.id] = sections
