@@ -832,7 +832,7 @@ def upload_schedule():
                 class_num=item['class_num'],
                 building=item['building'],
                 room=item.get('room'),
-                section_type=item['section_type'],
+                section_type=item['section_type'].upper(),
                 section_num=item['section_num'],
                 start_date=datetime.fromtimestamp(item['start_date']),
                 end_date=datetime.fromtimestamp(item['end_date']),

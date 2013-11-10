@@ -17,6 +17,8 @@ class SectionMeeting(me.EmbeddedDocument):
             choices=['M', 'T', 'W', 'Th', 'F', 'S', 'Su']))
 
     # eg. 9/20 or null (meaning this class is held for the entire term)
+    # Note that granularity for this field is a day; {start,end}_time has
+    # time-of-day granularity.
     start_date = me.StringField()
     end_date = me.StringField()
 
@@ -26,8 +28,10 @@ class SectionMeeting(me.EmbeddedDocument):
     # eg. 4020
     room = me.StringField()
 
-    # eg. byron_weber_becker
-    # TODO(david): This should actually be a list in case of multiple instructors
+    # eg. byron_weber_becker or null
+    # TODO(david): This should actually be a list in case of multiple
+    #     instructors. This is just a single ID to match the format of
+    #     UserScheduleItem, which should be changed consistently.
     prof_id = me.StringField()
 
     is_tba = me.BooleanField()
@@ -55,7 +59,7 @@ class Section(me.Document):
     # eg. 2013_09. Note that this is our term ID, not Quest's 4-digit ID.
     term_id = me.StringField(required=True)
 
-    # eg. lec, tut, exam
+    # eg. LEC, TUT, EXAM. Note uppercase.
     section_type = me.StringField(required=True)
 
     # eg. 001

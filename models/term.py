@@ -131,7 +131,12 @@ class Term(me.Document):
         """
         year = Term.get_year_from_id(term_id)
         month = Term.get_month_from_id(term_id)
-        # TODO(david): Link to official docs somewhere specifying this format.
-        #     I'm just inferring this algorithm from the two examples above
-        #     really.
-        return '1%02d%d' % (year % 100, month)
+        return '%03d%d' % (year - 1900, month)
+
+    @staticmethod
+    def get_term_id_from_quest_id(quest_term_id):
+        """Convert Quest's funky 4-digit term code to our term ID.
+        Eg. 1139 => 2013_09, 1141 => 2014_01.
+        """
+        quest_term_id = int(quest_term_id)
+        return '%04d_%02d' % (1900 + (quest_term_id / 10), quest_term_id % 10)

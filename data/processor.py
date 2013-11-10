@@ -4,7 +4,7 @@ import rmc.models as m
 
 import argparse
 from datetime import datetime
-from datetime import timedelta
+import dateutil.parser
 import glob
 import json
 import mongoengine as me
@@ -553,6 +553,97 @@ def import_opendata_exam_schedules():
     # TODO(Sandy): When done, update time in exam.js
     return errors
 
+
+def import_opendata_sections():
+    def clean_meeting(data):
+        dates = data['dates']
+        days = None
+        if dates['weekdays']:
+            days = re.findall(r'[A-Z][a-z]?',
+                    dates['weekdays'].replace('U', 'Su'))
+
+        meeting = m.SectionMeeting(
+            start_time=dates['start_time'],
+            end_time=dates['end_time'],
+            days=days,
+            start_date=dates['start_date'],
+            end_date=dates['end_date'],
+            building=data['location']['building'],
+            room=data['location']['room'],
+            is_tba=dates['is_tba'],
+            is_cancelled=dates['is_cancelled'],
+            is_closed=dates['is_closed'],
+        )
+
+        if data['instructors']:
+            last_name, first_name = data['instructors'][0].split(',')
+            prof_id = m.Professor.get_id_from_name(first_name, last_name)
+            if not m.Professor.objects.with_id(prof_id):
+                m.Professor(id=prof_id, first_name=first_name,
+                        last_name=last_name).save()
+            meeting.prof_id = prof_id
+
+        return meeting
+
+    def clean_section(data, course_id):
+        term_id = m.Term.get_term_id_from_quest_id(data['term'])
+        section_type, section_num = data['section'].split(' ')
+        last_updated = dateutil.parser.parse(data['last_updated'])
+        meetings = map(clean_meeting, data['classes'])
+
+        return {
+            'course_id': course_id,
+            'term_id': term_id,
+            'section_type': section_type.upper(),
+            'section_num': section_num,
+            'campus': data['campus'],
+            'enrollment_capacity': data['enrollment_capacity'],
+            'enrollment_total': data['enrollment_total'],
+            'waiting_capacity': data['waiting_capacity'],
+            'waiting_total': data['waiting_total'],
+            'meetings': meetings,
+            'class_num': str(data['class_number']),
+            'units': data['units'],
+            'note': data['note'],
+            'last_updated': last_updated,
+        }
+
+    num_added = 0
+    num_updated = 0
+
+    filenames = glob.glob(os.path.join(os.path.dirname(__file__),
+            c.SECTIONS_DATA_DIR, '*.json'))
+
+    for filename in filenames:
+        with open(filename, 'r') as f:
+            data = json.load(f)
+
+            for course_id, sections_data in data.iteritems():
+                for section_data in sections_data:
+                    section_dict = clean_section(section_data, course_id)
+
+                    # TODO(david): Is there a more natural way of doing an
+                    #     upsert with MongoEngine?
+                    existing_section = m.Section.objects(
+                            course_id=section_dict['course_id'],
+                            term_id=section_dict['term_id'],
+                            section_type=section_dict['section_type'],
+                            section_num=section_dict['section_num'],
+                    ).first()
+
+                    if existing_section:
+                        for key, val in section_dict.iteritems():
+                            existing_section[key] = val
+                        existing_section.save()
+                        num_updated += 1
+                    else:
+                        m.Section(**section_dict).save()
+                        num_added += 1
+
+    print 'Added %s sections and updated %s sections' % (
+            num_added, num_updated)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     supported_modes = ['professors', 'departments',
@@ -573,6 +664,8 @@ if __name__ == '__main__':
         import_reviews()
     elif args.mode == 'exams':
         import_opendata_exam_schedules()
+    elif args.mode == 'sections':
+        import_opendata_sections()
     elif args.mode == 'all':
         import_professors()
         import_departments()
