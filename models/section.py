@@ -13,7 +13,8 @@ class SectionMeeting(me.EmbeddedDocument):
     end_time = me.StringField()
 
     # eg. ['T', 'Th']
-    days = me.ListField(me.StringField())
+    days = me.ListField(me.StringField(
+            choices=['M', 'T', 'W', 'Th', 'F', 'S', 'Su']))
 
     # eg. 9/20 or null (meaning this class is held for the entire term)
     start_date = me.StringField()
