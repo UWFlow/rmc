@@ -9,3 +9,4 @@ from review import CourseReview, ProfessorReview
 from term import Term
 from user import User
 from user_course import UserCourse, MenloCourse, CritiqueCourse
+from section import Section, SectionMeeting

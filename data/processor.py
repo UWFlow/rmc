@@ -373,6 +373,7 @@ def import_reviews():
 
     print 'imported reviews:', m.MenloCourse.objects.count()
 
+# TODO(david): This is legacy code and no longer used. Remove.
 def import_schedule_items():
 
     # TODO(jlfwong): Consolidate with get_prof_name above
