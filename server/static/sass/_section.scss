@@ -32,6 +32,10 @@
     }
   }
 
+  .full {
+    opacity: 0.3;
+  }
+
   // Sass is freaking magic. Generate color codes to distinguish sections.
   $section-colors: section-blue $blue, section-green $green, section-red $red,
       section-yellow $yellow, section-orange $orange, section-purple $purple,
