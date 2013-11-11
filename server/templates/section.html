@@ -35,9 +35,14 @@
           <td>
             <%- section.get('campus') %>
           </td>
-          <td>
-            <%- section.get('enrollment_total') %> /
-            <%- section.get('enrollment_capacity') %>
+          <td class="enrollment">
+            <span class="enrollment-total">
+              <%- section.get('enrollment_total') %>
+            </span>
+            <span> / </span>
+            <span class="enrollment-capacity">
+              <%- section.get('enrollment_capacity') %>
+            </span>
           </td>
           <td>
             <%- section.get('waiting_total') %> /

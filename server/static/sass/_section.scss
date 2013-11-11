@@ -30,6 +30,20 @@
     .day-false {
       color: #DDD;
     }
+
+    &.enrollment {
+      span {
+        display: inline-block;
+      }
+
+      .enrollment-total {
+        min-width: 24px;
+      }
+
+      .enrollment-capacity {
+        min-width: 24px;
+      }
+    }
   }
 
   // Sass is freaking magic. Generate color codes to distinguish sections.
