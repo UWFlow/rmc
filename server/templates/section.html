@@ -45,10 +45,10 @@
           <td>
             <% _.each(section.get('meetings'), function(meeting) { %>
               <p>
-                <% if (meeting.start_time) { %>
-                  <%- meeting.start_time %>
+                <% if (meeting.start_seconds != null) { %>
+                  <%- moment.utc(meeting.start_seconds * 1000).format('h:mm a') %>
                   &ndash;
-                  <%- meeting.end_time %>
+                  <%- moment.utc(meeting.end_seconds * 1000).format('h:mm a') %>
                   <% if (meeting.days.length) { %>
                     {# TODO(david): This is sort of stupid/inefficient. #}
                     <% var days = meeting.days; %>

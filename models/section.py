@@ -11,11 +11,9 @@ class SectionMeeting(me.EmbeddedDocument):
     Each section has one or more of these meetings.
     """
 
-    # eg. 14:30
-    # TODO(david): Change this to be a numerical integer value to support
-    #     querying
-    start_time = me.StringField()
-    end_time = me.StringField()
+    # Seconds since 0:00:00. eg. 52200 (2:30 pm)
+    start_seconds = me.IntField(min_value=0, max_value=60 * 60 * 24)
+    end_seconds = me.IntField(min_value=0, max_value=60 * 60 * 24)
 
     # eg. ['T', 'Th']
     days = me.ListField(me.StringField(
@@ -47,7 +45,7 @@ class SectionMeeting(me.EmbeddedDocument):
     is_cancelled = me.BooleanField()
     is_closed = me.BooleanField()
 
-    TO_DICT_FIELDS = ['start_time', 'end_time', 'days', 'start_date',
+    TO_DICT_FIELDS = ['start_seconds', 'end_seconds', 'days', 'start_date',
             'end_date', 'building', 'room', 'prof_id', 'is_tba',
             'is_cancelled', 'is_closed']
 

@@ -475,9 +475,24 @@ def _opendata_to_section_meeting(data, term_year):
     end_date = datetime.strptime(dates['end_date'], date_format).replace(
             year=term_year) if dates['end_date'] else None
 
+    time_format = '%H:%M'
+
+    # TODO(david): DRY-up
+    start_seconds = None
+    if dates['start_time']:
+        start_time = datetime.strptime(dates['start_time'], time_format)
+        start_seconds = (start_time -
+                start_time.replace(hour=0, minute=0, second=0)).seconds
+
+    end_seconds = None
+    if dates['end_time']:
+        end_time = datetime.strptime(dates['end_time'], time_format)
+        end_seconds = (end_time -
+                end_time.replace(hour=0, minute=0, second=0)).seconds
+
     meeting = m.SectionMeeting(
-        start_time=dates['start_time'],
-        end_time=dates['end_time'],
+        start_seconds=start_seconds,
+        end_seconds=end_seconds,
         days=days,
         start_date=start_date,
         end_date=end_date,
