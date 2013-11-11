@@ -1,0 +1,53 @@
+.sections-term-heading {
+}
+
+.sections-table {
+  margin-bottom: 0;
+  background: white;
+
+  th {
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+
+  td {
+    padding-top: 4px;
+    padding-bottom: 4px;
+
+    p {
+      margin-bottom: 2px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+
+    .day-true {
+      color: #333;
+      font-weight: bold;
+    }
+
+    .day-false {
+      color: #DDD;
+    }
+  }
+
+  // Sass is freaking magic. Generate color codes to distinguish sections.
+  $section-colors: blue $blue, green $green, red $red, yellow $yellow,
+      orange $orange, purple $purple, gray $gray;
+
+  @each $color-pair in $section-colors {
+    $name: nth($color-pair, 1);
+    $color: nth($color-pair, 2);
+
+    .#{$name} td:first-child {
+      border-left: 4px solid mix($color, #DDD, 20%);
+      background-color: mix($color, white, 3%);
+    }
+  }
+}
+
+.last-updated {
+  padding-top: 7px;
+  display: block;
+}

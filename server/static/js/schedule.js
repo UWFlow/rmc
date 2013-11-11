@@ -117,17 +117,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
 
     getCssClass: function() {
       var sectionType = String(this.scheduleItem.get('section_type'));
-      var cssClass = {
-        LEC: 'blue',
-        TUT: 'green',
-        LAB: 'red',
-        SEM: 'yellow',
-        TST: 'orange',
-        EXAM: 'orange',  // This is our custom section label for final exams
-        PRJ: 'purple'
-      }[sectionType];
-
-      return cssClass || 'gray';
+      return _util.sectionTypeToCssClass(sectionType);
     },
 
     render: function() {

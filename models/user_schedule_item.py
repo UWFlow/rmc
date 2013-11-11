@@ -26,7 +26,7 @@ class UserScheduleItem(me.Document):
     # eg. 4020
     room = me.StringField()
 
-    # eg. lec, tut, exam
+    # eg. LEC, TUT, EXAM
     section_type = me.StringField(required=True)
 
     # eg. 001

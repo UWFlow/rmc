@@ -4,7 +4,7 @@ import rmc.models as m
 
 import argparse
 from datetime import datetime
-from datetime import timedelta
+import dateutil.parser
 import glob
 import json
 import mongoengine as me
@@ -373,104 +373,6 @@ def import_reviews():
 
     print 'imported reviews:', m.MenloCourse.objects.count()
 
-def import_schedule_items():
-
-    # TODO(jlfwong): Consolidate with get_prof_name above
-    # Note that opendata has no space following the ,
-    def get_prof_name_opendata(prof_name_open_data):
-        matches = re.findall(r'^(.+?),(.+)$', prof_name_open_data)[0]
-        return {
-            'first_name': matches[1],
-            'last_name': matches[0],
-        }
-
-    def clean_schedule_item(schedule_item_json):
-        try:
-            if schedule_item_json['Instructor']:
-                prof_name = get_prof_name_opendata(schedule_item_json['Instructor'])
-
-                prof_id = m.Professor.get_id_from_name(**prof_name)
-            else:
-                prof_id = None
-        except TypeError:
-            print schedule_item_json
-
-        course_id = ('%s%s' % (schedule_item_json['Subject'],
-            schedule_item_json['Number'])).lower()
-
-        opendata_term = int(schedule_item_json['Term'])
-
-        # 1129 -> (1900 + 112, 9) -> 2012_09
-        term_id = '%04d_%02d' % (
-            1900 + (opendata_term / 10),
-            opendata_term % 10
-        )
-
-        days = m.ScheduleItem.days_str_to_list(schedule_item_json['Days'])
-
-        return {
-            'id': schedule_item_json['ID'],
-            'building': schedule_item_json['Building'],
-            'room': schedule_item_json['Room'],
-            'section': schedule_item_json['Section'],
-            'start_time': schedule_item_json['StartTime'],
-            'end_time': schedule_item_json['EndTime'],
-            'course_id': course_id,
-            'prof_id': prof_id,
-            'term_id': term_id,
-            'days': days
-        }
-
-    file_names = glob.glob(os.path.join(os.path.dirname(__file__),
-            c.OPENDATA_SCHEDULE_ITEM_DATA_DIR, '*.txt'))
-
-    schedule_items_json = []
-
-    bad_files = []
-
-    for file_name in file_names:
-        with open(file_name, 'r') as f:
-            data = json.load(f)
-
-            try:
-                result = data['response']['data']['result']
-            except KeyError:
-                bad_files.append(file_name)
-                continue
-
-            if isinstance(result, list):
-                schedule_items_json += result
-            else:
-                bad_files.append(file_name)
-
-    # TODO(jlfwong): A bunch of the departments are returning garbage for their
-    # schedules - they're returning dicts instead of giving real results.
-    # I left a message with Kartik to see if he can fix it.
-    print 'Bad Files: ', [os.path.basename(x) for x in bad_files]
-
-    schedule_items_clean = [clean_schedule_item(it) for it in
-        schedule_items_json]
-
-    num_added = 0
-    num_updated = 0
-
-    for si_data in schedule_items_clean:
-        si = m.ScheduleItem.objects.with_id(si_data['id'])
-
-        if si:
-            for key in si_data:
-                if key == 'id':
-                    continue
-                si[key] = si_data[key]
-            num_updated += 1
-        else:
-            si = m.ScheduleItem(**si_data)
-            num_added += 1
-
-        si.save()
-
-    print 'added schedule items: ', num_added
-    print 'updated schedule items: ', num_updated
 
 def import_opendata_exam_schedules():
     """Import exam schedules data from the OpenData API"""
@@ -552,6 +454,133 @@ def import_opendata_exam_schedules():
     # TODO(Sandy): When done, update time in exam.js
     return errors
 
+
+def _opendata_to_section_meeting(data, term_year):
+    """Converts OpenData class section info to a SectionMeeting instance.
+
+    Args:
+        data: An object from the `classes` field returned by OpenData.
+        term_year: The year this term is in.
+    """
+    dates = data['dates']
+    days = []
+    if dates['weekdays']:
+        days = re.findall(r'[A-Z][a-z]?',
+                dates['weekdays'].replace('U', 'Su'))
+
+    # TODO(david): Actually use the term begin/end dates when we get nulls
+    date_format = '%m/%d'
+    start_date = datetime.strptime(dates['start_date'], date_format).replace(
+            year=term_year) if dates['start_date'] else None
+    end_date = datetime.strptime(dates['end_date'], date_format).replace(
+            year=term_year) if dates['end_date'] else None
+
+    time_format = '%H:%M'
+
+    # TODO(david): DRY-up
+    start_seconds = None
+    if dates['start_time']:
+        start_time = datetime.strptime(dates['start_time'], time_format)
+        start_seconds = (start_time -
+                start_time.replace(hour=0, minute=0, second=0)).seconds
+
+    end_seconds = None
+    if dates['end_time']:
+        end_time = datetime.strptime(dates['end_time'], time_format)
+        end_seconds = (end_time -
+                end_time.replace(hour=0, minute=0, second=0)).seconds
+
+    meeting = m.SectionMeeting(
+        start_seconds=start_seconds,
+        end_seconds=end_seconds,
+        days=days,
+        start_date=start_date,
+        end_date=end_date,
+        building=data['location']['building'],
+        room=data['location']['room'],
+        is_tba=dates['is_tba'],
+        is_cancelled=dates['is_cancelled'],
+        is_closed=dates['is_closed'],
+    )
+
+    if data['instructors']:
+        last_name, first_name = data['instructors'][0].split(',')
+        prof_id = m.Professor.get_id_from_name(first_name, last_name)
+        if not m.Professor.objects.with_id(prof_id):
+            m.Professor(id=prof_id, first_name=first_name,
+                    last_name=last_name).save()
+        meeting.prof_id = prof_id
+
+    return meeting
+
+
+def _clean_section(data, course_id):
+    """Converts OpenData section info to a dict that can be consumed by
+    Section.
+    """
+    term_id = m.Term.get_term_id_from_quest_id(data['term'])
+    section_type, section_num = data['section'].split(' ')
+    last_updated = dateutil.parser.parse(data['last_updated'])
+
+    year = m.Term.get_year_from_id(term_id)
+    meetings = map(lambda klass: _opendata_to_section_meeting(klass, year),
+            data['classes'])
+
+    return {
+        'course_id': course_id,
+        'term_id': term_id,
+        'section_type': section_type.upper(),
+        'section_num': section_num,
+        'campus': data['campus'],
+        'enrollment_capacity': data['enrollment_capacity'],
+        'enrollment_total': data['enrollment_total'],
+        'waiting_capacity': data['waiting_capacity'],
+        'waiting_total': data['waiting_total'],
+        'meetings': meetings,
+        'class_num': str(data['class_number']),
+        'units': data['units'],
+        'note': data['note'],
+        'last_updated': last_updated,
+    }
+
+
+def import_opendata_sections():
+    num_added = 0
+    num_updated = 0
+
+    filenames = glob.glob(os.path.join(os.path.dirname(__file__),
+            c.SECTIONS_DATA_DIR, '*.json'))
+
+    for filename in filenames:
+        with open(filename, 'r') as f:
+            data = json.load(f)
+
+            for course_id, sections_data in data.iteritems():
+                for section_data in sections_data:
+                    section_dict = _clean_section(section_data, course_id)
+
+                    # TODO(david): Is there a more natural way of doing an
+                    #     upsert with MongoEngine?
+                    existing_section = m.Section.objects(
+                            course_id=section_dict['course_id'],
+                            term_id=section_dict['term_id'],
+                            section_type=section_dict['section_type'],
+                            section_num=section_dict['section_num'],
+                    ).first()
+
+                    if existing_section:
+                        for key, val in section_dict.iteritems():
+                            existing_section[key] = val
+                        existing_section.save()
+                        num_updated += 1
+                    else:
+                        m.Section(**section_dict).save()
+                        num_added += 1
+
+    print 'Added %s sections and updated %s sections' % (
+            num_added, num_updated)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     supported_modes = ['professors', 'departments',
@@ -572,6 +601,8 @@ if __name__ == '__main__':
         import_reviews()
     elif args.mode == 'exams':
         import_opendata_exam_schedules()
+    elif args.mode == 'sections':
+        import_opendata_sections()
     elif args.mode == 'all':
         import_professors()
         import_departments()

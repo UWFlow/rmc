@@ -1,7 +1,9 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ratings', 'ext/bootstrap', 'util', 'jquery.slide', 'prof', 'ext/toastr'],
-function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
+'ratings', 'ext/bootstrap', 'util', 'jquery.slide', 'prof', 'ext/toastr',
+'section'],
+function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
+    _section) {
 
   var CourseModel = RmcBackbone.Model.extend({
     defaults: {
@@ -47,6 +49,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
 
         this.set('ratings', new ratings.RatingCollection(filteredRatings));
         this.set('overall', new ratings.RatingModel(overallRating));
+      }
+
+      if (attributes.sections) {
+        this.set('sections',
+            new _section.SectionCollection(attributes.sections));
       }
     },
 
@@ -464,6 +471,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
         });
       }
 
+      if (this.courseModel.has('sections')) {
+        this.sectionCollectionView = new _section.SectionCollectionView({
+          collection: this.courseModel.get('sections')
+        });
+      }
+
       this.template = _.template($('#course-inner-tpl').html());
     },
 
@@ -483,6 +496,11 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr) {
       }
 
       this.$('.ratings-placeholder').replaceWith(this.ratingsView.render().el);
+
+      if (this.sectionCollectionView) {
+        this.$('.section-collection-placeholder').replaceWith(
+          this.sectionCollectionView.render().el);
+      }
 
       return this;
     },

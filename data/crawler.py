@@ -16,6 +16,10 @@ import traceback
 import urllib2
 
 API_UWATERLOO_API_KEY = 'ead3606c6f096657ebd283b58bf316b6'
+API_UWATERLOO_V2_URL = 'https://api.uwaterloo.ca/v2'
+
+# TODO(david): Convert this file to use OpenData v2 (v1 is now deprecated and
+#     will be retired April 2014).
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -115,7 +119,7 @@ def get_data_from_url(url, num_tries=5):
 
 def file_exists(path):
     try:
-        with open(path) as f: pass
+        with open(path): pass
         return True
     except:
         return False
@@ -303,7 +307,7 @@ def get_opendata_exam_schedule():
     data = get_data_from_url(url)
     try:
         data = data['response']['data']['result']
-    except KeyError as e:
+    except KeyError:
         print "crawler.py: ExamSchedule API call failed with data:\n%s" % (data)
         raise
 
@@ -314,6 +318,8 @@ def get_opendata_exam_schedule():
     with open(file_name, 'w') as f:
         json.dump(data, f)
 
+# TODO(david): This needs to be updated on a regular basis and not use
+#     uwlive.ca (hopefully get data from OpenData)
 def get_terms_offered():
     found = 0
     missing_course_ids = []
@@ -372,13 +378,60 @@ def get_terms_offered():
     print 'MISSING: %d' % len(missing_course_ids)
 
 
+def get_course_sections_from_opendata(subject, catalog_number, term=''):
+    """Get info on all sections offered for a course for a given term.
+
+    Args:
+        subject: The department ID (eg. CS)
+        catalog_number: The course number (eg. 241)
+        term: The 4-digit Quest term code (defaults to current term)
+    """
+
+    url = ('{api_url}/courses/{subject}/{catalog_number}/schedule.json'
+            '?key={api_key}&term={term}'.format(
+                api_url=API_UWATERLOO_V2_URL,
+                api_key=API_UWATERLOO_API_KEY,
+                subject=subject,
+                catalog_number=catalog_number,
+                term=term,
+    ))
+
+    data = get_data_from_url(url)
+    try:
+        sections = data['data']
+    except KeyError:
+        print "crawler.py: Schedule API call failed with data:\n%s" % (data)
+        raise
+
+    return sections
+
+
+def get_opendata_sections():
+    current_term_id = m.Term.get_current_term_id()
+    next_term_id = m.Term.get_next_term_id()
+
+    for term_id in [current_term_id, next_term_id]:
+        quest_term_id = m.Term.get_quest_id_from_term_id(term_id)
+        course_sections = {}
+        # We resolve the query (list()) because Mongo's cursors can time out
+        for course in list(m.Course.objects):
+            sections = get_course_sections_from_opendata(
+                    course.department_id, course.number, quest_term_id)
+            course_sections[course.id] = sections
+
+        # Now write all that data to file
+        filename = os.path.join(os.path.dirname(__file__),
+                '%s/%s.json' % (c.SECTIONS_DATA_DIR, term_id))
+        with open(filename, 'w') as f:
+            json.dump(course_sections, f)
+
 
 if __name__ == '__main__':
     me.connect(c.MONGO_DB_RMC)
 
     parser = argparse.ArgumentParser()
     supported_modes = ['departments', 'ucalendar_courses', 'opendata_courses',
-            'uwdata_courses', 'terms_offered']
+            'uwdata_courses', 'terms_offered', 'opendata_sections']
 
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
@@ -395,5 +448,7 @@ if __name__ == '__main__':
         get_terms_offered()
     elif args.mode == 'opendata_exam_schedule':
         get_opendata_exam_schedule()
+    elif args.mode == 'opendata_sections':
+        get_opendata_sections()
     else:
         sys.exit('The mode %s is not supported' % args.mode)

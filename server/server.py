@@ -235,7 +235,8 @@ def course_page(course_id):
     course_dict_list, user_course_dict_list, user_course_list = (
             m.Course.get_course_and_user_course_dicts(
                 [course], current_user, include_all_users=True,
-                include_friends=True, full_user_courses=True))
+                include_friends=True, full_user_courses=True,
+                include_sections=True))
 
     professor_dict_list = m.Professor.get_full_professors_for_course(
             course, current_user)
@@ -545,6 +546,7 @@ def unsubscribe_user():
 
     return flask.redirect('/')
 
+# TODO(david): Doesn't seem like this is used anymore... remove.
 @app.route('/api/courses/<string:course_ids>', methods=['GET'])
 # TODO(mack): find a better name for function
 def get_courses(course_ids):
@@ -832,7 +834,7 @@ def upload_schedule():
                 class_num=item['class_num'],
                 building=item['building'],
                 room=item.get('room'),
-                section_type=item['section_type'],
+                section_type=item['section_type'].upper(),
                 section_num=item['section_num'],
                 start_date=datetime.fromtimestamp(item['start_date']),
                 end_date=datetime.fromtimestamp(item['end_date']),

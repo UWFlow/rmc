@@ -22,6 +22,7 @@ def dict_to_list(dikt):
     update_with_name = lambda key, val: dict(val, **{ 'name': key })
     return [update_with_name(k, v) for k, v in dikt.iteritems()]
 
+# TODO(david): Why is this even here... should be in term.py
 def get_term_id_for_date(the_date):
     # From http://ugradcalendar.uwaterloo.ca/page/uWaterloo-Calendar-Events-and-Academic-Deadlines
     # Seems should be usually right; just not sure of Spring term always
@@ -126,12 +127,14 @@ def utc_date(date, tz):
     return tz.normalize(tz.localize(date)).astimezone(pytz.utc)
 
 def to_dict(doc, fields):
-    # TODO(jlfwong): This looks like it's only used in one place and should
-    # be killed off
     """Warning: Using this convenience fn is probably not as efficient as the
-    plain old manually building up a dict."""
+    plain old manually building up a dict.
+    """
     def map_field(prop):
         val = getattr(doc, prop)
-        return val.to_dict() if hasattr(val, 'to_dict') else val
+        if isinstance(val, list):
+            return [(e.to_dict() if hasattr(e, 'to_dict') else e) for e in val]
+        else:
+            return val.to_dict() if hasattr(val, 'to_dict') else val
 
     return { f: map_field(f) for f in fields }
