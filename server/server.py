@@ -709,7 +709,7 @@ def search_courses():
     course_dict_list, user_course_dict_list, user_course_list = (
             m.Course.get_course_and_user_course_dicts(
                 limited_courses, current_user, include_friends=True,
-                full_user_courses=False))
+                full_user_courses=False, include_sections=True))
     professor_dict_list = m.Professor.get_reduced_professors_for_courses(
             limited_courses)
 
