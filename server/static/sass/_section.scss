@@ -32,10 +32,6 @@
     }
   }
 
-  .full {
-    opacity: 0.3;
-  }
-
   // Sass is freaking magic. Generate color codes to distinguish sections.
   $section-colors: section-blue $blue, section-green $green, section-red $red,
       section-yellow $yellow, section-orange $orange, section-purple $purple,
@@ -48,6 +44,17 @@
     .#{$name} td:first-child {
       border-left: 4px solid mix($color, #DDD, 20%);
       background-color: mix($color, white, 3%);
+    }
+  }
+
+  .full td {
+    opacity: 0.9;
+    background-color: #f4f4f4;
+    color: #AAA;
+
+    .day-true {
+      color: #AAA;
+      font-weight: bold;
     }
   }
 }
