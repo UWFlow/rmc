@@ -9,6 +9,8 @@ class SectionMeeting(me.EmbeddedDocument):
     """
 
     # eg. 14:30
+    # TODO(david): Change this to be a numerical integer value to support
+    #     querying
     start_time = me.StringField()
     end_time = me.StringField()
 
@@ -19,8 +21,12 @@ class SectionMeeting(me.EmbeddedDocument):
     # eg. 9/20 or null (meaning this class is held for the entire term)
     # Note that granularity for this field is a day; {start,end}_time has
     # time-of-day granularity.
-    start_date = me.StringField()
-    end_date = me.StringField()
+    # TODO(david): Using None to denote entire term is really stupid and
+    #     requires special-casing (and makes querying harder). Ask Kartik to
+    #     scrape term begin/end dates so we can actually fill these out with
+    #     something sensible.
+    start_date = me.DateTimeField()
+    end_date = me.DateTimeField()
 
     # eg. MC
     building = me.StringField()

@@ -554,60 +554,81 @@ def import_opendata_exam_schedules():
     return errors
 
 
+def _opendata_to_section_meeting(data, term_year):
+    """Converts OpenData class section info to a SectionMeeting instance.
+
+    Args:
+        data: An object from the `classes` field returned by OpenData.
+        term_year: The year this term is in.
+    """
+    dates = data['dates']
+    days = []
+    if dates['weekdays']:
+        days = re.findall(r'[A-Z][a-z]?',
+                dates['weekdays'].replace('U', 'Su'))
+
+    # TODO(david): Actually use the term begin/end dates when we get nulls
+    date_format = '%m/%d'
+    start_date = datetime.strptime(dates['start_date'], date_format).replace(
+            year=term_year) if dates['start_date'] else None
+    end_date = datetime.strptime(dates['end_date'], date_format).replace(
+            year=term_year) if dates['end_date'] else None
+
+    meeting = m.SectionMeeting(
+        start_time=dates['start_time'],
+        end_time=dates['end_time'],
+        days=days,
+        start_date=start_date,
+        end_date=end_date,
+        building=data['location']['building'],
+        room=data['location']['room'],
+        is_tba=dates['is_tba'],
+        is_cancelled=dates['is_cancelled'],
+        is_closed=dates['is_closed'],
+    )
+
+    if data['instructors']:
+        last_name, first_name = data['instructors'][0].split(',')
+        prof_id = m.Professor.get_id_from_name(first_name, last_name)
+        if not m.Professor.objects.with_id(prof_id):
+            m.Professor(id=prof_id, first_name=first_name,
+                    last_name=last_name).save()
+        meeting.prof_id = prof_id
+
+    return meeting
+
+
+def _clean_section(data, course_id):
+    """Converts OpenData section info to a dict that can be consumed by
+    Section.
+    """
+    term_id = m.Term.get_term_id_from_quest_id(data['term'])
+    section_type, section_num = data['section'].split(' ')
+    last_updated = dateutil.parser.parse(data['last_updated'])
+
+    year = m.Term.get_year_from_id(term_id)
+    meetings = map(lambda klass: _opendata_to_section_meeting(klass, year),
+            data['classes'])
+
+    return {
+        'course_id': course_id,
+        'term_id': term_id,
+        'section_type': section_type.upper(),
+        'section_num': section_num,
+        'campus': data['campus'],
+        'enrollment_capacity': data['enrollment_capacity'],
+        'enrollment_total': data['enrollment_total'],
+        'waiting_capacity': data['waiting_capacity'],
+        'waiting_total': data['waiting_total'],
+        'meetings': meetings,
+        'class_num': str(data['class_number']),
+        'units': data['units'],
+        'note': data['note'],
+        'last_updated': last_updated,
+    }
+
+
 def import_opendata_sections():
-    def clean_meeting(data):
-        dates = data['dates']
-        days = None
-        if dates['weekdays']:
-            days = re.findall(r'[A-Z][a-z]?',
-                    dates['weekdays'].replace('U', 'Su'))
-
-        meeting = m.SectionMeeting(
-            start_time=dates['start_time'],
-            end_time=dates['end_time'],
-            days=days,
-            start_date=dates['start_date'],
-            end_date=dates['end_date'],
-            building=data['location']['building'],
-            room=data['location']['room'],
-            is_tba=dates['is_tba'],
-            is_cancelled=dates['is_cancelled'],
-            is_closed=dates['is_closed'],
-        )
-
-        if data['instructors']:
-            last_name, first_name = data['instructors'][0].split(',')
-            prof_id = m.Professor.get_id_from_name(first_name, last_name)
-            if not m.Professor.objects.with_id(prof_id):
-                m.Professor(id=prof_id, first_name=first_name,
-                        last_name=last_name).save()
-            meeting.prof_id = prof_id
-
-        return meeting
-
-    def clean_section(data, course_id):
-        term_id = m.Term.get_term_id_from_quest_id(data['term'])
-        section_type, section_num = data['section'].split(' ')
-        last_updated = dateutil.parser.parse(data['last_updated'])
-        meetings = map(clean_meeting, data['classes'])
-
-        return {
-            'course_id': course_id,
-            'term_id': term_id,
-            'section_type': section_type.upper(),
-            'section_num': section_num,
-            'campus': data['campus'],
-            'enrollment_capacity': data['enrollment_capacity'],
-            'enrollment_total': data['enrollment_total'],
-            'waiting_capacity': data['waiting_capacity'],
-            'waiting_total': data['waiting_total'],
-            'meetings': meetings,
-            'class_num': str(data['class_number']),
-            'units': data['units'],
-            'note': data['note'],
-            'last_updated': last_updated,
-        }
-
     num_added = 0
     num_updated = 0
 
@@ -620,7 +641,7 @@ def import_opendata_sections():
 
             for course_id, sections_data in data.iteritems():
                 for section_data in sections_data:
-                    section_dict = clean_section(section_data, course_id)
+                    section_dict = _clean_section(section_data, course_id)
 
                     # TODO(david): Is there a more natural way of doing an
                     #     upsert with MongoEngine?
