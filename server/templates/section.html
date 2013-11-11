@@ -1,0 +1,82 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('sections-collection-tpl') %}
+<% _.each(terms, function(term, term_id) { %>
+  <%- term_id %>
+  <table class="section-term-table table table-striped table-bordered
+      table-rounded">
+    <thead>
+      <tr>
+        <th>Section</th>
+        <th>Class</th>
+        <th>Campus</th>
+        <th>Enrollment</th>
+        <th>Waitlist</th>
+        <th>Time</th>
+        <th>Location</th>
+        <th>Instructor(s)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% _.each(term, function(section) { %>
+        <tr>
+          <td>
+            <%- section.get('section_type') %>
+            <%- section.get('section_num') %>
+          </td>
+          <td>
+            <%- section.get('class_num') %>
+          </td>
+          <td>
+            <%- section.get('campus') %>
+          </td>
+          <td>
+            <%- section.get('enrollment_total') %> /
+            <%- section.get('enrollment_capacity') %>
+          </td>
+          <td>
+            <%- section.get('waiting_total') %> /
+            <%- section.get('waiting_capacity') %>
+          </td>
+          <td>
+            <% _.each(section.get('meetings'), function(meeting) { %>
+              <p>
+                <% if (meeting.start_time) { %>
+                  <%- meeting.start_time %>
+                  &ndash;
+                  <%- meeting.end_time %>
+                  <%- meeting.days.join('') %>
+                <% } %>
+
+                <% if (meeting.start_date) { %>
+                  <%- meeting.start_date %>
+                  <%- meeting.end_date %>
+                <% } %>
+              </p>
+            <% }); %>
+          </td>
+          <td>
+            <% _.each(section.get('meetings'), function(meeting) { %>
+              <p>
+                <% if (meeting.building) { %>
+                  <%- meeting.building %>
+                  <%- meeting.room %>
+                <% } %>
+              </p>
+            <% }); %>
+          </td>
+          <td>
+            <% _.each(section.get('meetings'), function(meeting) { %>
+              <p>
+                <% if (meeting.prof_id) { %>
+                  <%- meeting.prof_id %>
+                <% } %>
+              </p>
+            <% }); %>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+<% }); %>
+{% endcall %}
