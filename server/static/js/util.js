@@ -25,9 +25,7 @@ function(_, _s) {
    * TODO(mack): check if underscore.string already provides this
    * Capitalize the first letter of a string.
    */
-  var capitalize = function(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  };
+  var capitalize = _s.capitalize;
 
   /**
    * Return the proper pluralization of num
@@ -182,6 +180,52 @@ function(_, _s) {
     });
   };
 
+  /**
+   * Converts a term ID into a readable form.
+   * Eg. "2012_01" => Winter 2012, "2012_05" => "Spring 2012"
+   */
+  var humanizeTermId = function(termId) {
+    var parts = termId.split('_');
+    var year = parts[0];
+    var month = parseInt(parts[1], 10);
+    var season = {
+      1: 'Winter',
+      5: 'Spring',
+      9: 'Fall'
+    }[month];
+
+    return season + ' ' + year;
+  };
+
+  /**
+   * Converts a professor ID into a readable form.
+   * Eg. "byron_weber_becker" => "Byron Weber Becker"
+   */
+  var humanizeProfId = function(profId) {
+    var names = profId.split('_');
+    var namesCapitalized = _.map(names, _s.capitalize);
+    return namesCapitalized.join(' ');
+  };
+
+  /**
+   * Converts from an upper-case section type code to a CSS color class.
+   */
+  // TODO(david): This might be better consolidated elsewhere, but it's 1 am
+  //     and I need to ship sections.
+  var sectionTypeToCssClass = function(sectionType) {
+    var cssClass = {
+      LEC: 'blue',
+      TUT: 'green',
+      LAB: 'red',
+      SEM: 'yellow',
+      TST: 'orange',
+      EXAM: 'orange',  // This is our custom section label for final exams
+      PRJ: 'purple'
+    }[sectionType];
+
+    return cssClass || 'gray';
+  };
+
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -199,6 +243,9 @@ function(_, _s) {
     getReferrerId: getReferrerId,
     storeUserData: storeUserData,
     getUserData: getUserData,
-    scrollToElementId: scrollToElementId
+    scrollToElementId: scrollToElementId,
+    humanizeTermId: humanizeTermId,
+    humanizeProfId: humanizeProfId,
+    sectionTypeToCssClass: sectionTypeToCssClass
   };
 });
