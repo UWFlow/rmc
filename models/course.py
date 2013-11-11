@@ -104,6 +104,14 @@ class Course(me.Document):
         course_dicts = [course.to_dict() for course in courses]
         course_ids = [c['id'] for c in course_dicts]
 
+        if include_sections:
+            for course_dict in course_dicts:
+                # By default, we'll send down section info for current and next
+                # term for each course we return.
+                sections = section.Section.get_for_course_and_recent_terms(
+                        course_dict['id'])
+                course_dict['sections'] = [s.to_dict() for s in sections]
+
         ucs = []
         if not current_user:
             if include_all_users:
@@ -173,13 +181,6 @@ class Course(me.Document):
                         course_dict['id'], [])
                 friend_uc_ids = [uc['id'] for uc in friend_ucs]
                 course_dict['friend_user_course_ids'] = friend_uc_ids
-
-            # By default, we'll send down section info for current and next
-            # term for each course we return
-            if include_sections:
-                sections = section.Section.get_for_course_and_recent_terms(
-                        course_dict['id'])
-                course_dict['sections'] = [s.to_dict() for s in sections]
 
         return course_dicts, uc_dicts, ucs
 
