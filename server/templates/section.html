@@ -46,9 +46,9 @@
             <% _.each(section.get('meetings'), function(meeting) { %>
               <p>
                 <% if (meeting.start_seconds != null) { %>
-                  <%- moment.utc(meeting.start_seconds * 1000).format('h:mm a') %>
+                  <%- moment.utc(meeting.start_seconds * 1000).format('hh:mm a') %>
                   &ndash;
-                  <%- moment.utc(meeting.end_seconds * 1000).format('h:mm a') %>
+                  <%- moment.utc(meeting.end_seconds * 1000).format('hh:mm a') %>
                   <% if (meeting.days.length) { %>
                     {# TODO(david): This is sort of stupid/inefficient. #}
                     <% var days = meeting.days; %>
