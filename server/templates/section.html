@@ -50,7 +50,7 @@
                   &ndash;
                   <%- meeting.end_time %>
                   <% if (meeting.days.length) { %>
-                    {# TODO(david): This is stupid. Improve. #}
+                    {# TODO(david): This is sort of stupid/inefficient. #}
                     <% var days = meeting.days; %>
                     <span class="day-<%- _.contains(days, 'M') %>">M</span
                     ><span class="day-<%- _.contains(days, 'T') %>">T</span
@@ -102,7 +102,11 @@
   <small class="last-updated">
     Last updated
     <%- moment(term[0].get('last_updated')).format('MMM. D, YYYY') %> from
-    <a href="http://www.adm.uwaterloo.ca/infocour/CIR/SA/under.html"
+
+    <% var courseParts = splitCourseId(term[0].get('course_id')); %>
+    <% var questId = termIdToQuestId(term[0].get('term_id')); %>
+
+    <a href="http://www.adm.uwaterloo.ca/cgi-bin/cgiwrap/infocour/salook.pl?level=under&sess=<%- questId %>&subject=<%- courseParts[0] %>&cournum=<%- courseParts[1] %>"
         target="_blank">
       www.adm.uwaterloo.ca</a>.
    </small>

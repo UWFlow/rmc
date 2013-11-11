@@ -226,6 +226,28 @@ function(_, _s) {
     return cssClass || 'gray';
   };
 
+  /**
+   * Splits a course ID into the department (subject) and course code
+   * components.
+   * Eg. earth121l => ["EARTH", "121L"]
+   */
+  var splitCourseId = function(courseId) {
+    var matches = /(^[A-z]+)(\w+)/.exec(courseId);
+    return [(matches[1] || '').toUpperCase(),
+            (matches[2] || '').toUpperCase()];
+  };
+
+  /**
+   * Convert a term ID from our format to Quest's funky 4-digit code. Eg.
+   * 2013_09 => 1139, 2014_01 => 1141.
+   */
+  var termIdToQuestId = function(termId) {
+    var parts = termId.split('_');
+    var year = parseInt(parts[0], 10);
+    var month = parseInt(parts[1], 10);
+    return _s.pad(year - 1900, 3, '0') + month;
+  };
+
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -246,6 +268,8 @@ function(_, _s) {
     scrollToElementId: scrollToElementId,
     humanizeTermId: humanizeTermId,
     humanizeProfId: humanizeProfId,
-    sectionTypeToCssClass: sectionTypeToCssClass
+    sectionTypeToCssClass: sectionTypeToCssClass,
+    splitCourseId: splitCourseId,
+    termIdToQuestId: termIdToQuestId
   };
 });

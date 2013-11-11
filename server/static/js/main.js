@@ -84,7 +84,9 @@ function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
       capitalize: util.capitalize,
       humanizeTermId: util.humanizeTermId,
       humanizeProfId: util.humanizeProfId,
-      sectionTypeToCssClass: util.sectionTypeToCssClass
+      sectionTypeToCssClass: util.sectionTypeToCssClass,
+      splitCourseId: util.splitCourseId,
+      termIdToQuestId: util.termIdToQuestId
     };
 
     _.template = function(templateString, data, settings) {
