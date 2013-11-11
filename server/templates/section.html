@@ -3,6 +3,11 @@
 {% call macros.us_template('sections-collection-tpl') %}
 <% _.each(terms, function(term, term_id) { %>
   <h2 class="sections-term-heading"><%- humanizeTermId(term_id) %></h2>
+  <% if (term[0].has('note')) { %>
+    <p>
+      <strong>Please note:</strong> <%- term[0].get('note') %>
+    </p>
+  <% } %>
   <table class="sections-table table table-bordered table-rounded">
     <thead>
       <tr>
@@ -94,5 +99,12 @@
       <% }); %>
     </tbody>
   </table>
+  <small class="last-updated">
+    Last updated
+    <%- moment(term[0].get('last_updated')).format('MMM. D, YYYY') %> from
+    <a href="http://www.adm.uwaterloo.ca/infocour/CIR/SA/under.html"
+        target="_blank">
+      www.adm.uwaterloo.ca</a>.
+   </small>
 <% }); %>
 {% endcall %}
