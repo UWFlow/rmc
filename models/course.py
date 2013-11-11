@@ -4,8 +4,10 @@ import mongoengine as me
 
 import professor
 import rating
+import section
 from rmc.shared import util
 import user_course as _user_course
+
 
 class Course(me.Document):
     meta = {
@@ -94,7 +96,7 @@ class Course(me.Document):
     @classmethod
     def get_course_and_user_course_dicts(cls, courses, current_user,
             include_friends=False, include_all_users=False,
-            full_user_courses=False):
+            full_user_courses=False, include_sections=False):
 
         limited_user_course_fields = [
                 'program_year_id', 'term_id', 'user_id', 'course_id']
@@ -171,6 +173,13 @@ class Course(me.Document):
                         course_dict['id'], [])
                 friend_uc_ids = [uc['id'] for uc in friend_ucs]
                 course_dict['friend_user_course_ids'] = friend_uc_ids
+
+            # By default, we'll send down section info for current and next
+            # term for each course we return
+            if include_sections:
+                sections = section.Section.get_for_course_and_recent_terms(
+                        course_dict['id'])
+                course_dict['sections'] = [s.to_dict() for s in sections]
 
         return course_dicts, uc_dicts, ucs
 

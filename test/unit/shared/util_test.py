@@ -88,8 +88,14 @@ class UtilTest(unittest.TestCase):
             y = 2
             z = 7
             bar = Bar()
+            bar_list = [Bar(), Bar()]
 
         self.assertEqual(
-            {'x': 1, 'y': 2, 'bar': {'prop': 'val'}},
-            util.to_dict(Foo(), ['x', 'y' ,'bar'])
+            {
+                'x': 1,
+                'y': 2,
+                'bar': {'prop': 'val'},
+                'bar_list': [{'prop': 'val'}, {'prop': 'val'}]
+            },
+            util.to_dict(Foo(), ['x', 'y' ,'bar', 'bar_list'])
         )
