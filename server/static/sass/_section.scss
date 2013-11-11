@@ -33,8 +33,9 @@
   }
 
   // Sass is freaking magic. Generate color codes to distinguish sections.
-  $section-colors: blue $blue, green $green, red $red, yellow $yellow,
-      orange $orange, purple $purple, gray $gray;
+  $section-colors: section-blue $blue, section-green $green, section-red $red,
+      section-yellow $yellow, section-orange $orange, section-purple $purple,
+      section-gray $gray;
 
   @each $color-pair in $section-colors {
     $name: nth($color-pair, 1);

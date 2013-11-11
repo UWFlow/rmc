@@ -23,7 +23,7 @@
     </thead>
     <tbody>
       <% _.each(term, function(section) { %>
-        <tr class="<%- sectionTypeToCssClass(section.get('section_type')) %>">
+        <tr class="section-<%- sectionTypeToCssClass(section.get('section_type')) %>">
           <td>
             <%- section.get('section_type') %>
             <%- section.get('section_num') %>
