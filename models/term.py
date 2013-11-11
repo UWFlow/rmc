@@ -91,7 +91,7 @@ class Term(me.Document):
             # Special place holder so we can correct it later
             return '8888_88'
 
-        return Term.id_from_year_season(year, season)
+        return Term.get_id_from_year_season(year, season)
 
     @classmethod
     def is_shortlist_term(cls, term_id):
