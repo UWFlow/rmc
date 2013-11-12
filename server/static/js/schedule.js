@@ -336,6 +336,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         this.set('courses_not_shown',
           _.chain(this.get('failed_schedule_items'))
             .pluck('course_id')
+            .reject(function(courseId) {
+              return _s.startsWith(courseId, 'wkrpt');
+            })
             .uniq()
             .value()
         );
