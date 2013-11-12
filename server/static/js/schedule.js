@@ -1,17 +1,23 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'course', 'util', 'facebook', 'ext/moment'],
+'ext/bootstrap', 'course', 'util', 'facebook',
+'rmc_moment'],
 function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
-
+  // Cache a propery for a given instance.
+  var instancePropertyCache = function(getter) {
+    return _.memoize(getter, function() {
+      return this.cid;
+    });
+  };
   var minutesSinceSod = function(date) {
     var dateMoment = moment(date);
-    return dateMoment.diff(dateMoment.sod(), 'minutes');
+    return dateMoment.diff(dateMoment.clone().startOf('day'), 'minutes');
   };
 
   var isSameDay = function(firstDate, secondDate) {
     var firstMoment = moment(firstDate);
     var secondMoment = moment(secondDate);
-    return firstMoment.sod().diff(secondMoment.sod()) === 0;
+    return firstMoment.startOf('day').diff(secondMoment.startOf('day')) === 0;
   };
 
   // TODO(mack): rename UserScheduleItem to match the backend
@@ -28,21 +34,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       course_id: '',
       prof_id: '',
       term_id: ''
-    },
-
-    initialize: function() {
-      // Server time is UTC, but client's computer is some other timezone.
-      // Adjust to their timezone by adding moment.zone().
-      // FIXME(Sandy): This will break for people not in the same timezone as
-      // their university, but they might not be attending classes there anyway?
-
-      // FIXME(david): This is bugging out on prod but not local
-      //var timezoneShift = function(date) {
-      //  mDate = moment(date);
-      //  return mDate.add('minutes', mDate.zone()).toDate();
-      //};
-      //this.set('start_date', timezoneShift(this.get('start_date')));
-      //this.set('end_date', timezoneShift(this.get('end_date')));
     },
 
     referenceFields: {
@@ -62,13 +53,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         (selfEnd >= otherStart && selfEnd <= otherEnd);
     },
 
-    startMinutes: function() {
+    startMinutes: instancePropertyCache(function() {
       return minutesSinceSod(this.get('start_date'));
-    },
+    }),
 
-    endMinutes: function() {
+    endMinutes: instancePropertyCache(function() {
       return minutesSinceSod(this.get('end_date'));
-    }
+    })
   });
 
   var ScheduleItemCollection = RmcBackbone.Collection.extend({
@@ -346,7 +337,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     setBestWeek: function() {
-      var startOfCurrWeek = moment().day(1).sod();
+      var startOfCurrWeek = moment().day(1).startOf('day');
 
       // Find the closest week in the future with schedule items, or failing
       // that the closest week in the past with schedule items
@@ -358,7 +349,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         futureItems = _(futureItems).sortBy(function(item) {
           return moment(item.get('start_date')).unix();
         });
-        this.setWeek(moment(futureItems[0].get('start_date')).clone().day(1).sod().toDate());
+        this.setWeek(moment(futureItems[0].get('start_date')).clone().day(1).startOf('day').toDate());
       } else {
         var pastItems = this.get('schedule_items').filter(function(item) {
           return startOfCurrWeek.unix() > moment(item.get('start_date')).unix();
@@ -366,7 +357,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         pastItems = _(pastItems).sortBy(function(item) {
           return moment(item.get('start_date')).unix();
         });
-        this.setWeek(moment(pastItems[pastItems.length-1].get('start_date')).clone().day(1).sod().toDate());
+        this.setWeek(moment(pastItems[pastItems.length-1].get('start_date')).clone().day(1).startOf('day').toDate());
       }
     },
 
@@ -389,7 +380,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       var currMoment = moment();
 
       // Start the week on the Monday of the current week
-      this.setWeek(currMoment.day(1).sod().toDate());
+      this.setWeek(currMoment.day(1).startOf('day').toDate());
     },
 
     setNextWeek: function() {
@@ -923,9 +914,15 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         hasClassOnDay[weekdayMap[day]] = true;
       });
 
-      var timeFormats = ['YYYY-MM-DD h:mm A', 'MM/DD/YYYY h:mm A', 'DD/MM/YYYY H:mm'];
-      var firstStartMoment = moment(startDateStr + " " + startTimeStr, timeFormats);
-      var firstEndMoment = moment(startDateStr + " " + endTimeStr, timeFormats);
+      // Once we have the date of the item, figure out what the TZ offset is,
+      // then interpret the date using that offset
+      var tzOffsetStr = moment(startDateStr, [
+        "YYYY-MM-DD", "MM/DD/YYYY", "DD/MM/YYYY"
+      ]).tz("America/Toronto").format("ZZ");
+
+      var timeFormats = ['YYYY-MM-DD h:mm A ZZ', 'MM/DD/YYYY h:mm A ZZ', 'DD/MM/YYYY H:mm ZZ'];
+      var firstStartMoment = moment(startDateStr + " " + startTimeStr + " " + tzOffsetStr, timeFormats);
+      var firstEndMoment = moment(startDateStr + " " + endTimeStr + " " + tzOffsetStr, timeFormats);
 
       // Time delta between start and end time, in milliseconds
       var timeDelta = firstEndMoment - firstStartMoment;
@@ -948,6 +945,13 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
             prof_name: profName
           });
         }
+        // When this crosses a DST line, it only changes the date, not the time
+        //
+        //    > moment("2013-11-02 15:00").add('days', 0).tz("America/Toronto").format()
+        //    "2013-11-02T18:00:00-04:00"
+        //    > moment("2013-11-02 15:00").add('days', 1).tz("America/Toronto").format()
+        //    "2013-11-03T18:00:00-05:00"
+        //
         currMoment.add('days', 1);
       }
       return processedSlotItems;

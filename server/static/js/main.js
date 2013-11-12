@@ -54,20 +54,21 @@ require.config({
     'ext/select2': 'ext/select2.min',
     'ext/autosize': 'ext/jquery.autosize',
     'ext/cookie': 'ext/jquery.cookie',
-    'ext/moment': 'ext/moment.min',
     'ext/slimScroll': 'ext/slimScroll-0.6.0',
     'ext/jqueryui': 'ext/jquery-ui-1.8.23.custom.min',
     'ext/toastr': 'ext/toastr',
     'ext/underscore': 'ext/underscore-1.3.3',
-    'ext/underscore.string': 'ext/underscore.string-2.0.0'
-    //'main': 'main.js?v=' + pageData.version
+    'ext/underscore.string': 'ext/underscore.string-2.0.0',
+
+    'moment': 'ext/moment.min',
+    'moment-timezone': 'ext/moment-timezone.min'
   }
 });
 
-require(['ext/underscore', 'ext/underscore.string', 'util', 'ext/moment',
-    'ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/backbone',
-    'ext/bootstrap', 'ext/cookie', 'ext/toastr', 'points', 'user', 'facebook'],
-function(_, _s, util, moment, $, _, _s, Backbone, __, __, toastr, _points,
+require(['ext/underscore', 'ext/underscore.string', 'util', 'rmc_moment',
+    'ext/jquery', 'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
+    'points', 'user', 'facebook'],
+function(_, _s, util, moment, $, Backbone, __, __, toastr, _points,
   _user, _facebook) {
 
   // Add helpers functions to all templates
