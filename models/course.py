@@ -184,8 +184,8 @@ class Course(me.Document):
 
         return course_dicts, uc_dicts, ucs
 
-    @classmethod
-    def code_to_id(cls, course_code):
+    @staticmethod
+    def code_to_id(course_code):
         return "".join(course_code.split()).lower()
 
     def to_dict(self):

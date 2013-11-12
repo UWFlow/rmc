@@ -386,7 +386,6 @@ def get_course_sections_from_opendata(subject, catalog_number, term=''):
         catalog_number: The course number (eg. 241)
         term: The 4-digit Quest term code (defaults to current term)
     """
-
     url = ('{api_url}/courses/{subject}/{catalog_number}/schedule.json'
             '?key={api_key}&term={term}'.format(
                 api_url=API_UWATERLOO_V2_URL,
@@ -406,24 +405,51 @@ def get_course_sections_from_opendata(subject, catalog_number, term=''):
     return sections
 
 
+def get_subject_sections_from_opendata(subject, term):
+    """Get info on all sections offered for all courses of a given subject and
+    term.
+
+    Args:
+        subject: The department ID (eg. CS)
+        term: The 4-digit Quest term code (defaults to current term)
+    """
+    url = ('{api_url}/terms/{term}/{subject}/schedule.json'
+            '?key={api_key}'.format(
+                api_url=API_UWATERLOO_V2_URL,
+                api_key=API_UWATERLOO_API_KEY,
+                subject=subject,
+                term=term,
+    ))
+
+    data = get_data_from_url(url)
+    try:
+        sections = data['data']
+    except KeyError:
+        print "crawler.py: Schedule API call failed with data:\n%s" % (data)
+        raise
+
+    return sections
+
+
 def get_opendata_sections():
     current_term_id = m.Term.get_current_term_id()
     next_term_id = m.Term.get_next_term_id()
 
-    for term_id in [current_term_id, next_term_id]:
-        quest_term_id = m.Term.get_quest_id_from_term_id(term_id)
-        course_sections = {}
-        # We resolve the query (list()) because Mongo's cursors can time out
-        for course in list(m.Course.objects):
-            sections = get_course_sections_from_opendata(
-                    course.department_id, course.number, quest_term_id)
-            course_sections[course.id] = sections
+    # TODO(david): Need to regularly update departments from OpenData:
+    #     https://api.uwaterloo.ca/v2/codes/subjects.json
+    # We resolve the query (list()) because Mongo's cursors can time out
+    for department in list(m.Department.objects):
+        sections = []
+        for term_id in [current_term_id, next_term_id]:
+            quest_term_id = m.Term.get_quest_id_from_term_id(term_id)
+            sections += get_subject_sections_from_opendata(
+                    department.id.upper(), quest_term_id)
 
         # Now write all that data to file
         filename = os.path.join(os.path.dirname(__file__),
-                '%s/%s.json' % (c.SECTIONS_DATA_DIR, term_id))
+                '%s/%s.json' % (c.SECTIONS_DATA_DIR, department.id))
         with open(filename, 'w') as f:
-            json.dump(course_sections, f)
+            json.dump(sections, f)
 
 
 if __name__ == '__main__':

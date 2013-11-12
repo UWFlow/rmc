@@ -514,10 +514,11 @@ def _opendata_to_section_meeting(data, term_year):
     return meeting
 
 
-def _clean_section(data, course_id):
+def _clean_section(data):
     """Converts OpenData section info to a dict that can be consumed by
     Section.
     """
+    course_id = m.Course.code_to_id(data['subject'] + data['catalog_number'])
     term_id = m.Term.get_term_id_from_quest_id(data['term'])
     section_type, section_num = data['section'].split(' ')
     last_updated = dateutil.parser.parse(data['last_updated'])
@@ -555,27 +556,26 @@ def import_opendata_sections():
         with open(filename, 'r') as f:
             data = json.load(f)
 
-            for course_id, sections_data in data.iteritems():
-                for section_data in sections_data:
-                    section_dict = _clean_section(section_data, course_id)
+            for section_data in data:
+                section_dict = _clean_section(section_data)
 
-                    # TODO(david): Is there a more natural way of doing an
-                    #     upsert with MongoEngine?
-                    existing_section = m.Section.objects(
-                            course_id=section_dict['course_id'],
-                            term_id=section_dict['term_id'],
-                            section_type=section_dict['section_type'],
-                            section_num=section_dict['section_num'],
-                    ).first()
+                # TODO(david): Is there a more natural way of doing an
+                #     upsert with MongoEngine?
+                existing_section = m.Section.objects(
+                        course_id=section_dict['course_id'],
+                        term_id=section_dict['term_id'],
+                        section_type=section_dict['section_type'],
+                        section_num=section_dict['section_num'],
+                ).first()
 
-                    if existing_section:
-                        for key, val in section_dict.iteritems():
-                            existing_section[key] = val
-                        existing_section.save()
-                        num_updated += 1
-                    else:
-                        m.Section(**section_dict).save()
-                        num_added += 1
+                if existing_section:
+                    for key, val in section_dict.iteritems():
+                        existing_section[key] = val
+                    existing_section.save()
+                    num_updated += 1
+                else:
+                    m.Section(**section_dict).save()
+                    num_added += 1
 
     print 'Added %s sections and updated %s sections' % (
             num_added, num_updated)
