@@ -14,8 +14,7 @@
         <th>Section</th>
         <th>Class</th>
         <th>Campus</th>
-        <th>Enrollment</th>
-        <th>Waitlist</th>
+        <th>Enrolled</th>
         <th>Time</th>
         <th>Location</th>
         <th>Instructor(s)</th>
@@ -45,16 +44,14 @@
             </span>
           </td>
           <td>
-            <%- section.get('waiting_total') %> /
-            <%- section.get('waiting_capacity') %>
-          </td>
-          <td>
             <% _.each(section.get('meetings'), function(meeting) { %>
               <p>
                 <% if (meeting.start_seconds != null) { %>
-                  <%- moment.utc(meeting.start_seconds * 1000).format('hh:mm a') %>
-                  &ndash;
-                  <%- moment.utc(meeting.end_seconds * 1000).format('hh:mm a') %>
+                  <span class="meeting-time">
+                    <%- moment.utc(meeting.start_seconds * 1000).format('h:mm a') %>
+                    &ndash;
+                    <%- moment.utc(meeting.end_seconds * 1000).format('h:mm a') %>
+                  </span>
                   <% if (meeting.days.length) { %>
                     {# TODO(david): This is sort of stupid/inefficient. #}
                     <% var days = meeting.days; %>

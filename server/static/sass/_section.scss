@@ -1,6 +1,3 @@
-.sections-term-heading {
-}
-
 .sections-table {
   margin-bottom: 0;
   background: white;
@@ -39,10 +36,11 @@
       .enrollment-total {
         min-width: 24px;
       }
+    }
 
-      .enrollment-capacity {
-        min-width: 24px;
-      }
+    .meeting-time {
+      display: inline-block;
+      min-width: 137px;
     }
   }
 
