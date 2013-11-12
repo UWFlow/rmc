@@ -314,6 +314,14 @@ def update_exam_schedule():
     print "%d exam schedule items skipped" % len(errors)
 
 
+def update_sections():
+    # Fetch data from OpenData API and cache to files.
+    rmc_crawler.get_opendata_sections()
+
+    # Import from files to DB.
+    rmc_processor.import_opendata_sections()
+
+
 if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC)
 
@@ -326,6 +334,7 @@ if __name__ == '__main__':
         'mongo_course_professors': update_mongo_course_professors,
         'mongo_points': update_mongo_points,
         'exam_schedule': update_exam_schedule,
+        'sections': update_sections,
     }
     parser.add_argument('mode',
             help='one of %s' % ','.join(mode_mapping.keys() + ['all']))
