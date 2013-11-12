@@ -60,25 +60,6 @@
         <%= course.getReqsHtml(course.get('prereqs')) %>
       </p>
     <% } %>
-    <% if (course.get('terms_offered').length) { %>
-      <div class="terms-offered">
-        <%
-          var offered = function(term) {
-            var offered_in_term = _.any(course.get('terms_offered'), function(term_offered) {
-              return term === term_offered;
-            });
-
-            if (offered_in_term) {
-              return 'offered';
-            }
-            return '';
-          };
-        %>
-        <span class="label fall <%- offered('09') %>">Fall</span>
-        <span class="label winter <%- offered('01') %>">Winter</span>
-        <span class="label spring <%- offered('05') %>">Spring</span>
-      </div>
-    <% } %>
   </div>
   <div class="span6 right-col">
     <div class="ratings-placeholder"></div>
