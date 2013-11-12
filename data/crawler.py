@@ -53,6 +53,7 @@ def html_parse(url, num_tries=5, parsers=[soupparser]):
 
     return None
 
+# TODO(david): Convert more calls to use opendata API
 # TODO(mack): add to text file rather than directly to mongo
 def get_departments():
 

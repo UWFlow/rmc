@@ -28,4 +28,19 @@ class TermTest(testlib.ModelTestCase):
         assertConverts('2014_01', '1141')
         assertConverts('2100_01', '2001')
 
+    def test_convert_between_id_and_year_season(self):
+        def assertConverts(term_id, year, season):
+            self.assertEquals(term_id, m.Term.get_id_from_year_season(year,
+                    season))
+            self.assertEquals(year, m.Term.get_year_from_id(term_id))
+            self.assertEquals(season, m.Term.get_season_from_id(term_id))
+
+        assertConverts('1999_09', 1999, 'Fall')
+        assertConverts('2012_09', 2012, 'Fall')
+        assertConverts('2013_01', 2013, 'Winter')
+        assertConverts('2013_05', 2013, 'Spring')
+        assertConverts('2013_09', 2013, 'Fall')
+        assertConverts('2014_01', 2014, 'Winter')
+        assertConverts('2100_01', 2100, 'Winter')
+
     # TODO(david): Moar tests

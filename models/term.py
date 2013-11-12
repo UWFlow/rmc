@@ -39,7 +39,7 @@ class Term(me.Document):
         return int(term_id[5:])
 
     @staticmethod
-    def season_from_id(tid):
+    def get_season_from_id(tid):
         # currently specific to waterloo
         month = Term.get_month_from_id(tid)
         if (month == Term.INVALID_TERM_MONTH):
@@ -48,14 +48,14 @@ class Term(me.Document):
 
     @property
     def season(self):
-        return Term.season_from_id(self.id)
+        return Term.get_season_from_id(self.id)
 
     @staticmethod
     def name_from_id(tid):
         if tid == Term.SHORTLIST_TERM_ID:
             return 'Shortlist'
         else:
-            return '%s %d' % (Term.season_from_id(tid),
+            return '%s %d' % (Term.get_season_from_id(tid),
                     Term.get_year_from_id(tid))
 
     @property
