@@ -170,17 +170,6 @@ def schedule_page_ical(profile_user_secret_id):
 def schedule_page(profile_user_secret_id):
     profile_user = m.User.objects(secret_id=profile_user_secret_id.upper()).first()
 
-    # TODO(jlfwong): This should be removed, but I'm not sure whether the page
-    # should just 404 or whether we should redirect or what exactly the right
-    # behaviour is here, so for now just let it fall back. This makes the
-    # privacy problem less discoverable
-    if profile_user is None:
-        profile_user = m.User.objects.with_id(profile_user_secret_id)
-
-        if profile_user:
-            logging.warn("Schedule loaded via public user id %s"
-                % profile_user.id)
-
     return profile.render_schedule_page(profile_user)
 
 @app.route('/course')
