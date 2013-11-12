@@ -107,7 +107,7 @@
   </table>
   <small class="last-updated">
     Last updated
-    <%- moment(term[0].get('last_updated')).format('MMM. D, YYYY') %> from
+    <%- moment(term[0].get('last_updated')).format('MMM D, h a') %> from
 
     <% var courseParts = splitCourseId(term[0].get('course_id')); %>
     <% var questId = termIdToQuestId(term[0].get('term_id')); %>
