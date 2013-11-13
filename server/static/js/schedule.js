@@ -709,18 +709,24 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     shareScheduleFacebook: function() {
-      _facebook.showFeedDialog({
-        link: getPublicScheduleLink(),
-        // TODO(david): Don't hardcode term
-        name: 'Check out my Fall 2013 class schedule!',
-        description: 'Flow is a social course planning app for Waterloo' +
-            ' students. Connect to see what your friends are taking!',
-        picture: 'http://uwflow.com/static/img/class-schedule-screenshot.png',
-        callback: _.bind(function(response) {
-              this.logShareCompleted('Facebook');
-            }, this)
+     var self = this;
+
+      $.getJSON("/api/schedule/screenshot_url", function(data) {
+        _facebook.showFeedDialog({
+            link: getPublicScheduleLink(),
+            // TODO(david): Don't hardcode term
+            name: 'Check out my Fall 2013 class schedule!',
+            description: 'Flow is a social course planning app for Waterloo' +
+                ' students. Connect to see what your friends are taking!',
+            // TODO(jlfwong): What picture should we use if the schedule
+            // screenshot isn't ready?
+            picture: data.url,
+            callback: function() {
+              self.logShareCompleted('Facebook');
+            }
+        });
       });
-      this.logShareIntent('Facebook');
+      self.logShareIntent('Facebook');
     },
 
     logGoogleCalendarExport: function() {

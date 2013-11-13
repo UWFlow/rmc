@@ -10,6 +10,7 @@ import rmc.models as m
 import rmc.server.view_helpers as view_helpers
 import rmc.shared.rmclogger as rmclogger
 import rmc.shared.util as util
+import rmc.schedule_screenshots as schedule_screenshots
 
 
 # Local constants
@@ -432,6 +433,8 @@ def render_profile_page(profile_user_id, current_user=None):
             'profile_user': profile_user.id,
         },
     )
+
+    schedule_screenshots.update_screenshot_async(profile_user)
 
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',

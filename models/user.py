@@ -202,7 +202,7 @@ class User(me.Document):
 
     @property
     def absolute_profile_url(self):
-        return '%s%s?admin=1' % (constants.PROD_HOST, self.profile_url)
+        return '%s%s?admin=1' % (constants.RMC_HOST, self.profile_url)
 
     @property
     def short_program_name(self):
@@ -432,6 +432,7 @@ class User(me.Document):
         return _user_schedule_item.UserScheduleItem.objects(user_id=self.id)
 
     def get_secret_id(self):
+        # TODO(jlfwong): This is possibly a race condition...
         if self.secret_id is None:
             self.secret_id = generate_secret_id()
             self.save()

@@ -16,8 +16,10 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
 
-# TODO(david): Can this be not hard-coded?
-PROD_HOST = 'http://uwflow.com'
+if IS_PROD:
+    RMC_HOST = "http://uwflow.com"
+else:
+    RMC_HOST = "http://localhost:5000"
 
 TERMS_OFFERED_DATA_DIR = 'terms_offered'
 UCALENDAR_COURSES_DATA_DIR = 'ucalendar_courses'
@@ -38,3 +40,6 @@ DEMO_ACCOUNT_FBID = '100004384843130'
 FB_FORCE_TOKEN_EXPIRATION_DAYS = 57
 
 SIFT_API_KEY = 'b1eb450bb0c5a2f1'
+
+# NOTE: This relies on the fact that this file is one level above the repo root
+RMC_ROOT = os.path.join(os.path.dirname(__file__), "..")
