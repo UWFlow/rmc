@@ -795,9 +795,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         '/schedule/ical/' + window.pageData.profileUserSecretId + ".ics";
   };
 
-  // TODO(jlfwong): Remove me - move to profile.js and make data come from
-  // models instead of arguments passed directly to the view
-
   var parseSchedule = function(data) {
     // Get the term for the schedule. E.g. Fall 2012
     var termMatch = data.match(/(Spring|Fall|Winter)\s+(\d{4})/);
