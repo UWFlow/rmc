@@ -1,10 +1,27 @@
+# Crontab syntax (because I always forget):
+# *     *     *   *    *        command to be executed
+# -     -     -   -    -
+# |     |     |   |    |
+# |     |     |   |    +----- day of week (0 - 6) (Sunday=0)
+# |     |     |   +------- month (1 - 12)
+# |     |     +--------- day of        month (1 - 31)
+# |     +----------- hour (0 - 23)
+# +------------- min (0 - 59)
+
+# Also note that all times are in UTC
+
 SHELL=/bin/sh
 
 MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gmail.com
 
 # Daily: Aggregate ratings, mutual courses, etc...
-0 7 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py all
+1 7 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py all
+
 # Weekly: Update local time (amazon ses complains if time is too far off when sending emails)
-0 0 * * 0  sudo /usr/sbin/ntpdate pool.ntp.org
+13 0 * * 0 sudo /usr/sbin/ntpdate pool.ntp.org > /dev/null
+
 # Daily: Send welcome emails
-0 3 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/emails/sender.py -f welcome
+22 3 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/emails/sender.py -f welcome
+
+# Hourly: Update sections information (which includes enrollment data)
+42 * * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py sections > /dev/null
