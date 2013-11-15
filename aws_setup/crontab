@@ -15,7 +15,7 @@ SHELL=/bin/sh
 MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gmail.com
 
 # Daily: Aggregate ratings, mutual courses, etc...
-1 7 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py all
+42 7 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py all
 
 # Weekly: Update local time (amazon ses complains if time is too far off when sending emails)
 13 0 * * 0 sudo /usr/sbin/ntpdate pool.ntp.org > /dev/null
@@ -24,4 +24,4 @@ MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gm
 22 3 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/emails/sender.py -f welcome
 
 # Hourly: Update sections information (which includes enrollment data)
-42 * * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py sections > /dev/null
+5 * * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py sections > /dev/null
