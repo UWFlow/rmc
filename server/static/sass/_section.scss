@@ -5,11 +5,17 @@
   th {
     padding-top: 5px;
     padding-bottom: 5px;
+    border-left: none;
+
+    &:first-child {
+      border-left: 1px solid #DDD;
+    }
   }
 
   td {
     padding-top: 4px;
     padding-bottom: 4px;
+    border-left: none;
 
     p {
       margin-bottom: 2px;
