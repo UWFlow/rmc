@@ -31,6 +31,8 @@ def generic_stats(show_all=False):
     num_users = m.User.objects.count()
     num_users_with_transcript = m.User.objects(
             transcripts_imported__gt=0).count()
+    num_users_with_schedule = m.User.objects(
+            schedules_imported__gt=0).count()
 
     num_course_reviews = m.UserCourse.objects(
             course_review__comment__ne='').count()
@@ -54,6 +56,7 @@ def generic_stats(show_all=False):
     result = {
         'num_users': num_users,
         'num_users_with_transcript': num_users_with_transcript,
+        'num_users_with_schedule': num_users_with_schedule,
         'num_ucs': num_ucs,
         'num_signups_today': signups,
         'num_signups_start_time': yesterday,

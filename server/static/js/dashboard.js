@@ -18,6 +18,7 @@ function($, _util) {
         $('#num_users').text(resp.num_users);
         $('#num_signups_today').text(resp.num_signups_today);
         $('#num_users_with_transcript').text(resp.num_users_with_transcript);
+        $('#num_users_with_schedule').text(resp.num_users_with_schedule);
         $('#num_ucs').text(resp.num_ucs);
         $('#num_ratings').text(resp.num_ratings);
         $('#num_reviews').text(resp.num_reviews);
