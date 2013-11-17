@@ -65,7 +65,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
   var ScheduleItemCollection = RmcBackbone.Collection.extend({
     model: ScheduleItem,
 
-    comparator: function(firstItem, secondItem) {
+    // This is called _comparator instead of comparator because we don't want
+    // Backbone automatically sorting the collection on construction. We avoid
+    // this because sorting is an expensive operation due to the moment.tz
+    // performance issues. Instead, we only sort use this to sort manually.
+    _comparator: function(firstItem, secondItem) {
       var firstStart = firstItem.startMinutes();
       var secondStart = secondItem.startMinutes();
       if (firstStart === secondStart) {
@@ -83,10 +87,20 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     forDay: function(date) {
-      var items = new ScheduleItemCollection(this.filter(function(x) {
-        return isSameDay(date, x.get('start_date'));
-      }));
-      items.sort();
+      var DAY_FMT = "YYYY-MM-DD";
+
+      if (!this._forDayCache) {
+        this._forDayCache = this.groupBy(function(x) {
+          return moment(x.get('start_date')).format(DAY_FMT);
+        });
+        var comparator = this._comparator;
+        _(this._forDayCache).each(function(dayList) {
+          dayList.sort(comparator);
+        });
+      }
+      var items = new ScheduleItemCollection(
+        this._forDayCache[moment(date).format(DAY_FMT)] || []
+      );
       return items;
     }
   });
