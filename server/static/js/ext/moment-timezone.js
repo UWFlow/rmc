@@ -1,12 +1,12 @@
 // moment-timezone.js
-// version : 0.0.1
+// version : 0.0.3
 // author : Tim Wood
 // license : MIT
 // github.com/timrwood/moment-timezone
 
 (function () {
 
-	var VERSION = "0.0.1";
+	var VERSION = "0.0.3";
 
 	function onload(moment) {
 		var oldZoneName = moment.fn.zoneName,
@@ -53,6 +53,9 @@
 			this.timeRule  = +timeRule;
 			this.offset    = parseMinutes(offset);
 			this.letters   = letters || '';
+			this.date = memoize(this.date);
+			this.weekdayAfter = memoize(this.weekdayAfter);
+			this.lastWeekday = memoize(this.lastWeekday);
 		}
 
 		Rule.prototype = {
@@ -135,6 +138,7 @@
 		function RuleSet (name) {
 			this.name = name;
 			this.rules = [];
+			this.lastYearRule = memoize(this.lastYearRule);
 		}
 
 		RuleSet.prototype = {
@@ -252,6 +256,7 @@
 			this.offset = parseMinutes(offset);
 			this.ruleSet = ruleSet;
 			this.letters = letters;
+			this.lastRule = memoize(this.lastRule);
 
 			for (i = 0; i < untilArray.length; i++) {
 				untilArray[i] = +untilArray[i];
@@ -265,10 +270,7 @@
 			},
 
 			lastRule : function () {
-				if (!this._lastRule) {
-					this._lastRule = this.rule(this.until);
-				}
-				return this._lastRule;
+				return this.rule(this.until);
 			},
 
 			format : function (rule) {
@@ -288,6 +290,9 @@
 			this.name = normalizeName(name);
 			this.displayName = name;
 			this.zones = [];
+			this.zoneAndRule = memoize(this.zoneAndRule, function (mom) {
+				return +mom;
+			});
 		}
 
 		ZoneSet.prototype = {
@@ -327,6 +332,16 @@
 		/************************************
 			Global Methods
 		************************************/
+
+		function memoize (fn, keyFn) {
+			var cache = {};
+			return function (first) {
+				var key = keyFn ? keyFn.apply(this, arguments) : first;
+				return key in cache ?
+					cache[key] :
+					(cache[key] = fn.apply(this, arguments));
+			};
+		}
 
 		function addRules (rules) {
 			var i, j, rule;
@@ -443,6 +458,15 @@
 			}
 		};
 
+		function getZoneSets() {
+			var sets = [],
+				zoneName;
+			for (zoneName in zoneSets) {
+				sets.push(zoneSets[zoneName]);
+			}
+			return sets;
+		}
+
 		moment.fn.tz = function (name) {
 			if (name) {
 				this._z = getZoneSet(name);
@@ -475,12 +499,16 @@
 			for (i = 0; i < len; i++) {
 				args[i] = arguments[i];
 			}
-			return moment.apply(null, args).tz(arguments[len]);
+			var m = moment.apply(null, args);
+			var preTzOffset = m.zone();
+			m.tz(arguments[len]);
+			return m.add('minutes', m.zone() - preTzOffset);
 		};
 
 		moment.tz.add = add;
 		moment.tz.addRule = addRule;
 		moment.tz.addZone = addZone;
+		moment.tz.zones = getZoneSets;
 
 		moment.tz.version = VERSION;
 
