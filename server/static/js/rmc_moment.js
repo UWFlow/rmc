@@ -4,7 +4,9 @@ define(["moment", "moment-timezone", "ext/moment-timezone-data"], function (_mom
     return _moment(a, b, c, d)
         .tz("America/Toronto");
   }
-  rmcMoment.tz = _moment.tz;
+
+  // Copy over all static methods/properties.
+  _.extend(rmcMoment, _moment);
 
   return rmcMoment;
 });
