@@ -928,15 +928,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
         hasClassOnDay[weekdayMap[day]] = true;
       });
 
-      // Once we have the date of the item, figure out what the TZ offset is,
-      // then interpret the date using that offset
-      var tzOffsetStr = moment(startDateStr, [
-        "YYYY-MM-DD", "MM/DD/YYYY", "DD/MM/YYYY"
-      ]).tz("America/Toronto").format("ZZ");
-
-      var timeFormats = ['YYYY-MM-DD h:mm A ZZ', 'MM/DD/YYYY h:mm A ZZ', 'DD/MM/YYYY H:mm ZZ'];
-      var firstStartMoment = moment(startDateStr + " " + startTimeStr + " " + tzOffsetStr, timeFormats);
-      var firstEndMoment = moment(startDateStr + " " + endTimeStr + " " + tzOffsetStr, timeFormats);
+      var timeFormats = ['YYYY-MM-DD h:mm A', 'MM/DD/YYYY h:mm A', 'DD/MM/YYYY H:mm'];
+      var firstStartMoment = moment.tz(startDateStr + " " + startTimeStr, timeFormats, "America/Toronto");
+      var firstEndMoment = moment.tz(startDateStr + " " + endTimeStr, timeFormats, "America/Toronto");
 
       // Time delta between start and end time, in milliseconds
       var timeDelta = firstEndMoment - firstStartMoment;
