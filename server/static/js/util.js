@@ -153,12 +153,18 @@ function(_, _s) {
     return window.pageData.currentUserId ? pageData.currentUserId.$oid : null;
   };
 
-  var storeUserData = function(key, value) {
+  /**
+   * Store a piece of data in localStorage associated with the current user.
+   */
+  var storeLocalData = function(key, value) {
     var userId = getCurrentUserId() || '';
     window.localStorage[userId + '|' + key] = JSON.stringify(value);
   };
 
-  var getUserData = function(key) {
+  /**
+   * Retrieve data from localStorage associated with the current user.
+   */
+  var getLocalData = function(key) {
     var userId = getCurrentUserId() || '';
     var data = window.localStorage[userId + '|' + key];
     if (data != null) {
@@ -263,8 +269,8 @@ function(_, _s) {
     getTimeDelta: getTimeDelta,
     getSiteBaseUrl: getSiteBaseUrl,
     getReferrerId: getReferrerId,
-    storeUserData: storeUserData,
-    getUserData: getUserData,
+    storeLocalData: storeLocalData,
+    getLocalData: getLocalData,
     scrollToElementId: scrollToElementId,
     humanizeTermId: humanizeTermId,
     humanizeProfId: humanizeProfId,

@@ -41,8 +41,7 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
       fbConnectText: 'Connect with Facebook',
       source: 'BANNER_DEMO_PROFILE_PAGE',
       nextUrl: window.location.origin,
-      message: '<strong>This is a demo account.</strong> Nothing will be' +
-          ' saved, so go nuts! When you\'re done playing...'
+      message: 'This is a demo account; nothing is saved.<br>When you\'re done playing...'
     });
   }
 

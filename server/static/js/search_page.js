@@ -30,7 +30,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
       if (!window.pageData.currentUserId) {
         _sign_in.renderBanner({
-          fbConnectText: 'See what your friends are taking!',
           source: 'BANNER_SEARCH_PAGE',
           nextUrl: window.location.href
         });

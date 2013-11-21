@@ -58,70 +58,84 @@
 }
 
 #sign-in-banner-container {
-  height: 90px;
+  $banner-height: 80px;
+  height: $banner-height;
   display: none;
 
-  // TODO(david): Don't hardcode this
-  &.with-message {
-    height: 120px;
-
-    .sign-in-banner {
-      height: 90px;
-    }
-  }
-
   .sign-in-banner {
-    display: inline-block;
-    position: fixed;
-    top: $navbar-height;
-    height: 50px;
+    display: block;
+    z-index: 100;
+    width: 100%;
+    height: $banner-height;
+    background: mix($flowBlue, white, 80%);
 
-    opacity: 0.9;
-    &:hover {
-      opacity: 1.0;
+    .close-banner {
+      display: inline-block;
+      font-size: 50px;
+      opacity: 1;
+      opacity: 0.5;
+      position: absolute;
+      right: 15px;
+      color: white;
+      top: 86px;
+
+      &:hover {
+        cursor: pointer;
+        opacity: 1.0;
+      }
     }
-
-    // TODO(mack): Make this work properly with text-align: center
-    $banner-width: 920px;
-    width: $banner-width;
-    left: 50%;
-    margin-left: -$banner-width/2;
-
-    text-align: center;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    z-index: 1000;
-
-    border: 1px solid rgba(34, 25, 25, 0.25);
-    border-top: 0;
-    @include border-radius(0 0 5px 5px);
-    @include box-shadow(0 1px 3px rgba(34, 25, 25, 0.2));
-
-    $dark-color: #f9f9f9;
-    $light-color: #fff;
-    @include background(linear-gradient(bottom, $light-color 0%, $dark-color 100%));
 
     .message {
-      margin-bottom: 12px;
+      font-size: 24px;
+      font-weight: 300;
+      display: inline-block;
+      vertical-align: top;
+      height: $banner-height;
+      line-height: 30px;
+      margin-top: 10px;
+      // This is sort of a hack so that the FB button does not drop when the
+      // browser window is shrunk, but rather just covers part of the text....
+      position: absolute;
+      color: white;
+    }
+
+    .fb-login {
+      display: inline-block;
+      float: right;
+      margin-top: 15px;
     }
 
     .fb-login-button-container {
       display: inline-block;
       position: relative;
       text-align: left;
-      margin-right: 14px;
-      width: 50%;
 
-      .fb-login-button{
-        vertical-align: top;
-        margin: 0;
-        width: 100%;
+      .fb-login-button {
+        opacity: 0.9;
+        background: white;
+
+        &:hover {
+          opacity: 1.0;
+
+          .fb-logo-box {
+            opacity: 1.0;
+          }
+        }
+
+        .fb-logo-box {
+          background: $facebookBlue;
+        }
+
+        .fb-login-text {
+          text-shadow: none;
+          color: $facebookBlue;
+        }
       }
     }
 
     .fb-facepile {
       vertical-align: top;
-      margin: -5px 0 0 10px;
+      margin: -2px 0 0 10px;
     }
   }
 }

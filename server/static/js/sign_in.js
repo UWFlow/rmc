@@ -1,8 +1,10 @@
 define(
-['ext/jquery', 'ext/underscore', 'rmc_backbone', 'facebook'],
-function($, _, RmcBackbone, _facebook) {
+['ext/jquery', 'ext/underscore', 'ext/bootstrap', 'rmc_backbone', 'facebook',
+  'util'],
+function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
 
   var FbLoginView = RmcBackbone.View.extend({
+    className: 'fb-login',
 
     initialize: function(attributes) {
       this.fbConnectText = attributes.fbConnectText || 'Connect with Facebook';
@@ -38,11 +40,8 @@ function($, _, RmcBackbone, _facebook) {
   });
 
   var SignInBannerView = RmcBackbone.View.extend({
+    hideBannerKey: 'hide-sign-in-banner',
     className: 'sign-in-banner',
-
-    attributes: {
-      'data-spy': 'affix'
-    },
 
     initialize: function(options) {
       this.fbLoginView = new FbLoginView({
@@ -55,12 +54,14 @@ function($, _, RmcBackbone, _facebook) {
     },
 
     render: function() {
+      // Don't render if the user has previously hidden the banner.
+      if (_util.getLocalData(this.hideBannerKey)) return this;
+
       this.$el.html(this.template({ message: this.message }));
       this.$('.fb-login-placeholder').replaceWith(
         this.fbLoginView.render().el);
 
-      $('#sign-in-banner-container')
-          .toggleClass('with-message', !!this.message);
+      this.$('[title]').tooltip();
 
       _.defer(_.bind(this.postRender, this));
 
@@ -70,14 +71,29 @@ function($, _, RmcBackbone, _facebook) {
     postRender: function() {
       var $container = this.$el.parent();
       $container.slideDown();
+    },
+
+    events: {
+      'click .close-banner': 'onCloseBannerClick'
+    },
+
+    // TODO(david): Generalize this
+    //     "close-button-to-hide-alert-and-save-in-localstorage" pattern as
+    //     a mixin or something and re-use for our other annoying alerts (eg.
+    //     the "add to shortlist" button).
+    onCloseBannerClick: function() {
+      this.$el.parent().slideUp('fast');
+      _util.storeLocalData(this.hideBannerKey, true);
+      // TODO(david): Expire this after a few weeks/months... so we can keep
+      //     prompting after a while muahahahahaha.
     }
   });
 
   var renderBanner = function(attributes) {
-    attributes = _.extend({}, {
-      fbConnectText: 'Connect with Facebook',
+     _.defaults(attributes, {
+      fbConnectText: 'Sign in with Facebook',
       source: 'UNKNOWN'
-    }, attributes);
+    });
 
     var signInBannerView = new SignInBannerView(attributes);
 
