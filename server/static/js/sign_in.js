@@ -7,7 +7,7 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
     className: 'fb-login',
 
     initialize: function(attributes) {
-      this.fbConnectText = attributes.fbConnectText || 'Connect with Facebook';
+      this.fbConnectText = attributes.fbConnectText || 'Sign in with Facebook';
       this.source = attributes.source;
       this.nextUrl = attributes.nextUrl;
       this.template = _.template($('#fb-login-tpl').html());
@@ -170,8 +170,8 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
   var renderModal = function(attributes) {
     attributes = _.extend({}, {
       title: 'Please sign in...',
-      message: 'Please connect with Facebook to use this feature.',
-      fbConnectText: 'Connect with Facebook',
+      message: 'Please sign in with Facebook to use this feature.',
+      fbConnectText: 'Sign in with Facebook',
       nextUrl: window.location.href
     }, attributes);
 
