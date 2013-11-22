@@ -83,9 +83,10 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
     //     the "add to shortlist" button).
     onCloseBannerClick: function() {
       this.$el.parent().slideUp('fast');
-      _util.storeLocalData(this.hideBannerKey, true);
-      // TODO(david): Expire this after a few weeks/months... so we can keep
-      //     prompting after a while muahahahahaha.
+
+      // Persist banner close in localstorage for a while.
+      _util.storeLocalData(this.hideBannerKey, true,
+          /* expiration */ +new Date() + (1000 * 60 * 60 * 24 * 30 * 3));
     }
   });
 
