@@ -3,10 +3,19 @@
 {# TODO(mack): remove duplicated code (from index_page.html #}
 
 {% call macros.us_template('sign-in-banner-tpl') %}
-<% if (message) { %>
-  <p class="message lead"><%= message %></p>
-<% } %>
-<div class="fb-login-placeholder"></div>
+<div class="container-fluid">
+  <div class="message">
+    <% if (message) { %>
+      <%= message %>
+    <% } else { %>
+      See what your friends are taking.<br>
+      Export your class and exam schedule.
+    <% } %>
+  </div>
+  <div class="fb-login-placeholder"></div>
+  <i class="icon-remove-circle close-banner" data-placement="left"
+      title="Close this annoying banner"></i>
+</div>
 {% endcall %}
 
 {% call macros.us_template('sign-in-modal-tpl') %}
@@ -37,8 +46,7 @@
   </div>
 </div>
 {# FIXME(Sandy): same comment as in index_page.html #}
-{# <div class="fb-facepile" data-max-rows="1" data-width="350"></div> #}
-<div class="fb-facepile" data-max-rows="1" data-width="350"></div>
+<div colorscheme="dark" data-size="small" class="fb-facepile" data-max-rows="1" data-width="350"></div>
 {% endcall %}
 
 {% call macros.us_template('email-sign-in-modal-tpl') %}

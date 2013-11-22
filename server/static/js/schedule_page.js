@@ -27,17 +27,9 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   if (!window.pageData.currentUserId) {
     _sign_in.renderBanner({
       source: 'SHARE_SCHEDULE_BANNER_SCHEDULE_PAGE',
-      fbConnectText: 'Connect with Facebook',
       nextUrl: '/profile?import-schedule=1'
     });
   }
-
-  // TODO(mack): pass the message through renderBanner()
-  var $signinMessage = $('#sign-in-banner-container .message');
-  $signinMessage.html(
-    '...to <strong>create your own schedule</strong> and '+
-    '<strong>see what friends are taking</strong>'
-  );
 
   if (!pageData.currentUserId) {
     $('.view-profile-btn').click(function(evt) {
@@ -45,7 +37,6 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
       _sign_in.renderModal({
         title: 'Only ' + firstName + '\'s friends can view his profile',
         message: 'Verify that you are friends with ' + firstName,
-        fbConnectText: 'Connect with Facebook',
         source: 'MODAL_FRIENDS_TAKEN',
         nextUrl: '/profile/' + profileUser.id
       });

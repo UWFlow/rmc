@@ -29,7 +29,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
         canShowAddReview: pageData.ownProfile
       });
 
-      var savedExpanded = _util.getUserData(this.getTermExpandedKey());
+      var savedExpanded = _util.getLocalData(this.getTermExpandedKey());
       this.expand = savedExpanded == null ? options.expand : savedExpanded;
     },
 
@@ -67,7 +67,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
       } else {
         this.expandTerm(evt);
       }
-      _util.storeUserData(this.getTermExpandedKey(), !termVisible);
+      _util.storeLocalData(this.getTermExpandedKey(), !termVisible);
     },
 
     expandTerm: function(evt) {

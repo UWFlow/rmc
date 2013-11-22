@@ -153,20 +153,48 @@ function(_, _s) {
     return window.pageData.currentUserId ? pageData.currentUserId.$oid : null;
   };
 
-  var storeUserData = function(key, value) {
+  /**
+   * Store a piece of data in localStorage associated with the current user.
+   * @param {string} key The key to store the value under. Note that this is
+   *     implicitly associated with the current user if one exists.
+   * @param {*} value Any JSON-encodable value to store.
+   * @param {Date|number} expiration Optional: Date which this key-value should
+   *     expire (a call to get will return null/undefined).
+   */
+  var storeLocalData = function(key, value, expiration) {
+    if (!window.localStorage) return;
+
+    var data = { val: value };
+    if (expiration) {
+      data.exp = +expiration;  // Store timestamp as number
+    }
     var userId = getCurrentUserId() || '';
-    window.localStorage[userId + '|' + key] = JSON.stringify(value);
+    window.localStorage[userId + '|' + key] = JSON.stringify(data);
   };
 
-  var getUserData = function(key) {
+  /**
+   * Retrieve data from localStorage associated with the current user.
+   */
+  var getLocalData = function(key) {
+    if (!window.localStorage) return;
     var userId = getCurrentUserId() || '';
-    var data = window.localStorage[userId + '|' + key];
+    var userKey = userId + '|' + key;
+    var data = window.localStorage[userKey];
+
     if (data != null) {
       try {
-        return JSON.parse(data);
+        data = JSON.parse(data);
       } catch (e) {}
     }
-    return data;
+
+    // Data has expired. Delete it and don't return it.
+    if (data && data.exp && +new Date() >= data.exp) {
+      delete window.localStorage[userKey];
+      return undefined;
+    }
+
+    // Handle older formats that were just the unwrapped JSON-encoded value.
+    return (_.isObject(data) && 'val' in data) ? data.val : data;
   };
 
   var scrollToElementId = function(id) {
@@ -263,8 +291,8 @@ function(_, _s) {
     getTimeDelta: getTimeDelta,
     getSiteBaseUrl: getSiteBaseUrl,
     getReferrerId: getReferrerId,
-    storeUserData: storeUserData,
-    getUserData: getUserData,
+    storeLocalData: storeLocalData,
+    getLocalData: getLocalData,
     scrollToElementId: scrollToElementId,
     humanizeTermId: humanizeTermId,
     humanizeProfId: humanizeProfId,

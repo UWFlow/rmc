@@ -62,7 +62,6 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course, _re
 
   if (!window.pageData.currentUserId) {
     _sign_in.renderBanner({
-      fbConnectText: 'See friends taking this course!',
       source: 'BANNER_COURSE_PAGE',
       nextUrl: window.location.href
     });
