@@ -31,13 +31,6 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
     });
   }
 
-  // TODO(mack): pass the message through renderBanner()
-  var $signinMessage = $('#sign-in-banner-container .message');
-  $signinMessage.html(
-    '...to <strong>create your own schedule</strong> and '+
-    '<strong>see what friends are taking</strong>'
-  );
-
   if (!pageData.currentUserId) {
     $('.view-profile-btn').click(function(evt) {
       var firstName = profileUser.get('first_name');
