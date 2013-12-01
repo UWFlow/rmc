@@ -12,15 +12,23 @@ if (system.args.length < 3) {
   page.open(url, function() {});
 
   page.onCallback = function(viewportSize) {
+    console.log("Resizing to " + viewportSize.width + "x" + viewportSize.height);
     page.viewportSize = viewportSize;
+    page.clipRect = {
+      top: 0,
+      left: 0,
+      width: viewportSize.width,
+      height: viewportSize.height
+    };
     page.render(outputPath);
     system.stderr.write("Done.\n");
     phantom.exit();
   };
 
   page.onLoadFinished = function() {
+    console.log('Loaded.');
     page.evaluate(function() {
-      $(document.body).on('pageScriptComplete', function() {
+      var render = function() {
         var scheduleZIndex = 2147483647;
         // Put up a white background to hide everything except for the schedule
         $("<div/>").css({
@@ -53,7 +61,15 @@ if (system.args.length < 3) {
           width: $profileContainer.outerWidth(),
           height: $profileContainer.outerHeight()
         });
-      });
+      };
+
+      $(document.body).on('pageScriptComplete', render);
+      setTimeout(render, 2000);
     });
   };
+
+  setTimeout(function() {
+    console.error("Render timeout.");
+    phantom.exit();
+  }, 10000);
 }
