@@ -2,49 +2,58 @@ var page = require('webpage').create();
 var system = require('system');
 
 if (system.args.length < 3) {
-    console.error("usage: phantom-schedule-screenshot.js schedule_url path/to/output.png");
-    phantom.exit(1);
+  console.error("usage: phantom-schedule-screenshot.js schedule_url path/to/output.png");
+  phantom.exit(1);
 } else {
-    var url = system.args[1];
-    var outputPath = system.args[2];
+  var url = system.args[1];
+  var outputPath = system.args[2];
 
-    system.stdout.write("Loading " + url + "...\n");
-    page.open(url, function() {});
-    page.onLoadFinished = function() {
-        system.stderr.write("Loaded.\n");
-        page.viewportSize = page.evaluate(function(ctx) {
-            // TODO(jlfwong): ew ew ew ew ew
-            $("#sign-in-banner-container").hide();
-            $("#site-nav").hide();
-            $("#profile-sidebar").hide();
-            $("#site-footer").hide();
-            $("#uvTab").hide();
-            $("#flDebug").hide();
-            $(".schedule-nav").hide();
+  system.stdout.write("Loading " + url + "...\n");
+  page.open(url, function() {});
 
-            var $profileContainer = $("#profile-container");
-            var height = $profileContainer.outerHeight();
-            // Recommended ratio for photos on facebook is 1.91:1
-            // https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content/#tags
-            var width = 1.91 * height;
+  page.onCallback = function(viewportSize) {
+    page.viewportSize = viewportSize;
+    page.render(outputPath);
+    system.stderr.write("Done.\n");
+    phantom.exit();
+  };
 
-            $profileContainer.css({
-                width: width,
-                position: "absolute",
-                padding: 10,
-                top: 0,
-                left: 0,
-                margin: 0
-            });
+  page.onLoadFinished = function() {
+    page.evaluate(function() {
+      $(document.body).on('pageScriptComplete', function() {
+        var scheduleZIndex = 2147483647;
+        // Put up a white background to hide everything except for the schedule
+        $("<div/>").css({
+          width: "100%",
+          height: "100%",
+          position: "absolute",
+          background: "white",
+          top: 0,
+          left: 0,
+          zIndex: scheduleZIndex - 1
+        }).appendTo(document.body);
 
-            return {
-                width: $profileContainer.outerWidth(),
-                height: $profileContainer.outerHeight()
-            };
+        var $profileContainer = $("#profile-container");
+        var height = $profileContainer.outerHeight();
+        // Recommended ratio for photos on facebook is 1.91:1
+        // https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content/#tags
+        var width = 1.91 * height;
+
+        $profileContainer.css({
+          width: width,
+          position: "absolute",
+          padding: 10,
+          top: 0,
+          left: 0,
+          margin: 0,
+          zIndex: scheduleZIndex
         });
 
-        page.render(outputPath);
-        system.stderr.write("Done.\n");
-        phantom.exit();
-    };
+        window.callPhantom({
+          width: $profileContainer.outerWidth(),
+          height: $profileContainer.outerHeight()
+        });
+      });
+    });
+  };
 }
