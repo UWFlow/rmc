@@ -32,10 +32,10 @@ class UserScheduleItem(me.Document):
     # eg. 001
     section_num = me.StringField(required=True)
 
-    # eg. 14:30
+    # eg. datetime.datetime(2013, 1, 7, 22, 30)
     start_date = me.DateTimeField(required=True)
 
-    # eg. 15:20
+    # eg. datetime.datetime(2013, 1, 7, 23, 50)
     end_date = me.DateTimeField()
 
     # eg. earth121l

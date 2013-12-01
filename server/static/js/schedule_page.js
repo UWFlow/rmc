@@ -3,9 +3,9 @@
 // require('user_course') in the 'course' module); need to investigate further
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'user', 'course',
-'user_course', 'schedule', 'facebook', 'sign_in', 'util'],
+'user_course', 'schedule', 'facebook', 'sign_in', 'util', 'rmc_moment'],
 function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
-  _sign_in, _util) {
+  _sign_in, _util, moment) {
 
   _user.UserCollection.addToCache(pageData.userObjs);
   _course.CourseCollection.addToCache(pageData.courseObjs);
@@ -52,16 +52,12 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
     });
   }
 
-  if (_util.getQueryParam('print')) {
-    var startDate = _util.getQueryParam('start_date');
-    if (startDate) {
-      schedule.set('start_date', new Date(Number(startDate)));
-    }
-    var endDate = _util.getQueryParam('end_date');
-    if (endDate) {
-      schedule.set('end_date', new Date(Number(endDate)));
-    }
+  var startDate = _util.getQueryParam('start_date');
+  if (startDate) {
+    schedule.setWeek(new Date(Number(startDate)));
+  }
 
+  if (_util.getQueryParam('print')) {
     // Brand the schedule a bit
     $('<img src="/static/img/flow-logo-75x35.png">')
       .css({

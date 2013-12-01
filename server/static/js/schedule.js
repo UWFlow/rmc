@@ -376,9 +376,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     setWeek: function(startDate) {
+      startDate = moment(startDate).day('Monday');
+
       // Check if there's events on the 6th and 7th days to display weekend
-      var sixthDay = moment(startDate).clone().add('days', 5).toDate();
-      var seventhDay = moment(startDate).clone().add('days', 6).toDate();
+      var sixthDay = startDate.clone().add('days', 5).toDate();
+      var seventhDay = startDate.clone().add('days', 6).toDate();
       var endDate = null;
       if (!this.get('schedule_items').forDay(sixthDay).isEmpty() ||
           !this.get('schedule_items').forDay(seventhDay).isEmpty()) {
