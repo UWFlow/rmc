@@ -1,8 +1,9 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'course', 'util', 'facebook',
+'ext/bootstrap', 'user', 'course', 'util', 'facebook',
 'rmc_moment'],
-function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
+function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
+  moment) {
   // Cache a propery for a given instance.
   var instancePropertyCache = function(getter) {
     return _.memoize(getter, function() {
@@ -428,8 +429,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       this.showSharing = options.showSharing;
       if (this.showSharing) {
         this.scheduleShareView = new ScheduleShareView({
-          url: getPublicScheduleLink(),
-          iCalUrl: getICalScheduleUrl(),
           schedule: this.schedule
         });
       }
@@ -676,19 +675,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     className: 'schedule-share',
 
     initialize: function(options) {
-      this.printOptions = { print: 1 };
-
       if (options.schedule) {
         this.schedule = options.schedule;
-        var self = this;
-        this.schedule.on('change:start_date', function(model, start_date) {
-          self.printOptions.start_date = Number(start_date);
-          self.render();
-        }, this);
-        this.schedule.on('change:end_date', function(model, end_date) {
-          self.printOptions.end_date = Number(end_date);
-          self.render();
-        }, this);
+        this.schedule.on('change:start_date', this.render, this);
       }
     },
 
@@ -710,22 +699,30 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       this.logShareIntent('Link box');
     },
 
+    _getScheduleShareUrl: function() {
+      return (getPublicScheduleLink() + '?start_date=' +
+          Number(this.schedule.get('start_date')));
+    },
+
     shareScheduleFacebook: function() {
      var self = this;
 
+      var profileUser = _user.UserCollection.getFromCache(pageData.profileUserId.$oid);
       $.getJSON("/api/schedule/screenshot_url", function(data) {
+        if (!data.url) {
+          mixpanel.track('Schedule Screenshot Not Ready');
+        }
         _facebook.showFeedDialog({
-            link: getPublicScheduleLink(),
-            // TODO(david): Don't hardcode term
-            name: 'Check out my Fall 2013 class schedule!',
-            description: 'Flow is a social course planning app for Waterloo' +
-                ' students. Connect to see what your friends are taking!',
-            // TODO(jlfwong): What picture should we use if the schedule
-            // screenshot isn't ready?
-            picture: data.url,
-            callback: function() {
-              self.logShareCompleted('Facebook');
-            }
+          link: self._getScheduleShareUrl(),
+          name: profileUser.get('first_name') + "'s Class Schedule",
+          description: 'Flow is a social course planning app for Waterloo' +
+              ' students.',
+          // TODO(jlfwong): What picture should we use if the schedule
+          // screenshot isn't ready?
+          picture: data.url,
+          callback: function() {
+            self.logShareCompleted('Facebook');
+          }
         });
       });
       self.logShareIntent('Facebook');
@@ -758,10 +755,15 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     render: function() {
-      this.$el.html(this.template(_.extend({}, this.options, {
-        // TODO(david): Append query param properly
-        print_url: this.options.url + '?' + $.param(this.printOptions)
-      })));
+      var scheduleUrl = this._getScheduleShareUrl();
+      var iCalUrl = getICalScheduleUrl();
+      var printUrl = scheduleUrl + '&print=1';
+
+      this.$el.html(this.template({
+        url: scheduleUrl,
+        iCalUrl: iCalUrl,
+        printUrl: printUrl
+      }));
 
       this.$('.reimport-btn')
         .tooltip({

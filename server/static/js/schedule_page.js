@@ -52,6 +52,8 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
     });
   }
 
+  // TODO(jlfwong): Make the page URL push-state change with the query param
+  // changing as you change the current week.
   var startDate = _util.getQueryParam('start_date');
   if (startDate) {
     schedule.setWeek(new Date(Number(startDate)));
