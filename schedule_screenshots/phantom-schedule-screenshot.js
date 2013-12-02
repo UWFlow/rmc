@@ -70,6 +70,6 @@ if (system.args.length < 3) {
 
   setTimeout(function() {
     console.error("Render timeout.");
-    phantom.exit();
+    phantom.exit(2);
   }, 10000);
 }

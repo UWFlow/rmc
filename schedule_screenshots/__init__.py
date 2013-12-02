@@ -1,7 +1,9 @@
 import calendar
 import datetime
+import functools
 import hashlib
 import logging
+import multiprocessing
 import os
 import subprocess
 
@@ -13,6 +15,7 @@ def _get_latest_user_schedule_item(user):
                 .objects(user_id=user.id)
                 .order_by("-$natural")
                 .first())
+
 
 def _get_screenshot_path(user, latest_user_schedule_item):
     if latest_user_schedule_item is None:
@@ -57,6 +60,7 @@ def _get_term_start_month(dt):
 
     return datetime.datetime(dt.year, 9, 1)  # September
 
+
 def _get_start_of_week(dt):
     """Return the datetime of the start of the week (Monday) of dt."""
     return dt - datetime.timedelta(days=dt.weekday())
@@ -74,8 +78,8 @@ def _get_best_screenshot_week(user, latest_user_schedule_item):
         start_of_week = term_start_mon + datetime.timedelta(days=7 * weeknum)
         end_of_week = start_of_week + datetime.timedelta(days=7)
         q = m.UserScheduleItem.objects(user_id=user.id,
-                                        start_date__gte=start_of_week,
-                                        end_date__lte=end_of_week)
+                                       start_date__gte=start_of_week,
+                                       end_date__lte=end_of_week)
 
         count_for_week = q.count()
 
@@ -87,6 +91,34 @@ def _get_best_screenshot_week(user, latest_user_schedule_item):
 
     assert best_week_date is not None
     return best_week_date
+
+
+def render_page(url_to_render, screenshot_filepath):
+    with open(os.devnull, 'w') as devnull:
+        retcode = subprocess.call(
+            [
+                "phantomjs",
+                "--disk-cache=true",
+                os.path.join(os.path.dirname(__file__),
+                        "phantom-schedule-screenshot.js"),
+                url_to_render,
+                screenshot_filepath
+            ],
+            stderr=devnull,
+            stdout=devnull
+        )
+        return retcode
+
+
+def render_finished(screenshot_filepath, retcode):
+    if retcode == 0:
+        logging.info('Rendering %s successful', screenshot_filepath)
+    elif retcode == 2:
+        logging.error('Rendering %s timed out', screenshot_filepath)
+    else:
+        logging.error('Rendering %s failed (returned %d)',
+                screenshot_filepath, retcode)
+
 
 def update_screenshot_async(user):
     """Asynchronously take a screenshot of the schedule of the given user.
@@ -104,7 +136,7 @@ def update_screenshot_async(user):
         return
 
     if os.path.exists(screenshot_filepath):
-       return
+        return
 
     best_screenshot_week = _get_best_screenshot_week(user, latest_usi)
 
@@ -116,19 +148,10 @@ def update_screenshot_async(user):
                         user.get_secret_id(),
                         start_date_timestamp_js))
 
-    with open(os.devnull, 'w') as devnull:
-        subprocess.Popen(
-            [
-                "phantomjs",
-                "--disk-cache=true",
-                os.path.join(os.path.dirname(__file__),
-                        "phantom-schedule-screenshot.js"),
-                url_to_render,
-                screenshot_filepath
-            ],
-            stderr=devnull,
-            stdout=devnull
-        )
+    logging.info('Rendering %s started', screenshot_filepath)
+    _RENDER_POOL.apply_async(render_page,
+            (url_to_render, screenshot_filepath),
+            callback=functools.partial(render_finished, screenshot_filepath))
 
 
 def get_screenshot_url(user, latest_user_schedule_item=None):
@@ -152,3 +175,9 @@ def get_screenshot_url(user, latest_user_schedule_item=None):
 
     return c.RMC_HOST + "/" + _get_screenshot_path(user,
         latest_user_schedule_item)
+
+# This is intentionally at the bottom of the file. Specifically, it *must* be
+# after the definition of render_page
+#
+# See: http://stackoverflow.com/a/2783017/303911
+_RENDER_POOL = multiprocessing.Pool(processes=4)
