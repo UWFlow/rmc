@@ -1,10 +1,13 @@
 import os
 IS_PROD = os.path.isdir('/home/rmc')
 
+# NOTE: This relies on the fact that this file is one level above the repo root
+RMC_ROOT = os.path.join(os.path.dirname(__file__), "..")
+
 if IS_PROD:
     SHARED_DATA_DIR = '/home/rmc/data'
 else:
-    SHARED_DATA_DIR = 'shared_data'
+    SHARED_DATA_DIR = os.path.join(RMC_ROOT, 'shared_data')
 
 # define cross file constants here
 
@@ -40,6 +43,3 @@ DEMO_ACCOUNT_FBID = '100004384843130'
 FB_FORCE_TOKEN_EXPIRATION_DAYS = 57
 
 SIFT_API_KEY = 'b1eb450bb0c5a2f1'
-
-# NOTE: This relies on the fact that this file is one level above the repo root
-RMC_ROOT = os.path.join(os.path.dirname(__file__), "..")

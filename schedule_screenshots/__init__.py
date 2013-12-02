@@ -24,12 +24,28 @@ def _get_screenshot_path(user, latest_user_schedule_item):
             ).hexdigest()
     return "static/schedules/%s.png" % stable_id
 
+
 def _get_screenshot_filepath(user, latest_user_schedule_item):
+    urlpath = _get_screenshot_path(user, latest_user_schedule_item)
+
+    if urlpath is None:
+        return None
+
+    filepath = os.path.abspath(os.path.join(c.RMC_ROOT, "server", urlpath))
+    schedule_symlink_dir = os.path.dirname(filepath)
+    schedule_storage_dir = os.path.join(c.SHARED_DATA_DIR, "schedules")
+
+    if not os.path.exists(schedule_storage_dir):
+        os.makedirs(schedule_storage_dir, 0755)
+
+    if not os.path.exists(schedule_symlink_dir):
+        os.symlink(schedule_storage_dir, schedule_symlink_dir)
+
     # TODO(jlfwong): This unfortunately leaves older screenshots lying around.
     # Perhaps it would be better to stick them under a folder per user and
     # delete all the unused schedules or store more information on the user.
-    return os.path.join(c.RMC_ROOT, "server",
-            _get_screenshot_path(user, latest_user_schedule_item))
+    return filepath
+
 
 def _get_term_start_month(dt):
     """Return a datetime for the start of the first month of the term of dt."""

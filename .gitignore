@@ -6,7 +6,7 @@ mongodb/
 server/static/sitemap.txt
 server/static/css/
 server/static/js_prod/
-server/static/schedules/
+server/static/schedules
 server/Gemfile.lock
 shared_data/
 dump.rdb
