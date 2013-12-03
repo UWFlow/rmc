@@ -1,10 +1,13 @@
 import os
 IS_PROD = os.path.isdir('/home/rmc')
 
+# NOTE: This relies on the fact that this file is one level above the repo root
+RMC_ROOT = os.path.join(os.path.dirname(__file__), "..")
+
 if IS_PROD:
     SHARED_DATA_DIR = '/home/rmc/data'
 else:
-    SHARED_DATA_DIR = 'shared_data'
+    SHARED_DATA_DIR = os.path.join(RMC_ROOT, 'shared_data')
 
 # define cross file constants here
 
@@ -16,8 +19,10 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
 
-# TODO(david): Can this be not hard-coded?
-PROD_HOST = 'http://uwflow.com'
+if IS_PROD:
+    RMC_HOST = "http://uwflow.com"
+else:
+    RMC_HOST = "http://localhost:5000"
 
 TERMS_OFFERED_DATA_DIR = 'terms_offered'
 UCALENDAR_COURSES_DATA_DIR = 'ucalendar_courses'

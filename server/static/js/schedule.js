@@ -1,8 +1,9 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'course', 'util', 'facebook',
+'ext/bootstrap', 'user', 'course', 'util', 'facebook',
 'rmc_moment'],
-function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
+function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
+  moment) {
   // Cache a propery for a given instance.
   var instancePropertyCache = function(getter) {
     return _.memoize(getter, function() {
@@ -376,9 +377,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     setWeek: function(startDate) {
+      startDate = moment(startDate).day('Monday');
+
       // Check if there's events on the 6th and 7th days to display weekend
-      var sixthDay = moment(startDate).clone().add('days', 5).toDate();
-      var seventhDay = moment(startDate).clone().add('days', 6).toDate();
+      var sixthDay = startDate.clone().add('days', 5).toDate();
+      var seventhDay = startDate.clone().add('days', 6).toDate();
       var endDate = null;
       if (!this.get('schedule_items').forDay(sixthDay).isEmpty() ||
           !this.get('schedule_items').forDay(seventhDay).isEmpty()) {
@@ -426,8 +429,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       this.showSharing = options.showSharing;
       if (this.showSharing) {
         this.scheduleShareView = new ScheduleShareView({
-          url: getPublicScheduleLink(),
-          iCalUrl: getICalScheduleUrl(),
           schedule: this.schedule
         });
       }
@@ -674,19 +675,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     className: 'schedule-share',
 
     initialize: function(options) {
-      this.printOptions = { print: 1 };
-
       if (options.schedule) {
         this.schedule = options.schedule;
-        var self = this;
-        this.schedule.on('change:start_date', function(model, start_date) {
-          self.printOptions.start_date = Number(start_date);
-          self.render();
-        }, this);
-        this.schedule.on('change:end_date', function(model, end_date) {
-          self.printOptions.end_date = Number(end_date);
-          self.render();
-        }, this);
+        this.schedule.on('change:start_date', this.render, this);
       }
     },
 
@@ -708,19 +699,33 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
       this.logShareIntent('Link box');
     },
 
+    _getScheduleShareUrl: function() {
+      return (getPublicScheduleLink() + '?start_date=' +
+          Number(this.schedule.get('start_date')));
+    },
+
     shareScheduleFacebook: function() {
-      _facebook.showFeedDialog({
-        link: getPublicScheduleLink(),
-        // TODO(david): Don't hardcode term
-        name: 'Check out my Fall 2013 class schedule!',
-        description: 'Flow is a social course planning app for Waterloo' +
-            ' students. Connect to see what your friends are taking!',
-        picture: 'http://uwflow.com/static/img/class-schedule-screenshot.png',
-        callback: _.bind(function(response) {
-              this.logShareCompleted('Facebook');
-            }, this)
+     var self = this;
+
+      var profileUser = _user.UserCollection.getFromCache(pageData.profileUserId.$oid);
+      $.getJSON("/api/schedule/screenshot_url", function(data) {
+        if (!data.url) {
+          mixpanel.track('Schedule Screenshot Not Ready');
+        }
+        _facebook.showFeedDialog({
+          link: self._getScheduleShareUrl(),
+          name: profileUser.get('first_name') + "'s Class Schedule",
+          description: 'Flow is a social course planning app for Waterloo' +
+              ' students.',
+          // TODO(jlfwong): What picture should we use if the schedule
+          // screenshot isn't ready?
+          picture: data.url,
+          callback: function() {
+            self.logShareCompleted('Facebook');
+          }
+        });
       });
-      this.logShareIntent('Facebook');
+      self.logShareIntent('Facebook');
     },
 
     logGoogleCalendarExport: function() {
@@ -750,10 +755,15 @@ function(RmcBackbone, $, _, _s, _bootstrap, _course, _util, _facebook, moment) {
     },
 
     render: function() {
-      this.$el.html(this.template(_.extend({}, this.options, {
-        // TODO(david): Append query param properly
-        print_url: this.options.url + '?' + $.param(this.printOptions)
-      })));
+      var scheduleUrl = this._getScheduleShareUrl();
+      var iCalUrl = getICalScheduleUrl();
+      var printUrl = scheduleUrl + '&print=1';
+
+      this.$el.html(this.template({
+        url: scheduleUrl,
+        iCalUrl: iCalUrl,
+        printUrl: printUrl
+      }));
 
       this.$('.reimport-btn')
         .tooltip({

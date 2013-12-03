@@ -147,3 +147,16 @@ sudo service rmc_daemon start
 echo "Installing crontab"
 sudo apt-get install -y mailutils
 crontab $CONFIG_DIR/crontab
+
+echo "Installing phantomjs"
+(
+    cd /usr/local/share
+    case `uname -m` in
+        i?86) mach=i686;;
+        *) mach=x86_64;;
+    esac
+    sudo rm -rf phantomjs
+    wget "https://phantomjs.googlecode.com/files/phantomjs-1.9.2-linux-${mach}.tar.bz2" -O- | sudo tar xfj -
+
+    sudo ln -snf /usr/local/share/phantomjs-1.9.2-linux-${mach}/bin/phantomjs /usr/local/bin/phantomjs
+)
