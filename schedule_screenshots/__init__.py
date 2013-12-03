@@ -44,9 +44,6 @@ def _get_screenshot_filepath(user, latest_user_schedule_item):
     if not os.path.exists(schedule_symlink_dir):
         os.symlink(schedule_storage_dir, schedule_symlink_dir)
 
-    # TODO(jlfwong): This unfortunately leaves older screenshots lying around.
-    # Perhaps it would be better to stick them under a folder per user and
-    # delete all the unused schedules or store more information on the user.
     return filepath
 
 
