@@ -22,7 +22,6 @@ import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
 import rmc.analytics.stats as rmc_stats
 import rmc.shared.schedule_screenshot as schedule_screenshot
-import rmc.shared.tasks as tasks
 
 import rmc.shared.facebook as facebook
 
@@ -878,7 +877,7 @@ def upload_schedule():
     user.schedules_imported += 1
     user.save()
 
-    tasks.update_screenshot.delay(user)
+    schedule_screenshot.update_screenshot_async(user)
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_SCHEDULE,
