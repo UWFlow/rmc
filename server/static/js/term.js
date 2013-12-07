@@ -164,20 +164,23 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
     },
 
     scrollToNextCourse: function(event, course) {
-      // Get the list of courses (as displayed) after the triggering course
+      // Get the list of courses, in displayed order, after the current course
       var courses = this.termCollection.reduce(function(list, term) {
         return list.concat(term.get('courses').models);
       }, []);
       var remainingCourses = _.rest(courses, _.indexOf(courses, course) + 1);
 
-      // Scroll to the first non-filled-in course
+      // Find the first non-filled-in course (to scroll to)
       var targetCourse = _.find(remainingCourses, function(remCourse) {
         return !remCourse.get('user_course').isMostlyFilledIn();
       });
+      if (!targetCourse) return;
 
-      // Expand the course card before we scroll to it
+      // Expand the course card
       var userCourseId = targetCourse.get('user_course').get('id');
       $('#' + 'course-view-' + userCourseId).trigger('expand');
+
+      // Scroll!
       _util.scrollToElementId(userCourseId);
 
       mixpanel.track('Reviewing: Auto scroll', { course_id: course.get('id') });
