@@ -30,5 +30,6 @@ echo "Compiling js"
 ( cd server && node r.js -o build.js )
 
 sudo service rmc_daemon restart
+sudo service celeryd restart
 
 PYTHONPATH=$HOME python notify_deploy.py $DEPLOYER

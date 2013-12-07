@@ -25,6 +25,14 @@ redis-server config/redis_local.conf &
 echo "Starting compass watch"
 compass watch server &
 
+# TODO(jlfwong): It seems to me like the --autoreload flag is being ignored
+echo "Starting celery worker"
+PARENT_DIR=$(dirname `pwd`) \
+  PYTHONPATH="${PARENT_DIR}" \
+  celery -A rmc.shared.tasks worker \
+    --autoreload \
+    --loglevel=INFO &
+
 echo "Starting flask server"
 FLASK_CONFIG=../config/flask_dev.py \
   PARENT_DIR=$(dirname `pwd`) \

@@ -1,0 +1,29 @@
+# Names of nodes to start
+#   most will only start one node:
+CELERYD_NODES="worker1"
+
+# Absolute or relative path to the 'celery' command:
+CELERY_BIN="/home/rmc/.virtualenvs/rmc/bin/celery"
+
+# App instance to use
+CELERY_APP="rmc.shared.tasks:app"
+
+# Where to chdir at start.
+CELERYD_CHDIR="/home/rmc"
+
+# Extra command-line arguments to the worker
+CELERYD_OPTS="--loglevel=INFO"
+
+# %N will be replaced with the first part of the nodename.
+CELERYD_LOG_FILE="/var/log/celery/%N.log"
+CELERYD_PID_FILE="/var/run/celery/%N.pid"
+
+# Workers should run as an unprivileged user.
+#   You need to create this user manually (or you can choose
+#   a user/group combination that already exists, e.g. nobody).
+CELERYD_USER="rmc"
+CELERYD_GROUP="rmc"
+
+# If enabled pid and log directories will be created if missing,
+# and owned by the userid/group configured.
+CELERY_CREATE_DIRS=1

@@ -1,14 +1,13 @@
 import calendar
 import datetime
-import functools
 import hashlib
 import logging
-import multiprocessing
 import os
 import subprocess
 
 import rmc.shared.constants as c
 import rmc.models as m
+import rmc.shared.tasks as tasks
 
 def _get_latest_user_schedule_item(user):
     return (m.UserScheduleItem
@@ -89,34 +88,6 @@ def _get_best_screenshot_week(user, latest_user_schedule_item):
     assert best_week_date is not None
     return best_week_date
 
-
-def render_page(url_to_render, screenshot_filepath):
-    with open(os.devnull, 'w') as devnull:
-        retcode = subprocess.call(
-            [
-                "phantomjs",
-                "--disk-cache=true",
-                os.path.join(os.path.dirname(__file__),
-                        "phantom-schedule-screenshot.js"),
-                url_to_render,
-                screenshot_filepath
-            ],
-            stderr=devnull,
-            stdout=devnull
-        )
-        return retcode
-
-
-def render_finished(screenshot_filepath, retcode):
-    if retcode == 0:
-        logging.info('Rendering %s successful', screenshot_filepath)
-    elif retcode == 2:
-        logging.error('Rendering %s timed out', screenshot_filepath)
-    else:
-        logging.error('Rendering %s failed (returned %d)',
-                screenshot_filepath, retcode)
-
-
 def update_screenshot_async(user):
     """Asynchronously take a screenshot of the schedule of the given user.
 
@@ -145,10 +116,7 @@ def update_screenshot_async(user):
                         user.get_secret_id(),
                         start_date_timestamp_js))
 
-    logging.info('Rendering %s started', screenshot_filepath)
-    _RENDER_POOL.apply_async(render_page,
-            (url_to_render, screenshot_filepath),
-            callback=functools.partial(render_finished, screenshot_filepath))
+    tasks.render_schedule_screenshot.delay(url_to_render, screenshot_filepath)
 
 
 def get_screenshot_url(user, latest_user_schedule_item=None):
@@ -172,9 +140,3 @@ def get_screenshot_url(user, latest_user_schedule_item=None):
 
     return c.RMC_HOST + "/" + _get_screenshot_path(user,
         latest_user_schedule_item)
-
-# This is intentionally at the bottom of the file. Specifically, it *must* be
-# after the definition of render_page
-#
-# See: http://stackoverflow.com/a/2783017/303911
-_RENDER_POOL = multiprocessing.Pool(processes=4)

@@ -34,3 +34,6 @@ Flask-DebugToolbar-LineProfilerPanel==1.0.2
 # For async-processing using Redis. This is currently only used for Sift Science
 # testing. For real async we should probably use Celery + RabbitMQ
 hotqueue==0.2.7
+
+# For async processing
+celery==3.1.6
