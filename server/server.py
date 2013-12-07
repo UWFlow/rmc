@@ -21,7 +21,7 @@ import rmc.server.profile as profile
 import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
 import rmc.analytics.stats as rmc_stats
-import rmc.schedule_screenshots as schedule_screenshots
+import rmc.shared.schedule_screenshot as schedule_screenshot
 
 import rmc.shared.facebook as facebook
 
@@ -877,7 +877,7 @@ def upload_schedule():
     user.schedules_imported += 1
     user.save()
 
-    schedule_screenshots.update_screenshot_async(user)
+    tasks.update_screenshot.delay(user)
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_SCHEDULE,
@@ -897,7 +897,7 @@ def schedule_screenshot_url():
 
     return util.json_dumps({
         # Note that this may be None
-        "url": schedule_screenshots.get_screenshot_url(user)
+        "url": schedule_screenshot.get_screenshot_url(user)
     })
 
 @app.route('/api/schedule/log', methods=['POST'])

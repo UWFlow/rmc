@@ -138,11 +138,18 @@ sudo gem install rdoc-data; sudo rdoc-data --install
 ( cd rmc && make init_data )
 mkdir -p /home/rmc/logs/server
 
-echo "Setting up rmc web server a daemon"
+echo "Setting up rmc web server as a daemon"
 sudo update-rc.d -f rmc_daemon remove
 sudo ln -sfnv $CONFIG_DIR/etc/init.d/rmc_daemon /etc/init.d
 sudo update-rc.d rmc_daemon defaults
 sudo service rmc_daemon start
+
+echo "Setting up celery as a daemon"
+sudo update-rc.d -f celeryd remove
+sudo ln -sfnv $CONFIG_DIR/etc/default/celeryd /etc/default
+sudo ln -sfnv $CONFIG_DIR/etc/init.d/celeryd /etc/init.d
+sudo update-rc.d celeryd defaults
+sudo service celeryd start
 
 echo "Installing crontab"
 sudo apt-get install -y mailutils
