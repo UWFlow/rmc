@@ -22,6 +22,7 @@ import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
 import rmc.analytics.stats as rmc_stats
 import rmc.shared.schedule_screenshot as schedule_screenshot
+import rmc.shared.tasks as tasks
 
 import rmc.shared.facebook as facebook
 
