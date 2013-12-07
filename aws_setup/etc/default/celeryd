@@ -15,7 +15,7 @@ CELERYD_CHDIR="/home/rmc"
 CELERYD_OPTS="--loglevel=INFO"
 
 # %N will be replaced with the first part of the nodename.
-CELERYD_LOG_FILE="/var/log/celery/%N.log"
+CELERYD_LOG_FILE="/home/rmc/logs/celery/%N.log"
 CELERYD_PID_FILE="/var/run/celery/%N.pid"
 
 # Workers should run as an unprivileged user.
