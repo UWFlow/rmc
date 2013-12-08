@@ -37,3 +37,6 @@ hotqueue==0.2.7
 
 # For async processing
 celery==3.1.6
+
+# New Relic provides web app monitoring as a service: newrelic.com
+newrelic==2.6.0.5
