@@ -85,8 +85,11 @@ def _get_best_screenshot_week(user, latest_user_schedule_item):
             # first date of the week to skirt around timezone issues.
             best_week_date = q.first().start_date
 
-    assert best_week_date is not None
-    return best_week_date
+    if best_week_date:
+        return best_week_date
+    else:
+        logging.error("Can't find a best screenshot date for %s", user)
+        return term_start_mon
 
 def update_screenshot_async(user):
     """Asynchronously take a screenshot of the schedule of the given user.
