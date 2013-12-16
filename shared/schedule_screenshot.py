@@ -3,7 +3,6 @@ import datetime
 import hashlib
 import logging
 import os
-import subprocess
 
 import rmc.shared.constants as c
 import rmc.models as m
@@ -88,7 +87,7 @@ def _get_best_screenshot_week(user, latest_user_schedule_item):
     if best_week_date:
         return best_week_date
     else:
-        logging.error("Can't find a best screenshot date for %s", user)
+        logging.error("Can't find a best screenshot date for %s", user.id)
         return term_start_mon
 
 def update_screenshot_async(user):
