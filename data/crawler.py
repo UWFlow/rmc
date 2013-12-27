@@ -1,19 +1,22 @@
-import rmc.shared.constants as c
-import rmc.models as m;
-import mongoengine as me;
-
 import argparse
 import datetime
 import glob
-import lxml.html
-from lxml.html import soupparser
 import json
+import logging
 import os
-import time
-import sys
 import re
+import sys
+import time
 import traceback
 import urllib2
+
+import lxml.html
+from lxml.html import soupparser
+
+import rmc.shared.constants as c
+import rmc.models as m
+import mongoengine as me
+
 
 API_UWATERLOO_API_KEY = 'ead3606c6f096657ebd283b58bf316b6'
 API_UWATERLOO_V2_URL = 'https://api.uwaterloo.ca/v2'
@@ -425,8 +428,9 @@ def get_subject_sections_from_opendata(subject, term):
     data = get_data_from_url(url)
     try:
         sections = data['data']
-    except KeyError:
-        print "crawler.py: Schedule API call failed with data:\n%s" % (data)
+    except (KeyError, TypeError):
+        logging.exception("crawler.py: Schedule API call failed with"
+                " url %s and data:\n%s" % (url, data))
         raise
 
     return sections
