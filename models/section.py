@@ -136,9 +136,11 @@ class Section(me.Document):
 
     @staticmethod
     def get_for_course_and_recent_terms(course_id):
-        """Get all sections for a given course for this current term and the
-        next term.
+        """Get all sections for a given course for this current term and
+        possibly the next term, if it's starting soon.
         """
-        term_ids = [term.Term.get_current_term_id(),
-                    term.Term.get_next_term_id()]
+        term_ids = [term.Term.get_current_term_id()]
+        if term.Term.get_current_term_percent_finished() >= 0.5:
+            term_ids.append(term.Term.get_next_term_id())
+
         return Section.get_for_course_and_terms(course_id, term_ids)
