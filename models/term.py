@@ -122,8 +122,8 @@ class Term(me.Document):
 
     @staticmethod
     def get_date_from_term_id(term_id):
-        """Return a datetime from the term_id, using starting from the first day
-        of the month.
+        """Return a datetime from the term_id, starting from the first day of
+        the month.
         """
         year, month = map(lambda x: int(x), term_id.split('_'))
         return datetime.datetime(year=year, month=month, day=1)
