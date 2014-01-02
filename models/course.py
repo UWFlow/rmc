@@ -106,8 +106,8 @@ class Course(me.Document):
 
         if include_sections:
             for course_dict in course_dicts:
-                # By default, we'll send down section info for current and next
-                # term for each course we return.
+                # By default, we'll send down section info for current and
+                # possibly next term for each course we return.
                 sections = section.Section.get_for_course_and_recent_terms(
                         course_dict['id'])
                 course_dict['sections'] = [s.to_dict() for s in sections]

@@ -1,3 +1,7 @@
+import datetime
+
+import freezegun
+
 import rmc.models as m
 import rmc.test.lib as testlib
 
@@ -42,5 +46,31 @@ class TermTest(testlib.ModelTestCase):
         assertConverts('2013_09', 2013, 'Fall')
         assertConverts('2014_01', 2014, 'Winter')
         assertConverts('2100_01', 2100, 'Winter')
+
+    def test_get_date_from_term_id(self):
+        get_date = m.Term.get_date_from_term_id
+        def make_date(year, month):
+            return datetime.datetime(year=year, month=month, day=1)
+
+        self.assertEquals(make_date(1991, 1), get_date('1991_01'))
+        self.assertEquals(make_date(2014, 1), get_date('2014_01'))
+        self.assertEquals(make_date(2014, 5), get_date('2014_05'))
+        self.assertEquals(make_date(2014, 9), get_date('2014_09'))
+
+    def test_get_term_percent_finished(self):
+        def assert_correct_percentage(expected_percent, date_tuple):
+            year, month, day = date_tuple
+            the_date = datetime.datetime(year=year, month=month, day=day)
+            with freezegun.freeze_time(the_date.strftime('%c')):
+                self.assertEquals(round(expected_percent, 3),
+                    round(m.Term.get_term_percent_finished(), 3))
+
+        # There are 120 days between term 2014_01 and 2014_05
+        assert_correct_percentage(0, (2014, 1, 1))
+        assert_correct_percentage(7.0/120, (2014, 1, 8))
+        assert_correct_percentage(30.0/120, (2014, 1, 31))
+        assert_correct_percentage(44.0/120, (2014, 2, 14))
+        assert_correct_percentage(72.0/120, (2014, 3, 14))
+        assert_correct_percentage(119.0/120, (2014, 4, 30))
 
     # TODO(david): Moar tests
