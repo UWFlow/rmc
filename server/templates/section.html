@@ -63,6 +63,8 @@
                     ><span class="day-<%- _.contains(days, 'S') %>">S</span
                     ><span class="day-<%- _.contains(days, 'Su') %>">Su</span>
                   <% } %>
+                <% } else { %>
+                  <%- sectionMissingValueText(section, term[0].get('course_id')) %>
                 <% } %>
 
                 <% if (meeting.start_date) { %>
@@ -85,6 +87,8 @@
                 <% if (meeting.building) { %>
                   <%- meeting.building %>
                   <%- meeting.room %>
+                <% } else { %>
+                  <%- sectionMissingValueText(section, term[0].get('course_id')) %>
                 <% } %>
               </p>
             <% }); %>

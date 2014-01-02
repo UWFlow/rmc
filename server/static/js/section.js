@@ -1,6 +1,6 @@
 define(
-['rmc_backbone', 'ext/jquery', 'ext/underscore'],
-function(RmcBackbone, $, _) {
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string'],
+function(RmcBackbone, $, _, _s) {
 
   var Section = RmcBackbone.Model.extend({
   });
@@ -41,6 +41,16 @@ function(RmcBackbone, $, _) {
           var total = section.get('enrollment_total');
           var cap = section.get('enrollment_capacity');
           return total >= cap ? 'full' : '';
+        },
+        sectionMissingValueText: function(section, courseId) {
+          if (_s.startsWith(courseId, 'wkrpt')) return 'N/A';
+          // ONLN ONLINE
+          // ONLNG ONLINE
+          // ONLNP ONLINE
+          // ONLNJ ONLINE
+          // ONLNR ONLINE
+          var onlinePattern = /ONLN.? ONLINE/;
+          return onlinePattern.test(section.get('campus')) ? 'N/A' : 'TBA';
         }
       }));
       return this;
