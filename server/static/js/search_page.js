@@ -17,9 +17,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         sortMode: _.find(window.pageData.sortModes, function(sortMode) {
           return (sortMode.name.replace(' ', '+') === queryParams.sort_mode);
         }) || window.pageData.sortModes[0],
-        term: _.find(window.pageData.terms, function(term) {
-          return (term.value === queryParams.term);
-        }) || window.pageData.terms[0],
         excludeTakenCourses: queryParams.exclude_taken_courses || "no",
         keywords: (queryParams.keywords || '').replace('+',' ')
       });
@@ -40,7 +37,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
      * Updates the URL of the page via pushState to reflect the current state of
      * the search.  Will change the URL to e.g.
      *
-     *  /courses?term=05&exclude_taken_courses=yes&keywords=calc
+     *  /courses?exclude_taken_courses=yes&keywords=calc
      */
     updateUrl: function() {
       var queryParams = {};
@@ -48,10 +45,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
       if (view.sortMode != window.pageData.sortModes[0]) {
         queryParams.sort_mode = view.sortMode.name;
-      }
-
-      if (view.term.value) {
-        queryParams.term = view.term.value;
       }
 
       if (view.excludeTakenCourses === 'yes') {
@@ -85,7 +78,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     excludeTakenCourses: undefined,
 
     initialize: function(options) {
-      this.term = options.term;
       this.sortMode = options.sortMode;
       this.excludeTakenCourses = options.excludeTakenCourses;
 
@@ -124,9 +116,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
     render: function() {
       this.$el.html(_.template($('#search-form-tpl').html(), {
-        terms: pageData.terms,
         sortModes: pageData.sortModes,
-        selectedTerm: this.term,
         selectedSortMode: this.sortMode,
         getIconForMode: this.getIconForMode,
         excludeTakenCourses: this.excludeTakenCourses,
@@ -165,20 +155,9 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
 
     events: {
       'click .excluding-taken-courses-dropdown .dropdown-menu li': 'changeExcludeTakenCourses',
-      'click .term-dropdown .dropdown-menu li': 'changeTerm',
       'click .sort-options .option': 'changeSortMode',
       'input .keywords': 'changeKeywords',
       'paste .keywords': 'changeKeywords'
-    },
-
-    changeTerm: function(evt) {
-      evt.preventDefault();
-
-      var $target = $(evt.currentTarget);
-      this.$('.selected-term').text($target.text());
-      this.setTerm($target.attr('data-value'));
-
-      this.resetAndUpdate();
     },
 
     changeExcludeTakenCourses: function(evt) {
@@ -233,12 +212,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       }, this), FETCH_DELAY_MS);
     },
 
-    setTerm: function(termValue) {
-      this.term = _.find(pageData.terms, function(term) {
-        return term.value === termValue;
-      });
-    },
-
     setExcludeTakenCourses: function(excludeTakenCourses) {
       this.excludeTakenCourses = excludeTakenCourses;
     },
@@ -285,7 +258,6 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       var args = {
         offset: this.offset,
         count: this.count,
-        term: this.term.value,
         sort_mode: this.sortMode.name,
         keywords: this.keywords,
         exclude_taken_courses: this.excludeTakenCourses

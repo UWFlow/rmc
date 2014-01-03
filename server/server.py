@@ -196,12 +196,6 @@ def courses():
             'direction': sort_mode['direction'],
         }
 
-    terms = [
-        { 'value': '', 'name': 'any term' },
-        { 'value': '01', 'name': 'Winter' },
-        { 'value': '05', 'name': 'Spring' },
-        { 'value': '09', 'name': 'Fall' },
-    ]
     sort_modes = map(clean_sort_modes, COURSES_SORT_MODES)
 
     current_user = view_helpers.get_current_user()
@@ -209,7 +203,6 @@ def courses():
     return flask.render_template(
         'search_page.html',
         page_script='search_page.js',
-        terms=terms,
         sort_modes=sort_modes,
         current_user_id=current_user.id if current_user else None,
         user_objs=[current_user.to_dict(
@@ -592,7 +585,6 @@ def search_courses():
 
     request = flask.request
     keywords = request.values.get('keywords')
-    term = request.values.get('term')
     sort_mode = request.values.get('sort_mode', 'popular')
     default_direction = COURSES_SORT_MODES_BY_NAME[sort_mode]['direction']
     direction = int(request.values.get('direction', default_direction))
@@ -614,7 +606,6 @@ def search_courses():
             '$user_id': str(current_user.id),
             '$user_email': current_user.email,
             'keywords': unicode(keywords).encode('utf8'),
-            'term': term,
             'name': sort_mode,
             'direction': direction,
             'count': count,
@@ -635,9 +626,6 @@ def search_courses():
 
         keywords = map(regexify_keywords, keywords)
         filters['_keywords__all'] = keywords
-
-    if term:
-        filters['terms_offered'] = term
 
     if exclude_taken_courses == "yes":
         if current_user:
