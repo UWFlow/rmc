@@ -49,22 +49,7 @@
       </div>
 
       <form class="course-search-form nav nav-pills">
-        Offered in
-        <li class="term-dropdown dropdown">
-          <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-            <span class="selected-term"><%- selectedTerm.name %></span>
-            <b class="caret"></b>
-          </a>
-          <ul class="dropdown-menu" role="menu">
-          <% _.each(terms, function(term) { %>
-            <li data-value="<%- term.value %>">
-              <a href="#"><%-term.name %></a>
-            </li>
-          <% }); %>
-          </ul>
-        </li>
-
-        sorted by
+        Sorted by
         <span class="sort-options btn-group">
           <% _.each(sortModes, function(sortMode, i) { %>
             <button class="option btn <%- sortModes[i] === selectedSortMode ? 'active' : '' %>"
@@ -113,7 +98,6 @@
 
 {% block scripts %}
 <script>
-  window.pageData.terms = {{ terms|tojson|safe }};
   window.pageData.sortModes = {{ sort_modes|tojson|safe }};
   window.pageData.userObjs = {{ user_objs|tojson|safe }};
 </script>
