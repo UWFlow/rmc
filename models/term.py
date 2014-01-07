@@ -4,8 +4,10 @@ with term identifiers.
 Assume everything in this file is Waterloo-specific.
 """
 
-import mongoengine as me
+import datetime
 import logging
+
+import mongoengine as me
 
 import rmc.shared.util as util
 
@@ -117,6 +119,32 @@ class Term(me.Document):
             month += 4
 
         return Term.get_id_from_year_month(year, month)
+
+    @staticmethod
+    def get_date_from_term_id(term_id):
+        """Return a datetime from the term_id.
+
+        Use the first day of the first month of the given term.
+        """
+        year, month = map(lambda x: int(x), term_id.split('_'))
+        return datetime.datetime(year=year, month=month, day=1)
+
+    @staticmethod
+    def get_current_term_finished_fraction():
+        """Return a fraction indicating how much time has passed in the current
+        term.
+        """
+        term_id = Term.get_current_term_id()
+        next_term_id = Term.get_next_term_id_from_term_id(term_id)
+
+        current_term_date = Term.get_date_from_term_id(term_id)
+        next_term_date = Term.get_date_from_term_id(next_term_id)
+        now = datetime.datetime.now()
+
+        term_length = next_term_date - current_term_date
+        elapsed_length = now - current_term_date
+
+        return 1.0 * elapsed_length.days / term_length.days
 
     @staticmethod
     def get_next_term_id_from_term_id(term_id):

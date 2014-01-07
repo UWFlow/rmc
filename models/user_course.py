@@ -220,11 +220,14 @@ class UserCourse(me.Document):
             - the user can review
             - we have never prompted the user to review before
             - the user has not written a course review for
+            - are in the current term only if the term is almost over
 
         Then sort by...
             - least # of other reviews written
             - user has taken course recently
         """
+        finished_fraction = term.Term.get_current_term_finished_fraction()
+
         def can_select(user_course):
             # Filter out courses user can't review yet (eg. shortlist, future)
             if not user_course.reviewable: return False
@@ -235,6 +238,13 @@ class UserCourse(me.Document):
 
             # Filter out courses that user has written a course review
             if user_course.course_review.comment_date: return False
+
+            # Filter out current term courses if it's still early on in the term
+            # At ~120 days/term, 60% = 72 days = ~10.3 weeks. Allow students to
+            # review in the last few weeks
+            if (user_course.term_id == term.Term.get_current_term_id() and
+                    finished_fraction <= 0.6):
+                return False
 
             return True
 
