@@ -76,7 +76,7 @@ def render_schedule_ical_feed(profile_user_secret_id):
     course_ids = set([sid['course_id'] for sid in schedule_item_dict_list])
 
     limited_course_list = (m.Course.objects(id__in=course_ids)
-        .only('id', 'department_id', 'number'))
+        .only('id', 'department_id', 'number', 'name'))
 
     humanized_course_id = {}
 
@@ -86,17 +86,22 @@ def render_schedule_ical_feed(profile_user_secret_id):
             limited_course.number
         )
 
+    course_name_map = {c['id']: c['name'] for c in limited_course_list}
+
     cal = icalendar.Calendar()
     cal.add('x-wr-calname', 'uwflow.com schedule')
     cal.add('x-wr-caldesc', 'Schedule exported from http://uwflow.com')
 
     for schedule_item_dict in schedule_item_dict_list:
         event = icalendar.Event()
-        summary_fmt = '%(course_id)s - %(section_type)s %(section_num)s'
+        course_id = schedule_item_dict['course_id']
+        summary_fmt = ('%(course_id)s - %(section_type)s %(section_num)s'
+                ' - %(course_name)s')
         summary = summary_fmt % {
-            'course_id': humanized_course_id.get(schedule_item_dict['course_id'], schedule_item_dict['course_id']),
+            'course_id': humanized_course_id.get(course_id, course_id),
             'section_type': schedule_item_dict['section_type'],
             'section_num': schedule_item_dict['section_num'],
+            'course_name': course_name_map.get(course_id, ''),
         }
         event.add('summary', summary)
 
