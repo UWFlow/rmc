@@ -603,6 +603,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       var scheduleData;
       try {
         scheduleData = parseSchedule(data);
+        this.$('.schedule-input-textarea').prop('disabled', true);
       } catch (ex) {
         $.ajax('/api/schedule/log', {
           data: {
