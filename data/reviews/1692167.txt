@@ -1,1 +1,1 @@
-{"prof_id": "1692167", "prof_name": "Kanstantsin, Tsedryk", "info": {}, "ratings": []}
+{"prof_id": "1692167", "prof_name": "Kanstantsin, Tsedryk", "info": {"Department": " French Studies", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Great prof, gave me a lot of help since my french is not so well. He replies email swiftly and always gives a very straightfoward response.", "date": "12/26/13", "r_clarity": "5", "rating_id": "22656773", "r_easy": "2", "class": "FR251", "r_interest": "5", "r_helpful": "5"}]}

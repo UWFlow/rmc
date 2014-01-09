@@ -1,1 +1,1 @@
-{"prof_id": "1391500", "prof_name": "Clapperton, Robert", "info": {}, "ratings": []}
+{"prof_id": "1391500", "prof_name": "Clapperton, Robert", "info": {"Department": " English", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Most communication was done through TA's. Assignments are directly related to textbook/module content.", "date": "8/2/13", "r_clarity": "3", "rating_id": "22020365", "r_easy": "4", "class": "ENGL 210F", "r_interest": "2", "r_helpful": "2"}]}

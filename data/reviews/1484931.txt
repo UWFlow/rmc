@@ -1,1 +1,1 @@
-{"prof_id": "1484931", "prof_name": "Yang, Zhen", "info": {}, "ratings": []}
+{"prof_id": "1484931", "prof_name": "Yang, Zhen", "info": {"Department": " Mathematics", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "This professor is somewhat dreamy looking. She keeps augueing with herself all the time and in certain way, she is kind of two.", "date": "10/19/10", "r_clarity": "5", "rating_id": "17672231", "r_easy": "5", "class": "Math250", "r_interest": "5", "r_helpful": "5"}]}

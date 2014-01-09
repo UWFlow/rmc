@@ -1,0 +1,1 @@
+{"prof_id": "1869716", "prof_name": "Kumase, Wokia", "info": {"Department": " Economics", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "BEST PROF NA WOKIA!!!!", "date": "12/27/13", "r_clarity": "1", "rating_id": "22660964", "r_easy": "5", "class": "ECON101", "r_interest": "5", "r_helpful": "5"}]}

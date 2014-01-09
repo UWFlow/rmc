@@ -1,1 +1,1 @@
-{"prof_id": "1678702", "prof_name": "Heney, Margaret", "info": {}, "ratings": []}
+{"prof_id": "1678702", "prof_name": "Heney, Margaret", "info": {"Department": " English", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Bad attitude. She's a good teacher tho.", "date": "10/2/13", "r_clarity": "1", "rating_id": "22152752", "r_easy": "1", "class": "ESL102R", "r_interest": "1", "r_helpful": "1"}]}

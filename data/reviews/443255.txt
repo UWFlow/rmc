@@ -1,1 +1,1 @@
-{"prof_id": "443255", "prof_name": "Sin, Leo", "info": {"Department": " Culinary Arts", "School": " University of Waterloo", "Name": " Leo\u00a0Sin", "Location": " Waterloo, ON"}, "ratings": [{"comment": "great", "date": "2/10/11", "r_clarity": "5", "rating_id": "18225630", "r_easy": "5", "class": "cul121", "r_interest": "5", "r_helpful": "5"}]}
+{"prof_id": "443255", "prof_name": "Sin, Leo", "info": {}, "ratings": []}

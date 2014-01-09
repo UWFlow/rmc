@@ -1,1 +1,1 @@
-{"prof_id": "1177362", "prof_name": "Boushehri, Ali Ghodsi", "info": {}, "ratings": []}
+{"prof_id": "1177362", "prof_name": "Boushehri, Ali Ghodsi", "info": {"Department": " Mathematics", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "He made very easy midterms and finals. However he constantly showed up to class late and was horrible at answering students questions in class.", "date": "11/13/13", "r_clarity": "3", "rating_id": "22309010", "r_easy": "5", "class": "STAT 340", "r_interest": "3", "r_helpful": "1"}]}

@@ -1,0 +1,1 @@
+{"prof_id": "911644", "prof_name": "Hoff, David", "info": {"Department": " English", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "No Comments", "date": "11/6/06", "r_clarity": "4", "rating_id": "12366474", "r_easy": "3", "class": "ENGL210F", "r_interest": "3", "r_helpful": "5"}]}

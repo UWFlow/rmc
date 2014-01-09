@@ -1,0 +1,1 @@
+{"prof_id": "1798584", "prof_name": "Whiting, Graham", "info": {"Department": " Environmental Studies", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Great.", "date": "2/20/13", "r_clarity": "4", "rating_id": "21353876", "r_easy": "2", "class": "ENBUS409", "r_interest": "4", "r_helpful": "5"}]}
