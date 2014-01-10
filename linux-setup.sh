@@ -43,12 +43,6 @@ install_packages() {
         nodejs \
         redis-server \
         mongodb-10gen
-
-    # Remove pylint that's installed via distro's repo if it exists, since it
-    # can conflict with the one from pip
-    sudo apt-get remove pylint && \
-        sudo apt-get remove python-logilab-common && \
-        sudo apt-get remove python-logilab-astng
 }
 
 install_phantomjs() {
