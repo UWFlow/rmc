@@ -93,10 +93,18 @@ require.config({
   }
 });
 
-require(['ext/underscore', 'ext/underscore.string', 'util', 'rmc_moment',
-    'ext/jquery', 'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
+// Underscore and jQuery need to be loaded first, otherwise RequireJS might try
+// to execute things that depend on them first since loading is async
+require(['ext/underscore', 'ext/jquery'], function(_, $) {
+
+window._ = _;
+window.$ = $;
+window.jQuery = $;
+
+require(['ext/underscore.string', 'util', 'rmc_moment',
+    'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
     'points', 'user', 'facebook'],
-function(_, _s, util, moment, $, Backbone, __, __, toastr, _points,
+function(_s, util, moment, Backbone, __, __, toastr, _points,
   _user, _facebook) {
 
   // Add helpers functions to all templates
@@ -208,3 +216,5 @@ function(_, _s, util, moment, $, Backbone, __, __, toastr, _points,
 
 });
 
+
+});
