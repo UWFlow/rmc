@@ -310,10 +310,10 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
 
     render: function() {
       var domId = 'course-view-' + this.courseModel.get('user_course_id');
+
       this.$el.attr('id', domId).html(this.template({
         course: this.courseModel.toJSON(),
         user_course: this.userCourse,
-        //star_uc: window.pageData.ownProfile ? this.userCourse : this.profileUserCourse
         profile_user_course: this.profileUserCourse,
         other_profile: this.otherProfile,
         mode: this.courseModel.getInteractMode()
@@ -323,13 +323,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
 
       var overallRating = this.courseModel.getOverallRating();
       this.ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
-
-      var friendUserCourses = this.courseModel.get('friend_user_courses');
-      if (friendUserCourses) {
-        this.sampleFriendsView = new SampleFriendsView({
-          friendUserCourses: friendUserCourses
-        });
-      }
 
       this.updateAddCourseTooltip();
       this.updateRemoveCourseTooltip();

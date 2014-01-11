@@ -287,7 +287,7 @@ def render_profile_page(profile_user_id, current_user=None):
     # Convert courses to dicts
     course_dict_list, user_course_dict_list, user_course_list = (
             m.Course.get_course_and_user_course_dicts(
-                transcript_courses, current_user, include_friends=own_profile))
+                transcript_courses, current_user))
     course_dicts = {}
     for course_dict in course_dict_list:
         course_dicts[course_dict['id']] = course_dict
