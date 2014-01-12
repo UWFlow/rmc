@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course',
 'util', 'work_queue'],
-function(RmcBackbone, _, _course, jqSlide, _user_course, _util, _work_queue) {
+function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {
@@ -45,7 +45,6 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util, _work_queue) {
         this.hasBeenExpanded = true;
         this.$el.find('.course-collection-placeholder').replaceWith(
           this.courseCollectionView.render().el);
-        _work_queue.start();
       }
 
       if (!this.expand) {

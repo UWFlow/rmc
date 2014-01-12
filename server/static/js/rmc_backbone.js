@@ -214,8 +214,7 @@ function(Backbone, $, _) {
   };
 
   var normalizeId = function(id) {
-    if (id.$oid) return id.$oid;
-    return id;
+    return id.$oid || id;
   };
 
   Collection.addToCache = function(objs) {
