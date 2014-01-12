@@ -210,11 +210,11 @@ function(Backbone, $, _) {
     }
 
     this._cacheName = name;
-    var collection = new this();
-    // TODO(mack): might wanna consider auto-caching Models when they
-    // are created, hover this might be too magical.
-    // collection.model._cacheName = name;
-    collectionCaches[name] = collection;
+    collectionCaches[name] = {};
+  };
+
+  var normalizeId = function(id) {
+    return id.$oid || id;
   };
 
   Collection.addToCache = function(objs) {
@@ -225,8 +225,9 @@ function(Backbone, $, _) {
     }
 
     var collection = collectionCaches[this._cacheName];
-    // Prevent validation of models on initial add
-    collection.add(objs, {silent: true});
+    _.each(objs, function(obj) {
+      collection[normalizeId(obj.id)] = obj;
+    });
   };
 
   Collection.removeFromCache = function(objs) {
@@ -237,8 +238,27 @@ function(Backbone, $, _) {
     }
 
     var collection = collectionCaches[this._cacheName];
-    // Prevent validation of models on initial add
-    collection.remove(objs, {silent: true});
+    _.each(objs, function(obj) {
+      delete collection[normalizeId(obj.id)];
+    });
+  };
+
+  Collection._getOneFromCache = function(id) {
+    var coll = collectionCaches[this._cacheName];
+    if (!coll) {
+      console.warn('Trying to fetch from non-existent cache ' + name);
+      return undefined;
+    }
+
+    var model = coll[normalizeId(id)];
+    if (!model) {
+      console.warn('Did not find ' + id + ' in ' + this._cacheName);
+    }
+    // model is already a Backbone Model
+    if (model.cid) {
+      return model;
+    }
+    return (coll[normalizeId(id)] = new this.prototype.model(model));
   };
 
   Collection.getFromCache = function(ids) {
@@ -252,22 +272,12 @@ function(Backbone, $, _) {
       return undefined;
     }
 
-    var coll = collectionCaches[this._cacheName];
-    if (!coll) {
-      console.warn('Trying to fetch from non-existent cache ' + name);
-      return undefined;
-    }
-
     if (_.isArray(ids)) {
       return new this(_.map(ids, function(id) {
-        var model =  coll.get(id);
-        if (!model) {
-          console.warn('Did not find ' + id + ' in ' + this._cacheName);
-        }
-        return model;
+        return this._getOneFromCache(id);
       }, this));
     } else {
-      return coll.get(ids);
+      return this._getOneFromCache(ids);
     }
   };
 

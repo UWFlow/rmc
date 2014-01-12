@@ -1,7 +1,8 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'ext/bootstrap', 'ext/slimScroll', 'course', 'facebook'],
-function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
+'ext/bootstrap', 'ext/slimScroll', 'course', 'facebook', 'work_queue'],
+function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook,
+         _work_queue) {
 
   var FriendView = RmcBackbone.View.extend({
     className: 'friend',
@@ -167,6 +168,22 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook) {
         friendModel: model,
         isFriendClickable: isFriendClickable
       });
+    },
+
+    render: function() {
+      _work_queue.add(function() {
+        this.$el.empty();
+        this.collection.each(function(model) {
+          var view = this.createItemView(model, this.itemAttributes);
+          view.tagName = 'section';
+          // TODO(david): Append all at once for faster DOM rendering
+          this.$el.append(view.render().el);
+        }, this);
+
+        this.postRender();
+      }, this);
+
+      return this;
     }
   });
 
