@@ -357,7 +357,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       // Find the closest week in the future with schedule items, or failing
       // that the closest week in the past with schedule items
       var futureItems = this.get('schedule_items').filter(function(item) {
-        return startOfCurrWeek.unix() <= moment(item.get('start_date')).unix();
+        return startOfCurrWeek <= item.get('start_date');
       });
 
       if (futureItems.length > 0) {

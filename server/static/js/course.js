@@ -1,9 +1,9 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
 'ratings', 'ext/bootstrap', 'util', 'jquery.slide', 'prof', 'ext/toastr',
-'section'],
+'section', 'work_queue'],
 function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
-    _section) {
+    _section, _work_queue) {
 
   var CourseModel = RmcBackbone.Model.extend({
     defaults: {
@@ -324,12 +324,17 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
       var overallRating = this.courseModel.getOverallRating();
       this.ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
 
-      var friendUserCourses = this.courseModel.get('friend_user_courses');
-      if (friendUserCourses) {
-        this.sampleFriendsView = new SampleFriendsView({
-          friendUserCourses: friendUserCourses
-        });
-      }
+      _work_queue.add(function() {
+        var friendUserCourses = this.courseModel.get('friend_user_courses');
+        if (friendUserCourses) {
+          this.sampleFriendsView = new SampleFriendsView({
+            friendUserCourses: friendUserCourses
+          });
+
+          this.$('.sample-friends-placeholder').replaceWith(
+            this.sampleFriendsView.render().$el);
+        }
+      }, this);
 
       this.updateAddCourseTooltip();
       this.updateRemoveCourseTooltip();
@@ -350,11 +355,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
 
       this.$('.rating-box-placeholder').replaceWith(
           this.ratingBoxView.render().$el);
-
-      if (this.sampleFriendsView) {
-        this.$('.sample-friends-placeholder').replaceWith(
-          this.sampleFriendsView.render().$el);
-      }
 
       if (this.courseInnerView) {
         delete this.courseInnerView;

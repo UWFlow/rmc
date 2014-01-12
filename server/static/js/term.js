@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course',
-'util'],
-function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
+'util', 'work_queue'],
+function(RmcBackbone, _, _course, jqSlide, _user_course, _util, _work_queue) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {
@@ -31,6 +31,7 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
 
       var savedExpanded = _util.getLocalData(this.getTermExpandedKey());
       this.expand = savedExpanded == null ? options.expand : savedExpanded;
+      this.hasBeenExpanded = false;
     },
 
     render: function(options) {
@@ -40,8 +41,12 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
       this.$el.html(
         _.template($('#term-tpl').html(), attributes));
 
-      this.$el.find('.course-collection-placeholder').replaceWith(
-        this.courseCollectionView.render().el);
+      if (this.expand && !this.hasBeenExpanded) {
+        this.hasBeenExpanded = true;
+        this.$el.find('.course-collection-placeholder').replaceWith(
+          this.courseCollectionView.render().el);
+        _work_queue.start();
+      }
 
       if (!this.expand) {
         this.$('.course-collection').addClass('hide-initial');
@@ -71,6 +76,11 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
     },
 
     expandTerm: function(evt) {
+      if (!this.hasBeenExpanded) {
+        this.expand = true;
+        this.render();
+      }
+
       this.$('.course-collection').fancySlide('down')
         .end().find('.term-name .arrow')
           .removeClass('icon-caret-right')
@@ -80,6 +90,8 @@ function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
     },
 
     collapseTerm: function(evt) {
+      this.expand = false;
+
       this.$('.course-collection').fancySlide('up')
         .end().find('.term-name .arrow')
           .removeClass('icon-caret-down')

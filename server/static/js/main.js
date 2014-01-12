@@ -103,9 +103,9 @@ window.jQuery = $;
 
 require(['ext/underscore.string', 'util', 'rmc_moment',
     'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
-    'points', 'user', 'facebook'],
+    'points', 'user', 'facebook', 'work_queue'],
 function(_s, util, moment, Backbone, __, __, toastr, _points,
-  _user, _facebook) {
+  _user, _facebook, _work_queue) {
 
   // Add helpers functions to all templates
   (function() {
@@ -189,6 +189,7 @@ function(_s, util, moment, Backbone, __, __, toastr, _points,
     $(document.body).on('pageScriptComplete', function(evt) {
       $('[rel="tooltip"]').tooltip();
       $(document.body).data('rendered', true);
+      _work_queue.start();
     });
 
     // TODO(Sandy): Uncomment this after testing the new login stuff a bit

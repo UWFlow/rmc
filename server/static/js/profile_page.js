@@ -1,9 +1,9 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
-'raffle_unlock', 'schedule', 'sign_in'],
+'raffle_unlock', 'schedule', 'sign_in', 'work_queue', ],
 function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
-  _prof, _exam, _raffle_unlock, _schedule, _sign_in) {
+  _prof, _exam, _raffle_unlock, _schedule, _sign_in, _work_queue) {
 
   _course.CourseCollection.addToCache(pageData.courseObjs);
   _user_course.UserCourses.addToCache(pageData.userCourseObjs);
@@ -65,8 +65,68 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     $('.schedule-input-modal').modal();
   }
 
-  // Render friend sidebar
-  (function() {
+  _work_queue.add(function() {
+    // Render the schedule if possible
+    if (pageData.scheduleItemObjs.length > 0) {
+      var scheduleItems = new _schedule.ScheduleItemCollection(
+        pageData.scheduleItemObjs);
+
+      var $schedulePlaceholder = $("#class-schedule-placeholder");
+      var scheduleView = _schedule.initScheduleView({
+        scheduleItems: scheduleItems,
+        failedScheduleItems: window.pageData.failedScheduleItemObjs,
+        width: $schedulePlaceholder.outerWidth(),
+        showSharing: window.pageData.ownProfile
+      });
+      $schedulePlaceholder.replaceWith(scheduleView.el);
+    }
+  });
+
+  _work_queue.add(function() {
+    var renderTranscript = function(transcriptObj) {
+      var termCollection = new term.TermCollection();
+
+      _.each(transcriptObj, function(termObj) {
+        var termModel = new term.TermModel(termObj);
+        termCollection.add(termModel);
+      });
+
+      // Add the parsed term and course info to the page for live preview
+      var profileTermsView = new term.ProfileTermsView({
+        termCollection: termCollection,
+        showAddTerm: window.pageData.ownProfile
+      });
+      $('#profile-terms-placeholder').replaceWith(profileTermsView.render().el);
+    };
+
+    // Render the transcript, if available
+    var transcriptObj = window.pageData.transcriptObj;
+    if (transcriptObj && transcriptObj.length !== 0) {
+      renderTranscript(transcriptObj);
+    }
+  });
+
+  _work_queue.add(function() {
+    var examObjs = window.pageData.examObjs;
+    if (examObjs && examObjs.length) {
+      var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
+
+      // Only show this "final exams" section if there are actually exams taking
+      // place in the future
+      if (examCollection.latestExam().get('end_date') >= new Date()) {
+        var examSchedule = new _exam.ExamSchedule({
+          exams: examCollection,
+          last_updated_date: window.pageData.examUpdatedDate
+        });
+        var examScheduleView = new _exam.ExamScheduleView({
+          examSchedule: examSchedule
+        });
+        $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
+      }
+    }
+  });
+
+  _work_queue.add(function() {
     // TODO(mack): use profileUser.get('friends')
     var friendIds = profileUser.get('friend_ids');
     var friendObjs = [];
@@ -88,62 +148,7 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     });
 
     $('#friend-sidebar-container').html(friendSidebarView.render().el);
-  })();
-
-  var renderTranscript = function(transcriptObj) {
-    var termCollection = new term.TermCollection();
-
-    _.each(transcriptObj, function(termObj) {
-      var termModel = new term.TermModel(termObj);
-      termCollection.add(termModel);
-    });
-
-    // Add the parsed term and course info to the page for live preview
-    var profileTermsView = new term.ProfileTermsView({
-      termCollection: termCollection,
-      showAddTerm: window.pageData.ownProfile
-    });
-    $('#profile-terms-placeholder').replaceWith(profileTermsView.render().el);
-  };
-
-  // Render the transcript, if available
-  var transcriptObj = window.pageData.transcriptObj;
-  if (transcriptObj && transcriptObj.length !== 0) {
-    renderTranscript(transcriptObj);
-  }
-
-  var examObjs = window.pageData.examObjs;
-  if (examObjs && examObjs.length) {
-    var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
-
-    // Only show this "final exams" section if there are actually exams taking
-    // place in the future
-    if (examCollection.latestExam().get('end_date') >= new Date()) {
-      var examSchedule = new _exam.ExamSchedule({
-        exams: examCollection,
-        last_updated_date: window.pageData.examUpdatedDate
-      });
-      var examScheduleView = new _exam.ExamScheduleView({
-        examSchedule: examSchedule
-      });
-      $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
-    }
-  }
-
-  // Render the schedule if possible
-  if (pageData.scheduleItemObjs.length > 0) {
-    var scheduleItems = new _schedule.ScheduleItemCollection(
-      pageData.scheduleItemObjs);
-
-    var $schedulePlaceholder = $("#class-schedule-placeholder");
-    var scheduleView = _schedule.initScheduleView({
-      scheduleItems: scheduleItems,
-      failedScheduleItems: window.pageData.failedScheduleItemObjs,
-      width: $schedulePlaceholder.outerWidth(),
-      showSharing: window.pageData.ownProfile
-    });
-    $schedulePlaceholder.replaceWith(scheduleView.el);
-  }
+  });
 
   $('#referral-alert .referral-link-box').bind('click', function(evt) {
     $(this).select();
