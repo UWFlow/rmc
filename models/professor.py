@@ -162,14 +162,15 @@ class Professor(me.Document):
                     >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
                 ucs)
 
-        course_review_dicts = [uc.professor_review.to_dict(current_user,
+        prof_review_dicts = [uc.professor_review.to_dict(current_user,
             getattr(uc, 'user_id', None)) for uc in ucs]
 
-        # Freshness Filter. Don't show older reviews
-        course_review_dicts = util.freshness_filter(
-                course_review_dicts, lambda review: review['comment_date'])
+        # Try to not show older reviews, if we have enough results
+        date_getter = lambda review: review['comment_date']
+        prof_review_dicts = util.publicly_visible_ratings_and_reviews_filter(
+                prof_review_dicts, date_getter, util.MIN_NUM_REVIEWS)
 
-        return course_review_dicts
+        return prof_review_dicts
 
     def to_dict(self, course_id=None, current_user=None):
         dict_ = {

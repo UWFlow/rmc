@@ -29,10 +29,6 @@ def get_user_course_modified_date(uc):
 
     return date
 
-def get_freshest_user_courses(cls, num_days=None):
-    """Wrapper around util.freshness_filter for User/Menlo Courses"""
-    return util.freshness_filter(cls.objects, get_user_course_modified_date)
-
 
 class CritiqueCourse(me.Document):
     meta = {
@@ -76,9 +72,10 @@ class MenloCourse(me.Document):
     professor_review = me.EmbeddedDocumentField(review.ProfessorReview)
 
     @classmethod
-    def get_freshest(cls, num_days=None):
+    def get_publicly_visible(cls, min_num_ucs=0, num_days=None):
         """Filter out stale MenloCourses that we don't want to display."""
-        return get_freshest_user_courses(cls, num_days)
+        return util.publicly_visible_ratings_and_reviews_filter(
+            cls.objects, get_user_course_modified_date, min_num_ucs, num_days)
 
 
 class UserCourse(me.Document):
@@ -187,9 +184,10 @@ class UserCourse(me.Document):
         return points
 
     @classmethod
-    def get_freshest(cls, num_days=None):
+    def get_publicly_visible(cls, min_num_ucs=0, num_days=None):
         """Filter out stale UserCourses that we don't want to display."""
-        return get_freshest_user_courses(cls, num_days)
+        return util.publicly_visible_ratings_and_reviews_filter(
+            cls.objects, get_user_course_modified_date, min_num_ucs, num_days)
 
     def to_dict(self, fields=DEFAULT_TO_DICT_FIELDS):
         # NOTE: DO NOT MODIFY parameter `fields` in this fn, because it's

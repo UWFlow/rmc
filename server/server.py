@@ -261,9 +261,10 @@ def course_page(course_id):
             if len(uc_dict['course_review']['comment']) >=
                 m.review.CourseReview.MIN_REVIEW_LENGTH]
 
-    # Don't show older reviews
-    tip_dict_list = util.freshness_filter(
-            tip_dict_list, lambda review: review['comment_date'])
+    # Try to not show older reviews, if we have enough results
+    date_getter = lambda review: review['comment_date']
+    tip_dict_list = util.publicly_visible_ratings_and_reviews_filter(
+            tip_dict_list, date_getter, util.MIN_NUM_REVIEWS)
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,

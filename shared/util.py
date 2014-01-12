@@ -10,7 +10,9 @@ from bson import json_util, ObjectId
 import rmc.shared.constants as c
 
 
-NUM_DAYS_FRESH_DATA = 2 * 365
+NUM_DAYS_FRESH_DATA = 4 * 365
+MIN_NUM_REVIEWS = 5
+MIN_NUM_RATINGS = 20
 
 
 def json_loads(json_str):
@@ -148,3 +150,21 @@ def freshness_filter(objs, to_date_func, num_days=None):
 
     return filter(lambda obj: to_date_func(obj) and
                               to_date_func(obj) >= date_limit, objs)
+
+def publicly_visible_ratings_and_reviews_filter(
+        objs, to_date_func, min_num_objs, num_days=None):
+    """Return a fitlered list of objs that can be public facing.
+
+    Return the "freshest" objects, but try to return at least min_num_objs.
+    """
+    if len(objs) <= min_num_objs:
+        return objs
+
+    filtered_objs = freshness_filter(objs, to_date_func, num_days)
+
+    if len(filtered_objs) >= min_num_objs:
+        results = filtered_objs
+    else:
+        results = objs[0:min_num_objs]
+
+    return results
