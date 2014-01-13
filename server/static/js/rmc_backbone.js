@@ -253,6 +253,7 @@ function(Backbone, $, _) {
     var model = coll[normalizeId(id)];
     if (!model) {
       console.warn('Did not find ' + id + ' in ' + this._cacheName);
+      return undefined;
     }
     // model is already a Backbone Model
     if (model.cid) {
