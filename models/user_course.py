@@ -13,18 +13,19 @@ import term
 
 
 def get_user_course_modified_date(uc):
-    """Get the latest not None date"""
-    cr_date = uc.course_review.comment_date
-    pr_date = uc.professor_review.comment_date
+    """Return the latest modified date, or None for an empty UserCourse."""
+    dates = [
+        uc.course_review.comment_date,
+        uc.course_review.rating_change_date,
+        uc.professor_review.comment_date,
+        uc.professor_review.rating_change_date,
+    ]
 
-    if cr_date and pr_date:
-        date = max(cr_date, pr_date)
-    elif cr_date:
-        date = cr_date
-    elif pr_date:
-        date = pr_date
-    else:
-        date = None
+    valid_dates = sorted(filter(None, dates), reverse=True)
+
+    date = None
+    if len(valid_dates) > 0:
+        date = valid_dates[0]
 
     return date
 
