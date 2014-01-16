@@ -11,7 +11,7 @@ function($, _, _s, _user, _course, _user_course, _schedule, _facebook,
   _course.CourseCollection.addToCache(pageData.courseObjs);
 
   // Render the schedule
-  $schedulePlaceholder = $("#class-schedule-placeholder");
+  var $schedulePlaceholder = $("#class-schedule-placeholder");
   var scheduleItems = new _schedule.ScheduleItemCollection(
     pageData.scheduleItemObjs);
 

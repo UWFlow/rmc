@@ -73,7 +73,7 @@ function($, _, _s) {
         if (!matches || !matches.length) {
           return;
         }
-        courseId = matches[0].replace(/\s+/g, '').toLowerCase();
+        var courseId = matches[0].replace(/\s+/g, '').toLowerCase();
         courseIds.push(courseId);
       });
 

@@ -1,7 +1,7 @@
 define(
-['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course',
-'util', 'work_queue'],
-function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
+['rmc_backbone', 'ext/underscore', 'ext/jquery', 'course', 'jquery.slide',
+ 'user_course', 'util', 'work_queue'],
+function(RmcBackbone, _, $, _course, jqSlide, _user_course, _util) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {

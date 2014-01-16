@@ -16,13 +16,15 @@ window.countMe = (function() {
   var count = {};
   var logger = {};
   return function(msg) {
-    if (!logger[msg]) {
-      logger[msg] = _.debounce(function() {
-        console.log(msg, count[msg]);
-      }, 100);
-    }
-    count[msg] = (count[msg] || 0) + 1;
-    logger[msg]();
+    require(['ext/underscore'], function(_) {
+      if (!logger[msg]) {
+        logger[msg] = _.debounce(function() {
+          console.log(msg, count[msg]);
+        }, 100);
+      }
+      count[msg] = (count[msg] || 0) + 1;
+      logger[msg]();
+    });
   };
 })();
 

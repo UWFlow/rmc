@@ -1,6 +1,9 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course', 'ext/bootstrap', 'rmc_backbone', 'user', 'user_course', 'course', 'prof', 'sign_in', 'util'],
-function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, _sign_in, util) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'course',
+ 'ext/bootstrap', 'ext/backbone', 'rmc_backbone', 'user', 'user_course',
+ 'course', 'prof', 'sign_in', 'util'],
+function($, _, _s, course, __, Backbone, RmcBackbone,
+         user, _user_course, _course, _prof, _sign_in, util) {
 
   var FETCH_DELAY_MS = 300;
 

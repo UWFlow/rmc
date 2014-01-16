@@ -1,5 +1,5 @@
-define(['ext/underscore', 'ext/underscore.string'],
-function(_, _s) {
+define(['ext/underscore', 'ext/underscore.string', 'ext/jquery'],
+function(_, _s, $) {
 
   var NUM_RATINGS_SEGMENTS = 5;
 

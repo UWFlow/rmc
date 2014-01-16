@@ -1,3 +1,4 @@
+/* global mixpanel */
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'util', 'schedule'],

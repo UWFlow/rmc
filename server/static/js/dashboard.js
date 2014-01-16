@@ -1,6 +1,6 @@
 require(
-['ext/jquery', 'util'],
-function($, _util) {
+['ext/jquery', 'ext/underscore', 'ext/moment', 'util'],
+function($, _, moment, _util) {
   var POLLING_DELAY = 3 * 60 * 1000;
   // Stop refreshing after an hour, incase we leave tabs open :(
   var CUTOFF_COUNT = 60;

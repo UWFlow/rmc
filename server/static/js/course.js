@@ -64,12 +64,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
     },
 
     getOverallRating: function() {
-      if (this.has('overall')) {
-        return this.get('overall');
-      } else {
-        var isOverall = function(rating) { return rating.name === 'interest'; };
-        return _.find(attributes.ratings, isOverall);
-      }
+      return this.get('overall');
     },
 
     /**

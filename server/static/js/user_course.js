@@ -179,7 +179,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
                 this.get('professor').get('name'),
                 this.get('course').get('code'));
           }
-          toastr.success(msg);
+          _toastr.success(msg);
 
           this.onShareSuccess(reviewType);
 
@@ -610,7 +610,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       } else if (this.reviewType === 'PROFESSOR') {
         msg = _s.sprintf('Comments on %s for %s saved!', profName, courseCode);
       }
-      toastr.success(msg);
+      _toastr.success(msg);
     },
 
     saveError: function() {
@@ -624,7 +624,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     onPrivacySelect: function(evt) {
-      $target = $(evt.currentTarget);
+      var $target = $(evt.currentTarget);
       var setting = $target.data('value');
       this.setPrivacy(setting);
       this.review.set('privacy', setting);
