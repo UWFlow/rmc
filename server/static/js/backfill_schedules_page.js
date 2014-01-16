@@ -75,7 +75,7 @@ function($, _, _s, __, _util, _schedule) {
   });
 
   $('#backfill-userid-btn').click(function(evt) {
-    var userId = $('#backfill-userid-input').val()
+    var userId = $('#backfill-userid-input').val();
 
     if ($(this).hasClass('disabled') || userId === '') {
       return false;
@@ -96,8 +96,8 @@ function($, _, _s, __, _util, _schedule) {
     function processUser() {
       if (idx >= userIds.length) {
         $('button').removeClass('disabled');
-        $logger.append('<div class="text-info">Finished processing all users '
-            + 'with ' + failedCount + ' failures</div>');
+        $logger.append('<div class="text-info">Finished processing all users ' +
+          'with ' + failedCount + ' failures</div>');
         return;
       }
 

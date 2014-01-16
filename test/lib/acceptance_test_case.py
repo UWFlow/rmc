@@ -32,7 +32,7 @@ class AcceptanceTestCase(model_test_case.ModelTestCase):
 
         # For explanation of why os.setsid is necessary here, see
         # http://stackoverflow.com/q/4789837/303911
-        env={'PYTHONPATH':'..'}
+        env = {'PYTHONPATH': '..'}
         env.update(os.environ)
         AcceptanceTestCase.test_server_proc = subprocess.Popen(
             ['/usr/bin/env', 'python', test_server_path],
@@ -51,7 +51,9 @@ class AcceptanceTestCase(model_test_case.ModelTestCase):
             )
         ])
 
-        self.driver = webdriver.Remote(AcceptanceTestCase.chromedriver_service.service_url, {})
+        self.driver = webdriver.Remote(
+            AcceptanceTestCase.chromedriver_service.service_url,
+            {})
 
     def tearDown(self):
         super(AcceptanceTestCase, self).tearDown()

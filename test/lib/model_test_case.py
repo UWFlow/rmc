@@ -6,6 +6,7 @@ import rmc.shared.constants as c
 
 TEST_MONGO_DB_RMC = c.MONGO_DB_RMC + '_test'
 
+
 class ModelTestCase(unittest.TestCase):
     @classmethod
     def _connect_to_test_db(cls):

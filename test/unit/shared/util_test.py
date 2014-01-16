@@ -6,9 +6,10 @@ import freezegun
 
 import rmc.shared.util as util
 
+
 class UtilTest(unittest.TestCase):
     def test_json_loads(self):
-        self.assertEquals({'foo':1}, util.json_loads('{"foo":1}'))
+        self.assertEquals({'foo': 1}, util.json_loads('{"foo":1}'))
 
     def test_json_dumps_prevents_xss(self):
         self.assertEquals('["<\\/script>"]', util.json_dumps(["</script>"]))
@@ -97,5 +98,5 @@ class UtilTest(unittest.TestCase):
                 'bar': {'prop': 'val'},
                 'bar_list': [{'prop': 'val'}, {'prop': 'val'}]
             },
-            util.to_dict(Foo(), ['x', 'y' ,'bar', 'bar_list'])
+            util.to_dict(Foo(), ['x', 'y', 'bar', 'bar_list'])
         )

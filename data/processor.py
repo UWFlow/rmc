@@ -13,10 +13,8 @@ import time
 import re
 import sys
 
+
 def import_departments():
-
-    #m.Department.objects._collection.drop()
-
     def clean_uwdata_department(department):
         return {
             'id': department['Acronym'].lower(),
@@ -27,7 +25,6 @@ def import_departments():
 
     def clean_ucalendar_department(department):
         return department
-
 
     sources = [
         {
@@ -58,10 +55,8 @@ def import_departments():
 
     print 'imported departments:', m.Department.objects.count()
 
+
 def import_courses():
-
-    #m.Course.objects._collection.drop()
-
     def get_department_name_from_file_path(file_path):
         return re.findall(r'([^/]*).txt$', file_path)[0].lower()
 
@@ -131,7 +126,6 @@ def import_courses():
                     dep, number, course['title']),
         }
 
-
     sources = [
         {
             'name': 'ucalendar',
@@ -149,7 +143,6 @@ def import_courses():
             'dir': c.UWDATA_COURSES_DATA_DIR,
         },
     ]
-
 
     for idx, source in enumerate(sources):
         source['added'] = 0
@@ -176,7 +169,6 @@ def import_courses():
                     source['added'] += 1
                 else:
                     source['ignored'] += 1
-
 
     # Update courses with terms offered data
     with open(os.path.join(os.path.dirname(__file__),
@@ -238,10 +230,11 @@ def normalize_reqs_str(str_):
             # we should still normalize to make the output to look consistent,
             # even when the course does not exist
             new_split = last_dep_id.upper() + split
-        elif (# Check it's uppercase, so we don't have false positives like "Earth"
-              # that was part of "Earth Science student"
-                re.findall('^[A-Z]+', split)
-                and m.Department.objects.with_id(split.lower())):
+        elif (re.findall('^[A-Z]+', split) and
+              m.Department.objects.with_id(split.lower())):
+            # We check it's uppercase, so we don't have false positives like
+            # "Earth" that was part of "Earth Science student"
+
             last_dep_id = split.lower()
             # Do not include the department id since it will be included
             # with the course we find
@@ -266,8 +259,8 @@ def get_prof_name(prof_name_menlo):
         'last_name': matches[0],
     }
 
-def import_professors():
 
+def import_professors():
     # NOTE: not safe to drop table anymore since users can add their own
     # professors now
 
@@ -280,7 +273,6 @@ def import_professors():
             'first_name': clean_name(prof_name['first_name']),
             'last_name': clean_name(prof_name['last_name']),
         }
-
 
     file_names = glob.glob(os.path.join(os.path.dirname(__file__),
             c.REVIEWS_DATA_DIR, '*.txt'))
@@ -295,8 +287,8 @@ def import_professors():
 
     print 'imported professors:', m.Professor.objects.count()
 
-def import_reviews():
 
+def import_reviews():
     m.MenloCourse.objects._collection.drop()
 
     def clean_review(review):
@@ -305,7 +297,8 @@ def import_reviews():
             return {}
 
         course = course.lower()
-        matches = re.findall(r'([a-z]+).*?([0-9]{3}[a-z]?)(?:[^0-9]|$)', course)
+        matches = re.findall(r'([a-z]+).*?([0-9]{3}[a-z]?)(?:[^0-9]|$)',
+                             course)
         # TODO(mack): investigate if we are missing any good courses with
         # this regex
         if len(matches) != 1 or len(matches[0]) != 2:
@@ -332,7 +325,7 @@ def import_reviews():
                 menlo_rating = int(menlo_rating)
                 if menlo_rating <= 2:
                     return 0
-                elif menlo_rating >=4:
+                elif menlo_rating >= 4:
                     return 1
                 else:
                     return None
@@ -341,11 +334,14 @@ def import_reviews():
 
         # TODO(mack): include 'r_helpful'?
         if 'r_clarity' in review:
-            clean_review['professor_review'].clarity = normalize_rating(review['r_clarity'])
+            clean_review['professor_review'].clarity = \
+                normalize_rating(review['r_clarity'])
         if 'r_easy' in review:
-            clean_review['course_review'].easiness = normalize_rating(review['r_easy'])
+            clean_review['course_review'].easiness = \
+                normalize_rating(review['r_easy'])
         if 'r_interest' in review:
-            clean_review['course_review'].interest = normalize_rating(review['r_interest'])
+            clean_review['course_review'].interest = \
+                normalize_rating(review['r_interest'])
 
         clean_review['professor_review'].comment = review['comment']
         clean_review['professor_review'].comment_date = datetime.strptime(
@@ -379,7 +375,8 @@ def import_opendata_exam_schedules():
     today = datetime.today()
     file_name = os.path.join(
             os.path.dirname(__file__),
-            '%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR, today.strftime('%Y_%m_%d')))
+            '%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR,
+                                    today.strftime('%Y_%m_%d')))
 
     processed_exams = []
     errors = []
@@ -418,7 +415,8 @@ def import_opendata_exam_schedules():
                 start_date = rmc_util.eastern_to_utc(
                         datetime.fromtimestamp(
                             time.mktime(
-                                time.strptime(start_date_string, date_format))))
+                                time.strptime(start_date_string,
+                                              date_format))))
                 end_date = rmc_util.eastern_to_utc(
                         datetime.fromtimestamp(
                             time.mktime(
@@ -606,7 +604,7 @@ if __name__ == '__main__':
     elif args.mode == 'all':
         import_professors()
         import_departments()
-        import_courses() # must be after departments
-        import_reviews() # must be after courses
+        import_courses()  # must be after departments
+        import_reviews()  # must be after courses
     else:
         sys.exit('The mode %s is not supported' % args.mode)

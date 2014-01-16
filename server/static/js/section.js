@@ -43,7 +43,9 @@ function(RmcBackbone, $, _, _s) {
           return total >= cap ? 'full' : '';
         },
         sectionMissingValueText: function(section, courseId) {
-          if (_s.startsWith(courseId, 'wkrpt')) return 'N/A';
+          if (_s.startsWith(courseId, 'wkrpt')) {
+            return 'N/A';
+          }
           // ONLN ONLINE
           // ONLNG ONLINE
           // ONLNP ONLINE

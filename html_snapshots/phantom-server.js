@@ -1,5 +1,3 @@
-'use strict';
-
 var page = require('webpage').create();
 var system = require('system');
 

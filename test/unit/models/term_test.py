@@ -7,7 +7,6 @@ import rmc.test.lib as testlib
 
 
 class TermTest(testlib.ModelTestCase):
-
     def test_get_next_term_id(self):
         get_next = m.Term.get_next_term_id_from_term_id
         self.assertEquals('2009_05', get_next('2009_01'))
@@ -49,6 +48,7 @@ class TermTest(testlib.ModelTestCase):
 
     def test_get_date_from_term_id(self):
         get_date = m.Term.get_date_from_term_id
+
         def make_date(year, month):
             return datetime.datetime(year=year, month=month, day=1)
 
@@ -67,10 +67,10 @@ class TermTest(testlib.ModelTestCase):
 
         # There are 120 days between term 2014_01 and 2014_05
         assert_correct_fraction(0, (2014, 1, 1))
-        assert_correct_fraction(7.0/120, (2014, 1, 8))
-        assert_correct_fraction(30.0/120, (2014, 1, 31))
-        assert_correct_fraction(44.0/120, (2014, 2, 14))
-        assert_correct_fraction(72.0/120, (2014, 3, 14))
-        assert_correct_fraction(119.0/120, (2014, 4, 30))
+        assert_correct_fraction(7.0 / 120, (2014, 1, 8))
+        assert_correct_fraction(30.0 / 120, (2014, 1, 31))
+        assert_correct_fraction(44.0 / 120, (2014, 2, 14))
+        assert_correct_fraction(72.0 / 120, (2014, 3, 14))
+        assert_correct_fraction(119.0 / 120, (2014, 4, 30))
 
     # TODO(david): Moar tests

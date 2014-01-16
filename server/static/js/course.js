@@ -164,7 +164,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
 
         self.$('.add-course-btn').tooltip('destroy');
 
-        if (self.courseAdded) self.courseAdded();
+        if (self.courseAdded) {
+          self.courseAdded();
+        }
       };
 
       $.ajax(

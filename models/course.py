@@ -39,11 +39,15 @@ class Course(me.Document):
     # Description about the course
     description = me.StringField(required=True)
 
-    easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    interest = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
-    usefulness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    easiness = me.EmbeddedDocumentField(rating.AggregateRating,
+                                        default=rating.AggregateRating())
+    interest = me.EmbeddedDocumentField(rating.AggregateRating,
+                                        default=rating.AggregateRating())
+    usefulness = me.EmbeddedDocumentField(rating.AggregateRating,
+                                          default=rating.AggregateRating())
     # TODO(mack): deprecate overall rating
-    overall = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    overall = me.EmbeddedDocumentField(rating.AggregateRating,
+                                       default=rating.AggregateRating())
 
     professor_ids = me.ListField(me.StringField())
 
@@ -56,7 +60,8 @@ class Course(me.Document):
     # e.g. ['01', '05', '09']
     terms_offered = me.ListField(me.StringField())
 
-    # eg. ['earth', '121l', 'earth121l', 'Introductory', 'Earth' 'Sciences', 'Laboratory', '1']
+    # eg. ['earth', '121l', 'earth121l', 'Introductory',
+    #      'Earth' 'Sciences', 'Laboratory', '1']
     _keywords = me.ListField(me.StringField(), required=True)
 
     @property

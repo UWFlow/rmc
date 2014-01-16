@@ -10,7 +10,9 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
     },
 
     search: function(path) {
-      if (this.courseSearchView) return;
+      if (this.courseSearchView) {
+        return;
+      }
       var queryParams = util.getQueryParams(path);
 
       this.courseSearchView = new CourseSearchView({
@@ -43,7 +45,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
       var queryParams = {};
       var view = this.courseSearchView;
 
-      if (view.sortMode != window.pageData.sortModes[0]) {
+      if (view.sortMode !== window.pageData.sortModes[0]) {
         queryParams.sort_mode = view.sortMode.name;
       }
 
@@ -60,7 +62,7 @@ function($, _, _s, course, __, RmcBackbone, user, _user_course, _course, _prof, 
         queryPart = "?" + $.param(queryParams);
       }
 
-      if (Backbone.history.getFragment() != queryPart) {
+      if (Backbone.history.getFragment() !== queryPart) {
         this.navigate(queryPart);
       }
     }

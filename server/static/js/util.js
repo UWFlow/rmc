@@ -82,7 +82,9 @@ function(_, _s) {
    */
   var getHashCode = function(str) {
     var hash = 0;
-    if (!_.isString(str) || str.length === 0) return hash;
+    if (!_.isString(str) || str.length === 0) {
+      return hash;
+    }
     for (var i = str.length - 1; i >= 0; --i) {
       hash = ((hash << 5) - hash) + str.charCodeAt(i);
       hash &= hash;  // Convert to 32-bit integer
@@ -162,7 +164,9 @@ function(_, _s) {
    *     expire (a call to get will return null/undefined).
    */
   var storeLocalData = function(key, value, expiration) {
-    if (!window.localStorage) return;
+    if (!window.localStorage) {
+      return;
+    }
 
     var data = { val: value };
     if (expiration) {
@@ -176,7 +180,9 @@ function(_, _s) {
    * Retrieve data from localStorage associated with the current user.
    */
   var getLocalData = function(key) {
-    if (!window.localStorage) return;
+    if (!window.localStorage) {
+      return;
+    }
     var userId = getCurrentUserId() || '';
     var userKey = userId + '|' + key;
     var data = window.localStorage[userKey];
