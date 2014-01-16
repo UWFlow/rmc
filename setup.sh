@@ -51,6 +51,12 @@ install_pip_requirements() {
     ( pip install -r requirements.txt )
 }
 
+
+install_third_party() {
+    git submodule update --init --recursive
+    ( cd third_party/rmc_linter && npm install )
+}
+
 # Get password up front
 sudo echo
 
@@ -58,3 +64,4 @@ install_gems
 install_pip
 install_virtualenv
 install_pip_requirements
+install_third_party

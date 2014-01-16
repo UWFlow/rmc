@@ -2,7 +2,7 @@
 
 Plan your courses
 
-## Getting up and Running
+## Getting up and running
 
 To set up your dev environment, run `make install`.
 
