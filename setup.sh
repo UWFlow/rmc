@@ -55,6 +55,7 @@ install_pip_requirements() {
 install_third_party() {
     git submodule update --init --recursive
     ( cd third_party/rmc_linter && npm install )
+    ln -s ../../commit-msg-hook .git/hooks/commit-msg
 }
 
 # Get password up front
