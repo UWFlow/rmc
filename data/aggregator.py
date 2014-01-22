@@ -351,7 +351,6 @@ if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC)
 
     parser = argparse.ArgumentParser()
-    'all',
     mode_mapping = {
         'redis_course_professor_rating': update_redis_course_professor_rating,
         'redis_friend_mutual_courses': update_redis_friend_mutual_courses,
