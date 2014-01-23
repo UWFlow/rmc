@@ -12,6 +12,24 @@ import rmc.shared.util as util
 import term
 
 
+def get_user_course_modified_date(uc):
+    """Return the latest modified date, or None for an empty UserCourse."""
+    dates = [
+        uc.course_review.comment_date,
+        uc.course_review.rating_change_date,
+        uc.professor_review.comment_date,
+        uc.professor_review.rating_change_date,
+    ]
+
+    valid_dates = sorted(filter(None, dates), reverse=True)
+
+    date = None
+    if len(valid_dates) > 0:
+        date = valid_dates[0]
+
+    return date
+
+
 class CritiqueCourse(me.Document):
     meta = {
         'indexes': [
@@ -52,6 +70,12 @@ class MenloCourse(me.Document):
 
     course_review = me.EmbeddedDocumentField(review.CourseReview)
     professor_review = me.EmbeddedDocumentField(review.ProfessorReview)
+
+    @classmethod
+    def get_publicly_visible(cls, min_num_ucs=0, num_days=None):
+        """Filter out stale MenloCourses that we don't want to display."""
+        return util.publicly_visible_ratings_and_reviews_filter(
+            cls.objects, get_user_course_modified_date, min_num_ucs, num_days)
 
 
 class UserCourse(me.Document):
@@ -158,6 +182,12 @@ class UserCourse(me.Document):
             points += _points.PointSource.SHARE_PROFESSOR_REVIEW
 
         return points
+
+    @classmethod
+    def get_publicly_visible(cls, min_num_ucs=0, num_days=None):
+        """Filter out stale UserCourses that we don't want to display."""
+        return util.publicly_visible_ratings_and_reviews_filter(
+            cls.objects, get_user_course_modified_date, min_num_ucs, num_days)
 
     def to_dict(self, fields=DEFAULT_TO_DICT_FIELDS):
         # NOTE: DO NOT MODIFY parameter `fields` in this fn, because it's

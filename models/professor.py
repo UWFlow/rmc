@@ -151,6 +151,26 @@ class Professor(me.Document):
         return [p.to_dict(course_id=course.id, current_user=current_user)
                 for p in professors]
 
+    def get_reviews_for_course(self, course_id, current_user=None):
+        ucs = user_course.get_reviews_for_course_prof(course_id, self.id)
+
+        # Quality filter.
+        # TODO(david): Eventually do this in mongo query or enforce quality
+        #     metrics on front-end
+        ucs = filter(
+                lambda uc: len(uc.professor_review.comment)
+                    >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
+                ucs)
+
+        prof_review_dicts = [uc.professor_review.to_dict(current_user,
+            getattr(uc, 'user_id', None)) for uc in ucs]
+
+        # Try to not show older reviews, if we have enough results
+        date_getter = lambda review: review['comment_date']
+        prof_review_dicts = util.publicly_visible_ratings_and_reviews_filter(
+                prof_review_dicts, date_getter, util.MIN_NUM_REVIEWS)
+
+        return prof_review_dicts
 
     def to_dict(self, course_id=None, current_user=None):
         dict_ = {
@@ -162,23 +182,11 @@ class Professor(me.Document):
         }
 
         if course_id:
-
-            ucs = user_course.get_reviews_for_course_prof(
-                    course_id, self.id)
-
-            # TODO(david): Eventually do this in mongo query or enforce quality
-            #     metrics on front-end
-            ucs = filter(
-                    lambda uc: len(uc.professor_review.comment)
-                        >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
-                    ucs)
-
-            course_review_dicts = [uc.professor_review.to_dict(current_user,
-                getattr(uc, 'user_id', None)) for uc in ucs]
-
+            ratings = self.get_ratings_for_course(course_id)
+            reviews = self.get_reviews_for_course(course_id, current_user)
             dict_.update({
-                'course_ratings': self.get_ratings_for_course(course_id),
-                'course_reviews': course_review_dicts,
+                'course_ratings': ratings,
+                'course_reviews': reviews,
             })
 
         return dict_
