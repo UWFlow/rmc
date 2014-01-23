@@ -154,7 +154,8 @@ def to_dict(doc, fields):
         else:
             return val.to_dict() if hasattr(val, 'to_dict') else val
 
-    return { f: map_field(f) for f in fields }
+    return {f: map_field(f) for f in fields}
+
 
 def freshness_filter(objs, to_date_func, num_days=None):
     """Return results from within the past num_days days."""
@@ -165,6 +166,7 @@ def freshness_filter(objs, to_date_func, num_days=None):
 
     return filter(lambda obj: to_date_func(obj) and
                               to_date_func(obj) >= date_limit, objs)
+
 
 def publicly_visible_ratings_and_reviews_filter(
         objs, to_date_func, min_num_objs, num_days=None):
