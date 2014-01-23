@@ -156,7 +156,9 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     },
 
     onClick: function(evt) {
-      if (this.readOnly) return;
+      if (this.readOnly) {
+        return;
+      }
       var $btn = $(evt.currentTarget);
       var rating = this.model.get('rating');
       var chosen = $btn.hasClass('yes-btn') ? 1 : 0;

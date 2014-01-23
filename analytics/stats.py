@@ -25,6 +25,7 @@ def truncate_datetime(dt):
             seconds=dt.second,
             microseconds=dt.microsecond)
 
+
 def generic_stats(show_all=False):
     num_ucs = m.UserCourse.objects().count()
 
@@ -42,12 +43,12 @@ def generic_stats(show_all=False):
     # TODO(david): Make rating_fields a class method
     num_course_ratings = 0
     for rating in m.CourseReview().rating_fields():
-        query = { 'course_review__%s__ne' % rating: None }
+        query = {'course_review__%s__ne' % rating: None}
         num_course_ratings += m.UserCourse.objects(**query).count()
 
     num_professor_ratings = 0
     for rating in m.ProfessorReview().rating_fields():
-        query = { 'professor_review__%s__ne' % rating: None }
+        query = {'professor_review__%s__ne' % rating: None}
         num_professor_ratings += m.UserCourse.objects(**query).count()
 
     yesterday = datetime.now() - timedelta(hours=24)
@@ -73,6 +74,7 @@ def generic_stats(show_all=False):
         })
 
     return result
+
 
 def print_generic_stats():
     data = generic_stats(show_all=True)
@@ -105,17 +107,20 @@ Users signed up since a day ago (%s)
         data['num_signups_today'],
     )
 
+
 # Inclusive
 def users_joined_after(date=None):
     if date is None:
         date = datetime.now() - timedelta(hours=24)
     return m.User.objects(join_date__gte=date).count()
 
+
 # Exclusive
 def users_joined_before(date=None):
     if date is None:
         date = datetime.now() - timedelta(hours=24)
     return m.User.objects(join_date__lt=date).count()
+
 
 def latest_reviews(n=5):
     tups = []
@@ -151,6 +156,7 @@ def latest_reviews(n=5):
 
     return result
 
+
 def reviews_given(user):
     ucs = m.UserCourse.objects(user_id=user.id)
     review_count = 0
@@ -161,11 +167,12 @@ def reviews_given(user):
             review_count += 1
     return review_count
 
+
 def ratings_given(user):
     ucs = m.UserCourse.objects(user_id=user.id)
     rating_count = 0
     for uc in ucs:
-	cr = uc.course_review
+        cr = uc.course_review
         if cr.interest:
             rating_count += 1
         if cr.easiness:
@@ -179,6 +186,7 @@ def ratings_given(user):
             rating_count += 1
     return rating_count
 
+
 def print_users_rr_counts():
     users = m.User.objects()
     user_review_count = 0
@@ -191,7 +199,6 @@ def print_users_rr_counts():
         total_reviews += num_review
         total_ratings += num_rating
         if num_review > 0:
-            #print user.first_name + " " + user.last_name + " " + str(num_review)
             user_review_count += 1
         if num_rating > 0:
             user_rating_count += 1
@@ -208,12 +215,10 @@ def print_users_rr_counts():
 def print_all_user_names():
     users = m.User.objects()
     for user in users:
-        #output.encode('UTF-8')
-        #print user.fbid
-        #output = unicode(user.first_name + " " + user.last_name).decode('UTF-8')
         # TODO(Sandy): Add a get full name method on user
         output = user.first_name + " " + user.last_name
         print output.encode('UTF-8')
+
 
 def print_courses_in_exam_but_not_course():
     ecs = [e.course_id for e in m.Exam.objects()]
@@ -221,16 +226,19 @@ def print_courses_in_exam_but_not_course():
         if len(m.Course.objects(id=c)) == 0:
             print c
 
+
 def print_exam_collection():
     ecs = m.Exam.objects()
     for e in sorted(ecs, key=lambda exam: exam.course_id):
         e_dict = e.to_dict()
         print e_dict
 
+
 def print_program_names(users):
     for user in users:
         if user.program_name:
             print user.program_name
+
 
 def print_ratings_count_histogram():
     '''
@@ -276,6 +284,7 @@ def print_ratings_count_histogram():
     print "(Sanity) Sum of indices for Prof Reviews:"
     print sanity_check_count
 
+
 def print_ratings_histogram():
     '''
     Prints a historgram of each rating.
@@ -317,8 +326,10 @@ def print_ratings_histogram():
     print "(Sanity) Rating count"
     print total_ratings_count
 
+
 def has_user_taken_cid(user, course_id):
     return course_id in user.course_ids
+
 
 def users_who_took(course_id):
     users = m.User.objects()
@@ -327,6 +338,7 @@ def users_who_took(course_id):
         if has_user_taken_cid(user, course_id):
             users_taken.append(user)
     return users_taken
+
 
 def print_users_gender_count():
     users = m.User.objects()
@@ -342,6 +354,7 @@ def print_users_gender_count():
         else:
             gender_counts['none'] += 1
     print gender_counts
+
 
 def reviews_after_date(day=truncate_datetime(datetime.now()),
         print_result=False):
@@ -359,6 +372,7 @@ def reviews_after_date(day=truncate_datetime(datetime.now()),
                 print pr.comment
     return reviews
 
+
 def review_length_hist(reviews, trunc=0, print_result=False):
     hist = defaultdict(int)
     for review in reviews:
@@ -369,6 +383,7 @@ def review_length_hist(reviews, trunc=0, print_result=False):
             length = (key + 1) * trunc if trunc else key
             print "%d: %d" % (key, val)
     return hist
+
 
 def latest_review_date(user):
     latest_date = None
@@ -382,6 +397,7 @@ def latest_review_date(user):
         if prd and latest_date < prd:
             latest_date = prd
     return latest_date
+
 
 def unsafe_clear_schedule(user, term_id=_util.get_current_term_id()):
     for usi in m.UserScheduleItem.objects(user_id=user.id, term_id=term_id):
@@ -397,20 +413,25 @@ def unsafe_clear_schedule(user, term_id=_util.get_current_term_id()):
     user.schedules_imported = 0
     user.save()
 
+
 # Shorthands for common query operations
 def ucs_for_cid(course_id):
     return m.UserCourse.objects(course_id=course_id)
 
+
 def cid(course_id):
     return m.Course.objects.with_id(course_id)
 
+
 def uid(user_id):
     return m.User.objects.with_id(user_id)
+
 
 # CSV dumps
 # TODO(Sandy): Use dialect functionality of csv?
 def ga_date(date_val):
     return date_val.strftime('%Y-%m-%d')
+
 
 def csv_user_growth(file_name='stats.tmp'):
     signups = defaultdict(int)
@@ -439,6 +460,7 @@ def csv_user_growth(file_name='stats.tmp'):
         csv_file.seek(0)
         return csv_file.read()
 
+
 def csv_review_growth(file_name='stats.tmp'):
     reviews = defaultdict(int)
     for uc in m.UserCourse.objects():
@@ -462,6 +484,7 @@ def csv_review_growth(file_name='stats.tmp'):
 
         csv_file.seek(0)
         return csv_file.read()
+
 
 def csv_user_points(file_name='user_points.tmp'):
     with open(file_name, 'w+') as csv_file:
@@ -492,9 +515,11 @@ def csv_user_points(file_name='user_points.tmp'):
         csv_file.seek(0)
         return csv_file.read()
 
+
 def generate_csvs():
     csv_user_growth('user_growth.csv')
     csv_review_growth('review_growth.csv')
+
 
 # TODO(Sandy): Move to test/debugging file
 def print_user_schedule_debug():
@@ -512,6 +537,7 @@ def print_user_schedule_debug():
         safe_name = user.name.encode('utf-8')
         print "%s, %s, %d USIs, %d courses" % (
                 str(user.id), safe_name, len(items), len(courses))
+
 
 # TODO(Sandy): More help info
 def stats_help():

@@ -28,6 +28,7 @@ COURSE_RATING_FIELDS = [
     'overall',
 ]
 
+
 def increment_ratings(courses, get_rating_fn, get_fields_fn, ucs):
     for uc in ucs:
         ratings = get_rating_fn(courses, uc)
@@ -82,7 +83,8 @@ def update_mongo_course_rating():
         # TODO(mack): add usefulness metric
 
         def calculate_overall_rating(e, i):
-            return (e.count * e.rating + i.count * i.rating) / max(1, (e.count + i.count))
+            return ((e.count * e.rating + i.count * i.rating) /
+                     max(1, (e.count + i.count)))
 
         # heuristic for getting the overall rating:
         # 1. the count will max of the count for each attribute
@@ -106,9 +108,11 @@ def update_mongo_course_rating():
     increment_ratings(*(args + [get_fields_fn, menlo_ucs]))
     increment_ratings(*(args + [get_fields_fn, flow_ucs]))
     # TODO(mack): add back course critiques
-    #increment_aggregate_ratings(*(args + [get_aggregate_fields_fn, m.CritiqueCourse.objects]))
+    # increment_aggregate_ratings(*(args + [get_aggregate_fields_fn,
+    #                                       m.CritiqueCourse.objects]))
 
     count = [0]
+
     def set_course_ratings_in_mongo(courses):
         for course_id, ratings in courses.items():
             course = m.Course.objects.with_id(course_id)
@@ -133,8 +137,11 @@ def update_mongo_course_professors():
     count = 0
     for course in m.Course.objects.only('professor_ids'):
         def get_professor_ids(course, coll):
+            course_prof_ids_only = (coll.objects(course_id=course.id)
+                                        .only('professor_id'))
             return set(
-                [x.professor_id for x in coll.objects(course_id=course.id).only('professor_id') if x.professor_id]
+                [x.professor_id for x in course_prof_ids_only
+                 if x.professor_id]
             )
         professor_ids = get_professor_ids(course, m.UserCourse).union(
                 get_professor_ids(course, m.MenloCourse))
@@ -186,9 +193,11 @@ def update_redis_course_professor_rating():
 
     increment_ratings(*(args + [get_fields_fn, menlo_ucs]))
     increment_ratings(*(args + [get_fields_fn, flow_ucs]))
-    increment_aggregate_ratings(*(args + [get_aggregate_fields_fn, m.CritiqueCourse.objects]))
+    increment_aggregate_ratings(*(args + [get_aggregate_fields_fn,
+                                          m.CritiqueCourse.objects]))
 
     count = [0]
+
     def set_course_professor_ratings_in_redis(courses):
         for course_id, professors in courses.items():
             for professor_id, ratings in professors.items():
@@ -205,6 +214,7 @@ def update_redis_course_professor_rating():
     set_course_professor_ratings_in_redis(courses)
     print 'set %d course professor rating keys in redis' % count[0]
 
+
 def update_all_fb_friend_list():
     for user in m.User.objects():
         # TODO(Sandy): Batch requests when we need to
@@ -220,10 +230,11 @@ def update_all_fb_friend_list():
                 print "get_friend_list failed for %s with: %s" % (user.id,
                 e.message)
 
-# TODO(mack): test it when we get data to test with
-# TODO(mack): currently sort of duplicate logic in User.cache_mutual_course_ids()
-def update_redis_friend_mutual_courses():
 
+# TODO(mack): test it when we get data to test with
+# TODO(mack): currently sort of duplicate logic in
+# User.cache_mutual_course_ids()
+def update_redis_friend_mutual_courses():
     # TODO(Sandy): Use friend real time updates after it. There's a fb updates
     # branch for this, pending on:
     # https://developers.facebook.com/bugs/374296595988186?browse=search_50990ddb8a19d9316431973
@@ -234,7 +245,8 @@ def update_redis_friend_mutual_courses():
     courses_by_user = {}
     for user in m.User.objects.only('friend_ids', 'course_history'):
         friend_ids = [str(friend_id) for friend_id in user.friend_ids]
-        ucs = m.UserCourse.objects(id__in=user.course_history).only('course_id')
+        ucs = (m.UserCourse.objects(id__in=user.course_history)
+                                  .only('course_id'))
         course_ids = [uc.course_id for uc in ucs]
         courses_by_user[str(user.id)] = [friend_ids, set(course_ids)]
 
@@ -333,7 +345,6 @@ if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC)
 
     parser = argparse.ArgumentParser()
-    'all',
     mode_mapping = {
         'redis_course_professor_rating': update_redis_course_professor_rating,
         'redis_friend_mutual_courses': update_redis_friend_mutual_courses,

@@ -7,11 +7,11 @@ install_gems() {
     if ! which bundle >/dev/null 2>&1; then
         # Ruby stuffs: Install bundler so we can grab other gems
         echo "Installing bundler"
-        gem install bundler
+        sudo gem install bundler
     fi
 
     echo "Installing gems"
-    ( cd server && bundle install )
+    ( cd server && sudo bundle install )
 }
 
 install_pip() {
@@ -23,7 +23,7 @@ install_pip() {
 install_virtualenv() {
     if ! which virtualenv >/dev/null 2>&1; then
         echo "Installing virtualenv"
-        pip install virtualenv
+        sudo pip install virtualenv
     fi
 
     VENV_DIR="$HOME/.virtualenv"
@@ -51,6 +51,13 @@ install_pip_requirements() {
     ( pip install -r requirements.txt )
 }
 
+
+install_third_party() {
+    git submodule update --init --recursive
+    ( cd third_party/rmc_linter && npm install )
+    ln -sf ../../commit-msg-hook .git/hooks/commit-msg
+}
+
 # Get password up front
 sudo echo
 
@@ -58,3 +65,4 @@ install_gems
 install_pip
 install_virtualenv
 install_pip_requirements
+install_third_party

@@ -1,13 +1,16 @@
 import rmc.emails.sender as sender
 from datetime import datetime
 
+
 def description():
     return 'Email that is sent out 2 days after the user has signed up,' \
             ' prompting them to import schedule, transcript, review courses,' \
             ' etc...'
 
+
 def title_renderer(user):
     return 'Welcome to Flow!!'
+
 
 def html_body_renderer(user):
 
@@ -17,8 +20,7 @@ def html_body_renderer(user):
     <p>We noticed that you recently signed up for <a href="http://uwflow.com">UW Flow</a>!</p>"""
 
     if not user.has_schedule:
-        welcome_email_body += \
-        """<p>Did you know that you can <a href="http://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This lets you easily view it and share it with friends.</p>
+        welcome_email_body += """<p>Did you know that you can <a href="http://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This lets you easily view it and share it with friends.</p>
 
         <img src="http://uwflow.com/static/img/class-schedule-screenshot-small.png">"""
 

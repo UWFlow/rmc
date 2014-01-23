@@ -1,12 +1,17 @@
-from course import Course
-from department import Department
-from exam import Exam
-from points import PointSource
-from user_schedule_item import UserScheduleItem, FailedScheduleItem
-from professor import Professor
-from rating import AggregateRating
-from review import CourseReview, ProfessorReview
-from term import Term
-from user import User
-from user_course import UserCourse, MenloCourse, CritiqueCourse
-from section import Section, SectionMeeting
+from course import Course  # @UnusedImport
+from department import Department  # @UnusedImport
+from exam import Exam  # @UnusedImport
+from points import PointSource  # @UnusedImport
+from user_schedule_item import UserScheduleItem  # @UnusedImport
+from user_schedule_item import FailedScheduleItem  # @UnusedImport
+from professor import Professor  # @UnusedImport
+from rating import AggregateRating  # @UnusedImport
+from review import ProfessorReview  # @UnusedImport
+from review import CourseReview  # @UnusedImport
+from term import Term  # @UnusedImport
+from user import User  # @UnusedImport
+from user_course import MenloCourse  # @UnusedImport
+from user_course import UserCourse  # @UnusedImport
+from user_course import CritiqueCourse  # @UnusedImport
+from section import SectionMeeting  # @UnusedImport
+from section import Section  # @UnusedImport

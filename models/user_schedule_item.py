@@ -2,6 +2,7 @@ import mongoengine as me
 
 from rmc.shared import util
 
+
 class UserScheduleItem(me.Document):
     meta = {
         'indexes': [
@@ -15,7 +16,9 @@ class UserScheduleItem(me.Document):
     }
 
     # The user with this schedule item in their schedule
-    user_id = me.ObjectIdField(unique_with=['course_id', 'term_id', 'section_type', 'section_num', 'start_date'])
+    user_id = me.ObjectIdField(unique_with=['course_id', 'term_id',
+                                            'section_type', 'section_num',
+                                            'start_date'])
 
     # eg. 3359
     class_num = me.StringField()

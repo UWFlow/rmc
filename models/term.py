@@ -11,6 +11,7 @@ import mongoengine as me
 
 import rmc.shared.util as util
 
+
 # TODO(david): Make naming consistent... prefix all methods with a verb (eg.
 #     get).
 # TODO(david): Lots of easy unit tests for methods here.
@@ -46,7 +47,7 @@ class Term(me.Document):
         month = Term.get_month_from_id(tid)
         if (month == Term.INVALID_TERM_MONTH):
             return ''
-        return Term.SEASONS[(month-1) / 4]
+        return Term.SEASONS[(month - 1) / 4]
 
     @property
     def season(self):
@@ -80,7 +81,9 @@ class Term(me.Document):
                 month = idx * 4 + 1
 
         if month == Term.INVALID_TERM_MONTH:
-            logging.warn("Term: Invalid seasons '%s'. Using month %d in term id" % (season, Term.INVALID_TERM_MONTH))
+            logging.warn(
+                    "Term: Invalid seasons '%s'. Using month %d in term id" %
+                    (season, Term.INVALID_TERM_MONTH))
 
         return Term.get_id_from_year_month(year, month)
 

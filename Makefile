@@ -27,6 +27,9 @@ html_snapshots:
 		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:5000; \
 	fi
 
+lint:
+	third_party/rmc_linter/runlint.py | tee /tmp/linterrors.txt
+
 sitemap:
 	rm -f server/static/sitemap.txt
 	PYTHONPATH=.. python html_snapshots/sitemap.py http://uwflow.com > server/static/sitemap.txt
