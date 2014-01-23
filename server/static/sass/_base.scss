@@ -90,6 +90,11 @@
   top: 50%;
 }
 
+.btn {
+  // Suppress the blue outline on clicked buttons seen in Chrome.
+  outline: none;
+}
+
 
 /****************************
  * Base page styles
