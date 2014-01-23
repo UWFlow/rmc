@@ -29,8 +29,11 @@ install_mongodb() {
 
 install_phantomjs() {
     if brew ls phantomjs >/dev/null 2>&1; then
-        # If phantomjs is already installed via brew, update it
-        brew upgrade phantomjs 2>&1
+        # If phantomjs is already installed via brew, check if it is outdated
+        if brew outdated | grep -q -e 'phantomjs'; then
+            # If phantomjs is outdated, update it
+            brew upgrade phantomjs 2>&1
+        fi
     else
         # Otherwise, install via brew
         brew install phantomjs 2>&1
