@@ -262,27 +262,32 @@ $toolbarBg: #FAFAFA;
   border-top: 1px solid $wellBorderColor;
   @include border-radius(0 0 4px 4px);
 
+  .form-inline {
+    display: table;
+
+    > .cell {
+      display: table-cell;
+      white-space: nowrap;
+      padding-left: 10px;
+
+      &:first-child {
+        padding-left: 0;
+      }
+    }
+  }
+
   .share-label {
-    padding-left: 6px;
-    padding-right: 6px;
+    vertical-align: middle;
+    margin: auto;
+  }
+
+  .link-box-container {
+    width: 100%;
   }
 
   .link-box {
-    // TODO(david): Stretch box to take up more horizontal space if available
-    width: 270px;
-  }
-
-  .print-schedule-btn {
-    float: right;
-    margin-left: 10px;
-  }
-
-  .reimport-btn {
-    float: right;
-    margin-left: 10px;
-  }
-
-  .export-btn-group {
-    float: right;
+    width: 100%;
+    @include box-sizing(border-box);
+    height: 31px;
   }
 }
