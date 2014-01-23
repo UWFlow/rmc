@@ -92,25 +92,23 @@
 {# TODO(Sandy): consider generalizing this if we need it later #}
 {% call macros.us_template('schedule-share-tpl') %}
 <div class="form-inline">
-  <button class="facebook-btn btn btn-info">
-    <i class="icon-share"></i>&nbsp;
-    Share on Facebook
-  </button>
-  <label class="share-label">or share this link:</label>
-  <input type="url" class="link-box input-small" value="<%- url %>">
-  <a href="<%- printUrl %>" target="_blank" class="print-schedule-btn btn">
-    <i class="icon-print"></i>&nbsp;
-    Print
-  </a>
-  <button class="reimport-btn btn">
-    <i class="icon-refresh"></i>&nbsp;
-    Reimport
-  </button>
-  <div class="export-btn-group btn-group">
+  <span class="cell">
+    <button class="facebook-btn btn btn-info">
+      <i class="icon-share"></i>&nbsp;
+      Share on Facebook
+    </button>
+  </span>
+  <span class="cell">
+    <label class="share-label">or share this link:</label>
+  </span>
+  <span class="cell link-box-container">
+    <input type="url" class="link-box input-small" value="<%- url %>">
+  </span>
+  <div class="cell export-btn-group btn-group">
     <a class="btn dropdown-toggle" data-toggle="dropdown" href="#">
       <i class="icon-external-link"></i>&nbsp;
       Export
-      <span class="caret"></span>
+      &nbsp;<span class="caret"></span>
     </a>
     <ul class="dropdown-menu">
       <li class="google-calendar-export-btn">
@@ -126,6 +124,18 @@
       </li>
     </ul>
   </div>
+  <span class="cell">
+    <button class="reimport-btn btn">
+      <i class="icon-refresh"></i>&nbsp;
+      Reimport
+    </button>
+  </span>
+  <span class="cell">
+    <a href="<%- printUrl %>" target="_blank" class="print-schedule-btn btn">
+      <i class="icon-print"></i>&nbsp;
+      Print
+    </a>
+  </span>
 </div>
 {% endcall %}
 
