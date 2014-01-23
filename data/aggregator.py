@@ -188,19 +188,13 @@ def update_redis_course_professor_rating():
 
     courses = {}
     args = [courses, get_rating_fn]
-<<<<<<< HEAD
     menlo_ucs = m.MenloCourse.get_publicly_visible(rmc_util.MIN_NUM_RATINGS)
     flow_ucs = m.UserCourse.get_publicly_visible(rmc_util.MIN_NUM_RATINGS)
 
     increment_ratings(*(args + [get_fields_fn, menlo_ucs]))
     increment_ratings(*(args + [get_fields_fn, flow_ucs]))
-    increment_aggregate_ratings(*(args + [get_aggregate_fields_fn, m.CritiqueCourse.objects]))
-=======
-    increment_ratings(*(args + [get_fields_fn, m.MenloCourse.objects]))
-    increment_ratings(*(args + [get_fields_fn, m.UserCourse.objects]))
     increment_aggregate_ratings(*(args + [get_aggregate_fields_fn,
                                           m.CritiqueCourse.objects]))
->>>>>>> Either fix or blacklist all lint errors
 
     count = [0]
 
