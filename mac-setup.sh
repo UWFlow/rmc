@@ -41,7 +41,7 @@ install_phantomjs() {
 }
 
 install_redis() {
-    if ! brew ls mongo >/dev/null 2>&1; then
+    if ! brew ls redis >/dev/null 2>&1; then
         echo "Installing redis"
         brew install redis 2>&1
     fi
