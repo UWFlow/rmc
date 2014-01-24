@@ -146,7 +146,7 @@ function(Backbone, $, _) {
       //}
 
       for (attr in attrs) {
-        if (!attrs.hasOwnProperty(attr)) {
+        if (attrs.hasOwnProperty(attr)) {
           val = attrs[attr];
 
           if (val) {
