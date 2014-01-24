@@ -38,7 +38,6 @@ def get_to_send_users(pre_send=None):
 
     return to_send_users
 
-
 # TODO(mack): Attach email id to links in email so we can track click through
 # rate from emails
 def batch_send(to_send_users, title_renderer, body_renderer=None,
@@ -75,7 +74,7 @@ def batch_send(to_send_users, title_renderer, body_renderer=None,
 
             num_sent += 1
             print 'Sent email to: %s' % user.email
-        except Exception:
+        except Exception as e:
             traceback.print_exc(file=sys.stdout)
             print 'Could not send email to user: %s' % user.id
 

@@ -39,12 +39,9 @@ class Professor(me.Document):
     # eg. Becker
     last_name = me.StringField(required=True)
 
-    clarity = me.EmbeddedDocumentField(_rating.AggregateRating,
-                                       default=_rating.AggregateRating())
-    easiness = me.EmbeddedDocumentField(_rating.AggregateRating,
-                                        default=_rating.AggregateRating())
-    passion = me.EmbeddedDocumentField(_rating.AggregateRating,
-                                       default=_rating.AggregateRating())
+    clarity = me.EmbeddedDocumentField(_rating.AggregateRating, default=_rating.AggregateRating())
+    easiness = me.EmbeddedDocumentField(_rating.AggregateRating, default=_rating.AggregateRating())
+    passion = me.EmbeddedDocumentField(_rating.AggregateRating, default=_rating.AggregateRating())
 
     @classmethod
     def get_id_from_name(cls, first_name, last_name=None):
@@ -67,8 +64,7 @@ class Professor(me.Document):
 
     def save(self, *args, **kwargs):
         if not self.id:
-            self.id = Professor.get_id_from_name(self.first_name,
-                                                 self.last_name)
+            self.id = Professor.get_id_from_name(self.first_name, self.last_name)
 
         super(Professor, self).save(*args, **kwargs)
 
@@ -90,8 +86,7 @@ class Professor(me.Document):
     def get_professor_course_redis_key(self, course_id, rating_name):
         return ':'.join([course_id, self.id, rating_name])
 
-    def set_course_rating_in_redis(self, course_id, rating_name,
-                                   aggregate_rating):
+    def set_course_rating_in_redis(self, course_id, rating_name, aggregate_rating):
         redis_key = self.get_professor_course_redis_key(
                     course_id, rating_name)
         r.set(redis_key, aggregate_rating.to_json())
@@ -124,6 +119,7 @@ class Professor(me.Document):
 
             self.set_course_rating_in_redis(course_id, rating_name, agg_rating)
 
+
     # TODO(david): This should go on ProfCourse
     def get_ratings_for_course(self, course_id):
         rating_dict = {}
@@ -136,6 +132,7 @@ class Professor(me.Document):
                 rating_dict.values()).to_dict()
 
         return util.dict_to_list(rating_dict)
+
 
     @classmethod
     def get_reduced_professors_for_courses(cls, courses):

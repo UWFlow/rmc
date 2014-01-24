@@ -43,8 +43,8 @@ class Client(object):
             a subclass of requests.exceptions.RequestException indicating the
             exception that occurred.
         """
-        headers = {'Content-type': 'application/json', 'Accept': '*/*'}
-        properties.update({'$api_key': self.api_key, '$type': event})
+        headers = { 'Content-type' : 'application/json', 'Accept' : '*/*' }
+        properties.update({ '$api_key': self.api_key, '$type': event })
 
         try:
             response = requests.post(self.url, data=json.dumps(properties),

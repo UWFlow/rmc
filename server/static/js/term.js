@@ -1,7 +1,7 @@
 define(
-['rmc_backbone', 'ext/underscore', 'ext/jquery', 'course', 'jquery.slide',
- 'user_course', 'util', 'work_queue'],
-function(RmcBackbone, _, $, _course, jqSlide, _user_course, _util) {
+['rmc_backbone', 'ext/underscore', 'course', 'jquery.slide', 'user_course',
+'util', 'work_queue'],
+function(RmcBackbone, _, _course, jqSlide, _user_course, _util) {
 
   var TermModel = RmcBackbone.Model.extend({
     defaults: {
@@ -185,9 +185,7 @@ function(RmcBackbone, _, $, _course, jqSlide, _user_course, _util) {
       var targetCourse = _.find(remainingCourses, function(remCourse) {
         return !remCourse.get('user_course').isMostlyFilledIn();
       });
-      if (!targetCourse) {
-        return;
-      }
+      if (!targetCourse) return;
 
       // Expand the course card
       var userCourseId = targetCourse.get('user_course').get('id');

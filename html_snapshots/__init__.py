@@ -1,1 +1,1 @@
-from utils import HTML_DIR  # @UnusedImport
+from utils import HTML_DIR

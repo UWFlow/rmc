@@ -65,7 +65,7 @@ class HipChatHandler(logging.Handler):
             # use print, not logging, as that would introduce a circular
             # reference
             print 'Message sent to room {0}: {1}\nResponse: {2}'.format(
-                self.room, record.getMessage(), r.text)
+                self.room, record.getMessage(),r.text)
         except:
             print sys.exc_info()[1]
             self.handleError(record)

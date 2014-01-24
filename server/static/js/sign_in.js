@@ -55,9 +55,7 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
 
     render: function() {
       // Don't render if the user has previously hidden the banner.
-      if (_util.getLocalData(this.hideBannerKey)) {
-        return this;
-      }
+      if (_util.getLocalData(this.hideBannerKey)) return this;
 
       this.$el.html(this.template({ message: this.message }));
       this.$('.fb-login-placeholder').replaceWith(

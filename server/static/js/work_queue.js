@@ -44,9 +44,7 @@ define(['ext/underscore'], function(_) {
   };
 
   var start = function() {
-    if (running) {
-      return;
-    }
+    if (running) return;
     running = true;
     runNextJob();
   };
@@ -60,5 +58,5 @@ define(['ext/underscore'], function(_) {
 
       setTimeout(start, INTERJOB_DELAY_MS);
     }
-  };
+  }
 });

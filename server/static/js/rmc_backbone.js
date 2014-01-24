@@ -135,63 +135,57 @@ function(Backbone, $, _) {
       }
 
       // Extract attributes and options.
-      if (!attrs) {
-        return this;
-      }
-      if (attrs instanceof Model) {
-        attrs = attrs.attributes;
-      }
+      if (!attrs) return this;
+      if (attrs instanceof Model) attrs = attrs.attributes;
       //if (this.idAttribute in attrs && this.constructor._cacheName) {
       //  collectionCaches[this.constructor._cacheName].add(this);
       //}
 
       for (attr in attrs) {
-        if (!attrs.hasOwnProperty(attr)) {
-          val = attrs[attr];
+        val = attrs[attr];
 
-          if (val) {
-            if (_.isArray(val) && val.length && val[0].$oid) {
-              // TODO(mack): This won't work if the field is supposed to objectid
-              // field but starts out empty as an empty list. We might need a
-              // more explicit way to state the type of each field.
+        if (val) {
+          if (_.isArray(val) && val.length && val[0].$oid) {
+            // TODO(mack): This won't work if the field is supposed to objectid
+            // field but starts out empty as an empty list. We might need a
+            // more explicit way to state the type of each field.
 
-              // Just gonna assume for now that if first item in array is an
-              // ObjectId, entire array contains ObjectIds
-              attrs[attr] = _.map(val, function(v) {
-                return v.$oid;
-              });
-              this._oidFields[attr] = true;
-            } else if (val.$oid) {
-              attrs[attr] = val.$oid;
-              this._oidFields[attr] = true;
-            }
-
-            if (_.isArray(val) && val.length && val[0].$date) {
-              attrs[attr] = _.map(val, function(v) {
-                return new Date(v.$oid);
-              });
-              this._dateFields[attr] = true;
-            } else if (val.$date) {
-              attrs[attr] = new Date(val.$date);
-              this._dateFields[attr] = true;
-            }
+            // Just gonna assume for now that if first item in array is an
+            // ObjectId, entire array contains ObjectIds
+            attrs[attr] = _.map(val, function(v) {
+              return v.$oid;
+            });
+            this._oidFields[attr] = true;
+          } else if (val.$oid) {
+            attrs[attr] = val.$oid;
+            this._oidFields[attr] = true;
           }
 
-          // During set, check if we are setting over an _id that is associated
-          // with a reference field. If so, invalidate the key for the associated
-          // reference field.
-          // TODO(mack): optimize this
-          var referenceFields = this.getReferenceFields();
-          var cacheKey;
-          _.each(referenceFields, function(arr, key) {
-            if (attr === arr[0]) {
-              cacheKey = this.getCachedReferenceKey(key);
-              return false;
-            }
-          }, this);
-          if (cacheKey && cacheKey in this._cachedReferences) {
-            delete this._cachedReferences[cacheKey];
+          if (_.isArray(val) && val.length && val[0].$date) {
+            attrs[attr] = _.map(val, function(v) {
+              return new Date(v.$oid);
+            });
+            this._dateFields[attr] = true;
+          } else if (val.$date) {
+            attrs[attr] = new Date(val.$date);
+            this._dateFields[attr] = true;
           }
+        }
+
+        // During set, check if we are setting over an _id that is associated
+        // with a reference field. If so, invalidate the key for the associated
+        // reference field.
+        // TODO(mack): optimize this
+        var referenceFields = this.getReferenceFields();
+        var cacheKey;
+        _.each(referenceFields, function(arr, key) {
+          if (attr === arr[0]) {
+            cacheKey = this.getCachedReferenceKey(key);
+            return false;
+          }
+        }, this);
+        if (cacheKey && cacheKey in this._cachedReferences) {
+          delete this._cachedReferences[cacheKey];
         }
       }
 

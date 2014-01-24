@@ -1,11 +1,9 @@
 """Finds the root of the project-tree where the tests are currently being run.
 
-Basically, it finds the directory above this file that has requirements.txt in
-it.
+Basically, it finds the directory above this file that has requirements.txt in it.
 """
 
 import os
-
 
 def project_rootdir():
     rootdir = os.path.dirname(__file__)

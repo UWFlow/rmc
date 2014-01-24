@@ -7,23 +7,22 @@ import requests
 import time
 import urlparse
 
+import rmc.shared.constants as c
 import rmc.shared.util as util
 
 # A long token normally lasts for 60 days
 FB_FORCE_TOKEN_EXPIRATION_DAYS = 57
 
-USED_AUTH_CODE_MSG = 'This authorization code has been used.' 
-
-
 def code_for_token(code, config, cmd_line_debug=False):
-    """Returns a dictionary containing the user's Facebook access token and
-    seconds until it expires from now
+    """
+    Returns a dictionary containing the user's Facebook access token and seconds
+    until it expires from now
 
     See https://developers.facebook.com/blog/post/2011/05/13/how-to--handle-expired-access-tokens/
 
     Right now, the resulting token is a short-lived token (~2 hours). But it's
-    possible that this is wrong and that it should be a long-term token
-    instead.  See https://developers.facebook.com/bugs/341793929223330/
+    possible that this is wrong and that it should be a long-term token instead.
+    See https://developers.facebook.com/bugs/341793929223330/
 
     Args:
         code: The code we get from their fb_signed_request
@@ -45,7 +44,7 @@ def code_for_token(code, config, cmd_line_debug=False):
 
     if resp.status_code != 200:
         err = util.json_loads(resp.text)
-        if (err.get('error').get('message') == USED_AUTH_CODE_MSG and
+        if (err.get('error').get('message') == 'This authorization code has been used.' and
             err.get('error').get('code') == 100):
             logging.info('code_for_token failed (%d) with text:\n%s' % (
                     resp.status_code, resp.text))
@@ -61,7 +60,6 @@ def code_for_token(code, config, cmd_line_debug=False):
         return resp
 
     return result
-
 
 # TODO(Sandy): Find out how often a new token is issued
 def token_for_long_token(short_token, config, cmd_line_debug=False):
@@ -104,13 +102,10 @@ def token_for_long_token(short_token, config, cmd_line_debug=False):
 
     return result
 
-
 def base64_url_decode(inp):
     padding_factor = (4 - len(inp) % 4) % 4
-    inp += '=' * padding_factor
-    return base64.b64decode(unicode(inp)
-                            .translate(dict(zip(map(ord, u'-_'), u'+/'))))
-
+    inp += '='*padding_factor
+    return base64.b64decode(unicode(inp).translate(dict(zip(map(ord, u'-_'), u'+/'))))
 
 def parse_signed_request(signed_request, secret):
     """
@@ -128,14 +123,12 @@ def parse_signed_request(signed_request, secret):
         logging.error('Unknown algorithm during signed request decode')
         return None
 
-    expected_sig = (hmac.new(secret, msg=payload, digestmod=hashlib.sha256)
-                        .digest())
+    expected_sig = hmac.new(secret, msg=payload, digestmod=hashlib.sha256).digest()
 
     if sig != expected_sig:
         return None
 
     return data
-
 
 # TODO(Sandy): Remove config parameter when Flask re-factoring is done
 def get_fb_data(signed_request, config):
@@ -196,9 +189,8 @@ def get_fb_data(signed_request, config):
         'access_token': fb_access_token,
         'expires_on': fb_access_token_expiry_date,
         'fbid': fbsr_data['user_id'],
-        'is_invalid': is_invalid,
+        'is_invalid' : is_invalid,
     }
-
 
 class FacebookOAuthException(Exception):
     '''
@@ -206,7 +198,6 @@ class FacebookOAuthException(Exception):
         https://developers.facebook.com/blog/post/2011/05/13/how-to--handle-expired-access-tokens/
     '''
     pass
-
 
 def get_friend_list(token):
     '''

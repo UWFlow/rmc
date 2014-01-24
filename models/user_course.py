@@ -47,18 +47,12 @@ class CritiqueCourse(me.Document):
     professor_id = me.StringField(required=True)
     term_id = me.StringField(required=True)
 
-    interest = me.EmbeddedDocumentField(rating.AggregateRating,
-                                        default=rating.AggregateRating())
-    easiness = me.EmbeddedDocumentField(rating.AggregateRating,
-                                        default=rating.AggregateRating())
-    overall_course = me.EmbeddedDocumentField(rating.AggregateRating,
-                                              default=rating.AggregateRating())
-    clarity = me.EmbeddedDocumentField(rating.AggregateRating,
-                                       default=rating.AggregateRating())
-    passion = me.EmbeddedDocumentField(rating.AggregateRating,
-                                       default=rating.AggregateRating())
-    overall_prof = me.EmbeddedDocumentField(rating.AggregateRating,
-                                            default=rating.AggregateRating())
+    interest = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    easiness = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    overall_course = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    clarity = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    passion = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
+    overall_prof = me.EmbeddedDocumentField(rating.AggregateRating, default=rating.AggregateRating())
 
 
 class MenloCourse(me.Document):
@@ -121,11 +115,8 @@ class UserCourse(me.Document):
 
     professor_id = me.StringField()
 
-    course_review = me.EmbeddedDocumentField(review.CourseReview,
-                                             default=review.CourseReview())
-    professor_review = me.EmbeddedDocumentField(
-                            review.ProfessorReview,
-                            default=review.ProfessorReview())
+    course_review = me.EmbeddedDocumentField(review.CourseReview, default=review.CourseReview())
+    professor_review = me.EmbeddedDocumentField(review.ProfessorReview, default=review.ProfessorReview())
 
     # Whether we've prompted the user to review this course before
     review_prompted = me.BooleanField(default=False)
@@ -207,7 +198,7 @@ class UserCourse(me.Document):
             val = getattr(self, prop)
             return val.to_dict() if hasattr(val, 'to_dict') else val
 
-        return {f: map_field(f) for f in fields}
+        return { f: map_field(f) for f in fields }
 
     def save(self, *args, **kwargs):
         # TODO(Sandy): Use transactions
@@ -238,8 +229,7 @@ class UserCourse(me.Document):
     def select_for_review(self, current_user):
         """Mark this course as having been selected for the given user."""
         # Don't mark at all if admin user spoofing
-        if current_user.id != self.user_id:
-            return
+        if current_user.id != self.user_id: return
 
         current_user.last_prompted_for_review = datetime.datetime.now()
         # TODO(david): Is there a way to auto-save changed models at end of
@@ -270,21 +260,18 @@ class UserCourse(me.Document):
 
         def can_select(user_course):
             # Filter out courses user can't review yet (eg. shortlist, future)
-            if not user_course.reviewable:
-                return False
+            if not user_course.reviewable: return False
 
             # Filter out courses that we've prompted before
             # TODO(david): Just weigh such courses less instead of fitler out
-            if user_course.review_prompted:
-                return False
+            if user_course.review_prompted: return False
 
             # Filter out courses that user has written a course review
-            if user_course.course_review.comment_date:
-                return False
+            if user_course.course_review.comment_date: return False
 
-            # Filter out current term courses if it's still early on in the
-            # term At ~120 days/term, 60% = 72 days = ~10.3 weeks. Allow
-            # students to review in the last few weeks
+            # Filter out current term courses if it's still early on in the term
+            # At ~120 days/term, 60% = 72 days = ~10.3 weeks. Allow students to
+            # review in the last few weeks
             if (user_course.term_id == term.Term.get_current_term_id() and
                     finished_fraction <= 0.6):
                 return False

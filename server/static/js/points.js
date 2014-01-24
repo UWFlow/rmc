@@ -41,9 +41,7 @@ function($, _, _s, bootstrap, RmcBackbone, _util) {
 
     onPointsChange: function(model, numPoints, changes) {
       var diff = numPoints - model.previous('num_points');
-      if (diff === 0) {
-        return;
-      }
+      if (diff === 0) return;
 
       // Mario points animation of points earned
       var sign = (diff > 0 ? "+" : "-");

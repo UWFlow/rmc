@@ -5,7 +5,6 @@ import json
 
 import rmc.shared.util as util
 
-
 class AggregateRating(me.EmbeddedDocument):
     rating = me.FloatField(min_value=0.0, max_value=1.0, default=0.0)
     count = me.IntField(min_value=0, default=0)
@@ -28,19 +27,19 @@ class AggregateRating(me.EmbeddedDocument):
         self.sorting_score_negative = util.get_sorting_score(
             1 - self.rating, self.count)
 
+
     def add_rating(self, rating):
         self.rating = ((self.rating * self.count) + rating) / (self.count + 1)
         self.count += 1
 
         # TODO(Sandy): Temporary debugging
-        self.debug_logging("add_rating(%s)" % (rating))
+        self.debug_logging("add_rating(%s)" % (rating));
 
         self.update_sorting_score()
 
     def remove_rating(self, rating):
         if self.count == 0:
-            logging.warn(
-                    "AggregateRating: called remove_rating with count = 0")
+            logging.warn("AggregateRating: called remove_rating with count = 0")
             return
 
         if self.count == 1:
@@ -60,12 +59,11 @@ class AggregateRating(me.EmbeddedDocument):
         if ar.count == 0:
             return
         total = ar.rating * ar.count
-        self.rating = (((self.rating * self.count) + total) /
-                        (self.count + ar.count))
+        self.rating = ((self.rating * self.count) + total) / (self.count + ar.count)
         self.count += ar.count
 
         # TODO(Sandy): Temporary debugging
-        self.debug_logging("add_aggregate_rating(%s)" % (ar))
+        self.debug_logging("add_aggregate_rating(%s)" % (ar));
 
         self.update_sorting_score()
 

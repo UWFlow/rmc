@@ -21,13 +21,12 @@ from rmc.shared import util
 
 PROMPT_TO_REVIEW_DELAY_DAYS = 60
 
-
 # TODO(jlfwong): Use a random generator that's cryptographically secure instead
 def generate_secret_id(size=9, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for x in range(size))
 
-
 class User(me.Document):
+
     class JoinSource(object):
         FACEBOOK = 1
 
@@ -69,23 +68,20 @@ class User(me.Document):
     fbid = me.StringField(required=True, unique=True)
 
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
-    fb_access_token = me.StringField(max_length=255,
-                                     required=True,
-                                     unique=True)
+    fb_access_token = me.StringField(max_length=255, required=True, unique=True)
     fb_access_token_expiry_date = me.DateTimeField(required=True)
     # The token expired due to de-auth, logging out, etc (ie. not time expired)
     fb_access_token_invalid = me.BooleanField(default=False)
 
     email = me.EmailField()
 
-    # eg. list of user objectids, could be friends from sources besides
-    # facebook
+    # eg. list of user objectids, could be friends from sources besides facebook
     friend_ids = me.ListField(me.ObjectIdField())
     # eg. list of fbids of friends from facebook, not necessarily all of whom
     # use the site
     friend_fbids = me.ListField(me.StringField())
 
-    birth_date = me.DateTimeField()
+    birth_date = me.DateTimeField( )
 
     last_visited = me.DateTimeField()
     # TODO(mack): consider using SequenceField()
@@ -160,7 +156,7 @@ class User(me.Document):
 
     @property
     def name(self):
-        return '%s %s' % (self.first_name, self.last_name)
+        return '%s %s' % (self.first_name , self.last_name)
 
     def save(self, *args, **kwargs):
 
@@ -176,8 +172,7 @@ class User(me.Document):
             # TODO(mack): this isn't safe against race condition of both
             # friends signing up at same time
             #print 'friend_fbids', self.friend_fbids
-            friends = (User.objects(fbid__in=self.friend_fbids)
-                        .only('id', 'friend_ids'))
+            friends = User.objects(fbid__in=self.friend_fbids).only('id', 'friend_ids')
             self.friend_ids = [f.id for f in friends]
 
         super(User, self).save(*args, **kwargs)
@@ -217,8 +212,7 @@ class User(me.Document):
 
     @property
     def has_course_history(self):
-        # TODO(Sandy): Using this to backfill transcripts imported,
-        # remove later
+        # TODO(Sandy): Using this to backfill transcripts imported, remove later
         if len(self.course_history) == 0:
             return False
 
@@ -272,7 +266,7 @@ class User(me.Document):
         else:
             first_id = user_id_two
             second_id = user_id_one
-        return 'mutual_courses:%s:%s' % (first_id, second_id)
+        return 'mutual_courses:%s:%s' %  (first_id, second_id)
 
     def mutual_courses_redis_key(self, other_user_id):
         return User.cls_mutual_courses_redis_key(self.id, other_user_id)
@@ -281,8 +275,7 @@ class User(me.Document):
         # fetch mutual friends from redis
         pipe = redis.pipeline()
 
-        # Show mutual courses between the viewing user and the friends of the
-        # profile user
+        # Show mutual courses between the viewing user and the friends of the profile user
         for friend_id in self.friend_ids:
             pipe.smembers(self.mutual_courses_redis_key(friend_id))
         mutual_course_ids_per_user = pipe.execute()
@@ -335,6 +328,7 @@ class User(me.Document):
 
         return None
 
+
     def to_dict(self, include_course_ids=False):
         program_name = self.short_program_name
         if include_course_ids:
@@ -378,6 +372,7 @@ class User(me.Document):
 
         return super(User, self).delete(*args, **kwargs)
 
+
     def to_review_author_dict(self, current_user, reveal_identity):
         is_current_user = current_user and current_user.id == self.id
 
@@ -404,8 +399,7 @@ class User(me.Document):
 
     def update_fb_friends(self, fbids):
         self.friend_fbids = fbids
-        fb_friends = (User.objects(fbid__in=self.friend_fbids)
-                        .only('id', 'friend_ids'))
+        fb_friends = User.objects(fbid__in=self.friend_fbids).only('id', 'friend_ids')
         # We only have friends from Facebook right now, so just set it
         self.friend_ids = [f.id for f in fb_friends]
 

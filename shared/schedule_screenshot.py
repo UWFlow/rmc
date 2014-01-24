@@ -8,7 +8,6 @@ import rmc.shared.constants as c
 import rmc.models as m
 import rmc.shared.tasks as tasks
 
-
 def _get_latest_user_schedule_item(user):
     return (m.UserScheduleItem
                 .objects(user_id=user.id)
@@ -90,7 +89,6 @@ def _get_best_screenshot_week(user, latest_user_schedule_item):
     else:
         logging.error("Can't find a best screenshot date for %s", user.id)
         return term_start_mon
-
 
 def update_screenshot_async(user):
     """Asynchronously take a screenshot of the schedule of the given user.

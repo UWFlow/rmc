@@ -17,7 +17,6 @@ import rmc.shared.schedule_screenshot as schedule_screenshot
 RESHOW_ONBOARDING_DELAY_DAYS = 45
 RESHOW_SCHEDULE_DELAY_DAYS = 5
 
-
 def render_schedule_page(profile_user):
     profile_dict = profile_user.to_dict()
     profile_dict.update({
@@ -59,24 +58,20 @@ def render_schedule_page(profile_user):
         show_printable=flask.request.values.get('print'),
     )
 
-
 def render_schedule_ical_feed(profile_user_secret_id):
-    profile_user = (m.User.objects(secret_id=profile_user_secret_id.upper())
-                        .first())
+    profile_user = m.User.objects(secret_id=profile_user_secret_id.upper()).first()
 
     if profile_user is None:
         logging.error("No profile user with secret id '%s'" %
             profile_user_secret_id)
         return ''
 
-    ucs = (profile_user.get_user_courses()
+    current_term_course_ids = [uc.course_id for uc in (profile_user.get_user_courses()
             .filter(term_id=util.get_current_term_id())
-            .only('course_id'))
-    current_term_course_ids = [uc.course_id for uc in ucs]
+            .only('course_id'))]
 
     exams = m.Exam.objects(course_id__in=current_term_course_ids)
-    schedule_item_dict_list = profile_user.get_schedule_item_dicts(
-                                    exam_objs=exams)
+    schedule_item_dict_list = profile_user.get_schedule_item_dicts(exam_objs=exams)
 
     course_ids = set([sid['course_id'] for sid in schedule_item_dict_list])
 
@@ -198,7 +193,7 @@ def render_profile_page(profile_user_id, current_user=None):
                 # the user was on the onboarding page is more than 5 days ago,
                 # show the onboarding page again
                 if time_delta.days > RESHOW_ONBOARDING_DELAY_DAYS:
-                    show_onboarding = True
+                    show_onboarding =  True
 
         # See https://uwflow.uservoice.com/admin/tickets/62
         if profile_user_id == '50b8ce2cd89d62310645ca78':
@@ -218,8 +213,7 @@ def render_profile_page(profile_user_id, current_user=None):
         # Show the import schedule view if it's been long enough
         if not current_user.has_schedule:
             if current_user.last_show_import_schedule:
-                time_delta = (datetime.now() -
-                              current_user.last_show_import_schedule)
+                time_delta = datetime.now() - current_user.last_show_import_schedule
                 # User didn't import schedule yet, reshow every few days
                 if time_delta.days > RESHOW_SCHEDULE_DELAY_DAYS:
                     show_import_schedule = True
@@ -362,6 +356,7 @@ def render_profile_page(profile_user_id, current_user=None):
 
         user_dicts[friend.id] = user_dict
 
+
     # Convert profile user to dict
     # TODO(mack): This must be after friend user dicts since it can override
     # data in it. Remove this restriction
@@ -382,12 +377,10 @@ def render_profile_page(profile_user_id, current_user=None):
         transcript_by_term = {}
 
         for uc_dict in profile_uc_dict_list:
-            (transcript_by_term.setdefault(uc_dict['term_id'], [])
-                               .append(uc_dict))
+            transcript_by_term.setdefault(uc_dict['term_id'], []).append(uc_dict)
 
         ordered_transcript = []
-        for term_id, uc_dicts in sorted(transcript_by_term.items(),
-                                        reverse=True):
+        for term_id, uc_dicts in sorted(transcript_by_term.items(), reverse=True):
             curr_term = m.Term(id=term_id)
             term_dict = {
                 'id': curr_term.id,
@@ -411,7 +404,7 @@ def render_profile_page(profile_user_id, current_user=None):
     current_course_ids = [c['course_id'] for c in current_term_courses]
 
     exam_objs = m.Exam.objects(course_id__in=current_course_ids)
-    exam_dicts = [e.to_dict() for e in exam_objs]
+    exam_dicts =  [e.to_dict() for e in exam_objs]
     exam_updated_date = None
     if exam_objs:
         exam_updated_date = exam_objs[0].id.generation_time

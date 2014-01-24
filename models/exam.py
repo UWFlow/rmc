@@ -3,7 +3,6 @@ import mongoengine as me
 from rmc.shared import util
 import user_schedule_item as _user_schedule_item
 
-
 class Exam(me.Document):
     meta = {
         'indexes': [

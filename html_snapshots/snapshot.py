@@ -5,8 +5,6 @@ import sys
 import mongoengine as me
 
 import rmc.html_snapshots.utils as utils
-import rmc.shared.constants as c
-
 
 def crawl_page(url):
     args = [
@@ -17,7 +15,6 @@ def crawl_page(url):
     ]
     rendered_html = subprocess.check_output(args)
     return rendered_html
-
 
 def generate_snapshots():
     if len(sys.argv) < 2:
@@ -52,7 +49,6 @@ def generate_snapshots():
 
         print 'Writing: %s' % url
         utils.write(file_path, rendered_html)
-
 
 if __name__ == "__main__":
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)

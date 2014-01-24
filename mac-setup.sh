@@ -29,11 +29,8 @@ install_mongodb() {
 
 install_phantomjs() {
     if brew ls phantomjs >/dev/null 2>&1; then
-        # If phantomjs is already installed via brew, check if it is outdated
-        if brew outdated | grep -q -e 'phantomjs'; then
-            # If phantomjs is outdated, update it
-            brew upgrade phantomjs 2>&1
-        fi
+        # If phantomjs is already installed via brew, update it
+        brew upgrade phantomjs 2>&1
     else
         # Otherwise, install via brew
         brew install phantomjs 2>&1
@@ -41,7 +38,7 @@ install_phantomjs() {
 }
 
 install_redis() {
-    if ! brew ls redis >/dev/null 2>&1; then
+    if ! brew ls mongo >/dev/null 2>&1; then
         echo "Installing redis"
         brew install redis 2>&1
     fi

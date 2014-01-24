@@ -1,8 +1,0 @@
-server/static/js/ext
-server/r.js
-
-# First part code that should conform but doesn't
-emails/active/welcome_email.py
-emails/deprecated
-emails/sender.py
-server/build.js

@@ -1,15 +1,17 @@
 from time import mktime
 from datetime import datetime
+from datetime import timedelta
 
 import argparse
 import mongoengine
+import os
 import re
+import sys
 import time
 
 import rmc.models as m
 import rmc.shared.constants as c
 import rmc.shared.util as rmc_util
-
 
 # TODO(Sandy): move into better place
 def safe_list_get(l, idx, default=''):
@@ -19,7 +21,6 @@ def safe_list_get(l, idx, default=''):
         print "failed to get %s-th term of '%s'" % (idx, ' '.join(l))
         return default
 
-
 days_of_week = [
     'Monday',
     'Tuesday',
@@ -28,8 +29,7 @@ days_of_week = [
     'Friday',
     'Saturday',
     'Sunday'
-]
-
+];
 
 # TODO(sandy): Figure out how to match multple words in regex. |'s didn't work
 def is_day_of_week(token):
@@ -39,12 +39,12 @@ def is_day_of_week(token):
 
     return False
 
-
 def parse_exam_schedule(exam_file_name):
 
     m.Exam.objects._collection.drop()
 
     exam_file = open(exam_file_name)
+
 
     for line in exam_file:
         index = 0
@@ -118,9 +118,9 @@ def parse_exam_schedule(exam_file_name):
         exam_slot.location = location
 
         if (start_date and end_date):
-            exam_slot.info_known = True
+            exam_slot.info_known = True;
         else:
-            exam_slot.info_known = False
+            exam_slot.info_known = False;
 
         exam_slot.save()
 

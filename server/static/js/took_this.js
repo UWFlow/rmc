@@ -29,7 +29,7 @@ function(RmcBackbone, $, _, _s, bootstrap, util) {
     }
   });
 
-  var TookThisSidebarView = RmcBackbone.View.extend({
+  TookThisSidebarView = RmcBackbone.View.extend({
     className: 'took-this-sidebar',
 
     initialize: function(attributes) {

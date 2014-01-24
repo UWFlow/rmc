@@ -64,9 +64,7 @@ function(RmcBackbone, _, _s, util, _course, _points) {
     },
 
     gainPoints: function(numPoints) {
-      if (numPoints <= 0) {
-        return;
-      }
+      if (numPoints <= 0) return;
       this.set('num_points', this.get('num_points') + numPoints);
     }
   });

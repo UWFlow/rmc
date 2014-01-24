@@ -7,10 +7,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 
 import rmc.test.lib as testlib
 
-
 def window_opened(driver):
     return len(driver.window_handles) == 2
-
 
 class OnboardingTest(testlib.AcceptanceTestCase):
     def _css(self, selector):
@@ -21,7 +19,7 @@ class OnboardingTest(testlib.AcceptanceTestCase):
 
     def _wait_for_element(self, selector, delay=10):
         wait = WebDriverWait(self.driver, delay)
-        wait.until(lambda d: d.find_element_by_css_selector(selector))
+        wait.until(lambda driver: driver.find_element_by_css_selector(selector))
 
     def _assert_has_link_to(self, href):
         links = self.driver.find_elements_by_css_selector('[href="%s"]' % href)
@@ -62,7 +60,7 @@ class OnboardingTest(testlib.AcceptanceTestCase):
 
         wait = WebDriverWait(self.driver, 10)
         wait.until(EC.title_contains('Welcome'))
-        wait.until(lambda d: d.find_element_by_class_name("transcript-text"))
+        wait.until(lambda driver: driver.find_element_by_class_name("transcript-text"))
 
     def _paste_transcript(self):
         selector = ".transcript-text"
@@ -127,5 +125,4 @@ class OnboardingTest(testlib.AcceptanceTestCase):
 
         usi_count_pre = m.UserScheduleItem.objects.count()
         self._paste_schedule()
-        self.assertEqual(m.UserScheduleItem.objects.count(),
-                         usi_count_pre + 162)
+        self.assertEqual(m.UserScheduleItem.objects.count(), usi_count_pre + 162)

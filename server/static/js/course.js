@@ -64,7 +64,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
     },
 
     getOverallRating: function() {
-      return this.get('overall');
+      if (this.has('overall')) {
+        return this.get('overall');
+      } else {
+        var isOverall = function(rating) { return rating.name === 'interest'; };
+        return _.find(attributes.ratings, isOverall);
+      }
     },
 
     /**
@@ -159,9 +164,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
 
         self.$('.add-course-btn').tooltip('destroy');
 
-        if (self.courseAdded) {
-          self.courseAdded();
-        }
+        if (self.courseAdded) self.courseAdded();
       };
 
       $.ajax(

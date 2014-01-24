@@ -32,8 +32,6 @@ app = flask.Flask(__name__)
 SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
 
 flask_render_template = flask.render_template
-
-
 def render_template(*args, **kwargs):
     redis = view_helpers.get_redis_instance()
 
@@ -67,11 +65,9 @@ sift = rmc_sift.RmcSift(api_key=c.SIFT_API_KEY)
 def tojson(obj):
     return util.json_dumps(obj)
 
-
 @app.template_filter()
 def version(file_name):
     return '%s?v=%s' % (file_name, VERSION)
-
 
 @app.before_request
 def before_request():
@@ -102,7 +98,6 @@ def after_this_request(f):
     flask.g.after_request_callbacks.append(f)
     return f
 
-
 @app.after_request
 def call_after_request_callbacks(response):
     for callback in getattr(flask.g, 'after_request_callbacks', ()):
@@ -118,10 +113,8 @@ def call_after_request_callbacks(response):
 @app.route('/')
 def index():
     # Redirect logged-in users to profile
-    # TODO(Sandy): If we request extra permissions from FB, we'll need to show
-    # them the landing page to let them to Connect again and accept the new
-    # permissions. Alternatively, we could use other means of requesting for
-    # new perms
+    # TODO(Sandy): If we request extra permissions from FB, we'll need to show them the landing page to let them to
+    # Connect again and accept the new permissions. Alternatively, we could use other means of requesting for new perms
     request = flask.request
     logout = bool(request.values.get('logout'))
     referrer_id = request.values.get('meow') or request.values.get('referrer')
@@ -170,11 +163,9 @@ def demo_profile():
 def profile_page(profile_user_id):
     return profile.render_profile_page(profile_user_id)
 
-
 @app.route('/schedule/ical/<string:profile_user_secret_id>.ics')
 def schedule_page_ical(profile_user_secret_id):
     return profile.render_schedule_ical_feed(profile_user_secret_id)
-
 
 # TODO(david): Figure out why there's a user who's hitting
 # /schedule/RIGFOY5JA.ics on regular intervals... I'm guessing user might've
@@ -185,14 +176,11 @@ def schedule_page_ics_redirect(profile_user_secret_id):
     return flask.redirect('/schedule/ical/%s.ics' % profile_user_secret_id,
             301)
 
-
 @app.route('/schedule/<string:profile_user_secret_id>')
 def schedule_page(profile_user_secret_id):
-    profile_user = (m.User.objects(secret_id=profile_user_secret_id.upper())
-                        .first())
+    profile_user = m.User.objects(secret_id=profile_user_secret_id.upper()).first()
 
     return profile.render_schedule_page(profile_user)
-
 
 @app.route('/course')
 def course():
@@ -349,7 +337,7 @@ def login():
 
     fb_data = facebook.get_fb_data(fbsr, app.config)
     fbid = fb_data['fbid']
-    fb_access_token = fb_data['access_token']
+    fb_access_token= fb_data['access_token']
     fb_access_token_expiry_date = fb_data['expires_on']
     is_invalid = fb_data['is_invalid']
 
@@ -390,14 +378,13 @@ def login():
         'gender': gender,
         'fb_access_token': fb_access_token,
         'fb_access_token_expiry_date': fb_access_token_expiry_date,
-        # TODO(Sandy): Count visits properly
+#TODO(Sandy): Count visits properly
         'join_date': now,
         'join_source': m.User.JoinSource.FACEBOOK,
         'num_visits': 1,
         'last_visited': now,
         'friend_fbids': friend_fbids,
-        # TODO(Sandy): Fetch from client side and pass here: name, email,
-        # school, program, faculty
+#TODO(Sandy): Fetch from client side and pass here: name, email, school, program, faculty
     }
     referrer_id = req.form.get('referrer_id')
     if referrer_id:
@@ -449,9 +436,9 @@ def about_page():
 
     return flask.render_template('about_page.html')
 
-
 @app.route('/demo')
 def login_as_demo_user():
+
     fbid = c.DEMO_ACCOUNT_FBID
     user = m.User.objects(fbid=fbid).first()
     # To catch errors on dev. We may not all have the test account in our mongo
@@ -461,7 +448,6 @@ def login_as_demo_user():
 
     view_helpers.login_as_user(user)
     return flask.redirect('/profile/%s' % user.id, 302)
-
 
 @app.route('/unsubscribe', methods=['GET'])
 def unsubscribe_page():
@@ -487,11 +473,11 @@ def unsubscribe_page():
 @app.route('/admin/backfill_schedules', methods=['GET'])
 @view_helpers.admin_required
 def backfill_schedules():
+
     return flask.render_template(
         'backfill_schedules_page.html',
         page_script='backfill_schedules_page.js',
     )
-
 
 @app.route('/admin/user/<string:user_id>', methods=['GET'])
 @view_helpers.admin_required
@@ -501,12 +487,10 @@ def get_user_info(user_id):
     # Maybe non-devs will need it. Build it later if we need it
     return m.User.objects.with_id(user_id).name
 
-
 @app.route('/admin/user/<string:user_id>/<string:attr>', methods=['GET'])
 @view_helpers.admin_required
 def get_user_attr(user_id, attr):
     return getattr(m.User.objects.with_id(user_id), attr)
-
 
 # TODO(mack): move API's to separate file
 # TODO(mack): add security measures (e.g. require auth, xsrf cookie)
@@ -559,7 +543,6 @@ def unsubscribe_user():
 
     return flask.redirect('/')
 
-
 # TODO(david): Doesn't seem like this is used anymore... remove.
 @app.route('/api/courses/<string:course_ids>', methods=['GET'])
 # TODO(mack): find a better name for function
@@ -581,29 +564,20 @@ def get_courses(course_ids):
 
 COURSES_SORT_MODES = [
     # TODO(david): Usefulness
-    {'name': 'popular', 'direction': pymongo.DESCENDING,
-     'field': 'interest.count'},
-    {'name': 'friends_taken', 'direction': pymongo.DESCENDING,
-     'field': 'custom'},
-    {'name': 'interesting', 'direction': pymongo.DESCENDING,
-     'field': 'interest.sorting_score'},
-    {'name': 'easy', 'direction': pymongo.DESCENDING,
-     'field': 'easiness.sorting_score'},
-    {'name': 'hard', 'direction': pymongo.ASCENDING,
-     'field': 'easiness.sorting_score'},
-    {'name': 'course code', 'direction': pymongo.ASCENDING,
-     'field': 'id'},
+    { 'name': 'popular', 'direction': pymongo.DESCENDING, 'field': 'interest.count' },
+    { 'name': 'friends_taken' , 'direction': pymongo.DESCENDING, 'field': 'custom' },
+    { 'name': 'interesting', 'direction': pymongo.DESCENDING, 'field': 'interest.sorting_score' },
+    { 'name': 'easy' , 'direction': pymongo.DESCENDING, 'field': 'easiness.sorting_score' },
+    { 'name': 'hard' , 'direction': pymongo.ASCENDING, 'field': 'easiness.sorting_score' },
+    { 'name': 'course code', 'direction': pymongo.ASCENDING, 'field': 'id'},
 ]
-
 COURSES_SORT_MODES_BY_NAME = {}
 for sort_mode in COURSES_SORT_MODES:
     COURSES_SORT_MODES_BY_NAME[sort_mode['name']] = sort_mode
 
-
 # Special sort instructions are needed for these sort modes
 # TODO(Sandy): deprecate overall and add usefulness
 RATING_SORT_MODES = ['overall', 'interesting', 'easy', 'hard']
-
 
 @app.route('/api/course-search', methods=['GET'])
 # TODO(mack): find a better name for function
@@ -660,8 +634,7 @@ def search_courses():
 
     if exclude_taken_courses == "yes":
         if current_user:
-            ucs = (current_user.get_user_courses()
-                    .only('course_id', 'term_id'))
+            ucs = (current_user.get_user_courses().only('course_id', 'term_id'))
             filters['id__nin'] = [
                 uc.course_id for uc in ucs
                 if not m.term.Term.is_shortlist_term(uc.term_id)
@@ -692,7 +665,7 @@ def search_courses():
             num_friends_by_course.items(),
             key=lambda (_, total): total,
             reverse=direction < 0,
-        )[offset:offset + count]
+        )[offset:offset+count]
 
         sorted_course_ids = [course_id for (course_id, total)
                 in sorted_course_count_tuples]
@@ -748,7 +721,6 @@ def search_courses():
         'has_more': has_more,
     })
 
-
 @app.route('/api/renew-fb', methods=['POST'])
 @view_helpers.login_required
 def renew_fb():
@@ -792,14 +764,12 @@ def renew_fb():
         except:
             # Not sure why this would happen. Usually it's due to invalid
             # access_token, but we JUST got the token, so it should be valid
-            logging.warn(
-                    "/api/renew-fb: get_friend_list failed with token (%s)"
+            logging.warn("/api/renew-fb: get_friend_list failed with token (%s)"
                     % access_token)
 
         current_user.save()
 
     return ''
-
 
 @app.route('/api/schedule', methods=['POST'])
 @view_helpers.login_required
@@ -910,10 +880,8 @@ def upload_schedule():
 
     return ''
 
-
 def get_schedule_dir():
     return os.path.join(app.config['LOG_DIR'], 'schedules')
-
 
 @app.route('/api/schedule/screenshot_url', methods=['GET'])
 @view_helpers.login_required
@@ -924,7 +892,6 @@ def schedule_screenshot_url():
         # Note that this may be None
         "url": schedule_screenshot.get_screenshot_url(user)
     })
-
 
 @app.route('/api/schedule/log', methods=['POST'])
 @view_helpers.login_required
@@ -949,7 +916,6 @@ def schedule_log():
     user.save()
 
     return ''
-
 
 @app.route('/api/transcript', methods=['POST'])
 @view_helpers.login_required
@@ -1005,7 +971,6 @@ def upload_transcript():
     )
     return ''
 
-
 @app.route('/api/remove_transcript', methods=['POST'])
 @view_helpers.login_required
 def remove_transcript():
@@ -1029,9 +994,9 @@ def remove_transcript():
     return ''
 
 
+
 def get_transcript_dir():
     return os.path.join(app.config['LOG_DIR'], 'transcripts')
-
 
 @app.route('/api/transcript/log', methods=['POST'])
 @view_helpers.login_required
@@ -1071,7 +1036,6 @@ def add_course_to_shortlist():
         'user_course': user_course.to_dict(),
     })
 
-
 @app.route('/api/user/remove_course', methods=['POST'])
 @view_helpers.login_required
 def remove_course():
@@ -1102,11 +1066,9 @@ def remove_course():
 
     return ''
 
-
-# XXX[uw](Sandy): Make this not completely fail when hitting this endpoint,
-# otherwise the user would have wasted all their work. We can do one of 1. a FB
-# login on the client 2. store their data for after they login 3. don't let
-# them start writing if they aren't logged in. 1 or 3 seems best
+# XXX[uw](Sandy): Make this not completely fail when hitting this endpoint, otherwise the user would have wasted all
+# their work. We can do one of 1. a FB login on the client 2. store their data for after they login 3. don't let them
+# start writing if they aren't logged in. 1 or 3 seems best
 @app.route('/api/user/course', methods=['POST', 'PUT'])
 @view_helpers.login_required
 def user_course():
@@ -1140,8 +1102,7 @@ def user_course():
     if not m.UserCourse.can_review(term_id):
         logging.warning("%s attempted to rate %s in future/shortlist term %s"
                 % (user.id, course_id, term_id))
-        raise exceptions.ImATeapot(
-                "Can't review a course in the future or shortlist")
+        raise exceptions.ImATeapot('Can\'t review a course in the future or shortlist')
 
     # Fetch existing UserCourse
     uc = m.UserCourse.objects(
@@ -1158,11 +1119,12 @@ def user_course():
         # returns a 400
         raise exceptions.ImATeapot('No user course found')
 
+
     orig_points = uc.num_points
 
-    # TODO(Sandy): Consider the case where the user picked a professor and
-    # rates them, but then changes the professor. We need to remove the ratings
-    # from the old prof's aggregated ratings and add them to the new prof's
+    # TODO(Sandy): Consider the case where the user picked a professor and rates
+    # them, but then changes the professor. We need to remove the ratings from
+    # the old prof's aggregated ratings and add them to the new prof's
     # Maybe create professor if newly added
     if uc_data.get('new_prof_added'):
 
@@ -1174,8 +1136,7 @@ def user_course():
         uc.professor_id = prof_id
 
         # TODO(Sandy): Have some kind of sanity check for professor names.
-        # Don't allow ridiculousness like "Santa Claus", "aksnlf", 
-        # "swear words"
+        # Don't allow ridiculousness like "Santa Claus", "aksnlf", "swear words"
         if m.Professor.objects(id=prof_id).count() == 0:
             first_name, last_name = m.Professor.guess_names(new_prof_name)
             m.Professor(
@@ -1220,13 +1181,12 @@ def user_course():
         'points_gained': points_gained,
     })
 
-
 # TODO(mack): maybe merge this api into /api/user/course/share
 @app.route('/api/user/course/share', methods=['POST'])
 @view_helpers.login_required
 def user_course_share():
     user_course_id = flask.request.form['user_course_id']
-    review_type = flask.request.form['review_type']
+    review_type  = flask.request.form['review_type']
     current_user = view_helpers.get_current_user()
 
     review = None
@@ -1256,7 +1216,6 @@ def user_course_share():
         'points_gained': points_gained,
     })
 
-
 @app.route('/api/user/course/to_review', methods=['GET'])
 @view_helpers.login_required
 def next_course_to_review():
@@ -1268,12 +1227,11 @@ def next_course_to_review():
     uc.select_for_review(current_user)
     return util.json_dumps(uc.to_dict())
 
-
 @app.route('/api/invite_friend', methods=['POST'])
 @view_helpers.login_required
 def invite_friend():
     current_user = view_helpers.get_current_user()
-    orig_points = current_user.num_points
+    orig_points  = current_user.num_points
 
     current_user.invite_friend(view_helpers.get_redis_instance())
     current_user.save()
@@ -1284,7 +1242,6 @@ def invite_friend():
         'num_invites': current_user.num_invites,
         'points_gained': points_gained,
     })
-
 
 @app.route('/api/users/schedule_paste', methods=['GET'])
 @view_helpers.admin_required
@@ -1325,19 +1282,16 @@ def last_schedule_paste():
         'last_schedule_paste': last_schedule_paste,
     })
 
-
 # TODO(david): Move this somewhere else.
 def dashboard_data():
     data = rmc_stats.generic_stats(show_all=True)
     data['latest_reviews'] = rmc_stats.latest_reviews(n=5)
     return data
 
-
 @app.route('/admin/api/generic-stats', methods=['POST'])
 @view_helpers.admin_required
 def generic_stats():
     return util.json_dumps(dashboard_data())
-
 
 @app.route('/dashboard', methods=['GET'])
 @view_helpers.admin_required
@@ -1349,7 +1303,6 @@ def dashboard_page():
         **data
     )
 
-
 @app.route('/api/sign_up_email', methods=['POST'])
 def save_sign_up_email():
     email = flask.request.values.get('email')
@@ -1357,7 +1310,6 @@ def save_sign_up_email():
     with open('email_sign_ups.txt', 'a') as f:
         f.write("%s\n" % email)
     return ''
-
 
 # TODO(mack): Follow instructions at:
 # http://stackoverflow.com/questions/4239825/static-files-in-flask-robot-txt-sitemap-xml-mod-wsgi
@@ -1370,7 +1322,6 @@ def verify_webmaster():
     response.headers["Content-Type"] = "text/plain"
     return response
 
-
 def before_app_run():
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
     app.config.from_envvar('FLASK_CONFIG')
@@ -1382,9 +1333,8 @@ def before_app_run():
         formatter = logging.Formatter('%(asctime)s - %(levelname)s in'
                 ' %(module)s:%(lineno)d %(message)s')
 
-        file_handler = TimedRotatingFileHandler(
-                            filename=app.config['LOG_PATH'],
-                            when='D')
+        file_handler = TimedRotatingFileHandler(filename=app.config['LOG_PATH'],
+                when='D')
         file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(formatter)
         app.logger.addHandler(file_handler)
@@ -1418,9 +1368,9 @@ if __name__ == '__main__':
 
     app.debug = True
     app.config.update({
-        'DEBUG_TB_INTERCEPT_REDIRECTS': False,
-        'DEBUG_TB_PROFILER_ENABLED': True,
-        'DEBUG_TB_PANELS': [
+        'DEBUG_TB_INTERCEPT_REDIRECTS' : False,
+        'DEBUG_TB_PROFILER_ENABLED' : True,
+        'DEBUG_TB_PANELS' : [
             'flask_debugtoolbar.panels.versions.VersionDebugPanel',
             'flask_debugtoolbar.panels.timer.TimerDebugPanel',
             'flask_debugtoolbar.panels.headers.HeaderDebugPanel',

@@ -93,7 +93,7 @@ class BaseReview(me.EmbeddedDocument):
 
     def update(self, **kwargs):
         if 'ratings' in kwargs:
-            new_values = {d['name']: d['rating'] for d in kwargs['ratings']}
+            new_values = { d['name']: d['rating'] for d in kwargs['ratings'] }
             self.update_ratings(new_values)
 
         comment = kwargs.get('comment')
@@ -162,7 +162,6 @@ class CourseReview(BaseReview):
         if hasattr(self, 'old_usefulness'):
             cur_course.usefulness.update_aggregate_after_replacement(
                 self.old_usefulness, self.usefulness)
-
 
 class ProfessorReview(BaseReview):
     clarity = me.FloatField(min_value=0.0, max_value=1.0, default=None)

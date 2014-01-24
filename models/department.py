@@ -1,7 +1,7 @@
 import mongoengine as me
 
-
 class Department(me.Document):
+
     # eg. earth
     id = me.StringField(primary_key=True)
 

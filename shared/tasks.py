@@ -18,7 +18,6 @@ app.conf.update(
     CELERY_ENABLE_UTC=True
 )
 
-
 @app.task
 def render_schedule_screenshot(url_to_render, screenshot_filepath):
     with open(os.devnull, 'w') as devnull:
