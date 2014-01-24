@@ -26,7 +26,6 @@
 define(['ext/underscore'], function(_) {
   var running = false;
   var queue = [];
-  var INTERJOB_DELAY_MS = 10;
 
   var runNextJob = function() {
     if (queue.length === 0) {
@@ -40,7 +39,7 @@ define(['ext/underscore'], function(_) {
 
     setTimeout(function() {
       runNextJob();
-    }, INTERJOB_DELAY_MS);
+    }, 0);
   };
 
   var start = function() {
@@ -58,7 +57,7 @@ define(['ext/underscore'], function(_) {
         context: context
       });
 
-      setTimeout(start, INTERJOB_DELAY_MS);
+      setTimeout(start, 0);
     }
   };
 });
