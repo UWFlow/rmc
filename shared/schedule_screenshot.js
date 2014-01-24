@@ -28,43 +28,45 @@ if (system.args.length < 3) {
   page.onLoadFinished = function() {
     console.log('Loaded.');
     page.evaluate(function() {
-      var render = function() {
-        var scheduleZIndex = 2147483647;
-        // Put up a white background to hide everything except for the schedule
-        $("<div/>").css({
-          width: "100%",
-          height: "100%",
-          position: "absolute",
-          background: "white",
-          top: 0,
-          left: 0,
-          zIndex: scheduleZIndex - 1
-        }).appendTo(document.body);
+      require(["ext/jquery"], function($) {
+        var render = function() {
+          var scheduleZIndex = 2147483647;
+          // Put up a white background to hide everything except for the schedule
+          $("<div/>").css({
+            width: "100%",
+            height: "100%",
+            position: "absolute",
+            background: "white",
+            top: 0,
+            left: 0,
+            zIndex: scheduleZIndex - 1
+          }).appendTo(document.body);
 
-        var $profileContainer = $("#profile-container");
-        var height = $profileContainer.outerHeight();
-        // Recommended ratio for photos on facebook is 1.91:1
-        // https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content/#tags
-        var width = 1.91 * height;
+          var $profileContainer = $("#profile-container");
+          var height = $profileContainer.outerHeight();
+          // Recommended ratio for photos on facebook is 1.91:1
+          // https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content/#tags
+          var width = 1.91 * height;
 
-        $profileContainer.css({
-          width: width,
-          position: "absolute",
-          padding: 10,
-          top: 0,
-          left: 0,
-          margin: 0,
-          zIndex: scheduleZIndex
-        });
+          $profileContainer.css({
+            width: width,
+            position: "absolute",
+            padding: 10,
+            top: 0,
+            left: 0,
+            margin: 0,
+            zIndex: scheduleZIndex
+          });
 
-        window.callPhantom({
-          width: $profileContainer.outerWidth(),
-          height: $profileContainer.outerHeight()
-        });
-      };
+          window.callPhantom({
+            width: $profileContainer.outerWidth(),
+            height: $profileContainer.outerHeight()
+          });
+        };
 
-      $(document.body).on('pageScriptComplete', render);
-      setTimeout(render, 2000);
+        $(document.body).on('pageScriptComplete', render);
+        setTimeout(render, 2000);
+      });
     });
   };
 

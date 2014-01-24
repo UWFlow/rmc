@@ -48,25 +48,27 @@ def html_parse(url, num_tries=5, parsers=[soupparser]):
                     break
 
                 wait = 2 ** (tries + 1)
-                error = 'Exception parsing {url}. Sleeping for {wait} secs'.format(
-                        url=url, wait=wait)
+                error = 'Exception parsing %s. Sleeping for %s secs'.format(
+                            url=url, wait=wait)
                 errors.append(error)
                 print error
                 time.sleep(wait)
 
     return None
 
+
 # TODO(david): Convert more calls to use opendata API
 # TODO(mack): add to text file rather than directly to mongo
 def get_departments():
-
     departments = []
 
     # Beautifulsoup parser apparently doesn't work while default parser does.
     # Fucking waterloo and their broken markup.
     url = 'http://ugradcalendar.uwaterloo.ca/page/Course-Descriptions-Index'
     tree = html_parse(url, parsers=[lxml.html])
-    for e_department in tree.xpath('.//span[@id="ctl00_contentMain_lblContent"]/table[1]/tbody/tr'):
+
+    dep_xpath = './/span[@id="ctl00_contentMain_lblContent"]/table[1]/tbody/tr'
+    for e_department in tree.xpath(dep_xpath):
         e_row = e_department.xpath('.//td')
         department_name = e_row[0].text_content().strip()
 
@@ -84,7 +86,6 @@ def get_departments():
             'url': department_url,
             'faculty_id': faculty_id,
         })
-
 
     file_name = os.path.join(
         sys.path[0], '%s/ucalendar_departments.txt' % c.DEPARTMENTS_DATA_DIR)
@@ -123,10 +124,12 @@ def get_data_from_url(url, num_tries=5):
 
 def file_exists(path):
     try:
-        with open(path): pass
+        with open(path):
+            pass
         return True
     except:
         return False
+
 
 def get_ucalendar_courses():
     def get_course_info_from_tree(course_tree):
@@ -148,7 +151,6 @@ def get_ucalendar_courses():
             'description': course_description,
             'notes': course_notes,
         }
-
 
     curr_dir = os.path.dirname(os.path.realpath(__file__))
     for department in m.Department.objects:
@@ -221,9 +223,11 @@ def get_uwdata_courses():
 
         time.sleep(3)
 
+
 def get_opendata_courses():
     courses = {}
-    file_names = glob.glob(os.path.join(sys.path[0], '%s/*.txt' % c.REVIEWS_DATA_DIR))
+    file_names = glob.glob(os.path.join(sys.path[0],
+                                        '%s/*.txt' % c.REVIEWS_DATA_DIR))
     for file_name in file_names:
         f = open(file_name, 'r')
         data = json.load(f)
@@ -233,7 +237,8 @@ def get_opendata_courses():
             if course is None:
                 continue
             course = course.strip().lower()
-            matches = re.findall(r'([a-z]+).*?([0-9]{3}[a-z]?)(?:[^0-9]|$)', course)
+            matches = re.findall(r'([a-z]+).*?([0-9]{3}[a-z]?)(?:[^0-9]|$)',
+                                 course)
             if len(matches) != 1 or len(matches[0]) != 2:
                 continue
             dep = matches[0][0]
@@ -259,8 +264,9 @@ def get_opendata_courses():
                 continue
             print '  Processing number {num}'.format(num=num)
             query = dep + num
-            url = 'http://api.uwaterloo.ca/public/v1/' + \
-                    '?key={api_key}&service=CourseInfo&q={query}&output=json'.format(api_key=api_key, query=query)
+            url = ('http://api.uwaterloo.ca/public/v1/' + \
+                    '?key={api_key}&service=CourseInfo&q={query}&output=json'
+                    .format(api_key=api_key, query=query))
             data = get_data_from_url(url)
             try:
                 data = data['response']['data']
@@ -271,7 +277,8 @@ def get_opendata_courses():
                 is_bad_course = True
             elif isinstance(data['result'], list):
                 is_bad_course = True
-                print 'More than one result for query {query}'.format(query=query)
+                print ('More than one result for query {query}'
+                        .format(query=query))
 
             if is_bad_course:
                 bad_courses += 1
@@ -284,7 +291,9 @@ def get_opendata_courses():
                 dep_courses[num] = data['result']
                 print 'Found new course {query}'.format(query=query)
         try:
-            f = open(os.path.join(sys.path[0], '%s/%s.txt' % (c.OPENDATA_COURSES_DATA_DIR, dep)), 'w')
+            f = open(os.path.join(
+                        sys.path[0],
+                        '%s/%s.txt' % (c.OPENDATA_COURSES_DATA_DIR, dep)), 'w')
             f.write(json.dumps(dep_courses))
             f.close()
         except Exception:
@@ -303,6 +312,7 @@ def get_opendata_courses():
     print 'Found {num} good courses'.format(num=good_courses)
     print 'Bad course names: {names}'.format(names=bad_course_names)
 
+
 def get_opendata_exam_schedule():
     api_key = API_UWATERLOO_API_KEY
     url = 'http://api.uwaterloo.ca/public/v1/' + \
@@ -312,7 +322,7 @@ def get_opendata_exam_schedule():
     try:
         data = data['response']['data']['result']
     except KeyError:
-        print "crawler.py: ExamSchedule API call failed with data:\n%s" % (data)
+        print "crawler.py: ExamSchedule API call failed with data:\n%s" % data
         raise
 
     today = datetime.datetime.today()
@@ -321,6 +331,7 @@ def get_opendata_exam_schedule():
         '%s/uw_exams_%s.txt' % (c.EXAMS_DATA_DIR, today.strftime('%Y_%m_%d')))
     with open(file_name, 'w') as f:
         json.dump(data, f)
+
 
 # TODO(david): This needs to be updated on a regular basis and not use
 #     uwlive.ca (hopefully get data from OpenData)
@@ -344,10 +355,10 @@ def get_terms_offered():
             json.dump(terms_offered_by_course, f)
 
         file_name = os.path.join(
-                sys.path[0], '%s/missing_courses.txt' % c.TERMS_OFFERED_DATA_DIR)
+                        sys.path[0],
+                        '%s/missing_courses.txt' % c.TERMS_OFFERED_DATA_DIR)
         with open(file_name, 'w') as f:
             json.dump(missing_course_ids, f)
-
 
     for course in list(m.Course.objects):
         terms_offered_by_course[course.id] = []

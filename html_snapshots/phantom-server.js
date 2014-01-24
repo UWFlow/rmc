@@ -1,4 +1,4 @@
-'use strict';
+/* global require, phantom, $ */
 
 var page = require('webpage').create();
 var system = require('system');

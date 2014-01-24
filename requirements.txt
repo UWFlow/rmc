@@ -2,8 +2,9 @@ fabric==1.4.2
 Flask==0.9
 lxml==2.3.5
 pep8==1.0.1
+pyflakes==0.7.3
 pymongo==2.3
-uWSGI==1.2.6
+uWSGI==1.9.9
 mongoengine==0.7.5
 redis==2.6.2
 hiredis==0.1.1

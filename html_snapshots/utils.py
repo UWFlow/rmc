@@ -1,22 +1,23 @@
 import os
 
-import mongoengine as me
-
 import rmc.shared.constants as c
 import rmc.models as m
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 HTML_DIR = os.path.join(c.SHARED_DATA_DIR, 'html_snapshots')
 
+
 def write(file_path, content):
     ensure_dir(file_path)
     with open(file_path, 'w') as f:
         f.write(content)
 
+
 def ensure_dir(file_path):
     d = os.path.dirname(file_path)
     if not os.path.exists(d):
         os.makedirs(d)
+
 
 def generate_urls():
     urls = []

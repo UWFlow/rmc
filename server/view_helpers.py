@@ -14,26 +14,32 @@ import rmc.shared.constants as c
 SESSION_COOKIE_KEY_USER_ID = 'user_id'
 
 
-_redis_instance = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
+_redis_instance = redis.StrictRedis(host=c.REDIS_HOST,
+                                    port=c.REDIS_PORT,
+                                    db=c.REDIS_DB)
 
 
 def get_redis_instance():
     return _redis_instance
 
+
 # TODO(mack): checking that path starts with '/api/' seems brittle
 def is_api_request():
     return flask.request.path.find('/api/') == 0
 
+
 def logout_current_user():
     flask.session.pop(SESSION_COOKIE_KEY_USER_ID, None)
+
 
 def login_as_user(user):
     flask.session[SESSION_COOKIE_KEY_USER_ID] = user.id
 
+
 def get_current_user():
-    """
-        Get the logged in user (if it exists) based on fbid and fb_access_token.
-        Cache the user across multiple calls during the same request.
+    """Get the logged in user (if it exists) based on fbid and
+    fb_access_token.  Cache the user across multiple calls during the same
+    request.
     """
     req = flask.request
 
@@ -73,6 +79,7 @@ def get_current_user():
 
     return req.current_user
 
+
 def login_required_func():
     current_user = get_current_user()
 
@@ -81,6 +88,7 @@ def login_required_func():
     if not current_user:
         next_url = urllib.quote_plus(flask.request.url)
         return flask.redirect('/?next=%s' % next_url)
+
 
 def login_required(f):
     @functools.wraps(f)
@@ -92,6 +100,7 @@ def login_required(f):
         return f(*args, **kwargs)
 
     return wrapper
+
 
 # TODO(mack): figure out how to do properly by wrapping in @login_required
 def admin_required(f):
@@ -110,6 +119,7 @@ def admin_required(f):
         return f(*args, **kwargs)
 
     return wrapper
+
 
 def redirect_to_profile(user):
     """
