@@ -4,7 +4,7 @@ install_homebrew() {
     # If homebrew is already installed, don't do it again.
     if ! brew --help >/dev/null 2>&1; then
         echo "Installing Homebrew"
-        /usr/bin/ruby -e "`curl -fsSkL raw.github.com/mxcl/homebrew/go`"
+        ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
     fi
     echo "Updating Homebrew"
     brew update > /dev/null
