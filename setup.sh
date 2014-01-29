@@ -44,18 +44,24 @@ install_virtualenv() {
     source $RMC_VENV_DIR/bin/activate
 }
 
-
 install_pip_requirements() {
     # Rest of Python stuff, under virtualenv
     echo "Install pip requirements"
     ( pip install -r requirements.txt )
 }
 
-
 install_third_party() {
     git submodule update --init --recursive
     ( cd third_party/rmc_linter && npm install )
     ln -sf ../../commit-msg-hook .git/hooks/commit-msg
+}
+
+install_secrets() {
+  # Install secrets.py if not already there
+  if [ ! -f shared/secrets.py ]; then
+    echo "Copying secrets.py.example to secrets.py"
+    cp shared/secrets.py.example shared/secrets.py
+  fi
 }
 
 # Get password up front
@@ -66,3 +72,4 @@ install_pip
 install_virtualenv
 install_pip_requirements
 install_third_party
+install_secrets
