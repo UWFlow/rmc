@@ -9,29 +9,20 @@ To set up your dev environment, run `make install`.
 We work inside a [virtualenv][], so remember to `source
 ~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
 
-Next you need to grab a copy of the secrets. When you have it, it goes into
-`shared/secrets.py`.
-
 You should now be ready to boot the local server, with `make local`.
 
 Once it starts running, point your browser to http://localhost:5000/
 
-## Getting access to the server
-
-At the moment, we used a shared SSH private key, that you'll need a copy of.
-
-When you get a copy of the key, place it in `~/.ssh/redccnt.pem`. You'll also
-need the following entry in your `~/.ssh/config`.
-
-    host rmc
-        HostName redccnt.com
-        User rmc
-        IdentityFile ~/.ssh/redccnt.pem
-
 ## Getting production data
 
-Once you have access to the server, you can get a dump of the production data by
-running `make prod_import`.
+Once your local server is running, ask a Flow admin for a data dump.
+
+Then, run the following:
+
+```sh
+mongorestore --drop PATH_TO_DUMP
+make aggregate_data
+```
 
 After this, your local database should be populated with the same data as prod.
 The easiest way of checking this is probably just to log in and search. You
