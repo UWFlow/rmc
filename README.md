@@ -62,3 +62,9 @@ Here's what an example session might look like:
     Out[1]: [<User: David Hu>, <User: Mack Duan>, <User: Sandy Wu>, <User: Jamie Wong>]
 
 [virtualenv]: http://www.virtualenv.org/en/latest/
+
+## Contributing
+
+When you're ready to contribute, take a look at [the contributing
+guidelines](https://github.com/divad12/rmc/blob/master/CONTRIBUTING.md) and our
+[style guide](https://github.com/divad12/rmc/wiki/Flow-Style-Guide).
