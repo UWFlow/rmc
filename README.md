@@ -13,21 +13,6 @@ You should now be ready to boot the local server, with `make local`.
 
 Once it starts running, point your browser to http://localhost:5000/
 
-## Getting production data
-
-Once your local server is running, ask a Flow admin for a data dump.
-
-Then, run the following:
-
-```sh
-mongorestore --drop PATH_TO_DUMP
-make aggregate_data
-```
-
-After this, your local database should be populated with the same data as prod.
-The easiest way of checking this is probably just to log in and search. You
-should see all your connections with friends.
-
 ## Using the REPL
 
 If you need a REPL to fool around with the database or test out some code, check
