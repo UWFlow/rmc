@@ -49,6 +49,11 @@ init_data: import_menlo aggregate_data
 export_data:
 	mongodump --db rmc
 
+export_data_to_dropbox:
+	ssh rmc 'mongodump --db rmc'
+	rsync -avz rmc:~/dump ~/Dropbox/Flow/db/
+	( cd ~/Dropbox/Flow/db/ && zip -r dump.zip dump -x "**.DS_Store" )
+
 prod_import: prod_import_mongo aggregate_data
 
 prod_import_mongo:
