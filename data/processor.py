@@ -460,31 +460,31 @@ def _opendata_to_section_meeting(data, term_year):
         data: An object from the `classes` field returned by OpenData.
         term_year: The year this term is in.
     """
-    dates = data['dates']
+    date = data['date']
     days = []
-    if dates['weekdays']:
+    if date['weekdays']:
         days = re.findall(r'[A-Z][a-z]?',
-                dates['weekdays'].replace('U', 'Su'))
+                date['weekdays'].replace('U', 'Su'))
 
     # TODO(david): Actually use the term begin/end dates when we get nulls
     date_format = '%m/%d'
-    start_date = datetime.strptime(dates['start_date'], date_format).replace(
-            year=term_year) if dates['start_date'] else None
-    end_date = datetime.strptime(dates['end_date'], date_format).replace(
-            year=term_year) if dates['end_date'] else None
+    start_date = datetime.strptime(date['start_date'], date_format).replace(
+            year=term_year) if date['start_date'] else None
+    end_date = datetime.strptime(date['end_date'], date_format).replace(
+            year=term_year) if date['end_date'] else None
 
     time_format = '%H:%M'
 
     # TODO(david): DRY-up
     start_seconds = None
-    if dates['start_time']:
-        start_time = datetime.strptime(dates['start_time'], time_format)
+    if date['start_time']:
+        start_time = datetime.strptime(date['start_time'], time_format)
         start_seconds = (start_time -
                 start_time.replace(hour=0, minute=0, second=0)).seconds
 
     end_seconds = None
-    if dates['end_time']:
-        end_time = datetime.strptime(dates['end_time'], time_format)
+    if date['end_time']:
+        end_time = datetime.strptime(date['end_time'], time_format)
         end_seconds = (end_time -
                 end_time.replace(hour=0, minute=0, second=0)).seconds
 
@@ -496,9 +496,9 @@ def _opendata_to_section_meeting(data, term_year):
         end_date=end_date,
         building=data['location']['building'],
         room=data['location']['room'],
-        is_tba=dates['is_tba'],
-        is_cancelled=dates['is_cancelled'],
-        is_closed=dates['is_closed'],
+        is_tba=date['is_tba'],
+        is_cancelled=date['is_cancelled'],
+        is_closed=date['is_closed'],
     )
 
     if data['instructors']:
