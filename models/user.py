@@ -198,6 +198,16 @@ class User(me.Document):
 
     @property
     def profile_pic_urls(self):
+        if self.fbid is not None:
+            urls = self._get_fb_pic_urls()
+        else:
+            urls = self._get_gravatar_pic_urls()
+        return urls
+
+    def _get_fb_pic_urls(self):
+        if self.fbid is None:
+            return {}
+
         return {
             'default': 'https://graph.facebook.com/%s/picture' % (
                     self.fbid),
@@ -206,6 +216,9 @@ class User(me.Document):
             'square': 'https://graph.facebook.com/%s/picture?type=square' % (
                     self.fbid),
         }
+
+    def _get_gravatar_pic_urls(self):
+        return {}
 
     @property
     def profile_url(self):
