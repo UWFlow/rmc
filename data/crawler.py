@@ -393,33 +393,6 @@ def get_terms_offered():
     print 'MISSING: %d' % len(missing_course_ids)
 
 
-def get_course_sections_from_opendata(subject, catalog_number, term=''):
-    """Get info on all sections offered for a course for a given term.
-
-    Args:
-        subject: The department ID (eg. CS)
-        catalog_number: The course number (eg. 241)
-        term: The 4-digit Quest term code (defaults to current term)
-    """
-    url = ('{api_url}/courses/{subject}/{catalog_number}/schedule.json'
-            '?key={api_key}&term={term}'.format(
-                api_url=API_UWATERLOO_V2_URL,
-                api_key=API_UWATERLOO_API_KEY,
-                subject=subject,
-                catalog_number=catalog_number,
-                term=term,
-    ))
-
-    data = get_data_from_url(url)
-    try:
-        sections = data['data']
-    except KeyError:
-        print "crawler.py: Schedule API call failed with data:\n%s" % (data)
-        raise
-
-    return sections
-
-
 def get_subject_sections_from_opendata(subject, term):
     """Get info on all sections offered for all courses of a given subject and
     term.
