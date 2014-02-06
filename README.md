@@ -13,6 +13,14 @@ You should now be ready to boot the local server, with `make local`.
 
 Once it starts running, point your browser to http://localhost:5000/
 
+## Getting seed data
+
+Run the following to get some basic course data into the DB.
+
+```sh
+make init_data
+```
+
 ## Using the REPL
 
 If you need a REPL to fool around with the database or test out some code, check
