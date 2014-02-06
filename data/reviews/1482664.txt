@@ -1,1 +1,1 @@
-{"prof_id": "1482664", "prof_name": "Chong, Michael", "info": {}, "ratings": []}
+{"prof_id": "1482664", "prof_name": "Chong, Michael", "info": {"Department": " Chemistry", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "bad prof, makes everything more confusing than it needs to be. The textbook got me through this class", "date": "12/18/13", "r_clarity": "2", "rating_id": "22602987", "r_easy": "1", "class": "CHEM264", "r_interest": "3", "r_helpful": "2"}]}

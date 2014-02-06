@@ -1,0 +1,1 @@
+{"prof_id": "1798831", "prof_name": "Burkov, Anton", "info": {"Department": " Physics", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Cool dude, sarcastic, funny. Can be mean sometimes.", "date": "1/3/14", "r_clarity": "4", "rating_id": "22690273", "r_easy": "4", "class": "MATH127", "r_interest": "3", "r_helpful": "4"}]}

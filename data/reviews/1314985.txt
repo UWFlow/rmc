@@ -1,1 +1,1 @@
-{"prof_id": "1314985", "prof_name": "Rempel, Garry", "info": {}, "ratings": []}
+{"prof_id": "1314985", "prof_name": "Rempel, Garry", "info": {"Department": " Chemistry", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Great", "date": "6/4/12", "r_clarity": "5", "rating_id": "20379059", "r_easy": "5", "class": "CHEM101", "r_interest": "5", "r_helpful": "5"}]}

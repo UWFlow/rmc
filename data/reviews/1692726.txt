@@ -1,1 +1,0 @@
-{"prof_id": "1692726", "prof_name": "Skinner, Patricia", "info": {}, "ratings": []}

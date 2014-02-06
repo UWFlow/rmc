@@ -1,1 +1,1 @@
-{"prof_id": "1382941", "prof_name": "HU, Shengda", "info": {"Department": " Mathematics", "School": " University of Waterloo", "Name": " Shengda\u00a0HU", "Location": " Waterloo, ON"}, "ratings": [{"comment": null, "date": "12/18/10", "r_clarity": "3", "rating_id": "17986907", "r_easy": "1", "class": "MA110", "r_interest": "4", "r_helpful": "1"}]}
+{"prof_id": "1382941", "prof_name": "HU, Shengda", "info": {}, "ratings": []}

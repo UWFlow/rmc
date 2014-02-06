@@ -1,1 +1,1 @@
-{"prof_id": "1482662", "prof_name": "Fahd, Marie", "info": {}, "ratings": []}
+{"prof_id": "1482662", "prof_name": "Fahd, Marie", "info": {"Department": " French Studies", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Exquisite", "date": "6/8/12", "r_clarity": "5", "rating_id": "20394804", "r_easy": "5", "class": "fr152", "r_interest": "3", "r_helpful": "5"}]}
