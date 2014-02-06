@@ -1,1 +1,1 @@
-{"prof_id": "1039594", "prof_name": "Hymmen, Peter", "info": {}, "ratings": []}
+{"prof_id": "1039594", "prof_name": "Hymmen, Peter", "info": {"Department": " Social Science", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "What a great prof!!!", "date": "9/12/12", "r_clarity": "3", "rating_id": "20639622", "r_easy": "4", "class": "SocWk414R", "r_interest": "4", "r_helpful": "3"}]}

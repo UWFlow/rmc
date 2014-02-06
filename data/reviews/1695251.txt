@@ -1,1 +1,1 @@
-{"prof_id": "1695251", "prof_name": "Rahman, Fiona", "info": {}, "ratings": []}
+{"prof_id": "1695251", "prof_name": "Rahman, Fiona", "info": {"Department": " Not Specified", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "She was a nice prof but she was extremely hard and her exams and tests were really tough. I had to work hard in her class for a 101 course. It sucked", "date": "10/9/12", "r_clarity": "1", "rating_id": "20689080", "r_easy": "1", "class": "Econ101", "r_interest": "1", "r_helpful": "4"}]}

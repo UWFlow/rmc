@@ -1,1 +1,1 @@
-{"prof_id": "1544702", "prof_name": "Rewers, Mario", "info": {}, "ratings": []}
+{"prof_id": "1544702", "prof_name": "Rewers, Mario", "info": {"Department": " Languages", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Nice guy. Knows his stuff, but I think he was a little young while teaching me in winter 2011. Overall, not the best or the worst: he is good.", "date": "9/27/12", "r_clarity": "4", "rating_id": "20665848", "r_easy": "4", "class": "GER101", "r_interest": "5", "r_helpful": "4"}]}

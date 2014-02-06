@@ -1,0 +1,1 @@
+{"prof_id": "1792780", "prof_name": "Parks, Jen", "info": {"Department": " Earth Science", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Awesome!", "date": "1/16/13", "r_clarity": "5", "rating_id": "21265716", "r_easy": "4", "class": "EARTH232", "r_interest": "4", "r_helpful": "5"}]}

@@ -1,0 +1,1 @@
+{"prof_id": "1747023", "prof_name": "Kamel, Mohamed", "info": {"Department": " Electrical & Comp. Engineering", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Great Professor!", "date": "9/8/12", "r_clarity": "5", "rating_id": "20633751", "r_easy": "4", "class": "ECE750", "r_interest": "5", "r_helpful": "5"}]}

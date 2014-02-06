@@ -1,1 +1,1 @@
-{"prof_id": "1483089", "prof_name": "Bauman, Carol", "info": {}, "ratings": []}
+{"prof_id": "1483089", "prof_name": "Bauman, Carol", "info": {"Department": " Music", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Really knows her stuff and you'll benefit greatly from her classes. Her handwriting is beautiful. Favourite part of her classes was when she had everyone sing together!", "date": "11/25/13", "r_clarity": "5", "rating_id": "22386796", "r_easy": "4", "class": "MUSIC 270", "r_interest": "5", "r_helpful": "5"}]}

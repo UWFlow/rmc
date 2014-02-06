@@ -1,1 +1,1 @@
-{"prof_id": "1616427", "prof_name": "Dea, Shannon Jennifer", "info": {}, "ratings": []}
+{"prof_id": "1616427", "prof_name": "Dea, Shannon Jennifer", "info": {"Department": " Philosophy", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Very clear and concise. Definitely knows her material! Does not shut you down. Great sense of humour.", "date": "10/14/12", "r_clarity": "5", "rating_id": "20700948", "r_easy": "3", "class": "Pphil110", "r_interest": "5", "r_helpful": "5"}]}

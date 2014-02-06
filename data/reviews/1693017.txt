@@ -1,1 +1,1 @@
-{"prof_id": "1693017", "prof_name": "Abdulla, Rosanne", "info": {}, "ratings": []}
+{"prof_id": "1693017", "prof_name": "Abdulla, Rosanne", "info": {"Department": " French Studies", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Very Nice. Very Hot.", "date": "1/7/14", "r_clarity": "4", "rating_id": "22711978", "r_easy": "3", "class": "FR 152", "r_interest": "4", "r_helpful": "4"}]}

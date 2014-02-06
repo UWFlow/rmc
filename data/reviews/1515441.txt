@@ -1,1 +1,1 @@
-{"prof_id": "1515441", "prof_name": "Siemerling, Winfried", "info": {}, "ratings": []}
+{"prof_id": "1515441", "prof_name": "Siemerling, Winfried", "info": {"Department": " English", "School": " University of Waterloo", "Location": " Waterloo, ON"}, "ratings": [{"comment": "Great prof, who knows more than you actually think. One of the few professors who knows how to explain things in a crystal manner. Take any class you can with him.", "date": "2/1/13", "r_clarity": "5", "rating_id": "21313488", "r_easy": "4", "class": "ENGL770", "r_interest": "5", "r_helpful": "5"}]}
