@@ -41,7 +41,7 @@ course? #}
 
 {% call macros.us_template('took-this-tpl') %}
 <a class="person-pic" href="<%- friend.profile_url %>">
-  <img class="img-rounded" src="<%- friend.fb_pic_url %>">
+  <img class="img-rounded" src="<%- friend.profile_pic_urls['default'] %>">
 </a>
 <div class="person-info">
   <a class="person-name" href="<%- friend.profile_url %>">

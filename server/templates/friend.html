@@ -26,11 +26,11 @@
 <% friend = friend.toJSON(); %>
 <% if (is_friend_clickable) { %>
   <a class="friend-pic" href="<%- friend.profile_url %>">
-    <img class="img-rounded" src="<%- friend.fb_pic_url %>">
+    <img class="img-rounded" src="<%- friend.profile_pic_urls['default'] %>">
   </a>
 <% } else { %>
   <div class="friend-pic" href="<%- friend.profile_url %>">
-    <img class="img-rounded" src="<%- friend.fb_pic_url %>">
+    <img class="img-rounded" src="<%- friend.profile_pic_urls['default'] %>">
   </div>
 <% } %>
 <div class="friend-info">

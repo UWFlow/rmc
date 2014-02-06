@@ -18,8 +18,8 @@ function(RmcBackbone, $, _, ratings, util) {
         this.set('comment_date', util.toDate(attrs.comment_date));
       }
 
-      if (attrs && attrs.author && attrs.author.fb_pic_url) {
-        this.set('author_pic_url', attrs.author.fb_pic_url);
+      if (attrs && attrs.author && attrs.author.profile_pic_url) {
+        this.set('author_pic_url', attrs.author.profile_pic_url);
       } else if (attrs && attrs.author && attrs.author.program_name) {
         // TODO(mack): remove require()
         // TODO(mack): maybe should set short_program_name on server

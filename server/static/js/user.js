@@ -39,12 +39,6 @@ function(RmcBackbone, _, _s, util, _course, _points) {
 
     initialize: function(attributes) { },
 
-    getFbPicUrl: function() {
-      // TODO(mack): add support for custom width and height
-      return _s.sprintf(
-        'https://graph.facebook.com/%s/picture', this.get('fbid'));
-    },
-
     getProfileUrl: function() {
       return '/profile/' + this.get('id');
     },
@@ -58,7 +52,7 @@ function(RmcBackbone, _, _s, util, _course, _points) {
       var json = this._super('toJSON', arguments);
       return _.extend(json, {
         profile_url: this.getProfileUrl(),
-        fb_pic_url: this.getFbPicUrl(),
+        profile_pic_urls: this.get('profile_pic_urls'),
         short_program_name: this.getShortProgramName()
       });
     },

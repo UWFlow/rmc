@@ -197,9 +197,15 @@ class User(me.Document):
         return self._course_ids
 
     @property
-    # TODO(mack): support different sized pictures
-    def fb_pic_url(self):
-        return 'https://graph.facebook.com/%s/picture' % self.fbid
+    def profile_pic_urls(self):
+        return {
+            'default': 'https://graph.facebook.com/%s/picture' % (
+                    self.fbid),
+            'large': 'https://graph.facebook.com/%s/picture?type=large' % (
+                    self.fbid),
+            'square': 'https://graph.facebook.com/%s/picture?type=square' % (
+                    self.fbid),
+        }
 
     @property
     def profile_url(self):
@@ -349,7 +355,7 @@ class User(me.Document):
             'last_name': self.last_name,
             'name': self.name,
             'friend_ids': self.friend_ids,
-            'fb_pic_url': self.fb_pic_url,
+            'profile_pic_urls': self.profile_pic_urls,
             'program_name': program_name,
             #'last_term_name': last_term_name,
             #'last_program_year_id': self.last_program_year_id,
@@ -385,7 +391,7 @@ class User(me.Document):
             return {
                 'id': self.id,
                 'name': 'You' if is_current_user else self.name,
-                'fb_pic_url': self.fb_pic_url,
+                'profile_pic_url': self.profile_pic_urls['square'],
             }
 
         else:
