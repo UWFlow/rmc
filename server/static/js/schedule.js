@@ -505,6 +505,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       if (this.scheduleShareView) {
         this.$('.schedule-share-placeholder').replaceWith(
             this.scheduleShareView.render().el);
+        this.scheduleShareView.delegateEvents();
       }
 
       return this;
