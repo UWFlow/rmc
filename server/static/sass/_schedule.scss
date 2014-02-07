@@ -210,7 +210,6 @@ $toolbarBg: #FAFAFA;
         background-color: lighten($textColor, 15%);
         color: #FFF;
       }
-
       .step-text {
         min-height: 60px;
         margin-bottom: 5px;
@@ -223,7 +222,7 @@ $toolbarBg: #FAFAFA;
   }
 
   .schedule-input-textarea {
-    height: 150px;  // TODO(david): How do I get this to stretch vertically?
+    height: 250px;  // TODO(david): How do I get this to stretch vertically?
     resize: none;
     width: 89%;
     box-sizing: border-box;
