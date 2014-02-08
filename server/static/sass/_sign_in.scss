@@ -1,11 +1,12 @@
 .fb-login-button {
+  $button-height: 50px;
+
   display: inline-block;
   @include border-radius(5px);
   background-color: #AEACAC;
   @include box-shadow(0 0 10px rgba(0, 0, 0, 0.2));
   @include background-image(linear-gradient(top, #5575AF, #355997));
-  height: 50px;
-  line-height: 49px;
+  height: $button-height;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -17,6 +18,10 @@
   opacity: 0.8;
   @include transition(all 0.2s ease-out);
   margin-bottom: 10px;
+
+  // Fixes an issue where hovering over a non 1.0-opacity element causes
+  // Chrome to wobble by a pixel: http://stackoverflow.com/a/16833496/392426
+  -webkit-backface-visibility: hidden;
 
   &:hover {
     @include transition(all 0.2s ease-out);
@@ -33,14 +38,16 @@
     border-radius: 5px 0 0 5px;
     @include background-image(linear-gradient(top, #3B5D9B, #29416E));
     float: left;
-    height: 50px;
-    width: 50px;
+    line-height: $button-height - 1;
+    height: $button-height;
+    width: $button-height;
 
     .fb-logo-f {
       height: 30px;
       width: 15px;
     }
   }
+
   .fb-login-text {
     padding: 0 25px;
     font-weight: bold;
@@ -48,6 +55,7 @@
     color: white;
     text-shadow: 0 1px 0 rgba(20, 20, 20, .5);
     text-align: center;
+    line-height: $button-height - 1;
   }
 }
 
