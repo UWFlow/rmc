@@ -154,6 +154,18 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     $(this).select();
   });
 
+  // Don't show "add to shortlist" alert after user closes it once
+  var hideShortlistAlertKey = 'hide-shortlist-alert';
+  if (_util.getLocalData(hideShortlistAlertKey)){
+    $('#shortlist-alert').hide();
+  } else{
+    // Bind function to store that alert is closed on close
+    $('#shortlist-alert').bind('close.bs.alert', function() {
+        _util.storeLocalData(hideShortlistAlertKey, true,
+            /* expiration */ +new Date() + (1000 * 60 * 60 * 24 * 30 * 3));
+    });
+  }
+
   // Possibly show a modal pop-up to prompt user to review course
   window.setTimeout(function() {
     if (window.pageData.courseIdToReview || _util.getQueryParam('review_modal')) {
