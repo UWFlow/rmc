@@ -151,13 +151,15 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
 
     // Show "add to shortlist" alert if not previously dismissed
     var hideShortlistAlertKey = 'hide-shortlist-alert';
+    var $shortlistAlert = $('#shortlist-alert');
     if (!_util.getLocalData(hideShortlistAlertKey)){
-      $('#shortlist-alert').slideDown("fast");
-      // Remember that alert was dimissed when it is closed
-      $('#shortlist-alert').bind('close.bs.alert', function() {
-          _util.storeLocalData(hideShortlistAlertKey, true,
-              /* expiration */ +new Date() + (1000 * 60 * 60 * 24 * 30 * 3));
-      });
+      $shortlistAlert
+        .slideDown("fast")
+        .on('close.bs.alert', function() {
+            // Remember the alert was dismissed
+            _util.storeLocalData(hideShortlistAlertKey, true,
+                /* expiration */ +new Date() + (1000 * 60 * 60 * 24 * 30 * 3));
+        });
     }
   });
 
