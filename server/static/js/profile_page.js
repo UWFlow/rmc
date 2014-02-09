@@ -152,7 +152,7 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     // Show "add to shortlist" alert if not previously dismissed
     var hideShortlistAlertKey = 'hide-shortlist-alert';
     var $shortlistAlert = $('#shortlist-alert');
-    if (!_util.getLocalData(hideShortlistAlertKey)){
+    if ($shortlistAlert.length && !_util.getLocalData(hideShortlistAlertKey)){
       $shortlistAlert
         .slideDown("fast")
         .on('close.bs.alert', function() {
