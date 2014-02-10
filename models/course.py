@@ -2,7 +2,7 @@ import re
 
 import mongoengine as me
 
-import professor
+import review
 import rating
 import section
 from rmc.shared import util
@@ -85,16 +85,37 @@ class Course(me.Document):
             'easiness': self.easiness.to_dict(),
         }
 
-    # TODO(david): Cache function result
-    # TODO(mack): deprecated
-    def get_professors(course, expanded=False):
-        professors = professor.Professor.objects(
-                id__in=course.professor_ids)
+    def get_reviews(self, current_user=None, user_courses=None):
+        """Return a list of all user reviews ("tips") about this course.
 
-        if expanded:
-            return professors.all()
-        else:
-            return professors.only('id', 'first_name', 'last_name')
+        Does not include professor reviews.
+
+        Arguments:
+            current_user: The current user. Used for revealing more author
+                information if possible (eg. reviews written by friends who
+                allow their friends to know that they wrote it).
+            user_courses: An optional list of all user_courses that's
+                associated with this course to speed up this function.
+        """
+        if not user_courses:
+            limit_fields = ['course_id', 'user_id', 'course_review']
+            user_courses = _user_course.UserCourse.objects(
+                    course_id=self.id).only(*limit_fields)
+
+        reviews = []
+        for uc in user_courses:
+            if (len(uc.course_review.comment) <
+                    review.CourseReview.MIN_REVIEW_LENGTH):
+                continue
+
+            reviews.append(uc.course_review.to_dict(current_user, uc.user_id))
+
+        # Filter out old reviews if we have enough results.
+        date_getter = lambda review: review['comment_date']
+        reviews = util.publicly_visible_ratings_and_reviews_filter(
+                reviews, date_getter, util.MIN_NUM_REVIEWS)
+
+        return reviews
 
     # TODO(mack): this function is way too overloaded, even to separate into
     # multiple functions based on usage

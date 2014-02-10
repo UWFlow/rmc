@@ -170,7 +170,7 @@ def freshness_filter(objs, to_date_func, num_days=None):
 
 def publicly_visible_ratings_and_reviews_filter(
         objs, to_date_func, min_num_objs, num_days=None):
-    """Return a fitlered list of objs that can be public facing.
+    """Return a filtered list of ratings and reviews that can be public facing.
 
     Return the "freshest" objects, but try to return at least min_num_objs.
     """

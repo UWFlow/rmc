@@ -261,19 +261,7 @@ def course_page(course_id):
         user_dicts[current_user.id] = current_user.to_dict(
                 include_course_ids=True)
 
-    def tip_from_uc(uc_dict):
-        # TODO(david): Don't instantiate a class just to call a method on it
-        return m.CourseReview(**uc_dict['course_review']).to_dict(current_user,
-                uc_dict['user_id'])
-
-    tip_dict_list = [tip_from_uc(uc_dict) for uc_dict in user_course_dict_list
-            if len(uc_dict['course_review']['comment']) >=
-                m.review.CourseReview.MIN_REVIEW_LENGTH]
-
-    # Try to not show older reviews, if we have enough results
-    date_getter = lambda review: review['comment_date']
-    tip_dict_list = util.publicly_visible_ratings_and_reviews_filter(
-            tip_dict_list, date_getter, util.MIN_NUM_REVIEWS)
+    tip_dict_list = course.get_reviews(current_user, user_course_list)
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_IMPRESSION,

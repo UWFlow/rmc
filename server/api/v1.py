@@ -15,7 +15,12 @@ def get_course(course_id):
     if not course:
         return api_util.api_not_found('Course %s not found. :(' % course_id)
 
-    return api_util.jsonify(course.to_dict())
+    current_user = view_helpers.get_current_user()
+    course_reviews = course.get_reviews(current_user)
+
+    return api_util.jsonify(dict(course.to_dict(), **{
+        'reviews': course_reviews,
+    }))
 
 
 @app.route('/api/v1/courses/<string:course_id>/professors', methods=['GET'])
