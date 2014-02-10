@@ -15,12 +15,12 @@ MIN_NUM_REVIEWS = 5
 MIN_NUM_RATINGS = 20
 
 
-def json_loads(json_str):
-    return json_util.loads(json_str)
+def json_loads(json_str, *args, **kwargs):
+    return json_util.loads(json_str, *args, **kwargs)
 
 
-def json_dumps(obj):
-    return json_util.dumps(obj).replace('</', '<\\/')
+def json_dumps(obj, *args, **kwargs):
+    return json_util.dumps(obj, *args, **kwargs).replace('</', '<\\/')
 
 
 def dict_to_list(dikt):

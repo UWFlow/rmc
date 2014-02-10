@@ -15,19 +15,22 @@ import rmc.shared.constants as c
 import rmc.shared.secrets as s
 import rmc.models as m
 import rmc.html_snapshots as html_snapshots
+import rmc.shared.facebook as facebook
 import rmc.shared.util as util
 import rmc.shared.rmclogger as rmclogger
+from rmc.server.app import app
 import rmc.server.profile as profile
 import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
 import rmc.analytics.stats as rmc_stats
 import rmc.shared.schedule_screenshot as schedule_screenshot
 
-import rmc.shared.facebook as facebook
+# While not referenced directly, these imports have necessary side-effects.
+# (eg. Paths are mapped to API request handlers with the @route decorator.)
+import rmc.server.api.v1  # NOQA @UnusedImport
+
 
 VERSION = int(time.time())
-
-app = flask.Flask(__name__)
 
 SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
 
