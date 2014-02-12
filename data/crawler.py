@@ -315,12 +315,15 @@ def get_opendata_courses():
 
 def get_opendata_exam_schedule():
     api_key = API_UWATERLOO_API_KEY
-    url = 'http://api.uwaterloo.ca/public/v1/' + \
-            '?key={api_key}&service=ExamSchedule'.format(api_key=api_key)
+    current_term_id = m.Term.get_current_term_id()
+    current_quest_termid = m.Term.get_quest_id_from_term_id(current_term_id)
+    url = ('http://api.uwaterloo.ca/v2/terms/{term_id}/examschedule.json'
+           '?key={api_key}').format(api_key=api_key,
+                                    term_id=current_quest_termid)
 
     data = get_data_from_url(url)
     try:
-        data = data['response']['data']['result']
+        data = data['data']
     except KeyError:
         print "crawler.py: ExamSchedule API call failed with data:\n%s" % data
         raise
