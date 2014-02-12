@@ -12,6 +12,7 @@ import rmc.shared.facebook as facebook
 
 
 # TODO(david): Bring in other API methods from server.py to here.
+# TODO(david): Document API methods. Clarify which methods accept user auth.
 
 
 ###############################################################################
@@ -154,7 +155,8 @@ def login_facebook():
             to our app. The user's FB ID is also obtained from this token.
 
     Responds with the session cookie via the `set-cookie` header on success.
-    Send up this cookie for all API requests that accept user authentication.
+    Send the associated cookie for all subsequent API requests that accept
+    user authentication.
     """
     # FIXME(david): We must move Flow to HTTPS because clients will
     #     send users' access tokens in this route.
@@ -167,7 +169,7 @@ def login_facebook():
     token_info = facebook.get_access_token_info(fb_access_token)
 
     if not token_info:
-        return api_util.api_forbidden('Could not check FB access token.')
+        return api_util.api_bad_request('Could not check FB access token.')
 
     if not token_info['is_valid'] or not token_info.get('user_id'):
         return api_util.api_forbidden('The given FB credentials are invalid.')
