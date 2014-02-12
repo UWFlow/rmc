@@ -8,6 +8,7 @@ import time
 import urlparse
 
 from rmc.server.app import app
+import rmc.server.api.api_util as api_util
 import rmc.shared.util as util
 
 # A long token normally lasts for 60 days
@@ -80,8 +81,8 @@ def get_access_token_info(access_token):
                 app.config['FB_APP_SECRET']))
 
     if not res.ok or not res.json.get('data'):
-        logging.error('Uh oh, something went wrong checking FB access token.')
-        return None
+        raise api_util.ApiBadRequestError('Could not check FB access token.',
+                payload={'fb_response': res.json})
 
     return res.json['data']
 
