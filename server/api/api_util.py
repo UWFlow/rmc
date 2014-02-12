@@ -9,6 +9,10 @@ def api_not_found(message):
     return (message, 404)
 
 
+def api_forbidden(message):
+    return (message, 403)
+
+
 # TODO(david): Actually, our existing JSON-serialized date format is a little
 #     disgusting ({ "start_date": { "$date": 1354840200000 } }). It would be
 #     nice to just be the timestamp, but would require updating all our JS so
