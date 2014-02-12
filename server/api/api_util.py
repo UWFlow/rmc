@@ -9,6 +9,11 @@ def api_not_found(message):
     return (message, 404)
 
 
+# TODO(david): Actually, our existing JSON-serialized date format is a little
+#     disgusting ({ "start_date": { "$date": 1354840200000 } }). It would be
+#     nice to just be the timestamp, but would require updating all our JS so
+#     that our web client can consume the v1 API. Also, our Mongo IDs are
+#     disgusting too ({ "$oid": "507495f87903f30a4dedd202" }).
 def jsonify(data):
     """Returns a flask.Response of data, JSON-stringified.
 
