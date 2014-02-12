@@ -42,7 +42,7 @@ whatever you want. They should be chicken scratches. (Bonus marks if you can
 actually train a chicken to scratch out your mock-up.) Mock-ups are purely
 meant to define interaction and layout -- not visual styling/design.
 
-The ideas is to be able to very quickly iterate on UI concepts, before it gets
+The idea is to be able to very quickly iterate on UI concepts, before it gets
 much more difficult to change once committed to code. It's also just easier
 psychologically for a reviewer to suggest big changes on a 5-minute chicken
 scratch than on beautiful shiny working code.
