@@ -2,13 +2,17 @@
 
 import collections
 
+import flask
+
 import rmc.models as m
 from rmc.server.app import app
 import rmc.server.api.api_util as api_util
 import rmc.server.view_helpers as view_helpers
+import rmc.shared.facebook as facebook
 
 
 # TODO(david): Bring in other API methods from server.py to here.
+# TODO(david): Document API methods. Clarify which methods accept user auth.
 
 
 ###############################################################################
@@ -135,3 +139,47 @@ def get_course_users(course_id):
         'users': [user.to_dict() for user in users],
         'term_users': term_users,
     })
+
+
+###############################################################################
+# Endpoints used for authentication
+
+
+@app.route('/api/v1/login/facebook', methods=['POST'])
+def login_facebook():
+    """Attempt to login a user with FB credentials encoded in the POST body.
+
+    Expects the following form data:
+        fb_access_token: Facebook user access token. This is used to verify
+            that the user did authenticate with Facebook and is authenticated
+            to our app. The user's FB ID is also obtained from this token.
+
+    Responds with the session cookie via the `set-cookie` header on success.
+    Send the associated cookie for all subsequent API requests that accept
+    user authentication.
+    """
+    # FIXME(david): We must move Flow to HTTPS because clients will
+    #     send users' access tokens in this route.
+
+    req = flask.request
+    fb_access_token = req.form.get('fb_access_token')
+
+    # We perform a check to confirm the fb_access_token is indeed the person
+    # identified by fbid, and that it was our app that generated the token.
+    token_info = facebook.get_access_token_info(fb_access_token)
+
+    if not token_info:
+        return api_util.api_bad_request('Could not check FB access token.')
+
+    if not token_info['is_valid'] or not token_info.get('user_id'):
+        return api_util.api_forbidden('The given FB credentials are invalid.')
+
+    fbid = str(token_info['user_id'])
+    user = m.User.objects(fbid=fbid).first()
+
+    if not user:
+        return api_util.api_forbidden('No user with fbid %s exists. '
+                'Create an account at uwflow.com.' % fbid)
+
+    view_helpers.login_as_user(user)
+    return 'Logged in user %s' % user.name

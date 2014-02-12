@@ -5,6 +5,18 @@ import flask
 import rmc.shared.util as util
 
 
+# TODO(david): Errors should return JSON similar to success message. Refactor
+#     to use http://flask.pocoo.org/docs/patterns/apierrors/
+
+
+def api_bad_request(message):
+    return (message, 404)
+
+
+def api_forbidden(message):
+    return (message, 403)
+
+
 def api_not_found(message):
     return (message, 404)
 
