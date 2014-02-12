@@ -5,6 +5,9 @@ import flask
 import rmc.shared.util as util
 
 
+# TODO(david): Errors should return JSON similar to success message.
+
+
 def api_not_found(message):
     return (message, 404)
 

@@ -149,10 +149,9 @@ def login_facebook():
     """Attempt to login a user with FB credentials encoded in the POST body.
 
     Expects the following form data:
-        fbid: Facebook user ID
         fb_access_token: Facebook user access token. This is used to verify
             that the user did authenticate with Facebook and is authenticated
-            to our app.
+            to our app. The user's FB ID is also obtained from this token.
 
     Responds with the session cookie via the `set-cookie` header on success.
     Send up this cookie for all API requests that accept user authentication.
@@ -161,7 +160,6 @@ def login_facebook():
     #     send users' access tokens in this route.
 
     req = flask.request
-    fbid = req.form.get('fbid')
     fb_access_token = req.form.get('fb_access_token')
 
     # We perform a check to confirm the fb_access_token is indeed the person
@@ -171,10 +169,12 @@ def login_facebook():
     if not token_info:
         return api_util.api_forbidden('Could not check FB access token.')
 
-    if not token_info['is_valid'] or str(token_info['user_id']) != fbid:
+    if not token_info['is_valid'] or not token_info.get('user_id'):
         return api_util.api_forbidden('The given FB credentials are invalid.')
 
+    fbid = str(token_info['user_id'])
     user = m.User.objects(fbid=fbid).first()
+
     if not user:
         return api_util.api_forbidden('No user with fbid %s exists. '
                 'Create an account at uwflow.com.' % fbid)
