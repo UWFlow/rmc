@@ -383,57 +383,89 @@ def import_opendata_exam_schedules():
     with open(file_name, 'r') as f:
         data = json.load(f)
 
+        # Data will contain something like this:
+        #
+        #   [{
+        #       "course": "AFM 131",
+        #       "sections": [
+        #           {
+        #               "date": "2014-04-17",
+        #               "day": "Thursday",
+        #               "end_time": "10:00 PM",
+        #               "location": "DC 1350",
+        #               "notes": "",
+        #               "section": "001",
+        #               "start_time": "7:30 PM"
+        #           },
+        #           {
+        #               "date": "",
+        #               "day": "",
+        #               "end_time": "",
+        #               "location": "",
+        #               "notes": "See blah blah blah",
+        #               "section": "081 Online",
+        #               "start_time": ""
+        #           }
+        #       ]
+        #   }, ...]
+        #
+        # TODO(jlfwong): Refactor this to separate concerns of file IO, db
+        # storage, and data processing so that the data processing step can be
+        # tested, and this example can be moved into tests.
+
         for exam_data in data:
-            course_id = m.Course.code_to_id(exam_data.get('Course'))
-            sections = exam_data.get('Section')
-            day = exam_data.get('Day')
+            course_id = m.Course.code_to_id(exam_data.get('course'))
+            for section_data in exam_data.get('sections', []):
+                section = section_data.get('section')
+                day = section_data.get('day')
 
-            # Catch these to be more detailed in our errors
-            if sections.endswith('Online'):
-                errors.append("Skipping online course: %s %s"
-                              % (course_id, sections))
-                continue
-            if 'Exam removed' in day:
-                errors.append("Skipping removed course: %s" % (course_id))
-                continue
-            if 'See http:' in day:
-                errors.append("Skipping url for course: %s" % (course_id))
-                continue
+                # Catch these to be more detailed in our errors
+                if section.endswith('Online'):
+                    errors.append("Skipping online course: %s %s"
+                                % (course_id, section))
+                    continue
+                if 'Exam removed' in day:
+                    errors.append("Skipping removed course: %s" % (course_id))
+                    continue
+                if 'See http:' in day:
+                    errors.append("Skipping url for course: %s" % (course_id))
+                    continue
 
-            # E.g. April 13, 2013
-            date = exam_data.get('Date')
-            # E.g. 11:30 AM
-            start_time = exam_data.get('Start')
-            end_time = exam_data.get('End')
-            # E.g. December 11, 2012 7:30 PM
-            #      December 11, 2012 10:00 PM
-            date_format = "%B %d, %Y %I:%M %p"
-            start_date_string = "%s %s" % (date, start_time)
-            end_date_string = "%s %s" % (date, end_time)
+                # E.g. 2014-04-17
+                date = section_data.get('date')
+                # E.g. 11:30 AM
+                start_time = section_data.get('start_time')
+                end_time = section_data.get('end_time')
+                # E.g. 2014-04-17 7:30 PM
+                #      2014-04-17 10:00 PM
+                date_format = "%Y-%m-%d %I:%M %p"
+                start_date_string = "%s %s" % (date, start_time)
+                end_date_string = "%s %s" % (date, end_time)
 
-            try:
-                start_date = rmc_util.eastern_to_utc(
+                try:
+                    start_date = rmc_util.eastern_to_utc(
                         datetime.fromtimestamp(
                             time.mktime(
                                 time.strptime(start_date_string,
-                                              date_format))))
-                end_date = rmc_util.eastern_to_utc(
+                                            date_format))))
+                    end_date = rmc_util.eastern_to_utc(
                         datetime.fromtimestamp(
                             time.mktime(
                                 time.strptime(end_date_string, date_format))))
-            except Exception as exp:
-                errors.append("Could not get date (%s)\n%s" % (exam_data, exp))
-                continue
+                except Exception as exp:
+                    errors.append("Could not get date (%s)\n%s" %
+                                  (section_data, exp))
+                    continue
 
-            exam = m.Exam(
-                course_id=course_id,
-                sections=sections,
-                start_date=start_date,
-                end_date=end_date,
-                location=exam_data.get('Location'),
-                info_known=bool(start_date and end_date),
-            )
-            processed_exams.append(exam)
+                exam = m.Exam(
+                    course_id=course_id,
+                    sections=section,
+                    start_date=start_date,
+                    end_date=end_date,
+                    location=section_data.get('location'),
+                    info_known=bool(start_date and end_date),
+                )
+                processed_exams.append(exam)
 
     # Do some sanity checks to make sure OpenData is being reasonable.
     # TODO(Sandy): More sanity checks here welcome
