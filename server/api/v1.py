@@ -23,7 +23,7 @@ import rmc.shared.facebook as facebook
 def get_course(course_id):
     course = m.Course.objects.with_id(course_id)
     if not course:
-        return api_util.api_not_found('Course %s not found. :(' % course_id)
+        raise api_util.ApiNotFoundError('Course %s not found. :(' % course_id)
 
     current_user = view_helpers.get_current_user()
     course_reviews = course.get_reviews(current_user)
@@ -38,7 +38,7 @@ def get_course(course_id):
 def get_course_professors(course_id):
     course = m.Course.objects.with_id(course_id)
     if not course:
-        return api_util.api_not_found('Course %s not found. :(' % course_id)
+        raise api_util.ApiNotFoundError('Course %s not found. :(' % course_id)
 
     current_user = view_helpers.get_current_user()
     professors = m.Professor.get_full_professors_for_course(
@@ -110,7 +110,7 @@ def get_course_users(course_id):
     """
     course = m.Course.objects.with_id(course_id)
     if not course:
-        return api_util.api_not_found('Course %s not found. :(' % course_id)
+        raise api_util.ApiNotFoundError('Course %s not found. :(' % course_id)
 
     current_user = view_helpers.get_current_user()
     course_dict_list, user_course_dict_list, user_course_list = (
@@ -168,18 +168,16 @@ def login_facebook():
     # identified by fbid, and that it was our app that generated the token.
     token_info = facebook.get_access_token_info(fb_access_token)
 
-    if not token_info:
-        return api_util.api_bad_request('Could not check FB access token.')
-
     if not token_info['is_valid'] or not token_info.get('user_id'):
-        return api_util.api_forbidden('The given FB credentials are invalid.')
+        raise api_util.ApiForbiddenError(
+                'The given FB credentials are invalid.')
 
     fbid = str(token_info['user_id'])
     user = m.User.objects(fbid=fbid).first()
 
     if not user:
-        return api_util.api_forbidden('No user with fbid %s exists. '
+        raise api_util.ApiForbiddenError('No user with fbid %s exists. '
                 'Create an account at uwflow.com.' % fbid)
 
     view_helpers.login_as_user(user)
-    return 'Logged in user %s' % user.name
+    return api_util.jsonify({'message': 'Logged in user %s' % user.name})

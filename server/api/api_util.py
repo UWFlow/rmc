@@ -2,23 +2,38 @@
 
 import flask
 
+from rmc.server.app import app
 import rmc.shared.util as util
 
 
-# TODO(david): Errors should return JSON similar to success message. Refactor
-#     to use http://flask.pocoo.org/docs/patterns/apierrors/
+class ApiError(Exception):
+    status_code = 400
+
+    def __init__(self, message):
+        super(ApiError, self).__init__()
+        self.message = message
+
+    def to_dict(self):
+        return {'error': self.message}
 
 
-def api_bad_request(message):
-    return (message, 404)
+class ApiBadRequestError(ApiError):
+    status_code = 400
 
 
-def api_forbidden(message):
-    return (message, 403)
+class ApiForbiddenError(ApiError):
+    status_code = 403
 
 
-def api_not_found(message):
-    return (message, 404)
+class ApiNotFoundError(ApiError):
+    status_code = 404
+
+
+@app.errorhandler(ApiError)
+def handle_api_error(error):
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
 
 
 # TODO(david): Actually, our existing JSON-serialized date format is a little
