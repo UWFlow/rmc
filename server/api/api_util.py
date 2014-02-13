@@ -9,17 +9,12 @@ import rmc.shared.util as util
 class ApiError(Exception):
     status_code = 400
 
-    def __init__(self, message, status_code=None, payload=None):
-        Exception.__init__(self)
+    def __init__(self, message):
+        super(ApiError, self).__init__()
         self.message = message
-        if status_code is not None:
-            self.status_code = status_code
-        self.payload = payload
 
     def to_dict(self):
-        return dict(self.payload or (), **{
-            'error': self.message
-        })
+        return {'error': self.message}
 
 
 class ApiBadRequestError(ApiError):
