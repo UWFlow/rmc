@@ -2,9 +2,9 @@ SHELL=/bin/bash
 
 .PHONY: local setup import_menlo import_critiques aggregate_data init_data \
         prod_import prod_import_mongo html_snapshots sitemap deploy clean \
-        test
+        test require_virtualenv_in_dev
 
-local:
+local: require_virtualenv_in_dev
 	./local_server.sh
 
 install: os-install common-install ;
@@ -27,7 +27,7 @@ html_snapshots:
 		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:5000; \
 	fi
 
-lint:
+lint: require_virtualenv_in_dev
 	third_party/rmc_linter/runlint.py | tee /tmp/linterrors.txt
 
 sitemap:
@@ -35,13 +35,13 @@ sitemap:
 	PYTHONPATH=.. python html_snapshots/sitemap.py http://uwflow.com > server/static/sitemap.txt
 	curl www.google.com/webmasters/tools/ping?sitemap=http://uwflow.com/static/sitemap.txt
 
-import_menlo:
+import_menlo: require_virtualenv_in_dev
 	PYTHONPATH=.. python data/processor.py all
 
-import_critiques:
+import_critiques: require_virtualenv_in_dev
 	PYTHONPATH=.. python data/evals/import_critiques.py data/evals/output/results_testing.txt
 
-aggregate_data:
+aggregate_data: require_virtualenv_in_dev
 	PYTHONPATH=.. python data/aggregator.py all
 
 init_data: import_menlo aggregate_data
@@ -71,10 +71,22 @@ deploy:
 		cat deploy.sh | ssh rmc DEPLOYER=`whoami` sh; \
 	fi
 
-stats:
+require_virtualenv_in_dev:
+	@if [[ `whoami` = 'rmc' || "${VIRTUAL_ENV}" = "${HOME}/.virtualenv/rmc" ]]; then \
+		true; \
+	else \
+		echo "ERROR: You are not in the rmc virtualenv"; \
+		echo "To activate, run:"; \
+		echo ; \
+		echo "   source ~/.virtualenv/rmc/bin/activate"; \
+		echo ; \
+		false; \
+	fi
+
+stats: require_virtualenv_in_dev
 	PYTHONPATH=.. python analytics/stats.py
 
-test:
+test: require_virtualenv_in_dev
 	PYTHONPATH=.. nosetests
 
 clean:
