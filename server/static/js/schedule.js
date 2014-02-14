@@ -575,7 +575,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
 
     events: {
       'input .schedule-input-textarea': 'inputSchedule',
-      'paste .schedule-input-textarea': 'inputSchedule'
+      'click .schedule-input-textarea': 'onFocus'
     },
 
     initialize: function() {
@@ -586,9 +586,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       return this;
     },
 
-    inputSchedule: function(evt) {
-      this.$('.schedule-input-error').empty();
+    onFocus: function() {
+      this.$('.schedule-input-textarea').select();
+    },
 
+    inputSchedule: function(evt) {
       // Store the schedule text
       var data = $(evt.currentTarget).val();
       if (!data) {
@@ -602,10 +604,16 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
 
     addScheduleData: function(data) {
       var scheduleData;
+      var exceptionThrown = false;
       try {
         scheduleData = parseSchedule(data);
         this.$('.schedule-input-textarea').prop('disabled', true);
       } catch (ex) {
+        mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
+        exceptionThrown = true;
+      }
+
+      if (!scheduleData.processed_items.length || exceptionThrown) {
         $.ajax('/api/schedule/log', {
           data: {
             schedule: data
@@ -613,11 +621,15 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
           type: 'POST'
         });
 
-        this.$('.schedule-input-error').text(
-            'Uh oh. Could not parse your schedule :( ' +
-            'Check that you\'ve pasted your schedule correctly.');
+        window.alert(
+          'Uh oh, we couldn\'t parse your schedule. ' +
+          'Please make sure you copied the list view (not the weekly ' +
+          'calendar view) and try again.\n\n' +
+          'If you think the problem is on our end, please let us know!'
+        );
 
-        mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
+        this.$('.schedule-input-textarea').prop('disabled', false);
+        this.onFocus();
         return;
       }
 
