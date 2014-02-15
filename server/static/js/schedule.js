@@ -828,7 +828,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
     var date = new Date();
     var month = date.getMonth();
     var year = date.getFullYear();
-    var monthStr = ['Spring', 'Fall', 'Winter'][Math.floor(month/4)];
+    var monthStr = ['Winter', 'Spring', 'Fall'][Math.floor(month/4)];
     return monthStr + ' ' + year;
   };
 
