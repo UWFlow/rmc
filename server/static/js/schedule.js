@@ -623,8 +623,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
 
         window.alert(
           'Uh oh, we couldn\'t parse your schedule. ' +
-          'Please make sure you copied the list view (not the weekly ' +
-          'calendar view) and try again.\n\n' +
+          'Please make sure you copied the List View (not the Weekly ' +
+          'Calendar View) and try again.\n\n' +
           'If you think the problem is on our end, please let us know!'
         );
 
