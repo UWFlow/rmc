@@ -824,6 +824,14 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         '/schedule/ical/' + window.pageData.profileUserSecretId + ".ics";
   };
 
+  var getCurrentTermName = function() {
+    var date = new Date();
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    var monthStr = ['Spring', 'Fall', 'Winter'][Math.floor(month/4)];
+    return monthStr + ' ' + year;
+  };
+
   var parseSchedule = function(data) {
     // Get the term for the schedule. E.g. Fall 2012
     var termMatch = data.match(/(Spring|Fall|Winter)\s+(\d{4})/);
@@ -831,8 +839,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
     if (termMatch) {
       termName = termMatch[0];
     } else {
-      // TODO(Sandy)[2013_09->2014_01]: Don't hardcode term
-      termName = 'Fall 2013';
+      termName = getCurrentTermName();
     }
 
     // TODO(david): Change other places where we assume uppercase to any case
