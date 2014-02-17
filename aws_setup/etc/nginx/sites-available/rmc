@@ -1,7 +1,21 @@
 server {
   listen       80;
-  # server_name  planyourflow.com redccnt.com uwflow.com;
-  server_name  _;
+  server_name  uwflow.com;
+
+  # Redirect all HTTP traffic to HTTPS. See
+  # https://konklone.com/post/switch-to-https-now-for-free
+  return 301 https://$host$request_uri;
+}
+
+server {
+  listen 443 ssl;
+  server_name uwflow.com;
+
+  ssl_certificate /home/rmc/data/ssl/unified.crt;
+  ssl_certificate_key /home/rmc/data/ssl/uwflow.com-decrypted.key;
+
+  # TODO(david): See https://gist.github.com/konklone/6532544 for additional
+  #     security options.
 
   gzip on;
   gzip_vary on;
