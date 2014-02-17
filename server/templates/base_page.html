@@ -49,6 +49,7 @@
     <script>
       window.pageData = {};
       window.pageData.env = '{{ env }}';
+      window.pageData.NUM_KITTENS = {{ NUM_KITTENS|tojson|safe }};
       window.pageData.currentTermId = {{ current_term_id|tojson|safe }};
       {% if current_user_id %}
         window.pageData.currentUserId = {{ current_user_id|tojson|safe }};
@@ -199,7 +200,7 @@
 
         <ul class="nav pull-right">
           <li class="{{ 'active' if nav_item == 'courses' else '' }}">
-            <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Search Courses</a>
+            <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Search courses</a>
           </li>
 
           <li class="divider-vertical"></li>
@@ -270,7 +271,7 @@
                   alt="Mobile Analytics" />
           </a>
           <ul id="footer-fine-print">
-              <a href="/privacy">Privacy Policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="#">Terms of Service</a>
+              <a href="/privacy">Privacy policy</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href="/kittens">What's with the kittens?</a>
               <p id="affiliated">We're not affiliated with the University of Waterloo.</p>
           </ul>
         </div>

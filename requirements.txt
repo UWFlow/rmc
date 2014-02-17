@@ -38,3 +38,6 @@ celery==3.1.6
 
 # New Relic provides web app monitoring as a service: newrelic.com
 newrelic==2.6.0.5
+
+# Used for resizing kitten pictures
+Pillow==2.3.0

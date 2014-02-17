@@ -43,21 +43,21 @@ function(RmcBackbone, $, _, ratings, util) {
     },
 
     setAnonAvatar: function() {
-      var size = [
-          util.getHashCode('' + this.get('comment_date')) % 20 + 50,
-          util.getHashCode(this.get('comment')) % 10 + 40
-      ];
+      var kittenNum = (util.getHashCode(this.get('comment')) %
+                       pageData.NUM_KITTENS);
       this.set('author_pic_url',
-          'http://placekitten.com/g/' + size[0] + '/' + size[1]);
+          '/static/img/kittens/grey/' + kittenNum + '.jpg');
     },
 
     setProgramAvatar: function() {
+      var kittenNum = (util.getHashCode('' + this.get('program_name')) %
+                       pageData.NUM_KITTENS);
       var size = [
           util.getHashCode('' + this.get('program_name')) % 20 + 50,
           util.getHashCode(this.get('program_name') + 'Z') % 10 + 40
       ];
       this.set('author_pic_url',
-          'http://placekitten.com/' + size[0] + '/' + size[1]);
+          '/static/img/kittens/grey/' + kittenNum + '.jpg');
     }
   });
 
