@@ -14,11 +14,18 @@ server {
   ssl_certificate /home/rmc/data/ssl/unified.crt;
   ssl_certificate_key /home/rmc/data/ssl/uwflow.com-decrypted.key;
 
-  # TODO(david): See https://gist.github.com/konklone/6532544 for additional
-  #     security options.
-
   # Tell browsers to require SSL (max age in seconds).
   add_header Strict-Transport-Security max-age=31536000;
+
+  # Turn on session resumption using a 10 min cache shared across nginx
+  # processes as recommended by
+  # http://nginx.org/en/docs/http/configuring_https_servers.html
+  ssl_session_cache   shared:SSL:10m;
+  ssl_session_timeout 10m;
+  keepalive_timeout   70;
+
+  # TODO(david): See https://gist.github.com/konklone/6532544 for additional
+  #     SSL security options.
 
   gzip on;
   gzip_vary on;
