@@ -37,7 +37,7 @@ SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
 
 flask_render_template = flask.render_template
 
-NUM_KITTENS = kitten_data.count_kittens()
+KITTEN_DATA = kitten_data.get_kitten_data()
 
 
 def render_template(*args, **kwargs):
@@ -53,7 +53,7 @@ def render_template(*args, **kwargs):
     kwargs.update({
         'env': app.config['ENV'],
         'VERSION': VERSION,
-        'NUM_KITTENS': NUM_KITTENS,
+        'NUM_KITTENS': len(KITTEN_DATA),
         'js_dir': app.config['JS_DIR'],
         'ga_property_id': app.config['GA_PROPERTY_ID'],
         'current_user': view_helpers.get_current_user(),
@@ -429,6 +429,11 @@ def privacy():
     )
 
     return flask.render_template('privacy_page.html')
+
+
+@app.route('/kittens')
+def kittens():
+    return flask.render_template('kittens_page.html', kitten_data=KITTEN_DATA)
 
 
 @app.route('/about', methods=['GET'])

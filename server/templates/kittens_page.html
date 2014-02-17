@@ -1,0 +1,42 @@
+{% extends 'base_page.html' %}
+
+{% import 'macros.html' as macros %}
+
+{% block page_title %}What's with the Kittens?{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ '/static/css/kittens_page.css'|version }}">
+{% endblock %}
+
+{% block header %}
+  {{ macros.page_title("What's with the Kittens?") }}
+{% endblock %}
+
+{% block body %}
+
+<p>
+  We at Flow strongly believe that a picture is worth 1000 words, and
+  a picture of a cat is worth 1000 internet points, which are clearly better
+  than words. Thankfully, the people of the internet have so kindly provided
+  us with ample feline portraits to meet your fuzzy companion needs as you
+  peruse course offerings. Our pictures are all licensed under Creative
+  Commons and come from only the finest fuzzball photographers listed below:
+</p>
+
+{% for photo_info in kitten_data %}
+  <div class="kitten-card">
+    <a href="{{photo_info.urls.url[0]._content}}">
+      <img src="/static/img/kittens/color/{{ loop.index - 1 }}.png" />
+      <div class="caption">
+      {{ photo_info.title._content }} by
+      {% if photo_info.owner.realname %}
+          {{ photo_info.owner.realname }}
+      {% else %}
+          {{ photo_info.owner.username }}
+      {% endif %}
+      </div>
+    </a>
+  </div>
+{% endfor %}
+
+{% endblock %}
