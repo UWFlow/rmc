@@ -84,7 +84,7 @@ def download_photo(photo_info, index):
 
 
 new_flickr_url = sys.argv[1]
-new_photo_id = re.compile('\d+').findall(new_flickr_url)[0]
+new_photo_id = re.compile('\d+').findall(new_flickr_url)[-1]
 new_photo_info = get_photo_info_from_flickr(new_photo_id)
 
 index = kitten_data.add_kitten_data(new_photo_info)
