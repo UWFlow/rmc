@@ -7,9 +7,9 @@ import sys
 import requests
 from PIL import Image
 
-import rmc.shared.secrets as s
-import rmc.shared.constants as c
 import rmc.kittens.data as kitten_data
+import rmc.shared.constants as c
+import rmc.shared.secrets as s
 
 
 def get_photo_info_from_flickr(photo_id):
@@ -74,8 +74,8 @@ def download_photo(photo_info, index):
     color_img.thumbnail((COLOR_WIDTH, COLOR_HEIGHT), Image.ANTIALIAS)
     grey_img.thumbnail((GREY_WIDTH, GREY_HEIGHT), Image.ANTIALIAS)
 
-    color_img_path = os.path.join(BASE_OUTDIR, 'color', '%d.png' % index)
-    grey_img_path = os.path.join(BASE_OUTDIR, 'grey', '%d.png' % index)
+    color_img_path = os.path.join(BASE_OUTDIR, 'color', '%d.jpg' % index)
+    grey_img_path = os.path.join(BASE_OUTDIR, 'grey', '%d.jpg' % index)
 
     color_img.save(color_img_path)
     print >>sys.stderr, 'Saved', os.path.normpath(color_img_path)
@@ -83,9 +83,10 @@ def download_photo(photo_info, index):
     print >>sys.stderr, 'Saved', os.path.normpath(grey_img_path)
 
 
-new_flickr_url = sys.argv[1]
-new_photo_id = re.compile('\d+').findall(new_flickr_url)[-1]
-new_photo_info = get_photo_info_from_flickr(new_photo_id)
+if __name__ == '__main__':
+    new_flickr_url = sys.argv[1]
+    new_photo_id = re.compile('\d+').findall(new_flickr_url)[-1]
+    new_photo_info = get_photo_info_from_flickr(new_photo_id)
 
-index = kitten_data.add_kitten_data(new_photo_info)
-download_photo(new_photo_info, index)
+    index = kitten_data.add_kitten_data(new_photo_info)
+    download_photo(new_photo_info, index)

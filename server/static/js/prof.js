@@ -22,7 +22,7 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
         var attrs = attributes ? attributes : this.defaults;
         var kittenNum = util.getHashCode(attrs.name) % pageData.NUM_KITTENS;
         this.set('pictureUrl',
-            '/static/img/kittens/color/' + kittenNum + '.png');
+            '/static/img/kittens/color/' + kittenNum + '.jpg');
       }
 
       if (attributes && attributes.course_ratings) {

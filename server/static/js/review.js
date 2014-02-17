@@ -46,7 +46,7 @@ function(RmcBackbone, $, _, ratings, util) {
       var kittenNum = (util.getHashCode(this.get('comment')) %
                        pageData.NUM_KITTENS);
       this.set('author_pic_url',
-          '/static/img/kittens/grey/' + kittenNum + '.png');
+          '/static/img/kittens/grey/' + kittenNum + '.jpg');
     },
 
     setProgramAvatar: function() {
@@ -57,7 +57,7 @@ function(RmcBackbone, $, _, ratings, util) {
           util.getHashCode(this.get('program_name') + 'Z') % 10 + 40
       ];
       this.set('author_pic_url',
-          '/static/img/kittens/grey/' + kittenNum + '.png');
+          '/static/img/kittens/grey/' + kittenNum + '.jpg');
     }
   });
 

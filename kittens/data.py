@@ -5,10 +5,8 @@ data_path = os.path.join(os.path.dirname(__file__), 'data.json')
 
 
 def get_kitten_data():
-    kitten_file = open(data_path, 'r')
-    kitten_data = json.load(kitten_file)
-    kitten_file.close()
-    return kitten_data
+    with open(data_path, 'r') as kitten_file:
+        return json.load(kitten_file)
 
 
 def add_kitten_data(new_flickr_info):
@@ -30,7 +28,7 @@ def add_kitten_data(new_flickr_info):
         index = len(kitten_data)
         kitten_data.append(new_flickr_info)
 
-    kitten_file = open(data_path, 'w')
-    json.dump(kitten_data, kitten_file, indent=2)
-    kitten_file.close()
+    with open(data_path, 'w') as kitten_file:
+        json.dump(kitten_data, kitten_file, indent=2)
+
     return index
