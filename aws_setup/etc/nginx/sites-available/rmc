@@ -8,7 +8,7 @@ server {
 }
 
 server {
-  listen 443 ssl;
+  listen 443 ssl spdy;
   server_name uwflow.com;
 
   ssl_certificate /home/rmc/data/ssl/unified.crt;
