@@ -1,0 +1,106 @@
+[
+  {
+    "people": {
+      "haspeople": 0
+    }, 
+    "dateuploaded": "1242685625", 
+    "originalformat": "jpg", 
+    "owner": {
+      "username": "olaeinang", 
+      "realname": "Ola Einang", 
+      "nsid": "25782015@N04", 
+      "iconserver": "3037", 
+      "location": "Oslo, Norway", 
+      "path_alias": "olaeinang", 
+      "iconfarm": 4
+    }, 
+    "publiceditability": {
+      "canaddmeta": 0, 
+      "cancomment": 1
+    }, 
+    "id": "3544175674", 
+    "title": {
+      "_content": "Kitten I"
+    }, 
+    "media": "photo", 
+    "tags": {
+      "tag": [
+        {
+          "raw": "Kitten", 
+          "machine_tag": 0, 
+          "id": "25749876-3544175674-3046", 
+          "_content": "kitten", 
+          "author": "25782015@N04"
+        }, 
+        {
+          "raw": "Animals", 
+          "machine_tag": 0, 
+          "id": "25749876-3544175674-953", 
+          "_content": "animals", 
+          "author": "25782015@N04"
+        }, 
+        {
+          "raw": "Cat", 
+          "machine_tag": 0, 
+          "id": "25749876-3544175674-1344", 
+          "_content": "cat", 
+          "author": "25782015@N04"
+        }, 
+        {
+          "raw": "Animal", 
+          "machine_tag": 0, 
+          "id": "25749876-3544175674-952", 
+          "_content": "animal", 
+          "author": "25782015@N04"
+        }
+      ]
+    }, 
+    "comments": {
+      "_content": "2"
+    }, 
+    "secret": "ae8d14a7d2", 
+    "usage": {
+      "canblog": 0, 
+      "canshare": 1, 
+      "candownload": 1, 
+      "canprint": 0
+    }, 
+    "description": {
+      "_content": "One of my parents cats had kittens."
+    }, 
+    "isfavorite": 0, 
+    "views": "1957", 
+    "farm": 3, 
+    "visibility": {
+      "isfriend": 0, 
+      "isfamily": 0, 
+      "ispublic": 1
+    }, 
+    "rotation": 0, 
+    "dates": {
+      "taken": "2009-05-16 21:23:23", 
+      "lastupdate": "1369596714", 
+      "takengranularity": "0", 
+      "posted": "1242685625"
+    }, 
+    "originalsecret": "194b76f847", 
+    "license": "5", 
+    "notes": {
+      "note": []
+    }, 
+    "server": "2272", 
+    "safety_level": "0", 
+    "urls": {
+      "url": [
+        {
+          "type": "photopage", 
+          "_content": "http://www.flickr.com/photos/olaeinang/3544175674/"
+        }
+      ]
+    }, 
+    "editability": {
+      "canaddmeta": 0, 
+      "cancomment": 0
+    }
+  }
+]
