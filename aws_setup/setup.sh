@@ -107,6 +107,8 @@ sudo update-rc.d redis-server defaults
 sudo service redis-server start
 
 echo "Installing nginx"
+sudo add-apt-repository -y ppa:nginx/stable
+sudo apt-get update
 sudo apt-get install -y nginx
 sudo rm -f /etc/nginx/sites-enabled/default
 sudo ln -sfnv $CONFIG_DIR/etc/nginx/sites-available/rmc \

@@ -54,13 +54,13 @@ def batch_send(to_send_users, title_renderer, body_renderer=None,
             if html_body_renderer:
                 html_body = html_body_renderer(user)
                 html_body += \
-                """<p style="border-top: 1px solid #CCC; padding-top: 10px; margin-top: 50px;"><small style="color:#999">Are we annoying you? Sorry :( Feel free to <a style="color:#999" href="http://uwflow.com/unsubscribe?pasta=%(user_id)s">unsubscribe</a>.</small></p>""" % { 'user_id': user.id }
+                """<p style="border-top: 1px solid #CCC; padding-top: 10px; margin-top: 50px;"><small style="color:#999">Are we annoying you? Sorry :( Feel free to <a style="color:#999" href="https://uwflow.com/unsubscribe?pasta=%(user_id)s">unsubscribe</a>.</small></p>""" % { 'user_id': user.id }
 
             text_body = ''
             if body_renderer:
                 text_body = body_renderer(user)
                 text_body += \
-                """\n\n\nAre we annoying you? Sorry :( Feel free to unsubscribe at http://uwflow.com/unsubscribe?pasta=%(user_id)s""" % { 'user_id': user.id }
+                """\n\n\nAre we annoying you? Sorry :( Feel free to unsubscribe at https://uwflow.com/unsubscribe?pasta=%(user_id)s""" % { 'user_id': user.id }
 
             conn.send_email(
                 EMAIL_SENDER,

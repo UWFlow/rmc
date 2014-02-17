@@ -20,7 +20,7 @@ REDIS_PORT = 6379
 REDIS_DB = 0
 
 if IS_PROD:
-    RMC_HOST = "http://uwflow.com"
+    RMC_HOST = "https://uwflow.com"
 else:
     RMC_HOST = "http://localhost:5000"
 

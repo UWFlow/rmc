@@ -192,7 +192,7 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       }, this);
 
       // TODO(Sandy): Implement proper review showing, if people actually share
-      var link = 'http://uwflow.com/course/' + this.get('course').get('id');
+      var link = 'https://uwflow.com/course/' + this.get('course').get('id');
       _facebook.showFeedDialog({
         link: link,
         name: name,
