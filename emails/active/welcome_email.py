@@ -17,19 +17,19 @@ def html_body_renderer(user):
     welcome_email_body = \
     """<p>Hey %(first_name)s!</p>
 
-    <p>We noticed that you recently signed up for <a href="http://uwflow.com">UW Flow</a>!</p>"""
+    <p>We noticed that you recently signed up for <a href="https://uwflow.com">UW Flow</a>!</p>"""
 
     if not user.has_schedule:
-        welcome_email_body += """<p>Did you know that you can <a href="http://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This lets you easily view it and share it with friends.</p>
+        welcome_email_body += """<p>Did you know that you can <a href="https://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This lets you easily view it and share it with friends.</p>
 
-        <img src="http://uwflow.com/static/img/class-schedule-screenshot-small.png">"""
+        <img src="https://uwflow.com/static/img/class-schedule-screenshot-small.png">"""
 
     if not user.has_course_history:
         welcome_email_body += \
-        """<p>If you <a href="http://uwflow.com/onboarding">upload your Quest transcript</a>, you'll be able to track courses you've taken, rate and review them, and let your friends see what you've taken!</p>"""
+        """<p>If you <a href="https://uwflow.com/onboarding">upload your Quest transcript</a>, you'll be able to track courses you've taken, rate and review them, and let your friends see what you've taken!</p>"""
     else:
         welcome_email_body += \
-        """<p>We'd love it if you could <a href="http://uwflow.com/profile?review_modal=1">review some courses</a>. Taking just 10 minutes to share your opinion can really help out your friends and fellow UW students!</p>"""
+        """<p>We'd love it if you could <a href="https://uwflow.com/profile?review_modal=1">review some courses</a>. Taking just 10 minutes to share your opinion can really help out your friends and fellow UW students!</p>"""
 
     welcome_email_body += \
     """<br/>
