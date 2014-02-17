@@ -8,7 +8,9 @@ server {
 }
 
 server {
-  listen 443 ssl spdy;
+  # TODO(david): Enable SPDY. Requires building nginx from source with the
+  #     ngx_http_spdy_module.
+  listen 443 ssl;
   server_name uwflow.com;
 
   ssl_certificate /home/rmc/data/ssl/unified.crt;
