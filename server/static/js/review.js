@@ -50,12 +50,9 @@ function(RmcBackbone, $, _, ratings, util) {
     },
 
     setProgramAvatar: function() {
-      var kittenNum = (util.getHashCode('' + this.get('program_name')) %
+      var programName = (this.get('author') || {}).program_name;
+      var kittenNum = (util.getHashCode('' + programName) %
                        pageData.NUM_KITTENS);
-      var size = [
-          util.getHashCode('' + this.get('program_name')) % 20 + 50,
-          util.getHashCode(this.get('program_name') + 'Z') % 10 + 40
-      ];
       this.set('author_pic_url',
           '/static/img/kittens/grey/' + kittenNum + '.jpg');
     }
