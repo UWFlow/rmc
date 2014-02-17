@@ -89,7 +89,7 @@ function(_, _s, $) {
       hash = ((hash << 5) - hash) + str.charCodeAt(i);
       hash &= hash;  // Convert to 32-bit integer
     }
-    return hash;
+    return Math.abs(hash);
   };
 
   /**

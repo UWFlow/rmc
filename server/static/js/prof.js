@@ -20,12 +20,9 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
       // TODO(david): Use some other instructional placeholder
       if (!attributes || !attributes.pictureUrl) {
         var attrs = attributes ? attributes : this.defaults;
-        var size = [
-            util.getHashCode(attrs.name) % 20 + 140,
-            util.getHashCode(attrs.email) % 20 + 140
-        ];
+        var kittenNum = util.getHashCode(attrs.name) % pageData.NUM_KITTENS;
         this.set('pictureUrl',
-            'http://placekitten.com/' + size[0] + '/' + size[1]);
+            '/static/img/kittens/color/' + kittenNum + '.png');
       }
 
       if (attributes && attributes.course_ratings) {

@@ -49,6 +49,7 @@
     <script>
       window.pageData = {};
       window.pageData.env = '{{ env }}';
+      window.pageData.NUM_KITTENS = {{ NUM_KITTENS|tojson|safe }};
       window.pageData.currentTermId = {{ current_term_id|tojson|safe }};
       {% if current_user_id %}
         window.pageData.currentUserId = {{ current_user_id|tojson|safe }};

@@ -11,6 +11,10 @@ def _get_kitten_data():
     return kitten_data
 
 
+def count_kittens():
+    return len(_get_kitten_data())
+
+
 def add_kitten_data(new_flickr_info):
     """Add the provided flickr API response info to the data list.
 

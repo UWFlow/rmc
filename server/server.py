@@ -24,6 +24,7 @@ import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
 import rmc.analytics.stats as rmc_stats
 import rmc.shared.schedule_screenshot as schedule_screenshot
+import rmc.kittens.data as kitten_data
 
 # While not referenced directly, these imports have necessary side-effects.
 # (eg. Paths are mapped to API request handlers with the @route decorator.)
@@ -35,6 +36,8 @@ VERSION = int(time.time())
 SERVER_DIR = os.path.dirname(os.path.realpath(__file__))
 
 flask_render_template = flask.render_template
+
+NUM_KITTENS = kitten_data.count_kittens()
 
 
 def render_template(*args, **kwargs):
@@ -50,6 +53,7 @@ def render_template(*args, **kwargs):
     kwargs.update({
         'env': app.config['ENV'],
         'VERSION': VERSION,
+        'NUM_KITTENS': NUM_KITTENS,
         'js_dir': app.config['JS_DIR'],
         'ga_property_id': app.config['GA_PROPERTY_ID'],
         'current_user': view_helpers.get_current_user(),
