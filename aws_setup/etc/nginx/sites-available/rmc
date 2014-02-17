@@ -17,6 +17,9 @@ server {
   # TODO(david): See https://gist.github.com/konklone/6532544 for additional
   #     security options.
 
+  # Tell browsers to require SSL (max age in seconds).
+  add_header Strict-Transport-Security max-age=31536000;
+
   gzip on;
   gzip_vary on;
   gzip_proxied any;
