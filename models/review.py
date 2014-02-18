@@ -121,8 +121,8 @@ class BaseReview(me.EmbeddedDocument):
         if author_id:
             # TODO(david): Remove circular dependency
             import user as _user
-            author = _user.User.objects.only('first_name', 'last_name',
-                    'fbid', 'program_name').with_id(author_id)
+            author = _user.User.objects.only(*(_user.User.CORE_FIELDS +
+                    ['program_name'])).with_id(author_id)
             show_author = self.should_show_author(current_user, author_id)
             dict_['author'] = author.to_review_author_dict(current_user,
                     show_author)

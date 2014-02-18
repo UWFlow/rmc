@@ -127,7 +127,7 @@ def get_course_users(course_id):
 
     user_ids = set(ucd['user_id'] for ucd in user_course_dict_list)
     users = m.User.objects(id__in=list(user_ids)).only(
-            'first_name', 'last_name', 'fbid', 'num_points', 'program_name')
+            *(m.User.CORE_FIELDS + ['num_points', 'program_name']))
 
     term_users_map = collections.defaultdict(list)
     for ucd in user_course_dict_list:

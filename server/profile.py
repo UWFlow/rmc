@@ -277,7 +277,7 @@ def render_profile_page(profile_user_id, current_user=None):
     # Fetch simplified information for friends of profile user
     # (for friend sidebar)
     friends = m.User.objects(id__in=profile_user.friend_ids).only(
-            'id', 'fbid', 'first_name', 'last_name')
+            *(m.User.CORE_FIELDS + ['id']))
 
     # Fetch all professors for all courses
     professor_objs = m.Professor.get_reduced_professors_for_courses(
