@@ -66,7 +66,7 @@ class User(me.Document):
     gender = me.StringField(choices=['male', 'female'])
 
     # eg. 1647810326
-    fbid = me.StringField(required=True, unique=True)
+    fbid = me.StringField()
 
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
     fb_access_token = me.StringField(max_length=255,
@@ -217,6 +217,7 @@ class User(me.Document):
                     self.fbid),
         }
 
+    # TODO(sandy): implement
     def _get_gravatar_pic_urls(self):
         return {}
 

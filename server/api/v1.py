@@ -86,7 +86,14 @@ def get_course_users(course_id):
               "name": "David Hu",
               "course_ids": [],
               "fbid": "541400376",
-              "fb_pic_url": "https://graph.facebook.com/541400376/picture",
+              "profile_pic_urls": {
+                'default':
+                    'https://graph.facebook.com/541400376/picture',
+                'large':
+                    'https://graph.facebook.com/541400376/picture?type=large',
+                'square':
+                    'https://graph.facebook.com/541400376/picture?type=square'
+              }
               "num_invites": 0,
               "friend_ids": [],
               "program_name": "Software Engineering",
