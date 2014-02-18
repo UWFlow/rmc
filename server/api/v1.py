@@ -2,6 +2,7 @@
 
 import collections
 
+import bson
 import flask
 
 import rmc.models as m
@@ -158,9 +159,6 @@ def login_facebook():
     Send the associated cookie for all subsequent API requests that accept
     user authentication.
     """
-    # FIXME(david): We must move Flow to HTTPS because clients will
-    #     send users' access tokens in this route.
-
     req = flask.request
     fb_access_token = req.form.get('fb_access_token')
 
@@ -181,3 +179,50 @@ def login_facebook():
 
     view_helpers.login_as_user(user)
     return api_util.jsonify({'message': 'Logged in user %s' % user.name})
+
+
+###############################################################################
+# /users/:user_id endpoints: info about a user
+
+
+def _get_user_require_auth(user_id=None):
+    """Return the requested user only if authenticated and authorized.
+
+    Defaults to the current user if no user_id given.
+    """
+    current_user = view_helpers.get_current_user()
+    if not current_user:
+        raise api_util.ApiBadRequestError('Must authenticate as a user.')
+
+    if not user_id:
+        return current_user
+
+    try:
+        user_id_bson = bson.ObjectId(user_id)
+    except bson.errors.InvalidId:
+        raise api_util.ApiBadRequestError(
+                'User ID %s is not a valid BSON ObjectId.' % user_id)
+
+    if (not user_id_bson == current_user.id and
+            not user_id_bson in current_user.friend_ids):
+        raise api_util.ApiForbiddenError(
+                'Not authorized to get info about this user.')
+
+    return m.User.objects.with_id(user_id_bson)
+
+
+@app.route('/api/v1/user', defaults={'user_id': None}, methods=['GET'])
+@app.route('/api/v1/users/<string:user_id>', methods=['GET'])
+def get_user(user_id):
+    user = _get_user_require_auth(user_id)
+    user_dict = user.to_dict()
+
+    # Remove some unwanted fields (other endpoints will cover these).
+    for field in ['course_history', 'friend_ids', 'course_ids']:
+        if field in user_dict:
+            del user_dict[field]
+
+    return api_util.jsonify(user_dict)
+
+
+# TODO(david): /courses, /schedule, /reviews, /exams, /shortlist, /friends
