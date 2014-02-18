@@ -14,6 +14,9 @@ import rmc.shared.facebook as facebook
 
 # TODO(david): Bring in other API methods from server.py to here.
 # TODO(david): Document API methods. Clarify which methods accept user auth.
+# TODO(david): Make sure every API route returns a top-level object instead of
+#     list (which would inconvenience some JSON parsers, such as Java's). Maybe
+#     have 'data' be a top-level field in every call?
 
 
 ###############################################################################
@@ -232,4 +235,26 @@ def get_user(user_id):
     return api_util.jsonify(user_dict)
 
 
-# TODO(david): /courses, /schedule, /reviews, /exams, /shortlist, /friends
+@app.route('/api/v1/user/schedule', defaults={'user_id': None},
+        methods=['GET'])
+@app.route('/api/v1/users/<string:user_id>/schedule', methods=['GET'])
+def get_user_schedule(user_id):
+    user = _get_user_require_auth(user_id)
+    schedule_item_dict_list = user.get_schedule_item_dicts()
+
+    return api_util.jsonify({
+        'schedule': schedule_item_dict_list
+    })
+
+
+@app.route('/api/v1/user/exams', defaults={'user_id': None}, methods=['GET'])
+@app.route('/api/v1/users/<string:user_id>/exams', methods=['GET'])
+def get_user_exams(user_id):
+    user = _get_user_require_auth(user_id)
+    exam_dicts = [exam.to_dict() for exam in user.get_current_term_exams()]
+
+    return api_util.jsonify({
+        'exams': exam_dicts
+    })
+
+# TODO(david): /courses, /reviews, /shortlist, /friends

@@ -10,6 +10,7 @@ import uuid
 import mongoengine as me
 
 import course as _course
+import exam as _exam
 import points as _points
 import term as _term
 import user_course as _user_course
@@ -463,6 +464,15 @@ class User(me.Document):
 
     def get_all_schedule_items(self):
         return _user_schedule_item.UserScheduleItem.objects(user_id=self.id)
+
+    def get_current_term_exams(self, current_term_course_ids=None):
+        if not current_term_course_ids:
+            ucs = (self.get_user_courses()
+                    .filter(term_id=util.get_current_term_id())
+                    .only('course_id'))
+            current_term_course_ids = [uc.course_id for uc in ucs]
+
+        return _exam.Exam.objects(course_id__in=current_term_course_ids)
 
     def get_secret_id(self):
         # TODO(jlfwong): This is possibly a race condition...
