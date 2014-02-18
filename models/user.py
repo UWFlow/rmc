@@ -73,10 +73,8 @@ class User(me.Document):
     fbid = me.StringField()
 
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
-    fb_access_token = me.StringField(max_length=255,
-                                     required=True,
-                                     unique=True)
-    fb_access_token_expiry_date = me.DateTimeField(required=True)
+    fb_access_token = me.StringField(max_length=255)
+    fb_access_token_expiry_date = me.DateTimeField()
     # The token expired due to de-auth, logging out, etc (ie. not time expired)
     fb_access_token_invalid = me.BooleanField(default=False)
 
