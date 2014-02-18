@@ -55,10 +55,7 @@ def get_course_professors(course_id):
 def get_course_exams(course_id):
     exams = m.Exam.objects(course_id=course_id)
     exam_dict_list = [e.to_dict() for e in exams]
-
-    last_updated_date = None
-    if exams:
-        last_updated_date = exams[0].id.generation_time
+    last_updated_date = exams[0].id.generation_time if exams else None
 
     return api_util.jsonify({
         'exams': exam_dict_list,
@@ -251,10 +248,87 @@ def get_user_schedule(user_id):
 @app.route('/api/v1/users/<string:user_id>/exams', methods=['GET'])
 def get_user_exams(user_id):
     user = _get_user_require_auth(user_id)
-    exam_dicts = [exam.to_dict() for exam in user.get_current_term_exams()]
+    exams = user.get_current_term_exams()
+    exam_dicts = [e.to_dict() for e in exams]
+    last_updated_date = exams[0].id.generation_time if exams else None
 
     return api_util.jsonify({
-        'exams': exam_dicts
+        'exams': exam_dicts,
+        'last_update_date': last_updated_date,
     })
 
-# TODO(david): /courses, /reviews, /shortlist, /friends
+
+@app.route('/api/v1/user/courses', defaults={'user_id': None}, methods=['GET'])
+@app.route('/api/v1/users/<string:user_id>/courses', methods=['GET'])
+def get_user_courses(user_id):
+    """Get courses that a user took, is taking, or plan to take (shortlist).
+
+    Also contains user-specific information about those courses, such as the
+    term the user took the course in and the user's ratings and reviews (if
+    any).
+
+    Example:
+        {
+          "courses": [
+            {
+              "ratings": [
+                { "count": 25, "rating": 0.08, "name": "usefulness" },
+                { "count": 100, "rating": 0.47, "name": "interest" },
+                { "count": 100, "rating": 0.63, "name": "easiness" }
+              ],
+              "code": "CHE 102",
+              "name": "Chemistry for Engineers",
+              "prereqs": "Open only to students in Chemical Engineering",
+              "overall": { "count": 131, "rating": 0.7099236641221374 },
+              "professor_ids": [ "hyuk_sang_park" ],
+              "user_course_id": { "$oid": "50a9c41c8aedf423ac6458b1" },
+              "id": "che102",
+              "description": "Chemical principles blah blah blah..."
+            }
+          ],
+          "user_courses": [
+            {
+              "id": { "$oid": "50a9c41c8aedf423ac6458b1" },
+              "user_id": { "$oid": "50a532518aedf423ac645891" },
+              "course_id": "che102",
+              "term_name": "Fall 2009",
+              "term_id": "2009_09",
+              "has_reviewed": true,
+              "professor_id": "jao_soares",
+              "course_review": {
+                "comment": "We took off faster than a green light go.",
+                "ratings": [
+                  { "rating": 1.0, "name": "usefulness" },
+                  { "rating": null, "name": "easiness" },
+                  { "rating": null, "name": "interest" }
+                ],
+                "comment_date": { "$date": 1355447961031 },
+                "privacy": "friends"
+              },
+              "professor_review": {
+                "comment": "Skip the conversation when you already know.",
+                "ratings": [
+                  { "rating": 1.0, "name": "clarity" },
+                  { "rating": null, "name": "passion" }
+                ],
+                "comment_date": { "$date": 1355447928463 },
+                "privacy": "friends"
+              },
+              "program_year_id": "1A"
+            }
+          ]
+        }
+    """
+    user = _get_user_require_auth(user_id)
+
+    courses = list(m.Course.objects(id__in=set(user.course_ids)))
+    course_dicts, user_course_dicts, _ = (
+            m.Course.get_course_and_user_course_dicts(courses, user))
+
+    return api_util.jsonify({
+        'courses': course_dicts,
+        'user_courses': user_course_dicts,
+    })
+
+
+# TODO(david): /friends
