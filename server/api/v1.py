@@ -215,7 +215,14 @@ def _get_user_require_auth(user_id=None):
 @app.route('/api/v1/users/<string:user_id>', methods=['GET'])
 def get_user(user_id):
     user = _get_user_require_auth(user_id)
-    return api_util.jsonify(user.to_dict(include_course_ids=True))
+    user_dict = user.to_dict()
+
+    # Remove some unwanted fields (other endpoints will cover these).
+    for field in ['course_history', 'friend_ids', 'course_ids']:
+        if field in user_dict:
+            del user_dict[field]
+
+    return api_util.jsonify(user_dict)
 
 
 # TODO(david): /courses, /schedule, /reviews, /exams, /shortlist, /friends
