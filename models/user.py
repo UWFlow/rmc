@@ -10,6 +10,7 @@ import uuid
 import mongoengine as me
 
 import course as _course
+import exam as _exam
 import points as _points
 import term as _term
 import user_course as _user_course
@@ -362,29 +363,35 @@ class User(me.Document):
 
         return None
 
-    def to_dict(self, include_course_ids=False):
-        program_name = self.short_program_name
-        if include_course_ids:
-            course_ids = self.course_ids
-        else:
-            course_ids = []
+    def get_friends(self):
+        """Gets basic info for each of this user's friends."""
+        return User.objects(id__in=self.friend_ids).only(
+                *(User.CORE_FIELDS + ['id', 'num_points', 'num_invites',
+                'program_name']))
 
-        return {
+    def to_dict(self, extended=True, include_course_ids=False):
+        user_dict = {
             'id': self.id,
             'fbid': self.fbid,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'name': self.name,
-            'friend_ids': self.friend_ids,
             'profile_pic_urls': self.profile_pic_urls,
-            'program_name': program_name,
-            #'last_term_name': last_term_name,
-            #'last_program_year_id': self.last_program_year_id,
-            'course_history': self.course_history,
-            'course_ids': course_ids,
+            'program_name': self.short_program_name,
             'num_invites': self.num_invites,
             'num_points': self.num_points,
         }
+
+        if extended:
+            user_dict.update({
+                'friend_ids': self.friend_ids,
+                'course_history': self.course_history,
+            })
+
+        if include_course_ids:
+            user_dict['course_ids'] = self.course_ids
+
+        return user_dict
 
     # TODO(mack): make race condition safe?
     def delete(self, *args, **kwargs):
@@ -463,6 +470,15 @@ class User(me.Document):
 
     def get_all_schedule_items(self):
         return _user_schedule_item.UserScheduleItem.objects(user_id=self.id)
+
+    def get_current_term_exams(self, current_term_course_ids=None):
+        if not current_term_course_ids:
+            ucs = (self.get_user_courses()
+                    .filter(term_id=util.get_current_term_id())
+                    .only('course_id'))
+            current_term_course_ids = [uc.course_id for uc in ucs]
+
+        return _exam.Exam.objects(course_id__in=current_term_course_ids)
 
     def get_secret_id(self):
         # TODO(jlfwong): This is possibly a race condition...

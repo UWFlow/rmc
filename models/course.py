@@ -57,6 +57,10 @@ class Course(me.Document):
 
     # NOTE: The word term is overloaded based on where it's used. Here, it mean
     # which terms of the year is the course being offered?
+    # NOTE: THIS FIELD IS ***DEPRECATED***, because the data source we get
+    #     info about this is not reliable. There may not exist such reliable
+    #     data at all -- course offerings are decided on an annual basis.
+    # TODO(david): Remove this field and replace it with info from sections.
     # e.g. ['01', '05', '09']
     terms_offered = me.ListField(me.StringField())
 
@@ -227,7 +231,6 @@ class Course(me.Document):
             'code': self.code,
             'name': self.name,
             'description': self.description,
-            'terms_offered': self.terms_offered,
             # TODO(mack): create user models for friends
             #'friends': [1647810326, 518430508, 541400376],
             'ratings': util.dict_to_list(self.get_ratings()),

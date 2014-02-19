@@ -69,12 +69,7 @@ def render_schedule_ical_feed(profile_user_secret_id):
             profile_user_secret_id)
         return ''
 
-    ucs = (profile_user.get_user_courses()
-            .filter(term_id=util.get_current_term_id())
-            .only('course_id'))
-    current_term_course_ids = [uc.course_id for uc in ucs]
-
-    exams = m.Exam.objects(course_id__in=current_term_course_ids)
+    exams = profile_user.get_current_term_exams()
     schedule_item_dict_list = profile_user.get_schedule_item_dicts(
                                     exam_objs=exams)
 
@@ -276,8 +271,7 @@ def render_profile_page(profile_user_id, current_user=None):
 
     # Fetch simplified information for friends of profile user
     # (for friend sidebar)
-    friends = m.User.objects(id__in=profile_user.friend_ids).only(
-            *(m.User.CORE_FIELDS + ['id']))
+    friends = profile_user.get_friends()
 
     # Fetch all professors for all courses
     professor_objs = m.Professor.get_reduced_professors_for_courses(
@@ -349,7 +343,7 @@ def render_profile_page(profile_user_id, current_user=None):
     # TODO(mack): should really be named current_term
     last_term = m.Term(id=LAST_TERM_ID)
     for friend in friends:
-        user_dict = friend.to_dict()
+        user_dict = friend.to_dict(extended=False)
 
         if own_profile:
             user_dict.update({
@@ -410,7 +404,7 @@ def render_profile_page(profile_user_id, current_user=None):
     current_term_courses = transcript_by_term.get(current_term_id, [])
     current_course_ids = [c['course_id'] for c in current_term_courses]
 
-    exam_objs = m.Exam.objects(course_id__in=current_course_ids)
+    exam_objs = profile_user.get_current_term_exams(current_course_ids)
     exam_dicts = [e.to_dict() for e in exam_objs]
     exam_updated_date = None
     if exam_objs:
