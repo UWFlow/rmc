@@ -15,8 +15,7 @@ import rmc.shared.facebook as facebook
 # TODO(david): Bring in other API methods from server.py to here.
 # TODO(david): Document API methods. Clarify which methods accept user auth.
 # TODO(david): Make sure every API route returns a top-level object instead of
-#     list (which would inconvenience some JSON parsers, such as Java's). Maybe
-#     have 'data' be a top-level field in every call?
+#     list (which would inconvenience some JSON parsers, such as Java's).
 
 
 ###############################################################################
@@ -290,7 +289,7 @@ def get_user_courses(user_id):
               "has_reviewed": true,
               "professor_id": "jao_soares",
               "course_review": {
-                "comment": "We took off faster than a green light go.",
+                "comment": "Took off faster than a green light go.",
                 "ratings": [
                   { "rating": 1.0, "name": "usefulness" },
                   { "rating": null, "name": "easiness" },
@@ -300,7 +299,7 @@ def get_user_courses(user_id):
                 "privacy": "friends"
               },
               "professor_review": {
-                "comment": "Skip the conversation when you already know.",
+                "comment": "Skipped the conversation when you already know.",
                 "ratings": [
                   { "rating": 1.0, "name": "clarity" },
                   { "rating": null, "name": "passion" }
