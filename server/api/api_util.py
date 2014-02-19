@@ -1,9 +1,13 @@
 """Utility functions for the API."""
 
+import calendar
+import datetime
+import json
+
+from bson.objectid import ObjectId
 import flask
 
 from rmc.server.app import app
-import rmc.shared.util as util
 
 
 class ApiError(Exception):
@@ -36,20 +40,65 @@ def handle_api_error(error):
     return response
 
 
-# TODO(david): Actually, our existing JSON-serialized date format is a little
-#     disgusting ({ "start_date": { "$date": 1354840200000 } }). It would be
-#     nice to just be the timestamp, but would require updating all our JS so
-#     that our web client can consume the v1 API. Also, our Mongo IDs are
-#     disgusting too ({ "$oid": "507495f87903f30a4dedd202" }).
+# TODO(david): Update the web app to use this encoder as well.
+class ApiJsonEncoder(json.JSONEncoder):
+    """A custom JSON encoder for types that Python's json doesn't know about.
+
+    This includes datetimes and BSON object IDs.
+
+    We don't use PyMongo's bson.json_util for our API, because it obnoxiously
+    encodes types nested in an object, eg. ObjectId as
+    { "$oid": "deadbeef1337" } and dates as { "$date": 1354840200000 }. Our API
+    should be agnostic of the underlying datastore and clients should not have
+    to deal with ugliness like { "start_date": { "$date": 1354840200000 } }.
+
+    Note that this means that our API JSON serialization is different from the
+    JSON format we send down to our web app, unfortunately.
+
+    See for how this class works:
+    http://docs.python.org/2/library/json.html#json.JSONEncoder
+    """
+
+    def default(self, obj):
+        # Implementation adapted from
+        # github.com/mongodb/mongo-python-driver/blob/master/bson/json_util.py
+        # and docs.python.org/2/library/json.html#json.JSONEncoder.default
+
+        # Encode a datetime as milliseconds since epoch
+        if isinstance(obj, datetime.datetime):
+            if obj.utcoffset() is not None:
+                obj = obj - obj.utcoffset()
+            millis = int(calendar.timegm(obj.timetuple()) * 1000 +
+                obj.microsecond / 1000)
+            return millis
+
+        # Encode BSON ObjectId as just a string
+        if isinstance(obj, ObjectId):
+            return str(obj)
+
+        # Resolve iterables (eg. generators)
+        try:
+            iterable = iter(obj)
+        except TypeError:
+            pass
+        else:
+            return list(iterable)
+
+        # We don't know how to encode this value type -- give up.
+        return super(ApiJsonEncoder, self).default(obj)
+
+
 def jsonify(data):
     """Returns a flask.Response of data, JSON-stringified.
 
     This is basically Flask's jsonify
-    (https://github.com/mitsuhiko/flask/blob/master/flask/json.py), but using
-    our own JSON dumps method, which plugs an XSS hole and knows how to encode
-    Mongo ObjectIds and datetimes.
+    (https://github.com/mitsuhiko/flask/blob/master/flask/json.py), but plugs
+    an XSS hole and knows how to encode Mongo ObjectIds and datetimes.
     """
     indent = None if flask.request.is_xhr else 2
 
-    return flask.current_app.response_class(
-            util.json_dumps(data, indent=indent), mimetype='application/json')
+    jsonified = json.dumps(data, indent=indent, cls=ApiJsonEncoder)
+    jsonified_safe = jsonified.replace('</', '<\\/')
+
+    return flask.current_app.response_class(jsonified_safe,
+            mimetype='application/json')
