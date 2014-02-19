@@ -207,9 +207,6 @@ class User(me.Document):
         return urls
 
     def _get_fb_pic_urls(self):
-        if self.fbid is None:
-            return {}
-
         base_pic = "https://graph.facebook.com/%s/picture" % (self.fbid)
 
         return {
