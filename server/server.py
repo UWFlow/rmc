@@ -750,10 +750,15 @@ def search_courses():
 @app.route('/api/renew-fb', methods=['POST'])
 @view_helpers.login_required
 def renew_fb():
-    '''
-    Renews the current user's Facebook access token.
+    '''Renew the current user's Facebook access token.
 
-    Takes {'fb_signed_request': obj} from post parameters.
+    The client should make this call periodically (once every couple months,
+    see User.should_renew_fb_token) to keep the access token up to date.
+
+    Takes a Facebook signed request object from the post params in the form of:
+    {
+        'fb_signed_request': obj
+    }
     '''
     req = flask.request
     current_user = view_helpers.get_current_user()
@@ -776,9 +781,7 @@ def renew_fb():
     expires_on = fb_data['expires_on']
     is_invalid = fb_data['is_invalid']
 
-    if expires_on > current_user.fb_access_token_expiry_date:
-        # Only use the new token if it expires later. It might be the case that
-        # get_fb_data failed to grab a new token
+    if not is_invalid:
         current_user.fb_access_token_expiry_date = expires_on
         current_user.fb_access_token = access_token
         current_user.fb_access_token_invalid = is_invalid
