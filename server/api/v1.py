@@ -222,13 +222,7 @@ def _get_user_require_auth(user_id=None):
 @app.route('/api/v1/users/<string:user_id>', methods=['GET'])
 def get_user(user_id):
     user = _get_user_require_auth(user_id)
-    user_dict = user.to_dict()
-
-    # Remove some unwanted fields (other endpoints will cover these).
-    for field in ['course_history', 'friend_ids', 'course_ids']:
-        if field in user_dict:
-            del user_dict[field]
-
+    user_dict = user.to_dict(reduced_fields=True)
     return api_util.jsonify(user_dict)
 
 
@@ -331,4 +325,13 @@ def get_user_courses(user_id):
     })
 
 
-# TODO(david): /friends
+@app.route('/api/v1/user/friends', defaults={'user_id': None}, methods=['GET'])
+@app.route('/api/v1/users/<string:user_id>/friends', methods=['GET'])
+def get_user_friends(user_id):
+    user = _get_user_require_auth(user_id)
+    friends = user.get_friends()
+    friend_dicts = [f.to_dict(reduced_fields=True) for f in friends]
+
+    return api_util.jsonify({
+        'friends': friend_dicts
+    })

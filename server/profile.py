@@ -271,8 +271,7 @@ def render_profile_page(profile_user_id, current_user=None):
 
     # Fetch simplified information for friends of profile user
     # (for friend sidebar)
-    friends = m.User.objects(id__in=profile_user.friend_ids).only(
-            *(m.User.CORE_FIELDS + ['id']))
+    friends = profile_user.get_friends()
 
     # Fetch all professors for all courses
     professor_objs = m.Professor.get_reduced_professors_for_courses(
@@ -344,7 +343,7 @@ def render_profile_page(profile_user_id, current_user=None):
     # TODO(mack): should really be named current_term
     last_term = m.Term(id=LAST_TERM_ID)
     for friend in friends:
-        user_dict = friend.to_dict()
+        user_dict = friend.to_dict(reduced_fields=True)
 
         if own_profile:
             user_dict.update({

@@ -363,29 +363,35 @@ class User(me.Document):
 
         return None
 
-    def to_dict(self, include_course_ids=False):
-        program_name = self.short_program_name
-        if include_course_ids:
-            course_ids = self.course_ids
-        else:
-            course_ids = []
+    def get_friends(self):
+        """Gets basic info for each of this user's friends."""
+        return User.objects(id__in=self.friend_ids).only(
+                *(User.CORE_FIELDS + ['id', 'num_points', 'num_invites',
+                'program_name']))
 
-        return {
+    def to_dict(self, reduced_fields=False, include_course_ids=False):
+        user_dict = {
             'id': self.id,
             'fbid': self.fbid,
             'first_name': self.first_name,
             'last_name': self.last_name,
             'name': self.name,
-            'friend_ids': self.friend_ids,
             'profile_pic_urls': self.profile_pic_urls,
-            'program_name': program_name,
-            #'last_term_name': last_term_name,
-            #'last_program_year_id': self.last_program_year_id,
-            'course_history': self.course_history,
-            'course_ids': course_ids,
+            'program_name': self.short_program_name,
             'num_invites': self.num_invites,
             'num_points': self.num_points,
         }
+
+        if not reduced_fields:
+            user_dict.update({
+                'friend_ids': self.friend_ids,
+                'course_history': self.course_history,
+            })
+
+        if include_course_ids:
+            user_dict['course_ids'] = self.course_ids
+
+        return user_dict
 
     # TODO(mack): make race condition safe?
     def delete(self, *args, **kwargs):
