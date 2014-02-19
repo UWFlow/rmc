@@ -246,7 +246,7 @@ def get_user_exams(user_id):
 
     return api_util.jsonify({
         'exams': exam_dicts,
-        'last_update_date': last_updated_date,
+        'last_updated_date': last_updated_date,
     })
 
 
