@@ -194,6 +194,8 @@ def _get_user_require_auth(user_id=None):
     """Return the requested user only if authenticated and authorized.
 
     Defaults to the current user if no user_id given.
+
+    Guaranteed to return a user object.
     """
     current_user = view_helpers.get_current_user()
     if not current_user:
@@ -208,12 +210,15 @@ def _get_user_require_auth(user_id=None):
         raise api_util.ApiBadRequestError(
                 'User ID %s is not a valid BSON ObjectId.' % user_id)
 
-    if (not user_id_bson == current_user.id and
-            not user_id_bson in current_user.friend_ids):
-        raise api_util.ApiForbiddenError(
-                'Not authorized to get info about this user.')
+    # Does the the current user have permission to get info about this user?
+    if (user_id_bson == current_user.id or user_id_bson in
+            current_user.friend_ids):
+        user = m.User.objects.with_id(user_id_bson)
+        if user:
+            return user
 
-    return m.User.objects.with_id(user_id_bson)
+    raise api_util.ApiForbiddenError(
+            'Not authorized to get info about this user.')
 
 
 @app.route('/api/v1/user', defaults={'user_id': None}, methods=['GET'])
