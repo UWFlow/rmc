@@ -126,7 +126,8 @@ def get_course_users(course_id):
 
     user_ids = set(ucd['user_id'] for ucd in user_course_dict_list)
     users = m.User.objects(id__in=list(user_ids)).only(
-            *(m.User.CORE_FIELDS + ['num_points', 'program_name']))
+            *(m.User.CORE_FIELDS + ['num_points', 'num_invites',
+            'program_name']))
 
     term_users_map = collections.defaultdict(list)
     for ucd in user_course_dict_list:
@@ -141,9 +142,7 @@ def get_course_users(course_id):
         })
 
     return api_util.jsonify({
-        # TODO(david): Scrub keys of values that we're not returning, such as
-        #     friend_ids or course_history
-        'users': [user.to_dict() for user in users],
+        'users': [user.to_dict(reduced_fields=True) for user in users],
         'term_users': term_users,
     })
 
