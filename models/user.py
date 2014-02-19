@@ -19,6 +19,7 @@ from rmc.shared import facebook
 from rmc.shared import rmclogger
 from rmc.shared import util
 
+
 PROMPT_TO_REVIEW_DELAY_DAYS = 60
 
 
@@ -28,6 +29,9 @@ def generate_secret_id(size=9, chars=string.ascii_uppercase + string.digits):
 
 
 class User(me.Document):
+    # The fields needed to display a user's name and profile picture.
+    CORE_FIELDS = ['first_name', 'last_name', 'fbid', 'email']
+
     class JoinSource(object):
         FACEBOOK = 1
 
@@ -66,13 +70,11 @@ class User(me.Document):
     gender = me.StringField(choices=['male', 'female'])
 
     # eg. 1647810326
-    fbid = me.StringField(required=True, unique=True)
+    fbid = me.StringField()
 
     # http://stackoverflow.com/questions/4408945/what-is-the-length-of-the-access-token-in-facebook-oauth2
-    fb_access_token = me.StringField(max_length=255,
-                                     required=True,
-                                     unique=True)
-    fb_access_token_expiry_date = me.DateTimeField(required=True)
+    fb_access_token = me.StringField(max_length=255)
+    fb_access_token_expiry_date = me.DateTimeField()
     # The token expired due to de-auth, logging out, etc (ie. not time expired)
     fb_access_token_invalid = me.BooleanField(default=False)
 
@@ -197,9 +199,34 @@ class User(me.Document):
         return self._course_ids
 
     @property
-    # TODO(mack): support different sized pictures
-    def fb_pic_url(self):
-        return 'https://graph.facebook.com/%s/picture' % self.fbid
+    def profile_pic_urls(self):
+        if self.fbid is not None:
+            urls = self._get_fb_pic_urls()
+        else:
+            urls = self._get_gravatar_pic_urls()
+        return urls
+
+    def _get_fb_pic_urls(self):
+        base_pic = "https://graph.facebook.com/%s/picture" % (self.fbid)
+
+        return {
+            'default': base_pic,
+            'large': '%s?type=large' % (base_pic),
+            'square': '%s?type=square' % (base_pic),
+        }
+
+    def _get_gravatar_pic_urls(self):
+        # Gravatar API: https://en.gravatar.com/site/implement/images/
+        # TODO(sandy): Serve our own default image instead of the mystery man
+        email_hash = hashlib.md5(self.email.strip().lower()).hexdigest()
+        base_pic = "https://secure.gravatar.com/avatar/%s?d=mm" % (
+                email_hash)
+
+        return {
+            'default': "%s&size=%s" % (base_pic, "50"),
+            'large': "%s&size=%s" % (base_pic, "190"),
+            'square': "%s&size=%s" % (base_pic, "50"),
+        }
 
     @property
     def profile_url(self):
@@ -349,7 +376,7 @@ class User(me.Document):
             'last_name': self.last_name,
             'name': self.name,
             'friend_ids': self.friend_ids,
-            'fb_pic_url': self.fb_pic_url,
+            'profile_pic_urls': self.profile_pic_urls,
             'program_name': program_name,
             #'last_term_name': last_term_name,
             #'last_program_year_id': self.last_program_year_id,
@@ -385,7 +412,7 @@ class User(me.Document):
             return {
                 'id': self.id,
                 'name': 'You' if is_current_user else self.name,
-                'fb_pic_url': self.fb_pic_url,
+                'profile_pic_url': self.profile_pic_urls['square'],
             }
 
         else:

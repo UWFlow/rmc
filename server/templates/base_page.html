@@ -209,7 +209,7 @@
             {% if current_user %}
               <a title="Go to profile" class="nav-item" href="/profile">
                 <img class="img img-rounded user-pic" width="30" height="30"
-                    src="{{ current_user.fb_pic_url }}?type=square">
+                    src="{{ current_user.profile_pic_urls['square'] }}">
                 <span id="user-points-placeholder"></span>
               </a>
             {% else %}

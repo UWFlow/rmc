@@ -257,8 +257,7 @@ def course_page(course_id):
         # TODO(Sandy): This is poorly named because its not only friends...
         friend_ids = ({uc_dict['user_id'] for uc_dict in user_course_dict_list}
                 - set([current_user.id]))
-        friends = m.User.objects(id__in=friend_ids).only(
-                'first_name', 'last_name', 'fbid')
+        friends = m.User.objects(id__in=friend_ids).only(*m.User.CORE_FIELDS)
 
         for friend in friends:
             user_dicts[friend.id] = friend.to_dict()
@@ -311,7 +310,7 @@ def onboarding():
 
     friends = m.User.objects(
         id__in=current_user.friend_ids
-    ).only('first_name', 'last_name', 'course_history', 'fbid')
+    ).only(*(m.User.CORE_FIELDS + ['course_history']))
 
     user_objs = []
     for user in [current_user] + list(friends):
@@ -736,8 +735,7 @@ def search_courses():
     if current_user:
         user_ids = [uc['user_id'] for uc in user_course_dict_list
                 if uc['user_id'] != current_user.id]
-        users = m.User.objects(id__in=user_ids).only(
-                'first_name', 'last_name', 'fbid')
+        users = m.User.objects(id__in=user_ids).only(*m.User.CORE_FIELDS)
         user_dict_list = [u.to_dict() for u in users]
 
     return util.json_dumps({

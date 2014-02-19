@@ -91,7 +91,7 @@
           <% friend = friend.toJSON(); %>
           <img
             data-title="<%- friend.first_name  %> added <%- friend.course_history.length %> courses"
-            rel="tooltip" class="friend-pic" src="<%= friend.fb_pic_url %>">
+            rel="tooltip" class="friend-pic" src="<%= friend.profile_pic_urls['default'] %>">
         <% }); %>
         <p class="mutual-course-text">
           <i class="icon-star"></i> Add your transcript to see mutual courses!

@@ -86,7 +86,14 @@ def get_course_users(course_id):
               "name": "David Hu",
               "course_ids": [],
               "fbid": "541400376",
-              "fb_pic_url": "https://graph.facebook.com/541400376/picture",
+              "profile_pic_urls": {
+                'default':
+                    'https://graph.facebook.com/541400376/picture',
+                'large':
+                    'https://graph.facebook.com/541400376/picture?type=large',
+                'square':
+                    'https://graph.facebook.com/541400376/picture?type=square'
+              }
               "num_invites": 0,
               "friend_ids": [],
               "program_name": "Software Engineering",
@@ -120,7 +127,7 @@ def get_course_users(course_id):
 
     user_ids = set(ucd['user_id'] for ucd in user_course_dict_list)
     users = m.User.objects(id__in=list(user_ids)).only(
-            'first_name', 'last_name', 'fbid', 'num_points', 'program_name')
+            *(m.User.CORE_FIELDS + ['num_points', 'program_name']))
 
     term_users_map = collections.defaultdict(list)
     for ucd in user_course_dict_list:
