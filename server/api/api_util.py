@@ -42,7 +42,7 @@ def handle_api_error(error):
 
 # TODO(david): Update the web app to use this encoder as well.
 class ApiJsonEncoder(json.JSONEncoder):
-    """A custom encoder for encoding types that Python's json doesn't know.
+    """A custom JSON encoder for types that Python's json doesn't know about.
 
     This includes datetimes and BSON object IDs.
 
@@ -84,8 +84,8 @@ class ApiJsonEncoder(json.JSONEncoder):
         else:
             return list(iterable)
 
-        # We don't recognize this value type -- give up.
-        return json.JSONEncoder.default(self, obj)
+        # We don't know how to encode this value type -- give up.
+        return super(ApiJsonEncoder, self).default(obj)
 
 
 def jsonify(data):
