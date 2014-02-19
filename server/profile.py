@@ -343,7 +343,7 @@ def render_profile_page(profile_user_id, current_user=None):
     # TODO(mack): should really be named current_term
     last_term = m.Term(id=LAST_TERM_ID)
     for friend in friends:
-        user_dict = friend.to_dict(reduced_fields=True)
+        user_dict = friend.to_dict(extended=False)
 
         if own_profile:
             user_dict.update({

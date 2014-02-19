@@ -142,7 +142,7 @@ def get_course_users(course_id):
         })
 
     return api_util.jsonify({
-        'users': [user.to_dict(reduced_fields=True) for user in users],
+        'users': [user.to_dict(extended=False) for user in users],
         'term_users': term_users,
     })
 
@@ -225,7 +225,7 @@ def _get_user_require_auth(user_id=None):
 @app.route('/api/v1/users/<string:user_id>', methods=['GET'])
 def get_user(user_id):
     user = _get_user_require_auth(user_id)
-    user_dict = user.to_dict(reduced_fields=True)
+    user_dict = user.to_dict(extended=False)
     return api_util.jsonify(user_dict)
 
 
@@ -333,7 +333,7 @@ def get_user_courses(user_id):
 def get_user_friends(user_id):
     user = _get_user_require_auth(user_id)
     friends = user.get_friends()
-    friend_dicts = [f.to_dict(reduced_fields=True) for f in friends]
+    friend_dicts = [f.to_dict(extended=False) for f in friends]
 
     return api_util.jsonify({
         'friends': friend_dicts

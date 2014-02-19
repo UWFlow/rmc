@@ -369,7 +369,7 @@ class User(me.Document):
                 *(User.CORE_FIELDS + ['id', 'num_points', 'num_invites',
                 'program_name']))
 
-    def to_dict(self, reduced_fields=False, include_course_ids=False):
+    def to_dict(self, extended=True, include_course_ids=False):
         user_dict = {
             'id': self.id,
             'fbid': self.fbid,
@@ -382,7 +382,7 @@ class User(me.Document):
             'num_points': self.num_points,
         }
 
-        if not reduced_fields:
+        if extended:
             user_dict.update({
                 'friend_ids': self.friend_ids,
                 'course_history': self.course_history,
