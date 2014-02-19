@@ -97,19 +97,13 @@ def get_course_users(course_id):
               "friend_ids": [],
               "program_name": "Software Engineering",
               "course_history": [],
-              "id": {
-                "$oid": "50a532518aedf423ac645891"
-              }
+              "id": "50a532518aedf423ac645891"
             }
           ],
           "term_users": [
             {
               "term_id": "2013_01",
-              "user_ids": [
-                {
-                  "$oid": "50a532518aedf423ac645891"
-                }
-              ],
+              "user_ids": [ "50a532518aedf423ac645891" ],
               "term_name": "Winter 2013"
             }
           ]
@@ -278,15 +272,15 @@ def get_user_courses(user_id):
               "prereqs": "Open only to students in Chemical Engineering",
               "overall": { "count": 131, "rating": 0.7099236641221374 },
               "professor_ids": [ "hyuk_sang_park" ],
-              "user_course_id": { "$oid": "50a9c41c8aedf423ac6458b1" },
+              "user_course_id": "50a9c41c8aedf423ac6458b1",
               "id": "che102",
               "description": "Chemical principles blah blah blah..."
             }
           ],
           "user_courses": [
             {
-              "id": { "$oid": "50a9c41c8aedf423ac6458b1" },
-              "user_id": { "$oid": "50a532518aedf423ac645891" },
+              "id": "50a9c41c8aedf423ac6458b1",
+              "user_id": "50a532518aedf423ac645891",
               "course_id": "che102",
               "term_name": "Fall 2009",
               "term_id": "2009_09",
@@ -299,7 +293,7 @@ def get_user_courses(user_id):
                   { "rating": null, "name": "easiness" },
                   { "rating": null, "name": "interest" }
                 ],
-                "comment_date": { "$date": 1355447961031 },
+                "comment_date": 1355447961031,
                 "privacy": "friends"
               },
               "professor_review": {
@@ -308,7 +302,7 @@ def get_user_courses(user_id):
                   { "rating": 1.0, "name": "clarity" },
                   { "rating": null, "name": "passion" }
                 ],
-                "comment_date": { "$date": 1355447928463 },
+                "comment_date": 1355447928463,
                 "privacy": "friends"
               },
               "program_year_id": "1A"
