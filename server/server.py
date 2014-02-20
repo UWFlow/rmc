@@ -326,7 +326,7 @@ def onboarding():
     )
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login/facebook', methods=['POST'])
 def login_with_facebook():
     """Login or create an account using Facebook connect
 

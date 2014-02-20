@@ -54,13 +54,12 @@ function($, _, __, _util) {
     params.fb_signed_request = authResp.signedRequest;
     var referrerId = $.cookie('referrer_id');
     params.referrer_id = referrerId;
-    // TODO(Sandy): This assumes the /login request will succeed, which may not
-    // be the case. But if we make this request in the success handler, it might
-    // not get logged at all (due to redirect). We could setTimeout it, but that
-    // would cause delay and also I think /login should normally just be
-    // successful. Do this server side or on next page
-    // TODO(Sandy): This counts people whose cookies were dead, but have
-    // already TOSed Flow on Facebook. We should log each group individually
+    // TODO(Sandy): Logging to GA now assumes that the login will succeed, which
+    // may not be the case. But if we make this request in the success handler,
+    // it might not finish logging due to redirect. Though the login request
+    // should normally succeed. Do this server side or on next page
+    // TODO(Sandy): This logging call counts existing users who have already
+    // "installed" Flow on Facebook. We should log each group individually?
     // TODO(Sandy): Assert source
     _gaq.push([
       '_trackEvent',
@@ -74,7 +73,7 @@ function($, _, __, _util) {
       mixpanel.track('Facebook Connect Referral ', { referrerId: referrerId });
     }
 
-    $.ajax('/login', {
+    $.ajax('/login/facebook', {
       data: params,
       dataType: 'json',
       type: 'POST',
