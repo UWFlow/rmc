@@ -59,7 +59,11 @@ def get_current_user():
     elif SESSION_COOKIE_KEY_USER_ID in flask.session:
         user_id = flask.session[SESSION_COOKIE_KEY_USER_ID]
         req.current_user = m.User.objects.with_id(user_id)
-        req.current_user.update(set__last_visited=datetime.datetime.now())
+
+        # req.current_user can be None if the client still has a cookie with
+        # this user_id, but the corresponding User's account has been deleted.
+        if req.current_user:
+            req.current_user.update(set__last_visited=datetime.datetime.now())
     else:
         req.current_user = None
 
