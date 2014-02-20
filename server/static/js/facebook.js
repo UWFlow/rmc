@@ -51,10 +51,6 @@ function($, _, __, _util) {
   }(document));
 
   var login = function(authResp, params, source, nextUrl) {
-    // FIXME[uw](Sandy): Sending all this info in the cookie will easily allow
-    // others to hijack someonne's session. We should probably look into
-    // a way of verifying the request. Maybe that's what Facebook Signed
-    // Requests are for? There are two corresponding server-side FIXMEs for this
     params.fb_signed_request = authResp.signedRequest;
     var referrerId = $.cookie('referrer_id');
     params.referrer_id = referrerId;

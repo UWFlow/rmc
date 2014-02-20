@@ -384,14 +384,10 @@ def login():
         'gender': gender,
         'fb_access_token': fb_access_token,
         'fb_access_token_expiry_date': fb_access_token_expiry_date,
-        # TODO(Sandy): Count visits properly
         'join_date': now,
         'join_source': m.User.JoinSource.FACEBOOK,
-        'num_visits': 1,
         'last_visited': now,
         'friend_fbids': friend_fbids,
-        # TODO(Sandy): Fetch from client side and pass here: name, email,
-        # school, program, faculty
     }
     referrer_id = req.form.get('referrer_id')
     if referrer_id:
