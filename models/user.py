@@ -273,12 +273,14 @@ class User(me.Document):
         # Should renew FB token if it expired or will expire "soon".
         future_date = datetime.datetime.now() + datetime.timedelta(
                 days=facebook.FB_FORCE_TOKEN_EXPIRATION_DAYS)
-        return (self.fb_access_token_expiry_date < future_date or
+        return (self.fb_access_token_expiry_date is None or
+                self.fb_access_token_expiry_date < future_date or
                 self.fb_access_token_invalid)
 
     @property
     def is_fb_token_expired(self):
-        return (self.fb_access_token_expiry_date < datetime.datetime.now() or
+        return (self.fb_access_token_expiry_date is None or
+                self.fb_access_token_expiry_date < datetime.datetime.now() or
                 self.fb_access_token_invalid)
 
     @property

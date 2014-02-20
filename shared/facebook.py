@@ -190,8 +190,8 @@ def get_fb_data(signed_request, config):
 
     # Fetch long token from Facebook
     # TODO(Sandy): Migrate to Flask sessions so null tokens won't be a problem
-    fb_access_token = fbsr_data.get('user_id')
-    fb_access_token_expiry_date = datetime.now()
+    fb_access_token = None
+    fb_access_token_expiry_date = None
     is_invalid = True
 
     code = fbsr_data.get('code')

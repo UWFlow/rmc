@@ -37,9 +37,11 @@ def login_as_user(user):
 
 
 def get_current_user():
-    """Get the logged in user (if it exists) based on fbid and
-    fb_access_token.  Cache the user across multiple calls during the same
-    request.
+    """Get the current user using Flask sessions.
+
+    Also allows admins to become another user based on oid or fbid.
+
+    Returns a User object if the user is logged in, or None otherwise.
     """
     req = flask.request
 
