@@ -332,6 +332,11 @@ def login_with_facebook():
 
     Upon successful login or account creation, returns a 'secure cookie'
     (provided by Flask) containing the session data.
+
+    Takes a Facebook signed request in the form of:
+    {
+        'fb_signed_request': obj
+    }
     """
     req = flask.request
 
@@ -357,11 +362,13 @@ def login_with_facebook():
 
     user = m.User.objects(fbid=fbid).first()
     if user:
-        # Existing user. Update with latest FB info
+        # Existing user. Update with their latest Facebook info
         user.fb_access_token = fb_access_token
         user.fb_access_token_expiry_date = fb_access_token_expiry_date
         user.fb_access_token_invalid = is_invalid
         user.save()
+
+        # Authenticate
         view_helpers.login_as_user(user)
 
         rmclogger.log_event(
@@ -372,52 +379,47 @@ def login_with_facebook():
                 'type': LOGIN_TYPE_STRING_FACEBOOK,
             },
         )
+    else:
+        # New user. Sign up with their Facebook info
+        now = datetime.now()
+        user_obj = {
+            'email': req.form.get('email'),
+            'fb_access_token': fb_access_token,
+            'fb_access_token_expiry_date': fb_access_token_expiry_date,
+            'fbid': fbid,
+            'first_name': req.form.get('first_name'),
+            'friend_fbids': flask.json.loads(req.form.get('friend_fbids')),
+            'gender': req.form.get('gender'),
+            'join_date': now,
+            'join_source': m.User.JoinSource.FACEBOOK,
+            'last_name': req.form.get('last_name'),
+            'last_visited': now,
+            'middle_name': req.form.get('middle_name'),
+        }
 
-        return ''
+        referrer_id = req.form.get('referrer_id')
+        if referrer_id:
+            try:
+                user_obj['referrer_id'] = bson.ObjectId(referrer_id)
+            except bson.errors.InvalidId:
+                pass
 
-    # Sign up the new user
-    friend_fbids = flask.json.loads(req.form.get('friend_fbids'))
-    gender = req.form.get('gender')
-    first_name = req.form.get('first_name')
-    middle_name = req.form.get('middle_name')
-    last_name = req.form.get('last_name')
-    email = req.form.get('email')
+        # Create the user
+        user = m.User(**user_obj)
+        user.save()
 
-    now = datetime.now()
-    user_obj = {
-        'fbid': fbid,
-        'first_name': first_name,
-        'middle_name': middle_name,
-        'last_name': last_name,
-        'email': email,
-        'gender': gender,
-        'fb_access_token': fb_access_token,
-        'fb_access_token_expiry_date': fb_access_token_expiry_date,
-        'join_date': now,
-        'join_source': m.User.JoinSource.FACEBOOK,
-        'last_visited': now,
-        'friend_fbids': friend_fbids,
-    }
-    referrer_id = req.form.get('referrer_id')
-    if referrer_id:
-        try:
-            user_obj['referrer_id'] = bson.ObjectId(referrer_id)
-        except bson.errors.InvalidId:
-            pass
+        # Authenticate
+        view_helpers.login_as_user(user)
 
-    user = m.User(**user_obj)
-    user.save()
-    view_helpers.login_as_user(user)
-
-    rmclogger.log_event(
-        rmclogger.LOG_CATEGORY_IMPRESSION,
-        rmclogger.LOG_EVENT_LOGIN, {
-            'new_user': True,
-            'user_id': user.id,
-            'referrer_id': referrer_id,
-            'type': LOGIN_TYPE_STRING_FACEBOOK,
-        },
-    )
+        rmclogger.log_event(
+            rmclogger.LOG_CATEGORY_IMPRESSION,
+            rmclogger.LOG_EVENT_LOGIN, {
+                'new_user': True,
+                'user_id': user.id,
+                'referrer_id': referrer_id,
+                'type': LOGIN_TYPE_STRING_FACEBOOK,
+            },
+        )
 
     return ''
 
