@@ -71,6 +71,9 @@ deploy:
 		cat deploy.sh | ssh rmc DEPLOYER=`whoami` sh; \
 	fi
 
+pip_install: require_virtualenv_in_dev
+	pip install -r requirements.txt
+
 require_virtualenv_in_dev:
 	@if [[ `whoami` = 'rmc' || "${VIRTUAL_ENV}" = "${HOME}/.virtualenv/rmc" ]]; then \
 		true; \
