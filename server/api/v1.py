@@ -13,8 +13,6 @@ import rmc.shared.facebook as facebook
 
 # TODO(david): Bring in other API methods from server.py to here.
 # TODO(david): Document API methods. Clarify which methods accept user auth.
-# TODO(david): Make sure every API route returns a top-level object instead of
-#     list (which would inconvenience some JSON parsers, such as Java's).
 
 
 api = flask.Blueprint('api', __name__, url_prefix='/api/v1')
@@ -49,7 +47,9 @@ def get_course_professors(course_id):
     professors = m.Professor.get_full_professors_for_course(
             course, current_user)
 
-    return api_util.jsonify(professors)
+    return api_util.jsonify({
+        'professors': professors
+    })
 
 
 @api.route('/courses/<string:course_id>/exams', methods=['GET'])
@@ -67,7 +67,11 @@ def get_course_exams(course_id):
 @api.route('/courses/<string:course_id>/sections', methods=['GET'])
 def get_course_sections(course_id):
     sections = m.section.Section.get_for_course_and_recent_terms(course_id)
-    return api_util.jsonify(s.to_dict() for s in sections)
+    section_dicts = [s.to_dict() for s in sections]
+
+    return api_util.jsonify({
+        'sections': section_dicts
+    })
 
 
 @api.route('/courses/<string:course_id>/users', methods=['GET'])
