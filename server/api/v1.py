@@ -13,6 +13,7 @@ import rmc.shared.facebook as facebook
 
 # TODO(david): Bring in other API methods from server.py to here.
 # TODO(david): Document API methods. Clarify which methods accept user auth.
+# TODO(david): Tests (Actually, Jamie wants to do this :P)
 
 
 api = flask.Blueprint('api', __name__, url_prefix='/api/v1')
@@ -342,6 +343,40 @@ def get_user_friends(user_id):
 
     return api_util.jsonify({
         'friends': friend_dicts
+    })
+
+
+###############################################################################
+# /search* endpoints: Search API
+
+
+@api.route('/search/courses')
+def search_courses():
+    """Search courses from various criteria.
+
+    Accepts the following query parameters:
+        keywords: Keywords to search on
+        sort_mode: Name of a sort mode. See Course.SORT_MODES. If this is
+            'friends_taken', a user must be authenticated, otherwise, will
+            default to the 'popular' sort mode.
+        direction: 1 for ascending, -1 for descending
+        count: Max items to return (aka. limit)
+        offset: Index of first search result to return (aka. skip)
+        exclude_taken_courses: "yes" to exclude courses current user has taken.
+
+    If a user is authenticated, additional user-specific info will be returned,
+    such as terms user took each course and ratings and reviews (if any).
+    """
+    current_user = view_helpers.get_current_user()
+    courses, has_more = m.Course.search(flask.request.values, current_user)
+
+    course_dicts, user_course_dicts, _ = (
+            m.Course.get_course_and_user_course_dicts(courses, current_user))
+
+    return api_util.jsonify({
+        'courses': course_dicts,
+        'user_courses': user_course_dicts,
+        'has_more': has_more,
     })
 
 

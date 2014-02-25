@@ -278,7 +278,9 @@ class Course(me.Document):
         Arguments:
             params: Dict of search parameters (all optional):
                 keywords: Keywords to search on
-                sort_mode: Name of a sort mode. See Course.SORT_MODES.
+                sort_mode: Name of a sort mode. See Course.SORT_MODES. The
+                    'friends_taken' sort mode defaults to 'popular' if no
+                    current_user.
                 direction: 1 for ascending, -1 for descending
                 count: Max items to return (aka. limit)
                 offset: Index of first search result to return (aka. skip)
