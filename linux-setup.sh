@@ -1,6 +1,14 @@
 #!/bin/bash
 
 install_packages() {
+    # To get add-apt-repository
+    dpkg -s python-software-properties
+    if [ $? -ne 0 ]; then
+      # Needed on a fresh install
+      sudo apt-get update
+      sudo apt-get install -y python-software-properties
+    fi
+
     updated_apt_repo=""
 
     # To get the most recent nodejs, later.
