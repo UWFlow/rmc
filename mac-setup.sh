@@ -32,10 +32,12 @@ install_phantomjs() {
         # If phantomjs is already installed via brew, check if it is outdated
         if brew outdated | grep -q -e 'phantomjs'; then
             # If phantomjs is outdated, update it
+            echo "Upgrading phantomjs"
             brew upgrade phantomjs 2>&1
         fi
     else
         # Otherwise, install via brew
+        echo "Installing phantomjs"
         brew install phantomjs 2>&1
     fi
 }
@@ -44,6 +46,20 @@ install_redis() {
     if ! brew ls redis >/dev/null 2>&1; then
         echo "Installing redis"
         brew install redis 2>&1
+    fi
+}
+
+install_chromedriver() {
+    if brew ls chromedriver >/dev/null 2>&1; then
+        if brew outdated | grep -q -e 'chromedriver'; then
+            # If chromedriver is outdated, update it
+            echo "Upgrading chromedriver"
+            brew upgrade chromedriver 2>&1
+        fi
+    else
+        # Otherwise, install via brew
+        echo "Installing chromedriver"
+        brew install chromedriver 2>&1
     fi
 }
 

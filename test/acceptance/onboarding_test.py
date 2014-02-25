@@ -85,7 +85,7 @@ class OnboardingTest(testlib.AcceptanceTestCase):
         self._wait_for_element('.course-content')
 
         course_contents = self._css_all(".course-content")
-        self.assertEqual(len(course_contents), 48)
+        self.assertEqual(len(course_contents), 19)
         self.assertTrue(course_contents[0].text.startswith("CS 444"))
 
     def _paste_schedule(self):
