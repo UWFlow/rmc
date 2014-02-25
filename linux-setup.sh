@@ -23,9 +23,9 @@ install_packages() {
         updated_apt_repo=yes
     fi
 
-    # To get the most recent redis
-    if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q rwky-redis; then
-        sudo add-apt-repository -y ppa:rwky/redis
+    # To get the most recent redis-server
+    if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q chris-lea-redis-server; then
+        sudo add-apt-repository -y ppa:chris-lea/redis-server
         updated_apt_repo=yes
     fi
 
