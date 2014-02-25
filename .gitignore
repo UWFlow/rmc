@@ -1,7 +1,7 @@
 *.pyc
 .sass-cache/
 logs/
-test/logs/
+test/logs/*
 mongodb/
 server/static/sitemap.txt
 server/static/css/
