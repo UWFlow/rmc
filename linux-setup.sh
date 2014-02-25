@@ -35,7 +35,7 @@ install_packages() {
     fi
 
     sudo apt-get install -y \
-        built-essential \
+        build-essential \
         git \
         python-setuptools python-pip python-dev \
         libxml2-dev libxslt-dev \
