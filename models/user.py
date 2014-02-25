@@ -2,8 +2,6 @@ import base64
 import datetime
 import hashlib
 import itertools
-import random
-import string
 import time
 import uuid
 
@@ -22,11 +20,6 @@ from rmc.shared import util
 
 
 PROMPT_TO_REVIEW_DELAY_DAYS = 60
-
-
-# TODO(jlfwong): Use a random generator that's cryptographically secure instead
-def generate_secret_id(size=9, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for x in range(size))
 
 
 class User(me.Document):
@@ -485,7 +478,7 @@ class User(me.Document):
     def get_secret_id(self):
         # TODO(jlfwong): This is possibly a race condition...
         if self.secret_id is None:
-            self.secret_id = generate_secret_id()
+            self.secret_id = util.generate_secret_id()
             self.save()
 
         return self.secret_id

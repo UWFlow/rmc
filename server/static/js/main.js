@@ -103,6 +103,14 @@ window._ = _;
 window.$ = $;
 window.jQuery = $;
 
+// Add a CSRF token to the headers for all ajax requests being sent out by
+// jQuery.
+$.ajaxSetup({
+  headers: {
+    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+  }
+});
+
 require(['ext/underscore.string', 'util', 'rmc_moment',
     'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
     'points', 'user', 'facebook', 'work_queue'],

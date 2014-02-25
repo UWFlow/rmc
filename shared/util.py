@@ -1,6 +1,8 @@
 import datetime
 import logging
 import math
+import random
+import string
 import traceback
 
 import pytz
@@ -185,3 +187,8 @@ def publicly_visible_ratings_and_reviews_filter(
         results = objs[0:min_num_objs]
 
     return results
+
+
+# TODO(jlfwong): Use a random generator that's cryptographically secure instead
+def generate_secret_id(size=9, chars=string.ascii_uppercase + string.digits):
+    return ''.join(random.choice(chars) for x in range(size))

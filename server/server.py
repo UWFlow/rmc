@@ -79,7 +79,8 @@ def version(file_name):
 
 
 @app.before_request
-def before_request():
+def render_snapshot_for_great_seo():
+    """Renders static snapshots captured using phantomjs to improve SEO."""
     if '_escaped_fragment_' not in flask.request.values:
         return
 
@@ -97,6 +98,29 @@ def before_request():
     except IOError:
         logging.warn('Snapshot does not exist for %s. '
             'Returning dynamic page' % path)
+
+
+@app.before_request
+def csrf_protect():
+    """Require a valid CSRF token for any method other than GET."""
+    # Based on http://flask.pocoo.org/snippets/3/, but modified to use headers
+    # and generally be more Rails-like
+    if flask.request.method != "GET":
+        # We intentionally don't invalidate CSRF tokens after a single use to
+        # enable multiple AJAX requests originating from the page load to all
+        # work off the same CSRF token.
+        token = flask.session.get('_csrf_token', None)
+        if not token or token != flask.request.headers.get('X-CSRF-Token'):
+            flask.abort(403)
+
+
+def generate_csrf_token():
+    if '_csrf_token' not in flask.session:
+        flask.session['_csrf_token'] = util.generate_secret_id(size=15)
+    return flask.session['_csrf_token']
+
+
+app.jinja_env.globals['csrf_token'] = generate_csrf_token
 
 
 # TODO(Sandy): Unused right now, but remove in a separate diff for future
