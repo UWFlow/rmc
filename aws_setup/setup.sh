@@ -64,7 +64,7 @@ scp ~/.ssh/id_dsa* rmc:~/.ssh/
 EOF
 
 echo "Syncing rmc code base"
-git clone git@github.com:UWFlow/rmc.git || ( cd rmc && git pull )
+git clone git@github.com:divad12/rmc.git || ( cd rmc && git pull )
 
 echo "Copying dotfiles"
 for i in $CONFIG_DIR/dot_*; do

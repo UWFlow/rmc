@@ -207,7 +207,7 @@ function(_s, util, moment, Backbone, __, __, toastr, _points,
   // So manually check if domready has occurred, and if it has execute
   // right away. In IE, gotta wait for state === 'complete' since
   // state === 'interactive' could fire before dom is ready. See
-  // https://github.com/UWFlow/rmc/commit/56af16db497db5b8d4e210e784e9f63051fcce32
+  // https://github.com/divad12/rmc/commit/56af16db497db5b8d4e210e784e9f63051fcce32
   // for more info.
   var state = document.readyState;
   if (document.attachEvent ? state === 'complete' : state !== 'loading' ) {

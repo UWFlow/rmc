@@ -32,7 +32,7 @@ For the most part, you can just stick to the conventions of the surrounding
 code.
 
 [See our style guide for language-specific
-guidelines.](https://github.com/UWFlow/rmc/wiki/Flow-Style-Guide)
+guidelines.](https://github.com/divad12/rmc/wiki/Flow-Style-Guide)
 
 ## Mock-ups
 
