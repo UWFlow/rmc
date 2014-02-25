@@ -575,7 +575,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
 
     events: {
       'input .schedule-input-textarea': 'inputSchedule',
-      'paste .schedule-input-textarea': 'inputSchedule'
+      'click .schedule-input-textarea': 'onFocus'
     },
 
     initialize: function() {
@@ -586,9 +586,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       return this;
     },
 
-    inputSchedule: function(evt) {
-      this.$('.schedule-input-error').empty();
+    onFocus: function() {
+      this.$('.schedule-input-textarea').select();
+    },
 
+    inputSchedule: function(evt) {
       // Store the schedule text
       var data = $(evt.currentTarget).val();
       if (!data) {
@@ -602,10 +604,16 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
 
     addScheduleData: function(data) {
       var scheduleData;
+      var exceptionThrown = false;
       try {
         scheduleData = parseSchedule(data);
         this.$('.schedule-input-textarea').prop('disabled', true);
       } catch (ex) {
+        mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
+        exceptionThrown = true;
+      }
+
+      if (exceptionThrown || !scheduleData.processed_items.length) {
         $.ajax('/api/schedule/log', {
           data: {
             schedule: data
@@ -613,11 +621,16 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
           type: 'POST'
         });
 
-        this.$('.schedule-input-error').text(
-            'Uh oh. Could not parse your schedule :( ' +
-            'Check that you\'ve pasted your schedule correctly.');
+        window.alert(
+          'Uh oh, we couldn\'t parse your schedule. ' +
+          'Please make sure you copied the List View (not the Weekly ' +
+          'Calendar View) and try again.\n\n' +
+          'If that still doesn\'t work, click the "Feedback" button ' +
+          'on the left to let us know.'
+        );
 
-        mixpanel.track('Schedule parse error', { error_msg: ex.toString() });
+        this.$('.schedule-input-textarea').prop('disabled', false);
+        this.onFocus();
         return;
       }
 
@@ -634,7 +647,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
           _util.pluralize(failedCourses.length, 'it ', 'them ') +
           'on your schedule.\n\n' +
           'You can reimport when details are available.\n\n' +
-          'If details are not missing, please tell us that we screwed up!'
+          'If details are not missing, click the "Feedback" button ' +
+          'on the left to let us know.'
         );
       }
 
@@ -819,8 +833,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
     if (termMatch) {
       termName = termMatch[0];
     } else {
-      // TODO(Sandy)[2013_09->2014_01]: Don't hardcode term
-      termName = 'Fall 2013';
+      termName = _util.getCurrentTermName();
     }
 
     // TODO(david): Change other places where we assume uppercase to any case

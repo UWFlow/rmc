@@ -282,6 +282,17 @@ function(_, _s, $) {
     return _s.pad(year - 1900, 3, '0') + month;
   };
 
+  /**
+   * Get term name based on current date.
+   */
+  var getCurrentTermName = function() {
+    var date = new Date();
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    var monthStr = ['Winter', 'Spring', 'Fall'][Math.floor(month/4)];
+    return monthStr + ' ' + year;
+  };
+
   return {
     getQueryParam: getQueryParam,
     getQueryParams: getQueryParams,
@@ -304,6 +315,7 @@ function(_, _s, $) {
     humanizeProfId: humanizeProfId,
     sectionTypeToCssClass: sectionTypeToCssClass,
     splitCourseId: splitCourseId,
-    termIdToQuestId: termIdToQuestId
+    termIdToQuestId: termIdToQuestId,
+    getCurrentUserId: getCurrentTermName
   };
 });
