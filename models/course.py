@@ -1,13 +1,58 @@
 import collections
+import logging
 import re
 
 import mongoengine as me
+import pymongo
 
 import review
 import rating
 import section
+import term
+from rmc.shared import rmclogger
 from rmc.shared import util
 import user_course as _user_course
+
+
+# TODO(david): Add usefulness
+_SORT_MODES = [
+    {
+        'name': 'popular',
+        'direction': pymongo.DESCENDING,
+        'field': 'interest.count'
+    },
+    {
+        'name': 'friends_taken',
+        'direction': pymongo.DESCENDING,
+        'field': 'custom'
+    },
+    {
+        'name': 'interesting',
+        'direction': pymongo.DESCENDING,
+        'field': 'interest.sorting_score'
+    },
+    {
+        'name': 'easy',
+        'direction': pymongo.DESCENDING,
+        'field': 'easiness.sorting_score'
+    },
+    {
+        'name': 'hard',
+        'direction': pymongo.ASCENDING,
+        'field': 'easiness.sorting_score'
+    },
+    {
+        'name': 'course code',
+        'direction': pymongo.ASCENDING,
+        'field': 'id'
+    },
+]
+
+_SORT_MODES_BY_NAME = {sm['name']: sm for sm in _SORT_MODES}
+
+# Special sort instructions are needed for these sort modes
+# TODO(Sandy): deprecate overall and add usefulness
+_RATING_SORT_MODES = ['overall', 'interesting', 'easy', 'hard']
 
 
 class Course(me.Document):
@@ -68,6 +113,8 @@ class Course(me.Document):
     # eg. ['earth', '121l', 'earth121l', 'Introductory',
     #      'Earth' 'Sciences', 'Laboratory', '1']
     _keywords = me.ListField(me.StringField(), required=True)
+
+    SORT_MODES = _SORT_MODES
 
     @property
     def code(self):
@@ -220,6 +267,131 @@ class Course(me.Document):
     @staticmethod
     def code_to_id(course_code):
         return "".join(course_code.split()).lower()
+
+    @staticmethod
+    def search(params, current_user):
+        """Search for courses based on various parameters.
+
+        Arguments:
+            params: Dict of search parameters (all optional):
+                keywords: Keywords to search on
+                sort_mode: Name of a sort mode. See Course.SORT_MODES.
+                direction: 1 for ascending, -1 for descending
+                count: Max items to return (aka. limit)
+                offset: Index of first search result to return (aka. skip)
+                exclude_taken_courses: "yes" to exclude courses current_user
+                    has taken.
+            current_user: The user making the request.
+
+        Returns:
+            A tuple (courses, has_more):
+                courses: Search results
+                has_more: Whether there could be more search results
+        """
+        keywords = params.get('keywords')
+        sort_mode = params.get('sort_mode', 'popular')
+        default_direction = _SORT_MODES_BY_NAME[sort_mode]['direction']
+        direction = int(params.get('direction', default_direction))
+        count = int(params.get('count', 10))
+        offset = int(params.get('offset', 0))
+        exclude_taken_courses = params.get('exclude_taken_courses')
+
+        # TODO(david): These logging things should be done asynchronously
+        rmclogger.log_event(
+            rmclogger.LOG_CATEGORY_COURSE_SEARCH,
+            rmclogger.LOG_EVENT_SEARCH_PARAMS,
+            params
+        )
+
+        # XXX clean up all code beneath
+
+        filters = {}
+        if keywords:
+            # Clean keywords to just alphanumeric and space characters
+            keywords = re.sub(r'[^\w ]', ' ', keywords)
+
+            keywords = re.sub('\s+', ' ', keywords)
+            keywords = keywords.split(' ')
+
+            def regexify_keywords(keyword):
+                keyword = keyword.lower()
+                return re.compile('^%s' % keyword)
+
+            keywords = map(regexify_keywords, keywords)
+            filters['_keywords__all'] = keywords
+
+        if exclude_taken_courses == "yes":
+            if current_user:
+                ucs = (current_user.get_user_courses()
+                        .only('course_id', 'term_id'))
+                filters['id__nin'] = [
+                    uc.course_id for uc in ucs
+                    if not term.Term.is_shortlist_term(uc.term_id)
+                ]
+            else:
+                logging.error('Anonymous user tried excluding taken courses')
+
+        # TODO(david): Move this to another fn
+        if sort_mode == 'friends_taken':
+            # TODO(david): Resolve circular dependency in a better way
+            import user
+
+            # TODO(mack): should only do if user is logged in
+            friends = user.User.objects(id__in=current_user.friend_ids).only(
+                    'course_history')
+            # TODO(mack): need to majorly optimize this
+            num_friends_by_course = {}
+            for friend in friends:
+                for course_id in friend.course_ids:
+                    if not course_id in num_friends_by_course:
+                        num_friends_by_course[course_id] = 0
+                    num_friends_by_course[course_id] += 1
+
+            filters['id__in'] = num_friends_by_course.keys()
+            existing_courses = Course.objects(**filters).only('id')
+            existing_course_ids = set(c.id for c in existing_courses)
+            for course_id in num_friends_by_course.keys():
+                if course_id not in existing_course_ids:
+                    del num_friends_by_course[course_id]
+
+            sorted_course_count_tuples = sorted(
+                num_friends_by_course.items(),
+                key=lambda (_, total): total,
+                reverse=direction < 0,
+            )[offset:offset + count]
+
+            sorted_course_ids = [course_id for (course_id, total)
+                    in sorted_course_count_tuples]
+
+            unsorted_limited_courses = Course.objects(id__in=sorted_course_ids)
+
+            limited_courses_by_id = {}
+            for course in unsorted_limited_courses:
+                limited_courses_by_id[course.id] = course
+
+            limited_courses = []
+            for course_id in sorted_course_ids:
+                limited_courses.append(limited_courses_by_id[course_id])
+
+        else:
+            sort_options = _SORT_MODES_BY_NAME[sort_mode]
+
+            if sort_mode in _RATING_SORT_MODES:
+                sort_instr = '-' + sort_options['field']
+                sort_instr += "_positive" if direction < 0 else "_negative"
+            else:
+                sort_instr = ''
+                if direction < 0:
+                    sort_instr = '-'
+                sort_instr += sort_options['field']
+
+            unsorted_courses = Course.objects(**filters)
+            sorted_courses = unsorted_courses.order_by(sort_instr)
+            limited_courses = sorted_courses.skip(offset).limit(count)
+
+        has_more = len(limited_courses) == count
+
+        return limited_courses, has_more
 
     def to_dict(self):
         """Returns information about a course to be sent down an API.
