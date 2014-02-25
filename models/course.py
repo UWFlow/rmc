@@ -25,7 +25,8 @@ _SORT_MODES = [
     {
         'name': 'friends_taken',
         'direction': pymongo.DESCENDING,
-        'field': None,  # We do our own in-memory sorting
+        # Default in case no current user, else we do our own in-memory sorting
+        'field': 'interest.count',
         'is_rating': False,
     },
     {
@@ -328,10 +329,8 @@ class Course(me.Document):
             else:
                 logging.error('Anonymous user tried excluding taken courses')
 
-        if sort_mode == 'friends_taken':
+        if sort_mode == 'friends_taken' and current_user:
             import user
-
-            # TODO(mack): should only do if user is logged in
             friends = user.User.objects(id__in=current_user.friend_ids).only(
                     'course_history')
 
@@ -367,9 +366,8 @@ class Course(me.Document):
                 order_by = '-%s.sorting_score_%s' % (sort_options['field'],
                         suffix)
             else:
-                order_by = sort_options['field']
-                if direction < 0:
-                    order_by = '-' + order_by
+                sign = '-' if direction < 0 else ''
+                order_by = '%s%s' % (sign, sort_options['field'])
 
             unsorted_courses = Course.objects(**filters)
             sorted_courses = unsorted_courses.order_by(order_by)
