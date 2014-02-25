@@ -19,6 +19,7 @@ import rmc.shared.facebook as facebook
 import rmc.shared.util as util
 import rmc.shared.rmclogger as rmclogger
 from rmc.server.app import app
+import rmc.server.api.v1 as api_v1
 import rmc.server.profile as profile
 import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
@@ -26,10 +27,8 @@ import rmc.analytics.stats as rmc_stats
 import rmc.shared.schedule_screenshot as schedule_screenshot
 import rmc.kittens.data as kitten_data
 
-# While not referenced directly, these imports have necessary side-effects.
-# (eg. Paths are mapped to API request handlers with the @route decorator.)
-import rmc.server.api.v1  # NOQA @UnusedImport
 
+app.register_blueprint(api_v1.api)
 
 VERSION = int(time.time())
 

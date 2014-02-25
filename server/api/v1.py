@@ -6,7 +6,6 @@ import bson
 import flask
 
 import rmc.models as m
-from rmc.server.app import app
 import rmc.server.api.api_util as api_util
 import rmc.server.view_helpers as view_helpers
 import rmc.shared.facebook as facebook
@@ -14,15 +13,16 @@ import rmc.shared.facebook as facebook
 
 # TODO(david): Bring in other API methods from server.py to here.
 # TODO(david): Document API methods. Clarify which methods accept user auth.
-# TODO(david): Make sure every API route returns a top-level object instead of
-#     list (which would inconvenience some JSON parsers, such as Java's).
+
+
+api = flask.Blueprint('api', __name__, url_prefix='/api/v1')
 
 
 ###############################################################################
 # /courses/:course_id routes: info about a specific course
 
 
-@app.route('/api/v1/courses/<string:course_id>', methods=['GET'])
+@api.route('/courses/<string:course_id>', methods=['GET'])
 def get_course(course_id):
     course = m.Course.objects.with_id(course_id)
     if not course:
@@ -37,7 +37,7 @@ def get_course(course_id):
     }))
 
 
-@app.route('/api/v1/courses/<string:course_id>/professors', methods=['GET'])
+@api.route('/courses/<string:course_id>/professors', methods=['GET'])
 def get_course_professors(course_id):
     course = m.Course.objects.with_id(course_id)
     if not course:
@@ -47,10 +47,12 @@ def get_course_professors(course_id):
     professors = m.Professor.get_full_professors_for_course(
             course, current_user)
 
-    return api_util.jsonify(professors)
+    return api_util.jsonify({
+        'professors': professors
+    })
 
 
-@app.route('/api/v1/courses/<string:course_id>/exams', methods=['GET'])
+@api.route('/courses/<string:course_id>/exams', methods=['GET'])
 def get_course_exams(course_id):
     exams = m.Exam.objects(course_id=course_id)
     exam_dict_list = [e.to_dict() for e in exams]
@@ -62,13 +64,17 @@ def get_course_exams(course_id):
     })
 
 
-@app.route('/api/v1/courses/<string:course_id>/sections', methods=['GET'])
+@api.route('/courses/<string:course_id>/sections', methods=['GET'])
 def get_course_sections(course_id):
     sections = m.section.Section.get_for_course_and_recent_terms(course_id)
-    return api_util.jsonify(s.to_dict() for s in sections)
+    section_dicts = [s.to_dict() for s in sections]
+
+    return api_util.jsonify({
+        'sections': section_dicts
+    })
 
 
-@app.route('/api/v1/courses/<string:course_id>/users', methods=['GET'])
+@api.route('/courses/<string:course_id>/users', methods=['GET'])
 def get_course_users(course_id):
     """Get users who are taking, have taken, or plan to take the given course.
 
@@ -145,7 +151,7 @@ def get_course_users(course_id):
 # Endpoints used for authentication
 
 
-@app.route('/api/v1/login/facebook', methods=['POST'])
+@api.route('/login/facebook', methods=['POST'])
 def login_facebook():
     """Attempt to login a user with FB credentials encoded in the POST body.
 
@@ -215,17 +221,16 @@ def _get_user_require_auth(user_id=None):
             'Not authorized to get info about this user.')
 
 
-@app.route('/api/v1/user', defaults={'user_id': None}, methods=['GET'])
-@app.route('/api/v1/users/<string:user_id>', methods=['GET'])
+@api.route('/user', defaults={'user_id': None}, methods=['GET'])
+@api.route('/users/<string:user_id>', methods=['GET'])
 def get_user(user_id):
     user = _get_user_require_auth(user_id)
     user_dict = user.to_dict(extended=False)
     return api_util.jsonify(user_dict)
 
 
-@app.route('/api/v1/user/schedule', defaults={'user_id': None},
-        methods=['GET'])
-@app.route('/api/v1/users/<string:user_id>/schedule', methods=['GET'])
+@api.route('/user/schedule', defaults={'user_id': None}, methods=['GET'])
+@api.route('/users/<string:user_id>/schedule', methods=['GET'])
 def get_user_schedule(user_id):
     user = _get_user_require_auth(user_id)
     schedule_item_dict_list = user.get_schedule_item_dicts()
@@ -235,8 +240,8 @@ def get_user_schedule(user_id):
     })
 
 
-@app.route('/api/v1/user/exams', defaults={'user_id': None}, methods=['GET'])
-@app.route('/api/v1/users/<string:user_id>/exams', methods=['GET'])
+@api.route('/user/exams', defaults={'user_id': None}, methods=['GET'])
+@api.route('/users/<string:user_id>/exams', methods=['GET'])
 def get_user_exams(user_id):
     user = _get_user_require_auth(user_id)
     exams = user.get_current_term_exams()
@@ -249,8 +254,8 @@ def get_user_exams(user_id):
     })
 
 
-@app.route('/api/v1/user/courses', defaults={'user_id': None}, methods=['GET'])
-@app.route('/api/v1/users/<string:user_id>/courses', methods=['GET'])
+@api.route('/user/courses', defaults={'user_id': None}, methods=['GET'])
+@api.route('/users/<string:user_id>/courses', methods=['GET'])
 def get_user_courses(user_id):
     """Get courses that a user took, is taking, or plan to take (shortlist).
 
@@ -322,8 +327,8 @@ def get_user_courses(user_id):
     })
 
 
-@app.route('/api/v1/user/friends', defaults={'user_id': None}, methods=['GET'])
-@app.route('/api/v1/users/<string:user_id>/friends', methods=['GET'])
+@api.route('/user/friends', defaults={'user_id': None}, methods=['GET'])
+@api.route('/users/<string:user_id>/friends', methods=['GET'])
 def get_user_friends(user_id):
     user = _get_user_require_auth(user_id)
     friends = user.get_friends()
