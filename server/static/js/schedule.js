@@ -613,7 +613,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         exceptionThrown = true;
       }
 
-      if (!scheduleData.processed_items.length || exceptionThrown) {
+      if (exceptionThrown || !scheduleData.processed_items.length) {
         $.ajax('/api/schedule/log', {
           data: {
             schedule: data
@@ -625,7 +625,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
           'Uh oh, we couldn\'t parse your schedule. ' +
           'Please make sure you copied the List View (not the Weekly ' +
           'Calendar View) and try again.\n\n' +
-          'If you think the problem is on our end, please let us know!'
+          'If that still doesn\'t work, click the "Feedback" button ' +
+          'on the left to let us know.'
         );
 
         this.$('.schedule-input-textarea').prop('disabled', false);
@@ -646,7 +647,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
           _util.pluralize(failedCourses.length, 'it ', 'them ') +
           'on your schedule.\n\n' +
           'You can reimport when details are available.\n\n' +
-          'If details are not missing, please tell us that we screwed up!'
+          'If details are not missing, click the "Feedback" button ' +
+          'on the left to let us know.'
         );
       }
 
@@ -824,14 +826,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         '/schedule/ical/' + window.pageData.profileUserSecretId + ".ics";
   };
 
-  var getCurrentTermName = function() {
-    var date = new Date();
-    var month = date.getMonth();
-    var year = date.getFullYear();
-    var monthStr = ['Winter', 'Spring', 'Fall'][Math.floor(month/4)];
-    return monthStr + ' ' + year;
-  };
-
   var parseSchedule = function(data) {
     // Get the term for the schedule. E.g. Fall 2012
     var termMatch = data.match(/(Spring|Fall|Winter)\s+(\d{4})/);
@@ -839,7 +833,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
     if (termMatch) {
       termName = termMatch[0];
     } else {
-      termName = getCurrentTermName();
+      termName = _util.getCurrentTermName();
     }
 
     // TODO(david): Change other places where we assume uppercase to any case
