@@ -19,40 +19,42 @@ _SORT_MODES = [
     {
         'name': 'popular',
         'direction': pymongo.DESCENDING,
-        'field': 'interest.count'
+        'field': 'interest.count',
+        'is_rating': False,
     },
     {
         'name': 'friends_taken',
         'direction': pymongo.DESCENDING,
-        'field': 'custom'
+        'field': None,  # We do our own in-memory sorting
+        'is_rating': False,
     },
     {
         'name': 'interesting',
         'direction': pymongo.DESCENDING,
-        'field': 'interest.sorting_score'
+        'field': 'interest',
+        'is_rating': True,
     },
     {
         'name': 'easy',
         'direction': pymongo.DESCENDING,
-        'field': 'easiness.sorting_score'
+        'field': 'easiness',
+        'is_rating': True,
     },
     {
         'name': 'hard',
         'direction': pymongo.ASCENDING,
-        'field': 'easiness.sorting_score'
+        'field': 'easiness',
+        'is_rating': True,
     },
     {
         'name': 'course code',
         'direction': pymongo.ASCENDING,
-        'field': 'id'
+        'field': 'id',
+        'is_rating': False,
     },
 ]
 
 _SORT_MODES_BY_NAME = {sm['name']: sm for sm in _SORT_MODES}
-
-# Special sort instructions are needed for these sort modes
-# TODO(Sandy): deprecate overall and add usefulness
-_RATING_SORT_MODES = ['overall', 'interesting', 'easy', 'hard']
 
 
 class Course(me.Document):
@@ -294,7 +296,7 @@ class Course(me.Document):
         direction = int(params.get('direction', default_direction))
         count = int(params.get('count', 10))
         offset = int(params.get('offset', 0))
-        exclude_taken_courses = params.get('exclude_taken_courses')
+        exclude_taken_courses = (params.get('exclude_taken_courses') == "yes")
 
         # TODO(david): These logging things should be done asynchronously
         rmclogger.log_event(
@@ -303,24 +305,19 @@ class Course(me.Document):
             params
         )
 
-        # XXX clean up all code beneath
-
         filters = {}
         if keywords:
             # Clean keywords to just alphanumeric and space characters
-            keywords = re.sub(r'[^\w ]', ' ', keywords)
-
-            keywords = re.sub('\s+', ' ', keywords)
-            keywords = keywords.split(' ')
+            keywords_cleaned = re.sub(r'[^\w ]', ' ', keywords)
 
             def regexify_keywords(keyword):
                 keyword = keyword.lower()
-                return re.compile('^%s' % keyword)
+                return re.compile('^%s' % re.escape(keyword))
 
-            keywords = map(regexify_keywords, keywords)
-            filters['_keywords__all'] = keywords
+            keyword_regexes = map(regexify_keywords, keywords_cleaned.split())
+            filters['_keywords__all'] = keyword_regexes
 
-        if exclude_taken_courses == "yes":
+        if exclude_taken_courses:
             if current_user:
                 ucs = (current_user.get_user_courses()
                         .only('course_id', 'term_id'))
@@ -331,21 +328,16 @@ class Course(me.Document):
             else:
                 logging.error('Anonymous user tried excluding taken courses')
 
-        # TODO(david): Move this to another fn
         if sort_mode == 'friends_taken':
-            # TODO(david): Resolve circular dependency in a better way
             import user
 
             # TODO(mack): should only do if user is logged in
             friends = user.User.objects(id__in=current_user.friend_ids).only(
                     'course_history')
-            # TODO(mack): need to majorly optimize this
-            num_friends_by_course = {}
+
+            num_friends_by_course = collections.Counter()
             for friend in friends:
-                for course_id in friend.course_ids:
-                    if not course_id in num_friends_by_course:
-                        num_friends_by_course[course_id] = 0
-                    num_friends_by_course[course_id] += 1
+                num_friends_by_course.update(friend.course_ids)
 
             filters['id__in'] = num_friends_by_course.keys()
             existing_courses = Course.objects(**filters).only('id')
@@ -363,35 +355,29 @@ class Course(me.Document):
             sorted_course_ids = [course_id for (course_id, total)
                     in sorted_course_count_tuples]
 
-            unsorted_limited_courses = Course.objects(id__in=sorted_course_ids)
-
-            limited_courses_by_id = {}
-            for course in unsorted_limited_courses:
-                limited_courses_by_id[course.id] = course
-
-            limited_courses = []
-            for course_id in sorted_course_ids:
-                limited_courses.append(limited_courses_by_id[course_id])
+            unsorted_courses = Course.objects(id__in=sorted_course_ids)
+            course_by_id = {course.id: course for course in unsorted_courses}
+            courses = [course_by_id[cid] for cid in sorted_course_ids]
 
         else:
             sort_options = _SORT_MODES_BY_NAME[sort_mode]
 
-            if sort_mode in _RATING_SORT_MODES:
-                sort_instr = '-' + sort_options['field']
-                sort_instr += "_positive" if direction < 0 else "_negative"
+            if sort_options['is_rating']:
+                suffix = 'positive' if direction < 0 else 'negative'
+                order_by = '-%s.sorting_score_%s' % (sort_options['field'],
+                        suffix)
             else:
-                sort_instr = ''
+                order_by = sort_options['field']
                 if direction < 0:
-                    sort_instr = '-'
-                sort_instr += sort_options['field']
+                    order_by = '-' + order_by
 
             unsorted_courses = Course.objects(**filters)
-            sorted_courses = unsorted_courses.order_by(sort_instr)
-            limited_courses = sorted_courses.skip(offset).limit(count)
+            sorted_courses = unsorted_courses.order_by(order_by)
+            courses = sorted_courses.skip(offset).limit(count)
 
-        has_more = len(limited_courses) == count
+        has_more = len(courses) == count
 
-        return limited_courses, has_more
+        return courses, has_more
 
     def to_dict(self):
         """Returns information about a course to be sent down an API.
