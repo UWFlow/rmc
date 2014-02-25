@@ -50,5 +50,5 @@ Here's what an example session might look like:
 ## Contributing
 
 When you're ready to contribute, take a look at [the contributing
-guidelines](https://github.com/divad12/rmc/blob/master/CONTRIBUTING.md) and our
-[style guide](https://github.com/divad12/rmc/wiki/Flow-Style-Guide).
+guidelines](https://github.com/UWFlow/rmc/blob/master/CONTRIBUTING.md) and our
+[style guide](https://github.com/UWFlow/rmc/wiki/Flow-Style-Guide).
