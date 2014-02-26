@@ -21,6 +21,52 @@ Run the following to get some basic course data into the DB.
 make init_data
 ```
 
+## Why RMC?
+
+It might seem funny that this repository and a bunch of the code references `rmc`.
+
+RMC stands for "Rate My Courses", which was the prototype name for this project 
+before it was given the (slightly) better name of Flow.
+
+Because of the profileration of this 3 letter prefix throughout the code, and the
+unfortunate coupling of the repository name and our python namespace, we decided
+to leave it be.
+
+## Directory structure
+
+If you're eager to dive into the code, you might want to read this first. This
+isn't exhaustive, but it should be enough to get you started if you want to contribute.
+
+- `config/`: Configuration for frameworks, databases, or anything that might vary between
+            the development environment and production.
+- `data/`: This is where we collect data and load it into the database
+    - `crawler.py` downloads data by scraping pages and hitting APIs
+    - `processor.py` processes the data grabbed by `crawler.py` and loads it into the DB
+    - `aggregator.py` is run on a regular schedule (daily for the most part) to keep our data up to date
+- `models/`: "Schema" definitions for our models backed by [MongoEngine][]
+- `server/`: Request handlers, static assets, and templates
+    - `templates/`: [Jinja2][] templates
+        - Files in here ending with `_page.html` (e.g. `course_page.html`) are rendered directly by the 
+          [Flask][] server with `render_template` calls, with the exception of the `base_*_page.html`
+          files which other `_page.html` templates inherit from.
+        - Most of the other files (e.g. `course.html`) contain [Underscore templates][] used to render
+          stuff on the client-side
+    - `static`: Static assets eventually ending up as files served directly by [nginx][] when on production
+        - `js`: All our JavaScript code, organized into [RequireJS][] modules
+            - `ext/`: All third party JavaScript code
+            - `main.js`: The entry point for JavaScript executing on page load
+        - `sass`: We don't write CSS directly for Flow, we use the SCSS flavor of [Sass][], which compiles 
+                  down to CSS
+    - `server.py`: The majority of the request handlers for the application, written in [Flask][]
+
+[MongoEngine]: http://mongoengine.org/
+[Jinja2]: http://jinja.pocoo.org/docs/
+[Flask]: http://flask.pocoo.org/
+[Underscore templates]: http://underscorejs.org/#template
+[nginx]: http://wiki.nginx.org/Main
+[RequireJS]: http://requirejs.org/
+[Sass]: http://sass-lang.com/
+
 ## Using the REPL
 
 If you need a REPL to fool around with the database or test out some code, check
