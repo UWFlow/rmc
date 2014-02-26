@@ -21,7 +21,6 @@ import rmc.shared.rmclogger as rmclogger
 from rmc.server.app import app
 import rmc.server.api.v1 as api_v1
 import rmc.server.profile as profile
-import rmc.server.rmc_sift as rmc_sift
 import rmc.server.view_helpers as view_helpers
 import rmc.analytics.stats as rmc_stats
 import rmc.shared.schedule_screenshot as schedule_screenshot
@@ -62,9 +61,6 @@ def render_template(*args, **kwargs):
     })
     return flask_render_template(*args, **kwargs)
 flask.render_template = render_template
-
-# Initialize sift stuff after logging has been initialized
-sift = rmc_sift.RmcSift(api_key=c.SIFT_API_KEY)
 
 
 # Jinja filters
@@ -653,17 +649,6 @@ def search_courses():
         request.values
     )
 
-    if current_user:
-        sift.track('search', {
-            '$user_id': str(current_user.id),
-            '$user_email': current_user.email,
-            'keywords': unicode(keywords).encode('utf8'),
-            'name': sort_mode,
-            'direction': direction,
-            'count': count,
-            'offset': offset,
-        })
-
     filters = {}
     if keywords:
         # Clean keywords to just alphanumeric and space characters
@@ -1143,12 +1128,6 @@ def user_course():
             'user_id': user.id,
         },
     )
-
-    if user:
-        sift.track('user_course', dict({
-            '$user_id': str(user.id),
-            '$user_email': user.email,
-        }, **util.flatten_dict(uc_data)))
 
     # Validate request object
     course_id = uc_data.get('course_id')
