@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 install_packages() {
     # To get add-apt-repository
     dpkg -s python-software-properties
@@ -50,7 +52,8 @@ install_packages() {
         ruby rubygems \
         nodejs \
         redis-server \
-        mongodb-10gen
+        mongodb-10gen \
+        unzip
 }
 
 install_phantomjs() {
@@ -70,8 +73,27 @@ install_phantomjs() {
     fi
 }
 
+install_chromedriver() {
+    if ! which chromedriver >/dev/null; then
+        (
+            case `uname -m` in
+                i?86) bits=32;;
+                *) bits=64;;
+            esac
+
+            TMP_FILE=$(tempfile)
+            wget "http://chromedriver.storage.googleapis.com/2.9/chromedriver_linux${bits}.zip" -O $TMP_FILE
+            sudo unzip $TMP_FILE chromedriver -d /usr/local/bin/
+            rm $TMP_FILE
+            sudo chmod 755 /usr/local/bin/chromedriver
+        )
+        which chromedriver >/dev/null
+    fi
+}
+
 # Get password up front
 sudo echo
 
 install_packages
 install_phantomjs
+install_chromedriver
