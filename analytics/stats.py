@@ -10,6 +10,7 @@
 
 from collections import defaultdict
 from datetime import datetime, timedelta
+from mongoengine import Q
 import csv
 import mongoengine as me
 import rmc.models as m
@@ -51,6 +52,15 @@ def generic_stats(show_all=False):
         query = {'professor_review__%s__ne' % rating: None}
         num_professor_ratings += m.UserCourse.objects(**query).count()
 
+    q = Q()
+    for rating in m.CourseReview().rating_fields():
+        q |= Q(**{'course_review__%s__ne' % rating: None})
+    for rating in m.ProfessorReview().rating_fields():
+        q |= Q(**{'professor_review__%s__ne' % rating: None})
+    q |= Q(course_review__comment__ne='')
+    q |= Q(professor_review__comment__ne='')
+    num_courses_rated_reviewed = m.UserCourse.objects.filter(q).count()
+
     yesterday = datetime.now() - timedelta(hours=24)
     signups = users_joined_after(yesterday)
 
@@ -71,6 +81,7 @@ def generic_stats(show_all=False):
             'num_professor_reviews': num_professor_reviews,
             'num_course_ratings': num_course_ratings,
             'num_professor_ratings': num_professor_ratings,
+            'num_courses_rated_reviewed': num_courses_rated_reviewed,
         })
 
     return result

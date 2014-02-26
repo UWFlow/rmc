@@ -22,6 +22,7 @@ function($, _, moment, _util) {
         $('#num_ucs').text(resp.num_ucs);
         $('#num_ratings').text(resp.num_ratings);
         $('#num_reviews').text(resp.num_reviews);
+        $('#num_courses_rated_reviewed').text(resp.num_courses_rated_reviewed);
         setReviews(resp.latest_reviews);
         setLastUpdatedTime(_util.toDate(resp.epoch));
       },
