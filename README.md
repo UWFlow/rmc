@@ -25,7 +25,7 @@ make init_data
 
 It might seem funny that this repository and a bunch of the code references `rmc`.
 
-RMC stands for "Rate My Course", which was the prototype name for this project 
+RMC stands for "Rate My Courses", which was the prototype name for this project 
 before it was given the (slightly) better name of Flow.
 
 Because of the profileration of this 3 letter prefix throughout the code, and the
