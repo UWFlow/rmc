@@ -3,9 +3,14 @@
 set -e
 
 install_packages() {
+    # mongod starts automatically after install. We don't want that.
+    should_stop_mongo=""
+    if ! which mongod >/dev/null; then
+      should_stop_mongo=yes
+    fi
+
     # To get add-apt-repository
-    dpkg -s python-software-properties
-    if [ $? -ne 0 ]; then
+    if ! which add-apt-repository >/dev/null; then
       # Needed on a fresh install
       sudo apt-get update
       sudo apt-get install -y python-software-properties
@@ -54,6 +59,10 @@ install_packages() {
         redis-server \
         mongodb-10gen \
         unzip
+
+    if [ -n "$should_stop_mongo" ]; then
+        sudo service mongodb stop
+    fi
 }
 
 install_phantomjs() {
@@ -73,6 +82,7 @@ install_phantomjs() {
     fi
 }
 
+# Assumes that Chrome is installed
 install_chromedriver() {
     if ! which chromedriver >/dev/null; then
         (
