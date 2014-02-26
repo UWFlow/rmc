@@ -13,12 +13,12 @@ import urllib2
 import lxml.html
 from lxml.html import soupparser
 
+import rmc.shared.secrets as s
 import rmc.shared.constants as c
 import rmc.models as m
 import mongoengine as me
 
 
-API_UWATERLOO_API_KEY = 'ead3606c6f096657ebd283b58bf316b6'
 API_UWATERLOO_V2_URL = 'https://api.uwaterloo.ca/v2'
 
 # TODO(david): Convert this file to use OpenData v2 (v1 is now deprecated and
@@ -250,7 +250,7 @@ def get_opendata_courses():
             courses[dep].add(matches[0][1])
 
     errors = []
-    api_key = API_UWATERLOO_API_KEY
+    api_key = s.OPEN_DATA_API_KEY
     bad_courses = 0
     bad_course_names = set()
     good_courses = 0
@@ -314,7 +314,7 @@ def get_opendata_courses():
 
 
 def get_opendata_exam_schedule():
-    api_key = API_UWATERLOO_API_KEY
+    api_key = s.OPEN_DATA_API_KEY
     current_term_id = m.Term.get_current_term_id()
     current_quest_termid = m.Term.get_quest_id_from_term_id(current_term_id)
     url = ('http://api.uwaterloo.ca/v2/terms/{term_id}/examschedule.json'
@@ -407,7 +407,7 @@ def get_subject_sections_from_opendata(subject, term):
     url = ('{api_url}/terms/{term}/{subject}/schedule.json'
             '?key={api_key}'.format(
                 api_url=API_UWATERLOO_V2_URL,
-                api_key=API_UWATERLOO_API_KEY,
+                api_key=s.OPEN_DATA_API_KEY,
                 subject=subject,
                 term=term,
     ))
