@@ -12,9 +12,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from mongoengine import Q
 import csv
-import mongoengine as me
 import rmc.models as m
-import rmc.shared.constants as c
 import rmc.shared.util as _util
 import sys
 
@@ -27,7 +25,7 @@ def truncate_datetime(dt):
             microseconds=dt.microsecond)
 
 
-def generic_stats(show_all=False):
+def generic_stats():
     num_ucs = m.UserCourse.objects().count()
 
     num_users = m.User.objects.count()
@@ -40,6 +38,8 @@ def generic_stats(show_all=False):
             course_review__comment__ne='').count()
     num_professor_reviews = m.UserCourse.objects(
             professor_review__comment__ne='').count()
+
+    num_courses = m.Course.objects.count()
 
     # TODO(david): Make rating_fields a class method
     num_course_ratings = 0
@@ -59,64 +59,41 @@ def generic_stats(show_all=False):
         q |= Q(**{'professor_review__%s__ne' % rating: None})
     q |= Q(course_review__comment__ne='')
     q |= Q(professor_review__comment__ne='')
-    num_ucs_rated_reviewed = m.UserCourse.objects.filter(q).count()
+    ucs_rated_reviewed = m.UserCourse.objects.filter(q)
+    num_ucs_rated_reviewed = ucs_rated_reviewed.count()
+
+    # Take intersection of all_course_ids and reviewed_course_ids just in case
+    rated_reviewed_course_ids = set(ucs_rated_reviewed.distinct('course_id'))
+    # TODO(mduan): Verify that # (rated_reviewed_course_ids - all_course_ids)
+    # is empty
+    num_courses_rated_reviewed = len(rated_reviewed_course_ids)
+
+    # Take intersection of all_course_ids and reviewed_course_ids just in case
+    rated_reviewed_user_ids = set(ucs_rated_reviewed.distinct('user_id'))
+    # TODO(mduan): Verify that (rated_reviewed_user_ids - all_course_ids)
+    # is empty
+    num_users_rated_reviewed = len(rated_reviewed_user_ids)
 
     yesterday = datetime.now() - timedelta(hours=24)
     signups = users_joined_after(yesterday)
 
     result = {
         'num_users': num_users,
+        'num_signups_today': signups,
         'num_users_with_transcript': num_users_with_transcript,
         'num_users_with_schedule': num_users_with_schedule,
+        'num_ratings': num_course_ratings + num_professor_ratings,
+        'num_reviews': num_course_reviews + num_professor_reviews,
         'num_ucs': num_ucs,
-        'num_signups_today': signups,
+        'num_ucs_rated_reviewed': num_ucs_rated_reviewed,
+        'num_courses': num_courses,
+        'num_courses_rated_reviewed': num_courses_rated_reviewed,
+        'num_users_rated_reviewed': num_users_rated_reviewed,
         'num_signups_start_time': yesterday,
         'epoch': datetime.now(),
     }
-    if show_all:
-        result.update({
-            'num_reviews': num_course_reviews + num_professor_reviews,
-            'num_ratings': num_course_ratings + num_professor_ratings,
-            'num_course_reviews': num_course_reviews,
-            'num_professor_reviews': num_professor_reviews,
-            'num_course_ratings': num_course_ratings,
-            'num_professor_ratings': num_professor_ratings,
-            'num_ucs_rated_reviewed': num_ucs_rated_reviewed,
-        })
 
     return result
-
-
-def print_generic_stats():
-    data = generic_stats(show_all=True)
-
-    print """
-Total User
-%s
-User with transcripts imported
-%s
-Total UserCourse
-%s
-Total UserCourse Course review
-%s
-Total UserCourse Prof reviews
-%s
-Total UserCourse Course ratings
-%s
-Total UserCourse Prof ratings
-%s
-Users signed up since a day ago (%s)
-%s""" % (
-        data['num_users'],
-        data['num_users_with_transcript'],
-        data['num_ucs'],
-        data['num_course_reviews'],
-        data['num_professor_reviews'],
-        data['num_course_ratings'],
-        data['num_professor_ratings'],
-        data['num_signups_start_time'],
-        data['num_signups_today'],
-    )
 
 
 # Inclusive
@@ -557,27 +534,3 @@ def stats_help():
     '''
     for val in dir(sys.modules[__name__]):
         print val
-
-# TODO(Sandy): cleanup this file overtime
-# The basic idea is to add queries to this file whenever we want to know
-# something, we should never directly do it in ipython. This way, we can reuse
-# existing queries and avoid mistakes
-if __name__ == '__main__':
-    me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
-
-    users = m.User.objects()
-    courses = m.User.objects()
-    ucs = m.User.objects()
-
-    # CSV Dumps
-    #csv = csv_user_growth()
-    #print csv
-
-    # Ratings/Reviews histograms
-    #print_ratings_histogram()
-    #print_ratings_count_histogram()
-    print_generic_stats()
-    print_users_rr_counts()
-    #print_program_names(users)
-    #print_exam_collection()
-    #print users_joined_before(datetime(2012, 10, 19))

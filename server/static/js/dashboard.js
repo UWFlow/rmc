@@ -23,10 +23,18 @@ function($, _, _s, moment, _util) {
         $('#num_users_with_schedule').text(resp.num_users_with_schedule);
         $('#num_ratings').text(resp.num_ratings);
         $('#num_reviews').text(resp.num_reviews);
-        $('#ucs_conversion').text(_s.sprintf('%.2f (%d / %d)',
+        $('#ucs_rated_reviewed_ratio').text(_s.sprintf('%.2f (%d / %d)',
             resp.num_ucs_rated_reviewed / resp.num_ucs,
             resp.num_ucs_rated_reviewed,
             resp.num_ucs));
+        $('#courses_rated_reviewed_ratio').text(_s.sprintf('%.2f (%d / %d)',
+            resp.num_courses_rated_reviewed / resp.num_courses,
+            resp.num_courses_rated_reviewed,
+            resp.num_courses));
+        $('#users_rated_reviewed_ratio').text(_s.sprintf('%.2f (%d / %d)',
+            resp.num_users_rated_reviewed / resp.num_users,
+            resp.num_users_rated_reviewed,
+            resp.num_users));
         setReviews(resp.latest_reviews);
         setLastUpdatedTime(_util.toDate(resp.epoch));
       },

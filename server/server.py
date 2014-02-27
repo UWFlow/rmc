@@ -1328,7 +1328,7 @@ def last_schedule_paste():
 
 # TODO(david): Move this somewhere else.
 def dashboard_data():
-    data = rmc_stats.generic_stats(show_all=True)
+    data = rmc_stats.generic_stats()
     data['latest_reviews'] = rmc_stats.latest_reviews(n=5)
     return data
 
