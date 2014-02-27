@@ -1,12 +1,12 @@
 import os
 import subprocess
-import signal
-import time
 
 from selenium import webdriver
 import selenium.webdriver.chrome.service as service
 
+import fixtures
 import model_test_case
+import test_server
 
 
 class AcceptanceTestCase(model_test_case.ModelTestCase):
@@ -20,40 +20,19 @@ class AcceptanceTestCase(model_test_case.ModelTestCase):
         AcceptanceTestCase.chromedriver_service = service.Service(
             executable_path=chromedriver_path,
             service_args=['--silent'],
-            log_path=os.path.join(
-                os.getcwd(), 'test', 'logs', 'chromedriver.log'
-            )
-        )
+            log_path=os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                                  'logs', 'chromedriver.log'))
         AcceptanceTestCase.chromedriver_service.start()
 
-        test_server_path = os.path.join(
-            os.getcwd(), 'test', 'lib', 'test_server.py'
-        )
-
-        # For explanation of why os.setsid is necessary here, see
-        # http://stackoverflow.com/q/4789837/303911
-        env = {'PYTHONPATH': '..'}
-        env.update(os.environ)
-        AcceptanceTestCase.test_server_proc = subprocess.Popen(
-            ['/usr/bin/env', 'python', test_server_path],
-            env=env,
-            preexec_fn=os.setsid
-        )
-        time.sleep(1)
+        test_server.start_server()
 
     def setUp(self):
         super(AcceptanceTestCase, self).setUp()
 
-        # Seed test database
-        subprocess.check_output([
-            'mongorestore', '--drop', os.path.join(
-                os.getcwd(), 'test', 'fixtures', 'dump'
-            )
-        ])
+        fixtures.reset_db_with_fixtures()
 
         self.driver = webdriver.Remote(
-            AcceptanceTestCase.chromedriver_service.service_url,
-            {})
+            AcceptanceTestCase.chromedriver_service.service_url, {})
 
     def tearDown(self):
         super(AcceptanceTestCase, self).tearDown()
@@ -62,5 +41,5 @@ class AcceptanceTestCase(model_test_case.ModelTestCase):
     @classmethod
     def tearDownClass(cls):
         model_test_case.ModelTestCase.tearDownClass()
-        os.killpg(AcceptanceTestCase.test_server_proc.pid, signal.SIGTERM)
+        test_server.kill_server()
         AcceptanceTestCase.chromedriver_service.stop()
