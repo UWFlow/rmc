@@ -337,3 +337,27 @@ def get_user_friends(user_id):
     return api_util.jsonify({
         'friends': friend_dicts
     })
+
+
+###############################################################################
+# Misc.
+
+
+@api.route('/programs', methods=['GET'])
+def get_programs():
+    """Get the counts of how many users belong to each program."""
+    users = m.User.objects().only('program_name')
+    programs_names = [user.short_program_name for user in users]
+
+    program_frequencies = collections.Counter(programs_names)
+
+    program_counts = []
+    for program, count in program_frequencies.items():
+        program_counts.append({
+            'name': program,
+            'count': count,
+        })
+
+    return api_util.jsonify({
+        'programs': program_counts
+    })
