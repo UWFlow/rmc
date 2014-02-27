@@ -1,26 +1,7 @@
-import json
-
 import rmc.test.lib as testlib
 
 
-def deunicode(obj):
-    """Convert all unicode strings in an API response to regular strings."""
-    if isinstance(obj, basestring):
-        return str(obj)
-    if isinstance(obj, list):
-        return [deunicode(v) for v in obj]
-    if isinstance(obj, dict):
-        return dict((str(k), deunicode(v)) for (k, v) in obj.iteritems())
-    return obj
-
-
 class V1Test(testlib.FlaskTestCase):
-    def assertJsonResponse(self, resp, expected):
-        self.assertEqual(deunicode(json.loads(resp.data)), expected)
-
-    def assertResponseOk(self, resp):
-        self.assertEquals(resp.status_code, 200)
-
     def test_get_course(self):
         resp = self.app.get('/api/v1/courses/cs444')
         self.assertResponseOk(resp)
