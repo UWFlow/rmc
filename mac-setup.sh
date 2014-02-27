@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 install_homebrew() {
     # If homebrew is already installed, don't do it again.
     if ! brew --help >/dev/null 2>&1; then
