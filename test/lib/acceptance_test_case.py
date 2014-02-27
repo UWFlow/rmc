@@ -3,12 +3,14 @@ import subprocess
 
 from selenium import webdriver
 import selenium.webdriver.chrome.service as service
+import nose.plugins.attrib
 
 import fixtures
 import model_test_case
 import test_server
 
 
+@nose.plugins.attrib.attr('slow')
 class AcceptanceTestCase(model_test_case.ModelTestCase):
     @classmethod
     def setUpClass(cls):
