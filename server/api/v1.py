@@ -351,13 +351,13 @@ def get_programs():
 
     program_frequencies = collections.Counter(programs_names)
 
-    program_counts = []
+    programs = []
     for program, count in program_frequencies.items():
-        program_counts.append({
+        programs.append({
             'name': program,
             'count': count,
         })
 
     return api_util.jsonify({
-        'programs': program_counts
+        'programs': programs
     })
