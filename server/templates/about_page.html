@@ -21,22 +21,60 @@
 
 {% block body %}
 <div id="about-container">
-  <div class="row-fluid team-intro">
+  <div class="row-fluid">
     <div class="span12">
-      <h1>We're a team of students</h1>
+      <h1>What is Flow?</h1>
       <p class="lead">
-        ...at the University of Waterloo trying to change how students discover,
-        track and plan their courses online. We're aiming to create a social
-        platform where students and their friends can share and obtain credible
-        course information that will help them better prepare for each year of
-        their university careers.
+        <strong>
+          Flow is a social course planning website.
+        </strong>
+        Launched in September 2012, it was built by four students in Software
+        Engineering at the University of Waterloo. What does the name mean?
+        Well, we're not sure ourselves... we launched with it, and it just sort
+        of stuck!
+      </p>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span12">
+      <h1>Flow is open-sourced</h1>
+      <p>
+        <strong>Want to contribute?</strong>
+        <a target="_blank" href="https://github.com/UWFlow/rmc">
+          Check out the code on GitHub.
+        </a>
+      </p>
+      <p>
+        <strong>Not sure where to start?</strong>
+        <a target="_blank" href="https://github.com/UWFlow/rmc/issues">
+          Perhaps you can tackle one of these issues.
+        </a>
+      </p>
+      <p>
+        <strong>Have questions?</strong>
+        <a target="_blank" href="https://www.hipchat.com/gAUVWHvA3">
+          Come hang out with us in our public chat room.
+        </a>
+      </p>
+      <p>
+        <strong>
+          Want to fork Flow to be a white-labelled platform for your school?
+        </strong>
+        Awesome &mdash; go for it. Just be wary that the data scrapers are tied
+        to Waterloo’s APIs.
+      </p>
+      <p>
+        Read our
+        <a target="_blank" href="#">blog post about why we open-sourced</a>.
       </p>
     </div>
   </div>
 
+  <h1>Founders</h1>
+
   {% call about_blurb('/static/img/team/david.jpg') %}
     <h2 class="name">David Hu</h2>
-    <div class="program">4A Software Engineering</div>
+    <div class="program">4B Software Engineering</div>
     <p class="links">
       <a class="link" target="_blank" href="http://david-hu.com">
         <i class="icon-globe"></i> Blog
@@ -61,7 +99,7 @@
 
   {% call about_blurb('/static/img/team/mack.jpg') %}
     <h2 class="name">Mack Duan</h2>
-    <div class="program">4A Software Engineering</div>
+    <div class="program">4B Software Engineering</div>
     <p class="links">
       <a class="link" target="_blank" href="http://mduan.com/resume">
         <i class="icon-globe"></i> Website
@@ -83,7 +121,7 @@
 
   {% call about_blurb('/static/img/team/sandy.jpg') %}
     <h2 class="name">Sandy Wu</h2>
-    <div class="program">4A Software Engineering</div>
+    <div class="program">4B Software Engineering</div>
     <p class="links">
       <a class="link" target="_blank" href="https://twitter.com/hungryCake">
         <i class="icon-twitter"></i> Twitter
@@ -154,7 +192,7 @@
 
   {% call about_blurb('/static/img/team/jamie.png') %}
     <h2 class="name">Jamie Wong</h2>
-    <div class="program">4A Software Engineering</div>
+    <div class="program">4B Software Engineering</div>
     <p class="links">
       <a class="link" target="_blank" href="http://twitter.com/jlfwong">
         <i class="icon-twitter"></i> Twitter
@@ -199,6 +237,20 @@
       Justin is working at Shopify, on projects like <a href="http://batmanjs.org/">batman.js</a>.
     </p>
   {% endcall %}
+
+  <h1>Contributors</h1>
+  <ul>
+    <li>
+      <a target="_blank" href="https://github.com/yingted">
+        Ted Ying
+      </a>
+    </li>
+    <li>
+      <a target="_blank" href="https://www.gabrielwong.net">
+        Gabriel Wong
+      </a>
+    </li>
+  </ul>
 
   <h1 class="sponsors-heading">Thank you sponsors</h1>
   <div class="row-fluid">
