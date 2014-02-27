@@ -59,7 +59,7 @@ def generic_stats(show_all=False):
         q |= Q(**{'professor_review__%s__ne' % rating: None})
     q |= Q(course_review__comment__ne='')
     q |= Q(professor_review__comment__ne='')
-    num_courses_rated_reviewed = m.UserCourse.objects.filter(q).count()
+    num_ucs_rated_reviewed = m.UserCourse.objects.filter(q).count()
 
     yesterday = datetime.now() - timedelta(hours=24)
     signups = users_joined_after(yesterday)
@@ -81,7 +81,7 @@ def generic_stats(show_all=False):
             'num_professor_reviews': num_professor_reviews,
             'num_course_ratings': num_course_ratings,
             'num_professor_ratings': num_professor_ratings,
-            'num_courses_rated_reviewed': num_courses_rated_reviewed,
+            'num_ucs_rated_reviewed': num_ucs_rated_reviewed,
         })
 
     return result

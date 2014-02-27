@@ -1,6 +1,7 @@
 require(
-['ext/jquery', 'ext/underscore', 'ext/moment', 'util'],
-function($, _, moment, _util) {
+['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'rmc_moment', 'util'],
+function($, _, _s, moment, _util) {
+
   var POLLING_DELAY = 3 * 60 * 1000;
   // Stop refreshing after an hour, incase we leave tabs open :(
   var CUTOFF_COUNT = 60;
@@ -8,6 +9,7 @@ function($, _, moment, _util) {
   var reviewTemplate =  _.template($('#review-info-tpl').html());
 
   var pollStats = function() {
+    console.log('here!');
     $.post(
       '/admin/api/generic-stats',
       {},
@@ -19,10 +21,12 @@ function($, _, moment, _util) {
         $('#num_signups_today').text(resp.num_signups_today);
         $('#num_users_with_transcript').text(resp.num_users_with_transcript);
         $('#num_users_with_schedule').text(resp.num_users_with_schedule);
-        $('#num_ucs').text(resp.num_ucs);
         $('#num_ratings').text(resp.num_ratings);
         $('#num_reviews').text(resp.num_reviews);
-        $('#num_courses_rated_reviewed').text(resp.num_courses_rated_reviewed);
+        $('#ucs_conversion').text(_s.sprintf('%.2f (%d / %d)',
+            resp.num_ucs_rated_reviewed / resp.num_ucs,
+            resp.num_ucs_rated_reviewed,
+            resp.num_ucs));
         setReviews(resp.latest_reviews);
         setLastUpdatedTime(_util.toDate(resp.epoch));
       },
@@ -48,7 +52,7 @@ function($, _, moment, _util) {
   var init = function() {
     setLastUpdatedTime(window.pageData.epoch.$date);
     setReviews(window.pageData.latest_reviews);
-    setTimeout(pollStats, POLLING_DELAY);
+    pollStats();
   };
 
   $(init);
