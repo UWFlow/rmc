@@ -3,8 +3,7 @@ import unittest
 import mongoengine as me
 
 import rmc.shared.constants as c
-
-TEST_MONGO_DB_RMC = c.MONGO_DB_RMC + '_test'
+import fixtures
 
 
 class ModelTestCase(unittest.TestCase):
@@ -12,7 +11,7 @@ class ModelTestCase(unittest.TestCase):
     def _connect_to_test_db(cls):
         me.connection.disconnect()
         me.connect(
-            TEST_MONGO_DB_RMC,
+            fixtures.DB_NAME,
             host=c.MONGO_HOST,
             port=c.MONGO_PORT
         )
@@ -24,7 +23,7 @@ class ModelTestCase(unittest.TestCase):
     @classmethod
     def _drop_test_database(cls):
         connection = me.connection.get_connection()
-        connection.drop_database(TEST_MONGO_DB_RMC)
+        connection.drop_database(fixtures.DB_NAME)
 
     def setUp(self):
         ModelTestCase._drop_test_database()

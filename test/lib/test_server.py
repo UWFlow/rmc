@@ -11,7 +11,7 @@ import mongoengine as me
 import rmc.server.server as server
 import rmc.shared.constants as c
 
-TEST_MONGO_DB_RMC = c.MONGO_DB_RMC + '_test'
+import fixtures
 
 _server_proc = None
 
@@ -55,7 +55,7 @@ def kill_server():
 if __name__ == '__main__':
     me.connection.disconnect()
     me.connect(
-        TEST_MONGO_DB_RMC,
+        fixtures.DB_NAME,
         host=c.MONGO_HOST,
         port=c.MONGO_PORT
     )
