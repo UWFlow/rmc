@@ -64,12 +64,14 @@ prod_import_mongo:
 		mongorestore --drop dump; \
 	fi
 
-deploy:
+deploy_skiptest:
 	@if [ `whoami` = 'rmc' ]; then \
 		./deploy.sh; \
 	else \
 		cat deploy.sh | ssh rmc DEPLOYER=`whoami` sh; \
 	fi
+
+deploy: test deploy_skiptest
 
 pip_install: require_virtualenv_in_dev
 	pip install -r requirements.txt
@@ -89,8 +91,11 @@ require_virtualenv_in_dev:
 stats: require_virtualenv_in_dev
 	PYTHONPATH=.. python analytics/stats.py
 
-test: require_virtualenv_in_dev
+alltest: require_virtualenv_in_dev
 	PYTHONPATH=.. nosetests
+
+test: require_virtualenv_in_dev
+	PYTHONPATH=.. nosetests -a '!slow'
 
 clean:
 	find . -name '*.pyc' -delete

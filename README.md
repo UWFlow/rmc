@@ -93,6 +93,29 @@ Here's what an example session might look like:
 
 [virtualenv]: http://www.virtualenv.org/en/latest/
 
+
+## Running tests
+
+To run all the tests in the entire system:
+
+```
+make alltest
+```
+
+To run all the tests except the really slow ones (namely [Selenium][] tests):
+
+```
+make test
+```
+
+To run all the tests under a specific directory tree or in a specific file:
+```
+PYTHONPATH=.. nosetests server/api
+PYTHONPATH=.. nosetests server/api/v1_test.py
+```
+
+[Selenium]: http://docs.seleniumhq.org/projects/webdriver/
+
 ## Contributing
 
 When you're ready to contribute, take a look at [the contributing
