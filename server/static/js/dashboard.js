@@ -19,8 +19,14 @@ function($, _, _s, moment, _util) {
         // last x reivews/ratings
         $('#num_users').text(resp.num_users);
         $('#num_signups_today').text(resp.num_signups_today);
-        $('#num_users_with_transcript').text(resp.num_users_with_transcript);
-        $('#num_users_with_schedule').text(resp.num_users_with_schedule);
+        $('#users_with_transcript_ratio').text(_s.sprintf('%.2f (%d / %d)',
+            resp.num_users_with_transcript / resp.num_users,
+            resp.num_users_with_transcript,
+            resp.num_users));
+        $('#users_with_schedule_ratio').text(_s.sprintf('%.2f (%d / %d)',
+          resp.num_users_with_schedule / resp.num_users,
+          resp.num_users_with_schedule,
+          resp.num_users));
         $('#num_ratings').text(resp.num_ratings);
         $('#num_reviews').text(resp.num_reviews);
         $('#ucs_rated_reviewed_ratio').text(_s.sprintf('%.2f (%d / %d)',
