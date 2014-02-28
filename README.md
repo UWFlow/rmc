@@ -25,7 +25,7 @@ make init_data
 
 It might seem funny that this repository and a bunch of the code references `rmc`.
 
-RMC stands for "Rate My Courses", which was the prototype name for this project 
+RMC stands for "Rate My Courses", which was the prototype name for this project
 before it was given the (slightly) better name of Flow.
 
 Because of the profileration of this 3 letter prefix throughout the code, and the
@@ -46,7 +46,7 @@ isn't exhaustive, but it should be enough to get you started if you want to cont
 - `models/`: "Schema" definitions for our models backed by [MongoEngine][]
 - `server/`: Request handlers, static assets, and templates
     - `templates/`: [Jinja2][] templates
-        - Files in here ending with `_page.html` (e.g. `course_page.html`) are rendered directly by the 
+        - Files in here ending with `_page.html` (e.g. `course_page.html`) are rendered directly by the
           [Flask][] server with `render_template` calls, with the exception of the `base_*_page.html`
           files which other `_page.html` templates inherit from.
         - Most of the other files (e.g. `course.html`) contain [Underscore templates][] used to render
@@ -55,7 +55,7 @@ isn't exhaustive, but it should be enough to get you started if you want to cont
         - `js`: All our JavaScript code, organized into [RequireJS][] modules
             - `ext/`: All third party JavaScript code
             - `main.js`: The entry point for JavaScript executing on page load
-        - `sass`: We don't write CSS directly for Flow, we use the SCSS flavor of [Sass][], which compiles 
+        - `sass`: We don't write CSS directly for Flow, we use the SCSS flavor of [Sass][], which compiles
                   down to CSS
     - `server.py`: The majority of the request handlers for the application, written in [Flask][]
 
@@ -121,3 +121,5 @@ PYTHONPATH=.. nosetests server/api/v1_test.py
 When you're ready to contribute, take a look at [the contributing
 guidelines](https://github.com/UWFlow/rmc/blob/master/CONTRIBUTING.md) and our
 [style guide](https://github.com/UWFlow/rmc/wiki/Flow-Style-Guide).
+
+If you have questions or would like to discuss how to contribute, come chat with us in our [public chat room](http://www.hipchat.com/gAUVWHvA3).
