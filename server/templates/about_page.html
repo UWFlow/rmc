@@ -21,184 +21,235 @@
 
 {% block body %}
 <div id="about-container">
-  <div class="row-fluid team-intro">
+  <div class="row-fluid">
     <div class="span12">
-      <h1>We're a team of students</h1>
+      <h1>What is Flow?</h1>
       <p class="lead">
-        ...at the University of Waterloo trying to change how students discover,
-        track and plan their courses online. We're aiming to create a social
-        platform where students and their friends can share and obtain credible
-        course information that will help them better prepare for each year of
-        their university careers.
+        <strong>
+          Flow is a social course planning website.
+        </strong>
+        Launched in September 2012, it was built by four students in Software
+        Engineering at the University of Waterloo. What does the name mean?
+        Well, we're not sure ourselves... we launched with it, and it just sort
+        of stuck!
+      </p>
+  </div>
+
+  <div class="row-fluid">
+    <div class="span12">
+      <h1>Flow is open-sourced</h1>
+      <p>
+        <strong>Want to contribute?</strong>
+        <a target="_blank" href="https://github.com/UWFlow/rmc">
+          Check out the code on GitHub.
+        </a>
+      </p>
+      <p>
+        <strong>Not sure where to start?</strong>
+        <a target="_blank" href="https://github.com/UWFlow/rmc/issues">
+          Perhaps you can tackle one of these issues.
+        </a>
+      </p>
+      <p>
+        <strong>Have questions?</strong>
+        <a target="_blank" href="https://www.hipchat.com/gAUVWHvA3">
+          Come hang out with us in our public chat room.
+        </a>
+      </p>
+      <p>
+        <strong>
+          Want to fork Flow to be a white-labelled platform for your school?
+        </strong>
+        Awesome &mdash; go for it. Just be wary that the data scrapers are tied
+        to Waterloo’s APIs.
+      </p>
+      <p>
+        Read our
+        <a target="_blank" href="http://blog.uwflow.com/post/78088794292">
+          blog post about why we open-sourced
+        </a>.
       </p>
     </div>
   </div>
 
-  {% call about_blurb('/static/img/team/david.jpg') %}
-    <h2 class="name">David Hu</h2>
-    <div class="program">4A Software Engineering</div>
-    <p class="links">
-      <a class="link" target="_blank" href="http://david-hu.com">
-        <i class="icon-globe"></i> Blog
-      </a>
-      <a class="link" target="_blank" href="http://twitter.com/divad12">
-        <i class="icon-twitter"></i> Twitter
-      </a>
-    </p>
-    <p>
-      David is a human being currently living on Earth.
-    </p>
-    <p>
-      Since David complains a lot about bad user experience, he's the
-      chief UX nitpicker at Flow. He also does system administration and
-      takes out the garbage.
-    </p>
-    <p>
-      David has worked at Google for two terms and then at Khan Academy
-      for two terms.
-    </p>
-  {% endcall %}
+  <h1>Founders</h1>
+  <div class="founders">
+    {% call about_blurb('/static/img/team/david.jpg') %}
+      <h2 class="name">David Hu</h2>
+      <div class="program">4B Software Engineering</div>
+      <p class="links">
+        <a class="link" target="_blank" href="http://david-hu.com">
+          <i class="icon-globe"></i> Blog
+        </a>
+        <a class="link" target="_blank" href="http://twitter.com/divad12">
+          <i class="icon-twitter"></i> Twitter
+        </a>
+      </p>
+      <p>
+        David is a human being currently living on Earth.
+      </p>
+      <p>
+        Since David complains a lot about bad user experience, he's the
+        chief UX nitpicker at Flow. He also does system administration and
+        takes out the garbage.
+      </p>
+      <p>
+        David has worked at Google for two terms and then at Khan Academy
+        for two terms.
+      </p>
+    {% endcall %}
 
-  {% call about_blurb('/static/img/team/mack.jpg') %}
-    <h2 class="name">Mack Duan</h2>
-    <div class="program">4A Software Engineering</div>
-    <p class="links">
-      <a class="link" target="_blank" href="http://mduan.com/resume">
-        <i class="icon-globe"></i> Website
-      </a>
-    </p>
-    <p>
-      Mack Duan is a Software Engineering student helping with the
-      software development of Flow.
-    </p>
-    <p>
-      He really enjoys eating spicy food. In his free time, he likes to
-      watch TV, movies and play cards.
-    </p>
-    <p>
-      Mack has worked two terms at Facebook, and at a startup in
-      San Francisco.
-    </p>
-  {% endcall %}
+    {% call about_blurb('/static/img/team/mack.jpg') %}
+      <h2 class="name">Mack Duan</h2>
+      <div class="program">4B Software Engineering</div>
+      <p class="links">
+        <a class="link" target="_blank" href="http://mduan.com/resume">
+          <i class="icon-globe"></i> Website
+        </a>
+      </p>
+      <p>
+        Mack Duan is a Software Engineering student helping with the
+        software development of Flow.
+      </p>
+      <p>
+        He really enjoys eating spicy food. In his free time, he likes to
+        watch TV, movies and play cards.
+      </p>
+      <p>
+        Mack has worked two terms at Facebook, and at a startup in
+        San Francisco.
+      </p>
+    {% endcall %}
 
-  {% call about_blurb('/static/img/team/sandy.jpg') %}
-    <h2 class="name">Sandy Wu</h2>
-    <div class="program">4A Software Engineering</div>
-    <p class="links">
-      <a class="link" target="_blank" href="https://twitter.com/hungryCake">
-        <i class="icon-twitter"></i> Twitter
-      </a>
-    </p>
-    <p>
-      Being a Software Engineering student, Sandy Wu is a hacker on the
-      Flow team.
-    </p>
-    <p>
-      During his spare time he partakes in parkour and especially enjoys noming
-      lots of delicious food.
-    </p>
-    <p>
-      During his co-op terms at Bloomberg and Facebook he tried
-      (unsuccessfully) to eat everything he saw.
-    </p>
-  {% endcall %}
+    {% call about_blurb('/static/img/team/sandy.jpg') %}
+      <h2 class="name">Sandy Wu</h2>
+      <div class="program">4B Software Engineering</div>
+      <p class="links">
+        <a class="link" target="_blank" href="https://twitter.com/hungryCake">
+          <i class="icon-twitter"></i> Twitter
+        </a>
+      </p>
+      <p>
+        Being a Software Engineering student, Sandy Wu is a hacker on the
+        Flow team.
+      </p>
+      <p>
+        During his spare time he partakes in parkour and especially enjoys noming
+        lots of delicious food.
+      </p>
+      <p>
+        During his co-op terms at Bloomberg and Facebook he tried
+        (unsuccessfully) to eat everything he saw.
+      </p>
+    {% endcall %}
 
-  {% call about_blurb('/static/img/team/terrance.jpg') %}
-    <h2 class="name">Terrance Kwok</h2>
-    <div class="program">4B Accounting and Finance</div>
-    <p class="links">
-      <a class="link" target="_blank" href="http://twitter.com/terrancekwok">
-        <i class="icon-twitter"></i> Twitter
-      </a>
-      <a class="link" target="_blank" href="http://www.linkedin.com/in/terrancekwok">
-        <i class="icon-linkedin"></i> LinkedIn
-      </a>
-    </p>
-    <p>
-      Terrance Kwok suffers from exercise induced asthma, but enjoys Indian food
-    </p>
-    <p>
-      He finds pleasure in the occasional IPA beer and as such, Terrance
-      handles the business development side of Flow.
-    </p>
-    <p>
-      Terrance has worked at KPMG and is currently pursuing an career in
-      accounting and finance (seriously).
-    </p>
-  {% endcall %}
+    {% call about_blurb('/static/img/team/jamie.png') %}
+      <h2 class="name">Jamie Wong</h2>
+      <div class="program">4B Software Engineering</div>
+      <p class="links">
+        <a class="link" target="_blank" href="http://twitter.com/jlfwong">
+          <i class="icon-twitter"></i> Twitter
+        </a>
+        <a class="link" target="_blank" href="http://jamie-wong.com">
+          <i class="icon-globe"></i> Blog
+        </a>
+      </p>
+      <p>
+        Jamie Wong rants about technology on his blog, plays badminton, and
+        occasionally writes some code for Flow.
+      </p>
+      <p>
+        He also wrote Flow's <a href="https://github.com/phleet/flask_debugtoolbar_lineprofilerpanel">very first piece of open source software</a>!
+      </p>
+      <p>
+        He's worked at Facebook and Khan Academy where he learned to ride
+        a ripstik and learned to juggle respectively.
+      </p>
+    {% endcall %}
+  </div>
 
-  {% call about_blurb('/static/img/team/shubham.jpg') %}
-    <h2 class="name">Shubham Datta</h2>
-    <div class="program">4B Accounting and Finance</div>
-    <p class="links">
-      <a class="link" target="_blank" href="http://twitter.com/shubhamdatta">
-        <i class="icon-twitter"></i> Twitter
-      </a>
-      <a class="link" target="_blank" href="http://www.linkedin.com/in/shubhamdatta">
-        <i class="icon-linkedin"></i> LinkedIn
-      </a>
-    </p>
-    <p>
-      Shubham Datta wakes up each day with a mission to stop
-      procrastinating tomorrow.
-    </p>
-    <p>
-      He enjoys meeting and talking to new people everyday, and so he
-      takes care of the business development side of Flow.
-    </p>
-    <p>
-      Shubham has worked at KPMG and is currently pursuing a career in
-      accounting and finance.
-    </p>
-  {% endcall %}
+  <h1>Alumni</h1>
+  <div class="alumni">
+    {% call about_blurb('/static/img/team/terrance.jpg') %}
+      <h2 class="name">Terrance Kwok</h2>
+      <div class="program">Accounting and Finance</div>
+      <p class="links">
+        <a class="link" target="_blank" href="http://twitter.com/terrancekwok">
+          <i class="icon-twitter"></i> Twitter
+        </a>
+        <a class="link" target="_blank" href="http://www.linkedin.com/in/terrancekwok">
+          <i class="icon-linkedin"></i> LinkedIn
+        </a>
+      </p>
+      <p>
+        Terrance Kwok suffers from exercise induced asthma, but enjoys Indian food
+      </p>
+      <p>
+        He finds pleasure in the occasional IPA beer and as such, Terrance
+        handles the business development side of Flow.
+      </p>
+      <p>
+        Terrance has worked at KPMG and is currently pursuing an career in
+        accounting and finance (seriously).
+      </p>
+    {% endcall %}
 
-  {% call about_blurb('/static/img/team/jamie.png') %}
-    <h2 class="name">Jamie Wong</h2>
-    <div class="program">4A Software Engineering</div>
-    <p class="links">
-      <a class="link" target="_blank" href="http://twitter.com/jlfwong">
-        <i class="icon-twitter"></i> Twitter
-      </a>
-      <a class="link" target="_blank" href="http://jamie-wong.com">
-        <i class="icon-globe"></i> Blog
-      </a>
-    </p>
-    <p>
-      Jamie Wong rants about technology on his blog, plays badminton, and
-      occasionally writes some code for Flow.
-    </p>
-    <p>
-      He also wrote Flow's <a href="https://github.com/phleet/flask_debugtoolbar_lineprofilerpanel">very first piece of open source software</a>!
-    </p>
-    <p>
-      He's worked at Facebook and Khan Academy where he learned to ride
-      a ripstik and learned to juggle respectively.
-    </p>
-  {% endcall %}
+    {% call about_blurb('/static/img/team/shubham.jpg') %}
+      <h2 class="name">Shubham Datta</h2>
+      <div class="program">Accounting and Finance</div>
+      <p class="links">
+        <a class="link" target="_blank" href="http://twitter.com/shubhamdatta">
+          <i class="icon-twitter"></i> Twitter
+        </a>
+        <a class="link" target="_blank" href="http://www.linkedin.com/in/shubhamdatta">
+          <i class="icon-linkedin"></i> LinkedIn
+        </a>
+      </p>
+      <p>
+        Shubham Datta wakes up each day with a mission to stop
+        procrastinating tomorrow.
+      </p>
+      <p>
+        He enjoys meeting and talking to new people everyday, and so he
+        takes care of the business development side of Flow.
+      </p>
+      <p>
+        Shubham has worked at KPMG and is currently pursuing a career in
+        accounting and finance.
+      </p>
+    {% endcall %}
+  </div>
 
-  {% call about_blurb('/static/img/team/justin.png') %}
-    <h2 class="name">Justin Li</h2>
-    <div class="program">2A Software Engineering</div>
-    <p class="links">
-      <a class="link" target="_blank" href="http://twitter.com/pushrax">
-        <i class="icon-twitter"></i> Twitter
+  <h1>Contributors</h1>
+  <ul>
+    <li>
+      <a target="_blank" href="http://kartikt.com/">
+        Kartik Talwar
+      </a> &mdash;
+      <a target="_blank"
+          href="https://github.com/UWFlow/rmc/commits/master?author=KartikTalwar">
+        contributions
       </a>
-      <a class="link" target="_blank" href="http://justin-li.net">
-        <i class="icon-globe"></i> Site
+    </li>
+    <li>
+      <a target="_blank" href="https://github.com/yingted">
+        Ted Ying
+      </a> &mdash;
+      <a target="_blank"
+          href="https://github.com/UWFlow/rmc/commits/master?author=yingted">
+        contributions
       </a>
-    </p>
-    <p>
-      Justin Li joined the UW Flow team in 2013, and tries to occasionally
-      improve (read: break) things.
-    </p>
-    <p>
-      He enjoys tinkering with hardware, attempting to cook, making music and
-      figuring out how things work.
-    </p>
-    <p>
-      Justin is working at Shopify, on projects like <a href="http://batmanjs.org/">batman.js</a>.
-    </p>
-  {% endcall %}
+    </li>
+    <li>
+      <a target="_blank" href="https://www.gabrielwong.net">
+        Gabriel Wong
+      </a> &mdash;
+      <a target="_blank"
+          href="https://github.com/UWFlow/rmc/commits/master?author=gabrielwong">
+        contributions
+      </a>
+    </li>
+  </ul>
 
   <h1 class="sponsors-heading">Thank you sponsors</h1>
   <div class="row-fluid">
@@ -206,9 +257,12 @@
       <img src="/static/img/afsa_clear_red.png" height="300">
     </div>
     <div class="span9 sponsor-description">
-      The Accounting and Financial Student Association of the University of
-      Waterloo generously donated in support of the continued maintenance,
-      development, and growth of Flow at the University of Waterloo and beyond.
+      <p>
+        The Accounting and Financial Student Association of the University of
+        Waterloo generously donated in support of the continued maintenance,
+        development, and growth of Flow at the University of Waterloo and
+        beyond.
+      </p>
     </div>
   </div>
 
