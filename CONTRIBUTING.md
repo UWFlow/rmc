@@ -2,14 +2,7 @@
 
 ## Pull requests
 
-We follow the [GitHub Workflow](http://guides.github.com/overviews/flow/).
-Here's a brief summary:
-
-1. Create a topic branch.
-1. Push code to that branch.
-1. Submit a pull request and get it reviewed.
-1. When a reviewer comments with "LGTM" (Looks Good To Me), you can merge if
-   you have merge permissions.
+Please submit changes for review by [forking and sending a pull request from your topic branch](https://help.github.com/articles/using-pull-requests).
 
 If your pull request changes UI, please include screenshots. This makes it easy
 for reviewers to provide copy, styling, and interaction feedback.
