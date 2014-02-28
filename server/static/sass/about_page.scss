@@ -31,6 +31,10 @@ header {
 
   .bio-row {
     margin-bottom: 60px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 
   .card-info {
