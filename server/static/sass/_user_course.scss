@@ -191,7 +191,7 @@
   display: inline-block;
   text-align: left; // TODO(david): Figure out why text-align: center screws alignment
   height: 60px;
-  font-size: 24px;
+  font-size: 22px;
   @include box-sizing(border-box);
   // TODO(david): Show a sash/large ribbon after all stars filled in, or
   //     always show
