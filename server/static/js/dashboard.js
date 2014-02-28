@@ -9,7 +9,6 @@ function($, _, _s, moment, _util) {
   var reviewTemplate =  _.template($('#review-info-tpl').html());
 
   var pollStats = function() {
-    console.log('here!');
     $.post(
       '/admin/api/generic-stats',
       {},
