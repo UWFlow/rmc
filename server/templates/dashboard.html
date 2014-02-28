@@ -13,48 +13,50 @@
 {% endblock %}
 
 {% block body %}
-<div class="stats-row">
-  <div class="row-fluid stats-title">
-    <div class="span6">Total users</div>
-    <div class="span6">Signups today</div>
+<div class="stats-row row-fluid">
+  <div class="span6">
+    <div class="stats-title">Total users</div>
+    <div class="stats-num" id="num_users"></div>
   </div>
-  <div class="row-fluid stats-num">
-    <div class="span6" id="num_users">{{ num_users|tojson|safe }}</div>
-    <div class="span6" id="num_signups_today">
-      {{ num_signups_today|tojson|safe }}
-    </div>
+  <div class="span6">
+    <div class="stats-title">Signups today</div>
+    <div class="stats-num" id="num_signups_today"></div>
   </div>
 </div>
-<div class="stats-row">
-  <div class="row-fluid stats-title">
-    <div class="span6">Users with transcript</div>
-    <div class="span6">Users with schedule</div>
+<div class="stats-row row-fluid">
+  <div class="span6">
+    <div class="stats-title">Users with transcript</div>
+    <div class="stats-num" id="users_with_transcript_ratio"></div>
   </div>
-  <div class="row-fluid stats-num">
-    <div class="span6" id="num_users_with_transcript">
-      {{ num_users_with_transcript|tojson|safe }}
-    </div>
-    <div class="span6" id="num_users_with_schedule">
-      {{ num_users_with_schedule|tojson|safe }}
-    </div>
+  <div class="span6">
+    <div class="stats-title">Users with schedule</div>
+    <div class="stats-num" id="users_with_schedule_ratio"></div>
   </div>
 </div>
-<div class="stats-row">
-  <div class="row-fluid stats-title">
-    <div class="span6">Total ratings</div>
-    <div class="span6">Total reviews</div>
+<div class="stats-row row-fluid">
+  <div class="span6">
+    <div class="stats-title">Total ratings</div>
+    <div class="stats-num" id="num_ratings"></div>
   </div>
-  <div class="row-fluid stats-num">
-    <div class="span6" id="num_ratings">{{ num_ratings|tojson|safe }}</div>
-    <div class="span6" id="num_reviews">{{ num_reviews|tojson|safe }}</div>
+  <div class="span6">
+    <div class="stats-title">Total reviews</div>
+    <div class="stats-num" id="num_reviews"></div>
   </div>
 </div>
-<div class="stats-row">
-  <div class="row-fluid stats-title">
-    <div class="span6">UserCourses</div>
+<div class="stats-row row-fluid">
+  <div class="span6">
+    <div class="stats-title">UCs rated or reviewed</div>
+    <div class="stats-num" id="ucs_rated_reviewed_ratio"></div>
   </div>
-  <div class="row-fluid stats-num">
-    <div class="span6" id="num_ucs">{{ num_ucs|tojson|safe }}</div>
+  <div class="span6">
+    <div class="stats-title">Courses rated or reviewed</div>
+    <div class="stats-num" id="courses_rated_reviewed_ratio"></div>
+  </div>
+</div>
+<div class="stats-row row-fluid">
+  <div class="span6">
+    <div class="stats-title">Users rated or reviewed</div>
+    <div class="stats-num" id="users_rated_reviewed_ratio"></div>
   </div>
 </div>
 <div class="reviews"></div>
