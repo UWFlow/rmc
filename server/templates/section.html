@@ -1,11 +1,12 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('sections-collection-tpl') %}
-<% _.each(Object.keys(terms).sort(), function(termId) { %>
+<% _.each(_.keys(terms).sort(), function(termId) { %>
   <h2 class="sections-term-heading"><%- humanizeTermId(termId) %></h2>
-  <% if (terms[termId][0].has('note')) { %>
+  <% var term = terms[termId]; %>
+  <% if (term[0].has('note')) { %>
     <p>
-      <strong>Please note:</strong> <%- terms[termId][0].get('note') %>
+      <strong>Please note:</strong> <%- term[0].get('note') %>
     </p>
   <% } %>
   <table class="sections-table table table-bordered table-rounded">
@@ -21,7 +22,7 @@
       </tr>
     </thead>
     <tbody>
-      <% _.each(terms[termId], function(section) { %>
+      <% _.each(term, function(section) { %>
         <tr class="section-<%- sectionTypeToCssClass(section.get('section_type'))
                 %> <%- sectionFullCssClass(section) %>">
           <td>
@@ -108,9 +109,9 @@
   </table>
   <small class="last-updated">
     Last updated
-    <%- moment(terms[termId][0].get('last_updated')).fromNow() %> from
+    <%- moment(term[0].get('last_updated')).fromNow() %> from
 
-    <% var courseParts = splitCourseId(terms[termId][0].get('course_id')); %>
+    <% var courseParts = splitCourseId(term[0].get('course_id')); %>
     <% var questId = termIdToQuestId(termId); %>
 
     <a href="http://www.adm.uwaterloo.ca/cgi-bin/cgiwrap/infocour/salook.pl?level=under&sess=<%- questId %>&subject=<%- courseParts[0] %>&cournum=<%- courseParts[1] %>"
