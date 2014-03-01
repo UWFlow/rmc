@@ -1,8 +1,9 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('sections-collection-tpl') %}
-<% _.each(terms, function(term, term_id) { %>
-  <h2 class="sections-term-heading"><%- humanizeTermId(term_id) %></h2>
+<% _.each(_.keys(terms).sort(), function(termId) { %>
+  <h2 class="sections-term-heading"><%- humanizeTermId(termId) %></h2>
+  <% var term = terms[termId]; %>
   <% if (term[0].has('note')) { %>
     <p>
       <strong>Please note:</strong> <%- term[0].get('note') %>
@@ -64,7 +65,7 @@
                     ><span class="day-<%- _.contains(days, 'Su') %>">Su</span>
                   <% } %>
                 <% } else { %>
-                  <%- sectionMissingValueText(section, term[0].get('course_id')) %>
+                  <%- sectionMissingValueText(section, section.get('course_id')) %>
                 <% } %>
 
                 <% if (meeting.start_date) { %>
@@ -88,7 +89,7 @@
                   <%- meeting.building %>
                   <%- meeting.room %>
                 <% } else { %>
-                  <%- sectionMissingValueText(section, term[0].get('course_id')) %>
+                  <%- sectionMissingValueText(section, section.get('course_id')) %>
                 <% } %>
               </p>
             <% }); %>
@@ -111,7 +112,7 @@
     <%- moment(term[0].get('last_updated')).fromNow() %> from
 
     <% var courseParts = splitCourseId(term[0].get('course_id')); %>
-    <% var questId = termIdToQuestId(term[0].get('term_id')); %>
+    <% var questId = termIdToQuestId(termId); %>
 
     <a href="http://www.adm.uwaterloo.ca/cgi-bin/cgiwrap/infocour/salook.pl?level=under&sess=<%- questId %>&subject=<%- courseParts[0] %>&cournum=<%- courseParts[1] %>"
         target="_blank">
