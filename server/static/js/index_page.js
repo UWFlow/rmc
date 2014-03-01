@@ -22,7 +22,7 @@ function(_facebook, $, _util, _sign_in, _cookie, _moment) {
     $.removeCookie('referrer_id');
   }
 
-  _sign_in.renderEmailSignInModal();
+  _sign_in.renderEmailSignUpModal();
 
   $('.email-link').click(function() {
     mixpanel.track('Sign in with email intent');

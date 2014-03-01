@@ -10,6 +10,7 @@ import rmc.server.api.api_util as api_util
 import rmc.server.view_helpers as view_helpers
 import rmc.shared.schedule_screenshot as schedule_screenshot
 import rmc.shared.facebook as facebook
+import rmc.shared.rmclogger as rmclogger
 
 
 # TODO(david): Bring in other API methods from server.py to here.
@@ -152,6 +153,55 @@ def get_course_users(course_id):
 # Endpoints used for authentication
 
 
+@api.route('/login/email', methods=['POST'])
+def login_email():
+    """Attempt to log in a user with the credentials encoded in the POST body.
+
+    Expects the following form data:
+        email: E.g. 'tswift@gmail.com'
+        password: E.g. 'iknewyouweretrouble'
+
+    Responds with the session cookie via the `set-cookie` header on success.
+    Send the associated cookie for all subsequent API requests that accept
+    user authentication.
+    """
+    # Prevent a CSRF attack from replacing a logged-in user's account with the
+    # attacker's.
+    current_user = view_helpers.get_current_user()
+    if current_user:
+        return api_util.jsonify({'message': 'A user is already logged in.'})
+
+    params = flask.request.form.copy()
+
+    # Don't log the password
+    password = params.pop('password', None)
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_LOGIN, {
+            'params': params,
+            'type': rmclogger.LOGIN_TYPE_STRING_EMAIL,
+        },
+    )
+
+    email = params.get('email')
+
+    if not email:
+        raise api_util.ApiBadRequestError('Must provide email.')
+
+    if not password:
+        raise api_util.ApiBadRequestError('Must provide password.')
+
+    user = m.User.auth_user(email, password)
+
+    if not user:
+        raise api_util.ApiNotFoundError('Incorrect email or password.')
+
+    view_helpers.login_as_user(user)
+
+    return api_util.jsonify({'message': 'Logged in user %s' % user.name})
+
+
 @api.route('/login/facebook', methods=['POST'])
 def login_facebook():
     """Attempt to login a user with FB credentials encoded in the POST body.
@@ -174,6 +224,13 @@ def login_facebook():
     if current_user:
         return api_util.jsonify({'message': 'A user is already logged in.'})
 
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_SIGNUP, {
+            'type': rmclogger.LOGIN_TYPE_STRING_FACEBOOK,
+        },
+    )
+
     req = flask.request
     fb_access_token = req.form.get('fb_access_token')
 
@@ -193,11 +250,90 @@ def login_facebook():
                 'Create an account at uwflow.com.' % fbid)
 
     view_helpers.login_as_user(user)
+    # TODO(sandy): We don't need to do this anymore, just use the endpoint
     csrf_token = view_helpers.generate_csrf_token()
 
     return api_util.jsonify({
         'message': 'Logged in user %s' % user.name,
         'csrf_token': csrf_token,
+    })
+
+
+@api.route('/signup/email', methods=['POST'])
+def signup_email():
+    """Create a new account using data encoded in the POST body.
+
+    Expects the following form data:
+        first_name: E.g. 'Taylor'
+        last_name: E.g. 'Swift'
+        email: E.g. 'tswift@gmail.com'
+        password: E.g. 'iknewyouweretrouble'
+
+    Responds with the session cookie via the `set-cookie` header on success.
+    Send the associated cookie for all subsequent API requests that accept
+    user authentication.
+    """
+    # Prevent a CSRF attack from replacing a logged-in user's account with
+    # a new account with known credentials
+    current_user = view_helpers.get_current_user()
+    if current_user:
+        return api_util.jsonify({'message': 'A user is already logged in.'})
+
+    params = flask.request.form.copy()
+
+    # Don't log the password
+    password = params.pop('password', None)
+
+    rmclogger.log_event(
+        rmclogger.LOG_CATEGORY_API,
+        rmclogger.LOG_EVENT_SIGNUP, {
+            'params': params,
+            'type': rmclogger.LOGIN_TYPE_STRING_EMAIL,
+        },
+    )
+
+    first_name = params.get('first_name')
+    last_name = params.get('last_name')
+    email = params.get('email')
+
+    if not first_name:
+        raise api_util.ApiBadRequestError('Must provide first name.')
+
+    if not last_name:
+        raise api_util.ApiBadRequestError('Must provide last name.')
+
+    if not email:
+        raise api_util.ApiBadRequestError('Must provide email.')
+
+    if not password:
+        raise api_util.ApiBadRequestError('Must provide password.')
+
+    try:
+        user = m.User.create_new_user_from_email(
+                first_name, last_name, email, password)
+    except m.User.UserCreationError as e:
+        raise api_util.ApiBadRequestError(e.message)
+
+    view_helpers.login_as_user(user)
+
+    return api_util.jsonify({
+        'message': 'Created and logged in user %s' % user.name
+    })
+
+
+@api.route('/csrf-token', methods=['GET'])
+def csrf_token():
+    """Return the CSRF token for the current seesion.
+
+    Responds with the session cookie via the `set-cookie` header on success.
+    You should send the associated cookie for (at least) all subsequent non-GET
+    requests.
+
+    Returns the CSRF token, which must be sent as the value of the
+    "X-CSRF-Token" header for all non-GET requests.
+    """
+    return api_util.jsonify({
+        'token': view_helpers.generate_csrf_token()
     })
 
 

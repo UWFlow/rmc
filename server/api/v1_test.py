@@ -1,7 +1,18 @@
+import json
+
+import werkzeug.datastructures as datastructures
+
+import rmc.models as m
 import rmc.test.lib as testlib
 
 
 class V1Test(testlib.FlaskTestCase):
+    def get_csrf_token_header(self):
+        resp = self.app.get('/api/v1/csrf-token')
+        headers = datastructures.Headers()
+        headers.add('X-CSRF-Token', json.loads(resp.get_data())['token'])
+        return headers
+
     def test_get_course(self):
         resp = self.app.get('/api/v1/courses/cs444')
         self.assertResponseOk(resp)
@@ -74,5 +85,37 @@ class V1Test(testlib.FlaskTestCase):
             ],
             'user_courses': []
         })
+
+    def test_signup_email(self):
+        data = {
+            'first_name': 'Taylor',
+            'last_name': 'Swift',
+            'email': 'tswift@gmail.com',
+            'password': 'iknewyouweretrouble',
+        }
+        headers = self.get_csrf_token_header()
+
+        resp = self.app.post(
+                '/api/v1/signup/email', data=data, headers=headers)
+        self.assertResponseOk(resp)
+        self.assertTrue(resp.headers.get('Set-Cookie'))
+
+    def test_login_email(self):
+        user_data = {
+            'first_name': 'Taylor',
+            'last_name': 'Swift',
+            'email': 'tswift2@gmail.com',
+            'password': 'iknewyouweretrouble',
+        }
+        m.User.create_new_user_from_email(**user_data)
+
+        param_keys = ['email', 'password']
+        params = dict([t for t in user_data.items() if t[0] in param_keys])
+        headers = self.get_csrf_token_header()
+
+        resp = self.app.post(
+                '/api/v1/login/email', data=params, headers=headers)
+        self.assertResponseOk(resp)
+        self.assertTrue(resp.headers.get('Set-Cookie'))
 
 # TODO(david): More tests!

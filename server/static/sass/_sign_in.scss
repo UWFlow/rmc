@@ -171,12 +171,127 @@
   }
 }
 
-.email-sign-in-modal {
-  .modal-footer {
+.email-signup-modal, .email-login-modal {
+  width: 338px;
+  margin-left: -169px;
+
+  .content-container {
+    display: inline;
+    margin: 0 auto;
+    text-align: center;
+
+    .modal-body {
+      padding: 25px;
+    }
+
+    .modal-footer {
+      padding: 18px 25px;
+    }
+
+    .errors {
+      width: 100%;
+      @include box-sizing(border-box);
+    }
+
+    input {
+      margin-bottom: 0px;
+    }
+
+    .form-group {
+      margin-bottom: 9px;
+    }
+
+    .form-control {
+      width: 100%;
+      @include box-sizing(border-box);
+      height: 31px;
+    }
+
+    .add-on {
+      position: relative;
+      z-index: 3;
+      @include box-sizing(border-box);
+      width: 31px;
+      height: 31px;
+      padding: 5px 5px;
+    }
+
+    .iconed-input {
+      margin-left: -28px;
+      padding-left: 33px;
+    }
+
+    label.error {
+      color: #b94a48;
+    }
+  }
+}
+
+.email-signup-modal {
+  .signup-form {
+    .first-name-input, .last-name-input {
+      width: 49%;
+    }
+  }
+
+  .login-link {
+    float: left;
+    margin-top: 13px;
+
+    color: #555;
+    font-size: 13px;
+    line-height: 1.2;
     text-align: left;
   }
-  .submit-msg {
-    margin-bottom: 0;
-    margin-top: 10px;
+
+  .signup-form {
+    margin-bottom: 0px;
+  }
+
+  .signup-btn {
+    float: right;
+  }
+}
+
+.email-login-modal {
+  .login-btn {
+    font-size: 15px;
+    margin-top: 26px;
+    padding: 9px 38px;
+  }
+
+  .fb-login-text {
+    font-size: 20px;
+  }
+
+  .divider {
+    margin-top: 49px;
+    margin-bottom: 19px;
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+
+    hr {
+      margin-left: auto;
+      margin-right: auto;
+      width: 40%;
+    }
+
+    .divider-text {
+      float: left;
+      width: 20%;
+      margin-top: 9px;
+      color: #666;
+      font-style: italic;
+      font-weight: normal;
+    }
+
+    .divider-left {
+        float: left;
+    }
+
+    .divider-right {
+        float: right;
+    }
   }
 }

@@ -2,10 +2,12 @@ import base64
 import datetime
 import hashlib
 import itertools
+import logging
 import time
 import uuid
 
 import mongoengine as me
+import flask.ext.bcrypt as bcrypt
 
 import course as _course
 import exam as _exam
@@ -20,6 +22,8 @@ from rmc.shared import util
 
 
 PROMPT_TO_REVIEW_DELAY_DAYS = 60
+PASSWORD_MIN_LENGTH = 6
+BCRYPT_ROUNDS = 12
 
 
 class User(me.Document):
@@ -28,6 +32,10 @@ class User(me.Document):
 
     class JoinSource(object):
         FACEBOOK = 1
+        EMAIL = 2
+
+    class UserCreationError(Exception):
+        pass
 
     meta = {
         'indexes': [
@@ -35,6 +43,8 @@ class User(me.Document):
             'fbid',
             # TODO(mack): need to create the 'api_key' index on prod
             'api_key',
+            # TODO(sandy): need to create the 'email' index on prod
+            'email',
             'referrer_id',
         ],
     }
@@ -49,7 +59,8 @@ class User(me.Document):
     # TODO(mack): join_date should be encapsulate in _id, but store it
     # for now, just in case; can remove it when sure that info is in _id
     join_date = me.DateTimeField(required=True)
-    join_source = me.IntField(required=True, choices=[JoinSource.FACEBOOK])
+    join_source = me.IntField(required=True,
+            choices=[JoinSource.FACEBOOK, JoinSource.EMAIL])
     referrer_id = me.ObjectIdField(required=False)
 
     # eg. Mack
@@ -73,6 +84,8 @@ class User(me.Document):
     fb_access_token_invalid = me.BooleanField(default=False)
 
     email = me.EmailField()
+
+    password = me.StringField()
 
     # eg. list of user objectids, could be friends from sources besides
     # facebook
@@ -544,6 +557,53 @@ class User(me.Document):
         elapsed = min(now - self.last_prompted_for_review,
                 now - self.join_date)
         return elapsed.days > PROMPT_TO_REVIEW_DELAY_DAYS
+
+    @staticmethod
+    def auth_user(email, password):
+        """Returns the authenticated user or None."""
+        user = User.objects(email=email)
+
+        if not user:
+            return None
+
+        if user.count() > 1:
+            logging.error('Multiple email addressed matched: %s' % email)
+            return None
+
+        user = user.first()
+
+        if not bcrypt.check_password_hash(user.password, password):
+            return None
+
+        return user
+
+    @staticmethod
+    def create_new_user_from_email(first_name, last_name, email, password):
+        if User.objects(email=email):
+            raise User.UserCreationError('That email is already signed up.')
+
+        if len(password) < PASSWORD_MIN_LENGTH:
+            raise User.UserCreationError(
+                    'Passwords must be at least 8 characters long.')
+
+        user = User(
+            email=email,
+            first_name=first_name,
+            join_date=datetime.datetime.now(),
+            join_source=User.JoinSource.EMAIL,
+            last_name=last_name,
+            password=bcrypt.generate_password_hash(
+                    password, rounds=BCRYPT_ROUNDS),
+        )
+
+        try:
+            user.save()
+        except me.base.ValidationError as e:
+            if 'email' in e.errors:
+                raise User.UserCreationError('Oops, that email is invalid.')
+            raise
+
+        return user
 
     def __repr__(self):
         return "<User: %s>" % self.name.encode('utf-8')

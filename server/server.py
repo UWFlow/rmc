@@ -36,9 +36,6 @@ flask_render_template = flask.render_template
 
 KITTEN_DATA = kitten_data.get_kitten_data()
 
-# Constants used for logging
-LOGIN_TYPE_STRING_FACEBOOK = "facebook"
-
 
 def render_template(*args, **kwargs):
     redis = view_helpers.get_redis_instance()
@@ -46,6 +43,7 @@ def render_template(*args, **kwargs):
     current_user = view_helpers.get_current_user()
     should_renew_fb_token = False
     if (current_user and
+        current_user.fbid and
         not current_user.is_demo_account and
         not hasattr(flask.request, 'as_user_override')):
         should_renew_fb_token = current_user.should_renew_fb_token
@@ -103,6 +101,7 @@ def csrf_protect():
     """Require a valid CSRF token for any method other than GET."""
     req = flask.request
 
+    # TODO(sandy): Use get-csrf-token from the API instead of excluding here
     # Exclude API login from CSRF protection, because API clients will not yet
     # have a CSRF token when they hit this endpoint (eg. mobile apps).
     if req.endpoint == 'api.login_facebook':
@@ -240,6 +239,10 @@ def courses():
 
     current_user = view_helpers.get_current_user()
 
+    # Don't show friends_taken sort mode when user has no friends
+    if current_user and len(current_user.friend_ids) == 0:
+        sort_modes = [sm for sm in sort_modes if sm['name'] != 'friends_taken']
+
     return flask.render_template(
         'search_page.html',
         page_script='search_page.js',
@@ -365,7 +368,7 @@ def login_with_facebook():
         rmclogger.LOG_EVENT_LOGIN, {
             'fbsr': fbsr,
             'request_form': req.form,
-            'type': LOGIN_TYPE_STRING_FACEBOOK,
+            'type': rmclogger.LOGIN_TYPE_STRING_FACEBOOK,
         },
     )
 
@@ -394,7 +397,7 @@ def login_with_facebook():
             rmclogger.LOG_EVENT_LOGIN, {
                 'new_user': False,
                 'user_id': user.id,
-                'type': LOGIN_TYPE_STRING_FACEBOOK,
+                'type': rmclogger.LOGIN_TYPE_STRING_FACEBOOK,
             },
         )
     else:
@@ -435,7 +438,7 @@ def login_with_facebook():
                 'new_user': True,
                 'user_id': user.id,
                 'referrer_id': referrer_id,
-                'type': LOGIN_TYPE_STRING_FACEBOOK,
+                'type': rmclogger.LOGIN_TYPE_STRING_FACEBOOK,
             },
         )
 
