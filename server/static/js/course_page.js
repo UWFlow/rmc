@@ -1,7 +1,7 @@
 require(
-['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'exam', 'ratings',
+['ext/jquery', 'ext/underscore', 'course', 'took_this', 'user', 'tips', 'prof', 'exam', 'ratings',
 'user_course', 'review', 'sign_in'],
-function($, course, tookThis, user, tips, prof, _exam, ratings, user_course, _review, _sign_in) {
+function($, _, course, tookThis, user, tips, prof, _exam, ratings, user_course, _review, _sign_in) {
 
   course.CourseCollection.addToCache(pageData.courseObj);
   user_course.UserCourses.addToCache(pageData.userCourseObjs);
@@ -22,8 +22,28 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course, _re
   $('#course-inner-container').html(courseInnerView.render().el);
   courseInnerView.animateBars();
 
-  if (window.pageData.examObjs.length) {
-    var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
+  var examObjs = window.pageData.examObjs;
+
+  // Merges all sections for examObjs into a string like '001, 002, 003'
+  var mergeSectionNumbers = function (examObjs) {
+    return _.map(examObjs, function (examObj) { return examObj.sections; }).join(', ');
+  };
+
+  // In a course, the exam for most sections is at the same date, time and location.
+  // We merge those sections together (e.g. {RCH 301: Array[2], RCH 211: Array[1]}
+  var groupedExamObjs = _.groupBy(examObjs, function (examObj) { return examObj.location + examObj.start_date.$date; });
+
+  // Now, we get the first examObj in each group, and update their sections attribute
+  // to contains all sections in their respective groups (i.e. '001, 002, 003')
+  groupedExamObjs = _.map(groupedExamObjs, function (examObjs) {
+    examObjs[0].sections = mergeSectionNumbers(examObjs); 
+    return examObjs[0];
+  });
+
+  // Now, you have one examObj for each unique combination of datetime and location,
+  // with a sections attribute like '001, 002, 003, 004', for example.
+  if (groupedExamObjs.length) {
+    var examCollection = new _exam.ExamCollection(groupedExamObjs);
 
     // Only show this "final exams" section if there are actually exams taking
     // place in the future
