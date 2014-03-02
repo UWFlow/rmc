@@ -235,8 +235,7 @@ function(_, _s, $) {
     var prof = profId.split(" ");
     if (prof.length >= 2) {
       return prof[0].charAt(0) + "_" + prof[prof.length-1];
-    }
-    else {
+    } else {
       return prof[0];
     }
   };
