@@ -231,6 +231,16 @@ function(_, _s, $) {
     return season + ' ' + year;
   };
 
+  var shortenProf = function(profId) {
+    var prof = profId.split(" ");
+    if (prof.length >= 2) {
+      return prof[0].charAt(0) + "_" + prof[prof.length-1];
+    }
+    else {
+      return prof[0];
+    }
+  };
+  
   /**
    * Converts a professor ID into a readable form.
    * Eg. "byron_weber_becker" => "Byron Weber Becker"
@@ -240,6 +250,7 @@ function(_, _s, $) {
     var namesCapitalized = _.map(names, _s.capitalize);
     return namesCapitalized.join(' ');
   };
+
 
   /**
    * Converts from an upper-case section type code to a CSS color class.
@@ -313,6 +324,7 @@ function(_, _s, $) {
     scrollToElementId: scrollToElementId,
     humanizeTermId: humanizeTermId,
     humanizeProfId: humanizeProfId,
+    shortenProf: shortenProf,
     sectionTypeToCssClass: sectionTypeToCssClass,
     splitCourseId: splitCourseId,
     termIdToQuestId: termIdToQuestId,

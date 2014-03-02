@@ -19,7 +19,9 @@
     margin-left: 20px;
     width: 60%;
     display: inline-block;
-
+    position:relative;
+    padding-top:60px;
+    top:-60px;
     .prof-name {
       line-height: 24px;
       margin-bottom: 25px;
