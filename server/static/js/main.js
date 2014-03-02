@@ -131,7 +131,7 @@ function(_s, util, moment, Backbone, __, __, toastr, _points,
       capitalize: util.capitalize,
       humanizeTermId: util.humanizeTermId,
       humanizeProfId: util.humanizeProfId,
-      shortenProf: util.shortenProf,
+      normalizeProfName: util.normalizeProfName,
       sectionTypeToCssClass: util.sectionTypeToCssClass,
       splitCourseId: util.splitCourseId,
       termIdToQuestId: util.termIdToQuestId

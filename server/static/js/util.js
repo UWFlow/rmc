@@ -231,12 +231,12 @@ function(_, _s, $) {
     return season + ' ' + year;
   };
 
-  var shortenProf = function(profId) {
-    var prof = profId.split(" ");
-    if (prof.length >= 2) {
-      return prof[0].charAt(0) + "_" + prof[prof.length-1];
+  var normalizeProfName = function(profId) {
+    var idParts = profId.split(" ");
+    if (idParts.length >= 2) {
+      return idParts[0].charAt(0) + "_" + idParts[idParts.length - 1];
     } else {
-      return prof[0];
+      return idParts[0];
     }
   };
   
@@ -323,7 +323,7 @@ function(_, _s, $) {
     scrollToElementId: scrollToElementId,
     humanizeTermId: humanizeTermId,
     humanizeProfId: humanizeProfId,
-    shortenProf: shortenProf,
+    normalizeProfName: normalizeProfName,
     sectionTypeToCssClass: sectionTypeToCssClass,
     splitCourseId: splitCourseId,
     termIdToQuestId: termIdToQuestId,
