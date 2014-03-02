@@ -54,7 +54,7 @@ install_packages() {
         git \
         python-setuptools python-pip python-dev \
         libxml2-dev libxslt-dev \
-        ruby rubygems \
+        ruby rubygems ruby-dev \
         nodejs \
         redis-server \
         mongodb-10gen \
