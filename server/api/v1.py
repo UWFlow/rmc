@@ -164,6 +164,8 @@ def login_facebook():
     Send the associated cookie for all subsequent API requests that accept
     user authentication.
     """
+    # Prevent a CSRF attack from replacing a logged-in user's account with the
+    # attacker's.
     current_user = view_helpers.get_current_user()
     if current_user:
         return api_util.jsonify({'message': 'A user is already logged in.'})
