@@ -164,6 +164,10 @@ def login_facebook():
     Send the associated cookie for all subsequent API requests that accept
     user authentication.
     """
+    current_user = view_helpers.get_current_user()
+    if current_user:
+        return api_util.jsonify({'message': 'A user is already logged in.'})
+
     req = flask.request
     fb_access_token = req.form.get('fb_access_token')
 
