@@ -450,6 +450,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
           this.userCourse.hasTaken() &&
           this.canShowAddReview;
       this.courseView = attributes.courseView;  // optional
+      this.shouldlinkifySectionProfs = (
+          attributes.shouldLinkifySectionProfs || false);
 
       this.ratingsView = new ratings.RatingsView({
         ratings: this.courseModel.get('ratings'),
@@ -470,7 +472,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
 
       if (this.courseModel.has('sections')) {
         this.sectionCollectionView = new _section.SectionCollectionView({
-          collection: this.courseModel.get('sections')
+          collection: this.courseModel.get('sections'),
+          shouldlinkifyProfs: this.shouldLinkifySectionProfs
         });
       }
 

@@ -30,8 +30,9 @@ function(RmcBackbone, $, _, _s) {
   var SectionCollectionView = RmcBackbone.View.extend({
     className: 'sections-collection',
 
-    initialize: function() {
+    initialize: function(options) {
       this.template = _.template($('#sections-collection-tpl').html());
+      this.shouldLinkifyProfs = options.shouldLinkifyProfs;
     },
 
     render: function() {
@@ -53,7 +54,8 @@ function(RmcBackbone, $, _, _s) {
           // ONLNR ONLINE
           var onlinePattern = /ONLN.? ONLINE/;
           return onlinePattern.test(section.get('campus')) ? 'N/A' : 'TBA';
-        }
+        },
+        shouldLinkifyProfs: this.shouldLinkifyProfs
       }));
       return this;
     }
