@@ -236,21 +236,20 @@ function(_, _s, $) {
    * courses may not precisely match the professor names 
    * we have from section information. In order to be able to
    * link the two together, we use the heuristic of taking the 
-   * first initial and appending the
-   * last name.
+   * first initial and appending the last name.
    *
    * e.g. "Corey Van De Waal" -> "c_waal"
    * e.g. "Larry Smith" -> "l_smith"
    * e.g. "Larry" -> "larry"
    */
   var normalizeProfName = function(profName) {
-    var idParts = profName.split(" ");
-    if (idParts.length >= 2) {
-      var firstInitial = idParts[0].charAt(0).toLowerCase();
-      var lastName = idParts[idParts.length - 1].toLowerCase();
+    var nameParts = profName.split(" ");
+    if (nameParts.length >= 2) {
+      var firstInitial = nameParts[0].charAt(0).toLowerCase();
+      var lastName = nameParts[nameParts.length - 1].toLowerCase();
       return firstInitial + "_" + lastName;
     } else {
-      return idParts[0].toLowerCase();
+      return nameParts[0].toLowerCase();
     }
   };
   
