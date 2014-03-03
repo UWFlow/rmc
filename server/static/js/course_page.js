@@ -17,7 +17,8 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course, _re
 
   var courseInnerView = new course.CourseInnerView({
     courseModel: courseModel,
-    userCourse: userCourse
+    userCourse: userCourse,
+    shouldLinkifySectionProfs: true
   });
   $('#course-inner-container').html(courseInnerView.render().el);
   courseInnerView.animateBars();

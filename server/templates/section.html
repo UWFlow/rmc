@@ -98,11 +98,15 @@
             <% _.each(section.get('meetings'), function(meeting) { %>
               <p>
                 <% if (meeting.prof_id) { %>
-                  <% var profName = humanizeProfId(meeting.prof_id) %>
-		  <a href="#<%- normalizeProfName(profName) %>">
-		    <%- profName %>
-		  </a>   
-		<% } %>
+                  <% var profName = humanizeProfId(meeting.prof_id); %>
+                    <% if (shouldLinkifyProfs) { %>
+                      <a href="#<%- normalizeProfName(profName) %>">
+                        <%- profName %>
+                      </a>
+                    <% } else { %>
+                      <%- profName %>
+                    <% } %>
+                  <% } %>
               </p>
             <% }); %>
           </td>
