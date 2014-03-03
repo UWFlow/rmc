@@ -13,7 +13,6 @@ import rmc.shared.facebook as facebook
 
 # TODO(david): Bring in other API methods from server.py to here.
 # TODO(david): Document API methods. Clarify which methods accept user auth.
-# TODO(david): Tests (Actually, Jamie wants to do this :P)
 
 
 api = flask.Blueprint('api', __name__, url_prefix='/api/v1')
