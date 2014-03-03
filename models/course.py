@@ -272,7 +272,7 @@ class Course(me.Document):
         return "".join(course_code.split()).lower()
 
     @staticmethod
-    def search(params, current_user):
+    def search(params, current_user=None):
         """Search for courses based on various parameters.
 
         Arguments:

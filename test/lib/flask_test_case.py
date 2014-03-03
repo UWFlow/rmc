@@ -1,7 +1,6 @@
 import json
 
-import fixtures
-import model_test_case
+import fixtures_test_case
 import rmc.server.server as server
 
 
@@ -16,24 +15,10 @@ def deunicode(obj):
     return obj
 
 
-class FlaskTestCase(model_test_case.ModelTestCase):
-    @classmethod
-    def setUpClass(cls):
-        model_test_case.ModelTestCase.setUpClass()
-        # NOTE: This is done on class setup instead of test setup because it's
-        # very slow. This unfortunately means that any mutation of the database
-        # within a test is persisted for the rest of the tests in each test
-        # class.
-        fixtures.reset_db_with_fixtures()
-
-    @classmethod
-    def tearDownClass(cls):
-        model_test_case.ModelTestCase.tearDownClass()
+class FlaskTestCase(fixtures_test_case.FixturesTestCase):
 
     def setUp(self):
-        # We intentionally don't call super here because ModelTestCase drops
-        # the database on every test. We want to retain our fixtures to prevent
-        # our tests from being very slow.
+        super(FlaskTestCase, self).setUp()
         server.app.config.from_object('rmc.config.flask_test')
         self.app = server.app.test_client()
         self.maxDiff = None
