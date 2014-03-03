@@ -232,6 +232,28 @@ function(_, _s, $) {
   };
 
   /**
+   * The professor names entered by people when reviewing 
+   * courses may not precisely match the professor names 
+   * we have from section information. In order to be able to
+   * link the two together, we use the heuristic of taking the 
+   * first initial and appending the last name.
+   *
+   * e.g. "Corey Van De Waal" -> "c_waal"
+   * e.g. "Larry Smith" -> "l_smith"
+   * e.g. "Larry" -> "larry"
+   */
+  var normalizeProfName = function(profName) {
+    var nameParts = profName.split(" ");
+    if (nameParts.length >= 2) {
+      var firstInitial = nameParts[0].charAt(0).toLowerCase();
+      var lastName = nameParts[nameParts.length - 1].toLowerCase();
+      return firstInitial + "_" + lastName;
+    } else {
+      return nameParts[0].toLowerCase();
+    }
+  };
+  
+  /**
    * Converts a professor ID into a readable form.
    * Eg. "byron_weber_becker" => "Byron Weber Becker"
    */
@@ -240,6 +262,7 @@ function(_, _s, $) {
     var namesCapitalized = _.map(names, _s.capitalize);
     return namesCapitalized.join(' ');
   };
+
 
   /**
    * Converts from an upper-case section type code to a CSS color class.
@@ -313,6 +336,7 @@ function(_, _s, $) {
     scrollToElementId: scrollToElementId,
     humanizeTermId: humanizeTermId,
     humanizeProfId: humanizeProfId,
+    normalizeProfName: normalizeProfName,
     sectionTypeToCssClass: sectionTypeToCssClass,
     splitCourseId: splitCourseId,
     termIdToQuestId: termIdToQuestId,

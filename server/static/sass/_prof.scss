@@ -20,6 +20,12 @@
     width: 60%;
     display: inline-block;
 
+    // Padding-top and top move the anchor position upwards
+    // This is so that it is anchored above the name, not below
+    position: relative;
+    padding-top: 60px;
+    top: -60px;
+
     .prof-name {
       line-height: 24px;
       margin-bottom: 25px;

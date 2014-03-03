@@ -98,8 +98,11 @@
             <% _.each(section.get('meetings'), function(meeting) { %>
               <p>
                 <% if (meeting.prof_id) { %>
-                  <%- humanizeProfId(meeting.prof_id) %>
-                <% } %>
+                  <% var profName = humanizeProfId(meeting.prof_id) %>
+		  <a href="#<%- normalizeProfName(profName) %>">
+		    <%- profName %>
+		  </a>   
+		<% } %>
               </p>
             <% }); %>
           </td>
