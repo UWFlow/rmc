@@ -99,14 +99,21 @@ def render_snapshot_for_great_seo():
 @app.before_request
 def csrf_protect():
     """Require a valid CSRF token for any method other than GET."""
+    req = flask.request
+
+    # Exclude API login from CSRF protection, because API clients will not yet
+    # have a CSRF token when they hit this endpoint (eg. mobile apps).
+    if req.endpoint == 'api.login_facebook':
+        return
+
     # Based on http://flask.pocoo.org/snippets/3/, but modified to use headers
     # and generally be more Rails-like
-    if flask.request.method != "GET":
+    if req.method != 'GET':
         # We intentionally don't invalidate CSRF tokens after a single use to
         # enable multiple AJAX requests originating from the page load to all
         # work off the same CSRF token.
         token = flask.session.get('_csrf_token', None)
-        if not token or token != flask.request.headers.get('X-CSRF-Token'):
+        if not token or token != req.headers.get('X-CSRF-Token'):
             flask.abort(403)
 
 
