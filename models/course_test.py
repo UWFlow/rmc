@@ -52,6 +52,14 @@ class CourseTest(testlib.FixturesTestCase):
                 'acc607', 'acc608', 'acc609', 'acc610', 'acc611', 'acc620',
                 'acc621'])
 
+        # Friends taken should default to popular if no current user given.
+        results_friends_taken, has_more = m.Course.search({
+            'sort_mode': 'friends_taken'
+        })
+        results_popular, has_more = m.Course.search({'sort_mode': 'popular'})
+        self.assertResultsEquals(results_friends_taken,
+                [course['id'] for course in results_popular])
+
         # Test direction param
         results, has_more = m.Course.search({
             'sort_mode': 'course code',
