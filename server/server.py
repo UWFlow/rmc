@@ -6,7 +6,6 @@ assert line_profile  # silence pyflakes
 import logging
 import mongoengine as me
 import os
-import pymongo
 import re
 import time
 import werkzeug.exceptions as exceptions
@@ -240,7 +239,7 @@ def courses():
             'direction': sort_mode['direction'],
         }
 
-    sort_modes = map(clean_sort_modes, COURSES_SORT_MODES)
+    sort_modes = map(clean_sort_modes, m.Course.SORT_MODES)
 
     current_user = view_helpers.get_current_user()
 
@@ -603,31 +602,6 @@ def get_courses(course_ids):
         'professor_objs': professor_objs,
     })
 
-COURSES_SORT_MODES = [
-    # TODO(david): Usefulness
-    {'name': 'popular', 'direction': pymongo.DESCENDING,
-     'field': 'interest.count'},
-    {'name': 'friends_taken', 'direction': pymongo.DESCENDING,
-     'field': 'custom'},
-    {'name': 'interesting', 'direction': pymongo.DESCENDING,
-     'field': 'interest.sorting_score'},
-    {'name': 'easy', 'direction': pymongo.DESCENDING,
-     'field': 'easiness.sorting_score'},
-    {'name': 'hard', 'direction': pymongo.ASCENDING,
-     'field': 'easiness.sorting_score'},
-    {'name': 'course code', 'direction': pymongo.ASCENDING,
-     'field': 'id'},
-]
-
-COURSES_SORT_MODES_BY_NAME = {}
-for sort_mode in COURSES_SORT_MODES:
-    COURSES_SORT_MODES_BY_NAME[sort_mode['name']] = sort_mode
-
-
-# Special sort instructions are needed for these sort modes
-# TODO(Sandy): deprecate overall and add usefulness
-RATING_SORT_MODES = ['overall', 'interesting', 'easy', 'hard']
-
 
 @app.route('/api/course-search', methods=['GET'])
 # TODO(mack): find a better name for function
@@ -635,115 +609,16 @@ RATING_SORT_MODES = ['overall', 'interesting', 'easy', 'hard']
 # value they are sorting by changes in the objects. this can lead to missing
 # or duplicate contests being passed to front end
 def search_courses():
-    # TODO(mack): create enum of sort options
-    # num_friends, num_ratings, overall, interest, easiness
-
-    request = flask.request
-    keywords = request.values.get('keywords')
-    sort_mode = request.values.get('sort_mode', 'popular')
-    default_direction = COURSES_SORT_MODES_BY_NAME[sort_mode]['direction']
-    direction = int(request.values.get('direction', default_direction))
-    count = int(request.values.get('count', 10))
-    offset = int(request.values.get('offset', 0))
-    exclude_taken_courses = request.values.get('exclude_taken_courses')
-
     current_user = view_helpers.get_current_user()
-
-    # TODO(david): These logging things should be done asynchronously
-    rmclogger.log_event(
-        rmclogger.LOG_CATEGORY_COURSE_SEARCH,
-        rmclogger.LOG_EVENT_SEARCH_PARAMS,
-        request.values
-    )
-
-    filters = {}
-    if keywords:
-        # Clean keywords to just alphanumeric and space characters
-        keywords = re.sub(r'[^\w ]', ' ', keywords)
-
-        keywords = re.sub('\s+', ' ', keywords)
-        keywords = keywords.split(' ')
-
-        def regexify_keywords(keyword):
-            keyword = keyword.lower()
-            return re.compile('^%s' % keyword)
-
-        keywords = map(regexify_keywords, keywords)
-        filters['_keywords__all'] = keywords
-
-    if exclude_taken_courses == "yes":
-        if current_user:
-            ucs = (current_user.get_user_courses()
-                    .only('course_id', 'term_id'))
-            filters['id__nin'] = [
-                uc.course_id for uc in ucs
-                if not m.term.Term.is_shortlist_term(uc.term_id)
-            ]
-        else:
-            logging.error('Anonymous user tried excluding taken courses')
-
-    if sort_mode == 'friends_taken':
-        # TODO(mack): should only do if user is logged in
-        friends = m.User.objects(id__in=current_user.friend_ids).only(
-                'course_history')
-        # TODO(mack): need to majorly optimize this
-        num_friends_by_course = {}
-        for friend in friends:
-            for course_id in friend.course_ids:
-                if not course_id in num_friends_by_course:
-                    num_friends_by_course[course_id] = 0
-                num_friends_by_course[course_id] += 1
-
-        filters['id__in'] = num_friends_by_course.keys()
-        existing_courses = m.Course.objects(**filters).only('id')
-        existing_course_ids = set(c.id for c in existing_courses)
-        for course_id in num_friends_by_course.keys():
-            if course_id not in existing_course_ids:
-                del num_friends_by_course[course_id]
-
-        sorted_course_count_tuples = sorted(
-            num_friends_by_course.items(),
-            key=lambda (_, total): total,
-            reverse=direction < 0,
-        )[offset:offset + count]
-
-        sorted_course_ids = [course_id for (course_id, total)
-                in sorted_course_count_tuples]
-
-        unsorted_limited_courses = m.Course.objects(id__in=sorted_course_ids)
-
-        limited_courses_by_id = {}
-        for course in unsorted_limited_courses:
-            limited_courses_by_id[course.id] = course
-
-        limited_courses = []
-        for course_id in sorted_course_ids:
-            limited_courses.append(limited_courses_by_id[course_id])
-
-    else:
-        sort_options = COURSES_SORT_MODES_BY_NAME[sort_mode]
-
-        if sort_mode in RATING_SORT_MODES:
-            sort_instr = '-' + sort_options['field']
-            sort_instr += "_positive" if direction < 0 else "_negative"
-        else:
-            sort_instr = ''
-            if direction < 0:
-                sort_instr = '-'
-            sort_instr += sort_options['field']
-
-        unsorted_courses = m.Course.objects(**filters)
-        sorted_courses = unsorted_courses.order_by(sort_instr)
-        limited_courses = sorted_courses.skip(offset).limit(count)
-
-    has_more = len(limited_courses) == count
+    courses, has_more = m.Course.search(flask.request.values, current_user)
 
     course_dict_list, user_course_dict_list, user_course_list = (
             m.Course.get_course_and_user_course_dicts(
-                limited_courses, current_user, include_friends=True,
+                courses, current_user, include_friends=True,
                 full_user_courses=False, include_sections=True))
+
     professor_dict_list = m.Professor.get_reduced_professors_for_courses(
-            limited_courses)
+            courses)
 
     user_dict_list = []
     if current_user:
