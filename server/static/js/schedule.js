@@ -953,7 +953,35 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         hasClassOnDay[weekdayMap[day]] = true;
       });
 
-      var timeFormats = ['YYYY-MM-DD h:mm A', 'MM/DD/YYYY h:mm A', 'DD/MM/YYYY H:mm'];
+      var dateFormat;
+      if (startDateStr.indexOf('-') > -1) {
+        dateFormat = 'YYYY-MM-DD';
+      } else {
+        // Could be either MM/DD/YYYY or DD/MM/YYYY. It's probably MM/DD/YYYY
+        // but if that gives impossible results, we'll assume DD/MM/YYYY
+        // instead. See #107.
+        var slashRe = /(\d{2})\/(\d{2})\/(\d{4})/;
+
+        var startSlashMatch = slashRe.exec(startDateStr);
+        var startMm = parseInt(startSlashMatch[1], 10);
+        var startYyyy = parseInt(startSlashMatch[3], 10);
+
+        var endSlashMatch = slashRe.exec(endDateStr);
+        var endMm = parseInt(endSlashMatch[1], 10);
+        var endYyyy = parseInt(endSlashMatch[3], 10);
+
+        if (startMm > 12 || endMm > 12 ||
+            (startYyyy === endYyyy && startMm > endMm)) {
+          // Invalid month or backwards range; this must be DD/MM/YYYY.
+          dateFormat = 'DD/MM/YYYY';
+        } else {
+          // All looks good -- assume MM/DD/YYYY.
+          dateFormat = 'MM/DD/YYYY';
+        }
+      }
+
+      var timeFormats = [dateFormat + (ampm ? ' h:mm A' : ' H:mm')];
+
       var firstStartMoment = moment.tz(startDateStr + " " + startTimeStr, timeFormats, "America/Toronto");
       var firstEndMoment = moment.tz(startDateStr + " " + endTimeStr, timeFormats, "America/Toronto");
 
