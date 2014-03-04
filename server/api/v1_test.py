@@ -20,6 +20,6 @@ class V1Test(testlib.FlaskTestCase):
             'prereqs': 'CS350 or SE350; Computer Science students only',
             'professor_ids': ['gordon_cormack', 'ondrej_lhotak'],
             'ratings': [{'count': 3, 'name': 'usefulness', 'rating': 1.0},
-                        {'count': 5, 'name': 'interest', 'rating': 0.8},
-                        {'count': 5, 'name': 'easiness', 'rating': 0.6}],
+                        {'count': 5, 'name': 'easiness', 'rating': 0.6},
+                        {'count': 5, 'name': 'interest', 'rating': 0.8}],
             'reviews': []})
