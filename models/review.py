@@ -148,6 +148,7 @@ class CourseReview(BaseReview):
     usefulness = me.FloatField(min_value=0.0, max_value=1.0, default=None)
 
     def rating_fields(self):
+        # Keep this list consistent with the order in Course.get_ratings
         return ['usefulness', 'easiness', 'interest']
 
     # TODO(david): Refactor into base class
