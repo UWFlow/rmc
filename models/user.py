@@ -5,6 +5,7 @@ import itertools
 import time
 import uuid
 
+import bson
 import mongoengine as me
 
 import course as _course
@@ -232,9 +233,19 @@ class User(me.Document):
 
     @property
     def short_program_name(self):
+        # Keep in sync with SHORT_PROGRAM_NAME_CODE below
         if self.program_name:
             return self.program_name.split(',')[0]
         return ''
+
+    SHORT_PROGRAM_NAME_CODE = bson.code.Code("""
+            function() {
+                if (this.program_name && this.program_name.length) {
+                    return {name: this.program_name.split(',')[0]};
+                }
+                return {name: ''};
+            }
+        """)
 
     @property
     def has_course_history(self):

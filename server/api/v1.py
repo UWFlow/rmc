@@ -352,17 +352,27 @@ def get_user_friends(user_id):
 @api.route('/programs', methods=['GET'])
 def get_programs():
     """Get the counts of how many users belong to each program."""
-    users = m.User.objects().only('program_name')
-    programs_names = [user.short_program_name for user in users]
+    # _get_collection sounds private, but perhaps it's okay?
+    # http://stackoverflow.com/a/12068819/49485
+    collection = m.User._get_collection()
 
-    program_frequencies = collections.Counter(programs_names)
+    reducer = bson.code.Code("""
+            function(obj, prev) {
+                prev.count++;
+            }
+        """)
+    programs = collection.group(
+            key=m.User.SHORT_PROGRAM_NAME_CODE,
+            condition={},
+            initial={'count': 0},
+            reduce=reducer,
+        )
 
-    programs = []
-    for program, count in program_frequencies.items():
-        programs.append({
-            'name': program,
-            'count': count,
-        })
+    for program in programs:
+        # These records come out of mongodb with floating-point counts; cast
+        # them to int before sending down (even though JSON doesn't really
+        # distinguish between different types of numbers)
+        program['count'] = int(program['count'])
 
     return api_util.jsonify({
         'programs': programs
