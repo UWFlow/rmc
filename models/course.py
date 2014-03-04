@@ -1,3 +1,4 @@
+import collections
 import re
 
 import mongoengine as me
@@ -83,11 +84,12 @@ class Course(me.Document):
         super(Course, self).save(*args, **kwargs)
 
     def get_ratings(self):
-        return {
-            'interest': self.interest.to_dict(),
-            'usefulness': self.usefulness.to_dict(),
-            'easiness': self.easiness.to_dict(),
-        }
+        # Ordered for consistency with CourseReview.rating_fields; see #109.
+        return collections.OrderedDict([
+            ('usefulness', self.usefulness.to_dict()),
+            ('easiness', self.easiness.to_dict()),
+            ('interest', self.interest.to_dict()),
+        ])
 
     def get_reviews(self, current_user=None, user_courses=None):
         """Return a list of all user reviews ("tips") about this course.
