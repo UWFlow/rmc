@@ -17,7 +17,9 @@ install_gems() {
 install_pip() {
     # Python stuffs: Install pip and virtualenv before we install any packages
     echo "Installing pip"
-    sudo easy_install pip
+    if ! which pip >/dev/null 2>&1; then
+        sudo easy_install pip
+    fi
 }
 
 install_virtualenv() {
