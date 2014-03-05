@@ -42,6 +42,9 @@ if (system.args.length < 3) {
             zIndex: scheduleZIndex - 1
           }).appendTo(document.body);
 
+          // Hide the week-changing controls
+          $('.schedule-nav .buttons').remove();
+
           var $profileContainer = $("#profile-container");
           var height = $profileContainer.outerHeight();
           // Recommended ratio for photos on facebook is 1.91:1

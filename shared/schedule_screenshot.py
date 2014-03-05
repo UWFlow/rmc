@@ -9,6 +9,10 @@ import rmc.models as m
 import rmc.shared.tasks as tasks
 
 
+# Bump this when old screenshots need to be invalidated and new ones created.
+_VERSION_TAG = 'v1'
+
+
 def _get_latest_user_schedule_item(user):
     return (m.UserScheduleItem
                 .objects(user_id=user.id)
@@ -24,7 +28,7 @@ def _get_screenshot_path(user, latest_user_schedule_item):
                 str(latest_user_schedule_item.id) +
                 user.get_secret_id()
             ).hexdigest()
-    return "static/schedules/%s.png" % stable_id
+    return "static/schedules/%s-%s.png" % (_VERSION_TAG, stable_id)
 
 
 def _get_screenshot_filepath(user, latest_user_schedule_item):
