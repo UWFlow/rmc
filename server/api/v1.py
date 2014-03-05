@@ -8,6 +8,7 @@ import flask
 import rmc.models as m
 import rmc.server.api.api_util as api_util
 import rmc.server.view_helpers as view_helpers
+import rmc.shared.schedule_screenshot as schedule_screenshot
 import rmc.shared.facebook as facebook
 
 
@@ -240,9 +241,11 @@ def get_user(user_id):
 def get_user_schedule(user_id):
     user = _get_user_require_auth(user_id)
     schedule_item_dict_list = user.get_schedule_item_dicts()
+    screenshot_url = schedule_screenshot.get_screenshot_url(user)
 
     return api_util.jsonify({
-        'schedule': schedule_item_dict_list
+        'schedule': schedule_item_dict_list,
+        'screenshot_url': screenshot_url,
     })
 
 
