@@ -75,6 +75,17 @@ function($, _, _s, __, _util, _schedule) {
     });
   });
 
+  $('#backfill-screenshots-btn').on('click', function(evt) {
+    var $this = $(this);
+    $this.prop('disabled', true);
+
+    $.post('/api/schedules/backfill_screenshots', function() {
+      $logger.append('<div class="text-info">Schedule screenshots backfill started.<br>' +
+          'Only schedules that are out of date will be re-rendered.</div>');
+      $this.prop('disabled', false);
+    });
+  });
+
   $('#backfill-userid-btn').click(function(evt) {
     var userId = $('#backfill-userid-input').val();
 

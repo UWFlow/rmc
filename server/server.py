@@ -1243,6 +1243,17 @@ def save_sign_up_email():
     return ''
 
 
+@app.route('/api/schedules/backfill_screenshots', methods=['POST'])
+@view_helpers.admin_required
+def backfill_screenshots():
+    # We don't use a projection on user objects because update_screenshot_async
+    # could call user.save().
+    for user in m.User.objects:
+        schedule_screenshot.update_screenshot_async(user)
+
+    return ''
+
+
 # TODO(mack): Follow instructions at:
 # http://stackoverflow.com/questions/4239825/static-files-in-flask-robot-txt-sitemap-xml-mod-wsgi
 # to clean up how we serve up custom static path

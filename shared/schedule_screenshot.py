@@ -10,6 +10,8 @@ import rmc.shared.tasks as tasks
 
 
 # Bump this when old screenshots need to be invalidated and new ones created.
+# After deploying, go to https://uwflow.com/admin/backfill_schedules to kick
+# off a backfill for all users.
 _VERSION_TAG = 'v1'
 
 
