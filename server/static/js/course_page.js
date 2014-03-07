@@ -24,30 +24,10 @@ function($, _, course, tookThis, user, tips, prof, _exam, ratings, user_course, 
 
   var examObjs = window.pageData.examObjs;
 
-  // Merges all sections for examObjs into a string like '001, 002, 003'
-  var mergeSectionNumbers = function(examObjs) {
-    return _.map(examObjs, function(examObj) {
-      return examObj.sections;
-    }).join(', ');
-  };
-
-  // In a course, the exam for most sections is at the same date, time and location.
-  // We merge those sections together (e.g. {RCH 301: Array[2], RCH 211: Array[1]}
-  var groupedExamObjs = _.groupBy(examObjs, function(examObj) {
-    return examObj.location + examObj.start_date.$date;
-  });
-
-  // Now, we get the first examObj in each group, and update their sections attribute
-  // to contains all sections in their respective groups (i.e. '001, 002, 003')
-  groupedExamObjs = _.map(groupedExamObjs, function(examObjs) {
-    examObjs[0].sections = mergeSectionNumbers(examObjs);
-    return examObjs[0];
-  });
-
-  // Now, you have one examObj for each unique combination of datetime and location,
-  // with a sections attribute like '001, 002, 003, 004', for example.
-  if (groupedExamObjs.length) {
-    var examCollection = new _exam.ExamCollection(groupedExamObjs);
+  if (examObjs.length) {
+    var examCollection = new _exam.ExamCollection(examObjs);
+    // Combine exams taking place at the same date, time, and location.
+    examCollection = examCollection.mergeByDateTimeLocation();
 
     // Only show this "final exams" section if there are actually exams taking
     // place in the future

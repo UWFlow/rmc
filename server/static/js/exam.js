@@ -38,6 +38,37 @@ function(RmcBackbone, $, _, _course) {
         .value();
     },
 
+    mergeByDateTimeLocation: function() {
+      // Merges all sections for Exams into a string like '001, 002, 003'
+      var mergeSectionNumbers = function(exams) {
+        return _.map(exams, function(exam) {
+          return exam.get('sections');
+        }).join(', ');
+      };
+
+      // In a course, the Exam for most sections is at the same date, time and location.
+      // We merge those sections together (e.g. {RCH 301: Array[2], RCH 211: Array[1]}
+      var groupedExams = _.groupBy(this.models, function(exam) {
+        return exam.get('location') + exam.get('start_date');
+      });
+
+      var results = this;
+
+      _.each(groupedExams, function(exams) {
+        // First, remove all the exams from the collection.
+        results.remove(exams);
+        // Now, we get the first Exam in each group, and update their sections attribute
+        // to contains all sections in their respective groups (i.e. '001, 002, 003')
+        exams[0].set({sections: mergeSectionNumbers(exams)});
+        // Add it back in.
+        results.add(exams[0]);
+      });
+
+      // Now, you have one Exam for each unique combination of datetime and location,
+      // with a sections attribute like '001, 002, 003, 004', for example.
+      return results;
+    },
+
     latestExam: function() {
       return this.last();
     }
