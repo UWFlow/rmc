@@ -34,6 +34,9 @@ LOG_EVENT_UNSUBSCRIBE_USER = 'UNSUBSCRIBE_USER'
 LOG_EVENT_RENEW_FB = 'RENEW_FB'
 LOG_EVENT_SCHEDULE = 'SCHEDULE'
 
+# Category for a generic request
+LOG_CATEGORY_GENERIC = 'GENERIC'
+
 
 # TODO(Sandy): Do better logging
 # E.g. log_event('TRANSCRIPT', 'REMOVE', { 'user_id': ID_HERE })

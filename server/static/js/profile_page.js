@@ -27,7 +27,7 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     $.ajaxSetup({
       beforeSend: function(jqXhr, settings) {
         if (_(['PUT', 'POST', 'DELETE']).contains(settings.type) &&
-            settings.url !== '/login') {
+            settings.url !== '/login/facebook') {
           _sign_in.renderModal({
             source: 'MODAL_DEMO_PROFILE_AJAX',
             nextUrl: window.location.origin
