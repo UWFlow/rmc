@@ -1,7 +1,7 @@
-import logging
-import mongoengine as me
-# TODO(mack): use ujson
 import json
+import logging
+
+import mongoengine as me
 
 import rmc.shared.util as util
 
@@ -22,6 +22,11 @@ class AggregateRating(me.EmbeddedDocument):
                 " self.count=%s self.rating=%s" % (self.count, self.rating)
             )
 
+    @property
+    def num_approves(self):
+        """Returns the number of users who selected "yes" for this rating."""
+        return int(round(self.rating * self.count))
+
     def update_sorting_score(self):
         self.sorting_score_positive = util.get_sorting_score(
             self.rating, self.count)
@@ -29,7 +34,7 @@ class AggregateRating(me.EmbeddedDocument):
             1 - self.rating, self.count)
 
     def add_rating(self, rating):
-        self.rating = ((self.rating * self.count) + rating) / (self.count + 1)
+        self.rating = float(self.num_approves + rating) / (self.count + 1)
         self.count += 1
 
         # TODO(Sandy): Temporary debugging
@@ -44,10 +49,9 @@ class AggregateRating(me.EmbeddedDocument):
             return
 
         if self.count == 1:
-            self.rating = 0
+            self.rating = 0.0
         else:
-            self.rating = (((self.rating * self.count) - rating) /
-                (self.count - 1))
+            self.rating = float(self.num_approves - rating) / (self.count - 1)
 
         self.count -= 1
 
@@ -60,7 +64,7 @@ class AggregateRating(me.EmbeddedDocument):
         if ar.count == 0:
             return
         total = ar.rating * ar.count
-        self.rating = (((self.rating * self.count) + total) /
+        self.rating = (float(self.num_approves + total) /
                         (self.count + ar.count))
         self.count += ar.count
 
