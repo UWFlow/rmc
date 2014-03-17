@@ -348,6 +348,27 @@ def get_user_friends(user_id):
     })
 
 
+@api.route('/user/shortlist/<string:course_id>', methods=['PUT'])
+def add_course_to_shortlist(course_id):
+    """Adds the given course to the user's shortlist.
+
+    Idempotent.
+    """
+    user = _get_user_require_auth()
+    user_course = user.add_course(course_id, m.Term.SHORTLIST_TERM_ID)
+
+    if user_course is None:
+        raise api_util.ApiBadRequestError(
+                'Could not add course %s to shortlist. :(' % course_id)
+
+    return api_util.jsonify({
+        'user_course': user_course.to_dict(),
+    })
+
+
+# TODO(david): Add corresponding remove course endpoint
+
+
 ###############################################################################
 # /search* endpoints: Search API
 
