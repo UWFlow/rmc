@@ -114,18 +114,12 @@ def csrf_protect():
         # We intentionally don't invalidate CSRF tokens after a single use to
         # enable multiple AJAX requests originating from the page load to all
         # work off the same CSRF token.
-        token = flask.session.get('_csrf_token', None)
+        token = flask.session.get(view_helpers.SESSION_COOKIE_KEY_CSRF, None)
         if not token or token != req.headers.get('X-CSRF-Token'):
             flask.abort(403)
 
 
-def generate_csrf_token():
-    if '_csrf_token' not in flask.session:
-        flask.session['_csrf_token'] = util.generate_secret_id(size=15)
-    return flask.session['_csrf_token']
-
-
-app.jinja_env.globals['csrf_token'] = generate_csrf_token
+app.jinja_env.globals['csrf_token'] = view_helpers.generate_csrf_token
 
 
 # TODO(Sandy): Unused right now, but remove in a separate diff for future
