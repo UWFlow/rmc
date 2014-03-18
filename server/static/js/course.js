@@ -164,20 +164,13 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
         }
       };
 
-      $.ajax(
-        '/api/user/add_course_to_shortlist',
-        {
-          type: 'POST',
-          data: { course_id: this.courseModel.id },
-          dataType: 'json',
-          success: onSuccess
-        }
-      ).done(function() {
-        mixpanel.track('Add to shortlist', {
-          course_id: self.courseModel.id.$oid
+      $.ajax('/api/v1/user/shortlist/' + this.courseModel.id, { type: 'PUT' })
+        .done(function() {
+          mixpanel.track('Add to shortlist', {
+            course_id: self.courseModel.id
+          });
+          mixpanel.people.increment({'Add to shortlist': 1});
         });
-        mixpanel.people.increment({'Add to shortlist': 1});
-      });
 
       return false;
     },

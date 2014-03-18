@@ -952,24 +952,6 @@ def transcript_log():
     return ''
 
 
-@app.route('/api/user/add_course_to_shortlist', methods=['POST'])
-@view_helpers.login_required
-def add_course_to_shortlist():
-    current_user = view_helpers.get_current_user()
-
-    user_course = m.UserCourse(
-        user_id=current_user.id,
-        course_id=flask.request.form.get('course_id'),
-        term_id=m.Term.SHORTLIST_TERM_ID,
-    )
-    user_course.save()
-    current_user.update(add_to_set__course_history=user_course.id)
-
-    return util.json_dumps({
-        'user_course': user_course.to_dict(),
-    })
-
-
 @app.route('/api/user/remove_course', methods=['POST'])
 @view_helpers.login_required
 def remove_course():

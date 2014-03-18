@@ -484,12 +484,12 @@ class User(me.Document):
         return self.secret_id
 
     def add_course(self, course_id, term_id, program_year_id=None):
-        '''
-        Creates an UserCourse entry for the current user and adds it to the
-        user's course_history
+        """Creates a UserCourse and adds it to the user's course_history.
 
         Idempotent.
-        '''
+
+        Returns the resulting UserCourse.
+        """
         user_course = _user_course.UserCourse.objects(
             user_id=self.id, course_id=course_id).first()
 
@@ -501,7 +501,7 @@ class User(me.Document):
                     rmclogger.LOG_EVENT_UNKNOWN_COURSE_ID,
                     course_id
                 )
-                return
+                return None
 
             user_course = _user_course.UserCourse(
                 user_id=self.id,
@@ -521,6 +521,8 @@ class User(me.Document):
         if user_course.id not in self.course_history:
             self.course_history.append(user_course.id)
             self.save()
+
+        return user_course
 
     # Generate a random api key granting this user to access '/api/' routes
     def grant_api_key(self):
