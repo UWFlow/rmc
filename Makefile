@@ -22,7 +22,7 @@ common-install:
 # - Linux: Find out
 html_snapshots: require_virtualenv_in_dev
 	@if [ `whoami` = 'rmc' ]; then \
-		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:80 --overwrite; \
+		PYTHONPATH=.. python html_snapshots/snapshot.py https://uwflow.com --overwrite; \
 	else \
 		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:5000 --overwrite; \
 	fi
