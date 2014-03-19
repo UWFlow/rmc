@@ -25,3 +25,6 @@ MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gm
 
 # Hourly: Update sections information (which includes enrollment data)
 5 * * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py sections > /dev/null
+
+# Weekly: Update sections information (which includes enrollment data)
+55 21 * * 3 (cd /home/rmc && make update_html_snapshots)

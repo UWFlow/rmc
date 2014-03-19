@@ -20,20 +20,22 @@ common-install:
 # TODO(mack): Add command to clear cache directory:
 # - Mac OS X: ~/Library/Caches/Ofi\ Labs/PhantomJS
 # - Linux: Find out
-html_snapshots:
+html_snapshots: require_virtualenv_in_dev
 	@if [ `whoami` = 'rmc' ]; then \
-		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:80; \
+		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:80 --overwrite; \
 	else \
-		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:5000; \
+		PYTHONPATH=.. python html_snapshots/snapshot.py http://localhost:5000 --overwrite; \
 	fi
 
 lint: require_virtualenv_in_dev
 	third_party/rmc_linter/runlint.py | tee /tmp/linterrors.txt
 
-sitemap:
+sitemap: require_virtualenv_in_dev
 	rm -f server/static/sitemap.txt
 	PYTHONPATH=.. python html_snapshots/sitemap.py https://uwflow.com > server/static/sitemap.txt
 	curl www.google.com/webmasters/tools/ping?sitemap=https://uwflow.com/static/sitemap.txt
+
+update_html_snapshots: require_virtualenv_in_dev html_snapshots sitemap
 
 import_menlo: require_virtualenv_in_dev
 	PYTHONPATH=.. python data/processor.py all

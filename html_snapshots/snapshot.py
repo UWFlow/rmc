@@ -1,6 +1,6 @@
+import argparse
 import os
 import subprocess
-import sys
 
 import mongoengine as me
 
@@ -19,12 +19,7 @@ def crawl_page(url):
     return rendered_html
 
 
-def generate_snapshots():
-    if len(sys.argv) < 2:
-        sys.exit('Usage: %s <server-root>' % sys.argv[0])
-
-    SERVER_ROOT = sys.argv[1]
-
+def generate_snapshots(base_url, overwrite=False):
     urls = utils.generate_urls()
     for url in urls:
         # For urls that end with a trailing slash, create them
@@ -44,10 +39,10 @@ def generate_snapshots():
         file_path = os.path.join(utils.HTML_DIR, file_path)
         if os.path.isdir(file_path):
             print 'Cannot have file_path that is directory: %s' % file_path
-        if os.path.isfile(file_path):
+        if not overwrite and os.path.isfile(file_path):
             continue
 
-        full_url = os.path.join(SERVER_ROOT, file_url)
+        full_url = os.path.join(base_url, file_url)
         rendered_html = crawl_page(full_url)
 
         print 'Writing: %s' % url
@@ -55,5 +50,10 @@ def generate_snapshots():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+            description='Process snapshotting arguments')
+    parser.add_argument('base_url', type=str)
+    parser.add_argument('--overwrite', dest='overwrite', action='store_true')
+    args = parser.parse_args()
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
-    generate_snapshots()
+    generate_snapshots(args.base_url, args.overwrite)
