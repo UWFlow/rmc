@@ -11,6 +11,7 @@
 # Also note that all times are in UTC
 
 SHELL=/bin/sh
+PATH=/home/rmc/.virtualenvs/rmc/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
 
 MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gmail.com
 
@@ -27,4 +28,4 @@ MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gm
 5 * * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py sections > /dev/null
 
 # Weekly: Update sections information (which includes enrollment data)
-30 22 * * 3 (cd /home/rmc/rmc && make update_html_snapshots)
+0 22 * * 3 (cd /home/rmc/rmc && make update_html_snapshots)
