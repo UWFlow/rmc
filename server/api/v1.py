@@ -164,6 +164,9 @@ def login_facebook():
     Responds with the session cookie via the `set-cookie` header on success.
     Send the associated cookie for all subsequent API requests that accept
     user authentication.
+
+    Also returns the CSRF token, which must be sent as the value of the
+    "X-CSRF-Token" header for all non-GET requests.
     """
     # Prevent a CSRF attack from replacing a logged-in user's account with the
     # attacker's.
@@ -190,7 +193,12 @@ def login_facebook():
                 'Create an account at uwflow.com.' % fbid)
 
     view_helpers.login_as_user(user)
-    return api_util.jsonify({'message': 'Logged in user %s' % user.name})
+    csrf_token = view_helpers.generate_csrf_token()
+
+    return api_util.jsonify({
+        'message': 'Logged in user %s' % user.name,
+        'csrf_token': csrf_token,
+    })
 
 
 ###############################################################################

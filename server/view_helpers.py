@@ -10,9 +10,11 @@ import urllib
 
 import rmc.models as m
 import rmc.shared.constants as c
+import rmc.shared.util as util
 
 
 SESSION_COOKIE_KEY_USER_ID = 'user_id'
+SESSION_COOKIE_KEY_CSRF = '_csrf_token'
 
 
 _redis_instance = redis.StrictRedis(host=c.REDIS_HOST,
@@ -148,3 +150,10 @@ def redirect_to_profile(user):
             user.id, flask.request.query_string), 302)
     else:
         return flask.redirect('/profile/%s' % user.id, 302)
+
+
+def generate_csrf_token():
+    if SESSION_COOKIE_KEY_CSRF not in flask.session:
+        flask.session[SESSION_COOKIE_KEY_CSRF] = util.generate_secret_id(
+                size=15)
+    return flask.session[SESSION_COOKIE_KEY_CSRF]
