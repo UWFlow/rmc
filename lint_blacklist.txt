@@ -1,8 +1,9 @@
 server/static/js/ext
 server/r.js
 
-# First part code that should conform but doesn't
+# First party code that should conform but doesn't
 emails/active/welcome_email.py
+emails/active/email_signup_email.py
 emails/deprecated
 emails/sender.py
 server/build.js
