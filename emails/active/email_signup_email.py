@@ -33,13 +33,11 @@ def html_body_renderer():
         <li>Rate and review courses and professors</li>
     </ul>
 
-    <p>So, why not try it out? Visit <a href="https://uwflow.com"></a>Flow and click the "sign up with email" link to sign up now!</p>
+    <p>So, why not try it out? Visit <a href="https://uwflow.com">Flow</a> and click the "sign up with email" link to sign up now!</p>
 
-    <img src="https://uwflow.com/static/img/email_signup.png">
+    <img src="https://uwflow.com/static/img/email_signup.png" width="450px">
 
     <p>- The Flow Team</p>
-
-    <br>
     <br>
     <p>P.S. We're presenting at the SE design symposium today in the Davis Centre until 5 pm. Come swing by if you have time!</p>"""
 
