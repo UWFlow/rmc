@@ -1,3 +1,6 @@
+import sys
+import traceback
+
 import boto
 import mongoengine as me
 
@@ -73,13 +76,17 @@ def send_email():
         return
 
     for email in interested_emails:
-        conn.send_email(
-            EMAIL_SENDER,
-            title_renderer(),
-            '',  # text_body
-            [email],
-            html_body=html_body_renderer(),
-        )
+        try:
+            conn.send_email(
+                EMAIL_SENDER,
+                title_renderer(),
+                '',  # text_body
+                [email],
+                html_body=html_body_renderer(),
+            )
+        except Exception:
+            traceback.print_exc(file=sys.stdout)
+            print 'Could not send email to %s' % email
 
 
 if __name__ == '__main__':
