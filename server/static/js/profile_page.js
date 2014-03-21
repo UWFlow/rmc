@@ -147,7 +147,9 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
       friendCollection: userCollection
     });
 
-    $('#friend-sidebar-container').html(friendSidebarView.render().el);
+    if (userCollection.length > 0) {
+      $('#friend-sidebar-container').html(friendSidebarView.render().el);
+    }
 
     // Show "add to shortlist" alert if not previously dismissed
     var hideShortlistAlertKey = 'hide-shortlist-alert';

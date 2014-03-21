@@ -2,6 +2,8 @@ import datetime
 import random
 import string
 
+import flask.ext.bcrypt as bcrypt
+
 import rmc.models as m
 import rmc.test.lib as testlib
 
@@ -46,3 +48,34 @@ class UserTest(testlib.ModelTestCase):
         u.save()
 
         self.assertEquals(u.friend_ids, [friend1.id, friend2.id])
+
+    def test_auth_user(self):
+        first_name = 'Taylor'
+        last_name = 'Swift'
+        email = 'tswift@gmail.com'
+        password = 'iknewyouweretrouble'
+
+        user = m.User.create_new_user_from_email(
+                first_name, last_name, email, password)
+
+        same_user = m.User.auth_user(email, password)
+
+        self.assertEquals(user, same_user)
+
+    def test_create_new_user_from_email(self):
+        first_name = 'Taylor'
+        last_name = 'Swift'
+        email = 'tswift@gmail.com'
+        password = 'iknewyouweretrouble'
+
+        user = m.User.create_new_user_from_email(
+                first_name, last_name, email, password)
+
+        user_query = m.User.objects(email=email)
+        self.assertEquals(user_query.count(), 1)
+        same_user = user_query.first()
+
+        self.assertEquals(user, same_user)
+        self.assertEquals(user.first_name, first_name)
+        self.assertEquals(user.last_name, last_name)
+        self.assertTrue(bcrypt.check_password_hash(user.password, password))

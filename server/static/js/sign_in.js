@@ -1,7 +1,10 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/bootstrap', 'rmc_backbone', 'facebook',
-  'util'],
-function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
+  'util', 'ext/validate'],
+function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate) {
+
+  var emailLoginModalView = null;
+  var emailSignUpModalView = null;
 
   var FbLoginView = RmcBackbone.View.extend({
     className: 'fb-login',
@@ -32,7 +35,7 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
         _facebook.initFacebook(true);
       }
 
-      _facebook.initConnectButton({
+     _facebook.initConnectButton({
         source: this.source,
         nextUrl: this.nextUrl
       });
@@ -138,35 +141,143 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
   });
 
   // TODO(david): Consolidate this w/ other code. Gotta rush this out right now.
-  var EmailSignInModalView = RmcBackbone.View.extend({
+  var EmailLoginModalView = RmcBackbone.View.extend({
     initialize: function() {
-      this.template = _.template($('#email-sign-in-modal-tpl').html());
+      this.template = _.template($('#email-login-modal-tpl').html());
+    },
+
+    events: {
+      'submit': 'onSubmit'
     },
 
     render: function() {
       this.$el.html(this.template({}));
+      this.$('form').validate({
+        rules: {
+          email: {
+            required: true,
+            email: true
+          },
+          password: 'required'
+        },
+        messages: {
+          email: "Please enter your email address",
+          password: "Please enter your password"
+        }
+      });
       return this;
     },
 
+    onSubmit: function(e) {
+      e.preventDefault();
+
+      mixpanel.track('Login: Email login');
+
+      $.ajax('/api/v1/login/email', {
+        type: 'POST',
+        data: this.$('.login-form').serialize(),
+      }).done(function(data) {
+        // TODO(sandy): Support nextUrl when we show this modal outside just the
+        // front page
+        window.location.href = '/profile';
+      }).fail(_.bind(displayAjaxError, this, this.$('.errors')));
+    }
+  });
+
+  /**
+   * Displays errors from a failed AJAX request inside a modal.
+   *
+   * Expects 'this' to be the modal view.
+   *
+   * @param $container - The error container JQuery element
+   * @param data - Result from the failed AJAX request
+   */
+  var displayAjaxError = function($container, data) {
+    var errorMessage;
+    try {
+      // Should be an API exception
+      errorMessage = $.parseJSON(data.responseText).error;
+    } catch (err) {}
+
+    if (!errorMessage) {
+      errorMessage = "Something bad happened. Please try again later :(";
+    }
+    $container
+      .html(errorMessage)
+      .slideDown();
+  };
+
+  var EmailSignUpModalView = RmcBackbone.View.extend({
+    initialize: function(attributes) {
+      this.template = _.template($('#email-signup-modal-tpl').html());
+      renderEmailLoginModal();
+    },
+
     events: {
-      'click .send-email-btn': 'onSendEmailBtnClick',
-      'keypress .email-input': 'onEmailInputKeypress'
+      'submit': 'onSubmit',
+      'click .login-link': 'showLoginModal'
     },
 
-    onSendEmailBtnClick: function() {
-      this.saveEmail();
+    render: function() {
+      this.$el.html(this.template({}));
+      this.$('form').validate({
+        rules: {
+          first_name: 'required',
+          last_name: 'required',
+          email: {
+            required: true,
+            email: true
+          },
+          password: {
+            required: true,
+            minlength: 6
+          },
+          confirm_password: {
+            required: true,
+            equalTo: '.password-input'
+          }
+        },
+        messages: {
+          first_name: "Please enter your name",
+          last_name: "Please enter your name",
+          email: "Please enter a valid email address",
+          password: {
+            required: "Please enter a password",
+            minlength: "Password must be at least 6 characters long"
+          },
+          confirm_password: {
+            required: "Please re-enter your password",
+            equalTo: "Password doesn't match"
+          }
+        }
+      });
+      return this;
     },
 
-    onEmailInputKeypress: function(evt) {
-      if (evt.keyCode === 13 /* enter key */) {
-        this.saveEmail();
-      }
+    onSubmit: function(e) {
+      e.preventDefault();
+      var $errorsContainer = this.$('.errors');
+      var params = this.$('input[name!=confirm_password]').serialize();
+
+      mixpanel.track('Login: Email signup');
+
+      $.ajax('/api/v1/signup/email', {
+        type: 'POST',
+        data: params
+      }).done(function(data) {
+        window.location.href = '/profile';
+      }).fail(_.bind(displayAjaxError, this, this.$('.errors')));
     },
 
-    saveEmail: function() {
-      var email = this.$('.email-input').val();
-      $.post('/api/sign_up_email', { email: email });
-      this.$('.submit-msg').fadeIn();
+    showLoginModal: function(e) {
+      var $loginModal = emailLoginModalView.$('.email-login-modal');
+      var $signupModal = this.$('.email-signup-modal');
+
+      $signupModal.modal('hide');
+      $signupModal.on('hidden', function() {
+        $loginModal.modal('show');
+        $signupModal.on('hidden', $.noop);
+      });
     }
   });
 
@@ -181,15 +292,25 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util) {
     (new SignInModalView(attributes)).show();
   };
 
-  var renderEmailSignInModal = function() {
-    var emailSignInModalView = new EmailSignInModalView();
-    emailSignInModalView.render().$el.appendTo('body');
+  var renderEmailLoginModal = function() {
+    if (!emailLoginModalView) {
+      emailLoginModalView = new EmailLoginModalView();
+      emailLoginModalView.render().$el.appendTo('body');
+    }
+  };
+
+  var renderEmailSignUpModal = function() {
+    if (!emailSignUpModalView) {
+      emailSignUpModalView = new EmailSignUpModalView();
+      emailSignUpModalView.render().$el.appendTo('body');
+    }
   };
 
   return {
     renderBanner: renderBanner,
     renderModal: renderModal,
-    renderEmailSignInModal: renderEmailSignInModal
+    renderEmailLoginModal: renderEmailLoginModal,
+    renderEmailSignUpModal: renderEmailSignUpModal
   };
 
 });

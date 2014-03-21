@@ -72,6 +72,9 @@ require.config({
       exports: function(_) {
         return _.string;
       }
+    },
+    'ext/validate': {
+      deps: ['ext/jquery']
     }
   },
 
@@ -89,6 +92,7 @@ require.config({
     'ext/toastr': 'ext/toastr',
     'ext/underscore': 'ext/underscore-1.3.3',
     'ext/underscore.string': 'ext/underscore.string-2.0.0',
+    'ext/validate': 'ext/jquery.validate.min',
 
     'moment': 'ext/moment',
     'moment-timezone': 'ext/moment-timezone'

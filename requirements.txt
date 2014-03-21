@@ -15,6 +15,7 @@ Jinja2==2.6
 pytz==2012j
 icalendar==3.4
 python-dateutil==2.1
+flask-bcrypt==0.5.2
 
 # Useful for local development, e.g. by tools/devshell.py
 ipython==0.13.1

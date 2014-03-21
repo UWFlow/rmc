@@ -217,8 +217,8 @@ def update_redis_course_professor_rating():
 
 def update_all_fb_friend_list():
     for user in m.User.objects():
-        # TODO(Sandy): Batch requests when we need to
-        if not user.is_fb_token_expired:
+        # TODO(Sandy): Batch requests for performance
+        if user.fbid and not user.is_fb_token_expired:
             try:
                 user.update_fb_friends(
                         facebook.get_friend_list(user.fb_access_token))
