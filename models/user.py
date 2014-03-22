@@ -572,7 +572,9 @@ class User(me.Document):
 
         user = user.first()
 
-        if not bcrypt.check_password_hash(user.password, password):
+        # TODO(sandy): Provide more helpful errors for users signed up with fb
+        if (not user.password or
+            not bcrypt.check_password_hash(user.password, password)):
             return None
 
         return user
