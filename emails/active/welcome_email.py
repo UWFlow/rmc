@@ -20,9 +20,9 @@ def html_body_renderer(user):
     <p>We noticed that you recently signed up for <a href="https://uwflow.com">UW Flow</a>!</p>"""
 
     if not user.has_schedule:
-        welcome_email_body += """<p>Did you know that you can <a href="https://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This lets you easily view it and share it with friends.</p>
+        welcome_email_body += """<p>Did you know that you can <a href="https://uwflow.com/profile?import-schedule=1">upload your class schedule</a>? This lets you export it to Google Calendar and iCal.</p>
 
-        <img src="https://uwflow.com/static/img/class-schedule-screenshot-small.png">"""
+        <img src="https://uwflow.com/static/img/class-schedule-screenshot-nov-2013.png">"""
 
     if not user.has_course_history:
         welcome_email_body += \
