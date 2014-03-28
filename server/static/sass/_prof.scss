@@ -62,6 +62,7 @@
     letter-spacing: 3px;
     text-transform: uppercase;
     color: lighten($textColor, 20%);
+    z-index: 1;
     @include border-radius(0 0 4px 4px);
     @include transition(all 0.2s ease-out);
 
