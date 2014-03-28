@@ -13,6 +13,12 @@ You should now be ready to boot the local server, with `make local`.
 
 Once it starts running, point your browser to http://localhost:5000/
 
+## MongoDB error on Linux
+
+If you are getting a connection refused error when trying to run `make local` and are on linux, this is 
+most likely due to MongoDB taking too long to start. To fix this, run `mongod --config config/mongodb_local.conf`
+and let it warm up for about 30 seconds - 1 minute. Then kill the process, and run `make local` again. It should be fine.
+
 ## Getting seed data
 
 Run the following to get some basic course data into the DB.
