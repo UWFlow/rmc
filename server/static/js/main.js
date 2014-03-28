@@ -125,11 +125,20 @@ require(['ext/underscore.string', 'util', 'rmc_moment',
     'points', 'user', 'facebook', 'work_queue', 'ext/smartbanner'],
 function(_s, util, moment, Backbone, __, __, toastr, _points,
   _user, _facebook, smartbanner) {
-  
+
+ // Show a banner to visitors from Android browsers linking 
+ // to our Android app on the Google Play Store.
   $(function() {
-    $.smartbanner(
-    // Add the options for the smart banner https://github.com/jasny/jquery.smartbanner
-    );
+    $.smartbanner({
+      // Options for the smart banner 
+      // https://github.com/jasny/jquery.smartbanner
+      title: 'UWFlow',
+      author: 'UW Flow',
+      // The URL of the icon)
+      icon: '../static/img/logo/flow_128x128.png',
+      // Set this to 'android' for easy testing on desktop browser
+      force: null
+    });
   });
 
   // Add helpers functions to all templates
