@@ -222,8 +222,16 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate) {
       this.$el.html(this.template({}));
       this.$('form').validate({
         rules: {
-          first_name: 'required',
-          last_name: 'required',
+          first_name: {
+            required: {
+              depends: function(element) {
+                return ($('.last-name-input').val().length > 0);
+              }
+            }
+          },
+          last_name: {
+            required: true
+          },
           email: {
             required: true,
             email: true
