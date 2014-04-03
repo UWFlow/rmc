@@ -225,12 +225,7 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate) {
           first_name: {
             required: {
               depends: function(element) {
-                var last = $('#last_name').val().length;
-                if ((last!==0)) {
-                  return true;
-                } else {
-                  return false;
-                }
+                return ($('.last-name-input').val().length > 0);
               }
             }
           },
