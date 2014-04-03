@@ -16,3 +16,4 @@ from user_course import CritiqueCourse  # @UnusedImport
 from section import SectionMeeting  # @UnusedImport
 from section import Section  # @UnusedImport
 from course_alert import BaseCourseAlert  # @UnusedImport
+from course_alert import GcmCourseAlert  # @UnusedImport
