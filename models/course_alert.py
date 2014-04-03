@@ -64,8 +64,10 @@ class BaseCourseAlert(me.Document):
         raise Exception('Sublasses must implement this method.')
 
     @classmethod
-    def try_send_alerts(cls):
+    def send_eligible_alerts(cls):
         """Checks if any alerts can be sent, and if so, sends them.
+
+        Deletes alerts that were successfully sent.
 
         Returns how many alerts were successfully sent.
         """
@@ -88,6 +90,7 @@ class BaseCourseAlert(me.Document):
                     lambda s: s.enrollment_capacity > s.enrollment_total,
                     sections)
 
+            # TODO(david): Also log to Mixpanel or something.
             if open_sections and alert.send_alert(open_sections):
                 alert.delete()
                 alerts_sent += 1
@@ -111,11 +114,11 @@ class GcmCourseAlert(BaseCourseAlert):
         ]
     }
 
-    # A GCM-issued ID that uniquely identifies a device-app pair.
+    # An ID issued by GCM that uniquely identifies a device-app pair.
     registration_id = me.StringField(required=True,
             unique_with=BaseCourseAlert.BASE_UNIQUE_FIELDS)
 
-    # Optional user ID associated with this device.
+    # Optional user ID associated with this alert.
     user_id = me.ObjectIdField()
 
     def __repr__(self):
@@ -126,16 +129,23 @@ class GcmCourseAlert(BaseCourseAlert):
             self.section_num,
         )
 
-    # Override
     def send_alert(self, sections):
+        """Sends a push notification using GCM's HTTP method.
+
+        See http://developer.android.com/google/gcm/server.html and
+        http://developer.android.com/google/gcm/http.html.
+
+        Overrides base class method.
+        """
         course_obj = course.Course.objects.with_id(self.course_id)
 
+        # GCM has a limit on payload data size, so be conservative with the
+        # amount of data we're serializing.
         data = {
             'registration_ids': [self.registration_id],
             'data': {
                 'type': 'course_alert',
-                'course_id': self.course_id,
-                'sections_available': len(sections),
+                'sections_open_count': len(sections),
                 'course': course_obj.to_dict(),
             },
         }
@@ -145,9 +155,8 @@ class GcmCourseAlert(BaseCourseAlert):
             'Authorization': 'key=%s' % s.GOOGLE_SERVER_PROJECT_API_KEY,
         }
 
-        # See http://developer.android.com/google/gcm/http.html
         res = requests.post('https://android.googleapis.com/gcm/send',
                 data=json.dumps(data), headers=headers)
 
-        # TODO(david): Implement exponential backoff retries
+        # TODO(david): Implement exponential backoff for retries
         return res.ok

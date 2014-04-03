@@ -342,6 +342,11 @@ def update_sections():
     # Import from files to DB.
     rmc_processor.import_opendata_sections()
 
+    # Send push notifications about seat openings.
+    num_sent = m.GcmCourseAlert.send_eligible_alerts()
+    num_expired = m.GcmCourseAlert.delete_expired()
+    print 'Sent %s push notifications and expired %s' % (num_sent, num_expired)
+
 
 def update_courses():
     # First get an up to date list of departments and write to a text file

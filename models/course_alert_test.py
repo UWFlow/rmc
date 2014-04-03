@@ -15,7 +15,7 @@ class BaseCourseAlertTest(testlib.FixturesTestCase):
         SimpleCourseAlert.objects.delete()
         super(BaseCourseAlertTest, self).tearDown()
 
-    def test_try_send_alerts(self):
+    def test_send_eligible_alerts(self):
         # This class is full. Should not alert anything.
         alert = SimpleCourseAlert(
             course_id='spcom223',
@@ -27,7 +27,7 @@ class BaseCourseAlertTest(testlib.FixturesTestCase):
         )
         alert.save()
 
-        alerts_sent = SimpleCourseAlert.try_send_alerts()
+        alerts_sent = SimpleCourseAlert.send_eligible_alerts()
         self.assertEqual(alerts_sent, 0)
         self.assertEqual(SimpleCourseAlert.objects.count(), 1)
 
@@ -44,7 +44,7 @@ class BaseCourseAlertTest(testlib.FixturesTestCase):
 
         self.assertEqual(SimpleCourseAlert.objects.count(), 2)
 
-        alerts_sent = SimpleCourseAlert.try_send_alerts()
+        alerts_sent = SimpleCourseAlert.send_eligible_alerts()
         self.assertEqual(alerts_sent, 1)
         self.assertEqual(SimpleCourseAlert.objects.count(), 1)
 
@@ -58,7 +58,7 @@ class BaseCourseAlertTest(testlib.FixturesTestCase):
 
         self.assertEqual(SimpleCourseAlert.objects.count(), 2)
 
-        alerts_sent = SimpleCourseAlert.try_send_alerts()
+        alerts_sent = SimpleCourseAlert.send_eligible_alerts()
         self.assertEqual(alerts_sent, 1)
         self.assertEqual(SimpleCourseAlert.objects.count(), 1)
 
