@@ -118,4 +118,52 @@ class V1Test(testlib.FlaskTestCase):
         self.assertResponseOk(resp)
         self.assertTrue(resp.headers.get('Set-Cookie'))
 
-# TODO(david): More tests!
+    def test_add_gcm_course_alert(self):
+        self.assertEqual(m.GcmCourseAlert.objects.count(), 0)
+        headers = self.get_csrf_token_header()
+
+        # Try to add an alert with a missing required field
+        data = {
+            'course_id': 'cs241',
+        }
+        resp = self.app.post(
+                '/api/v1/alerts/course/gcm', data=data, headers=headers)
+        self.assertEqual(resp.status_code, 400)
+        self.assertJsonResponse(resp, {
+            'error': 'Missing required parameter: registration_id'
+        })
+        self.assertEqual(m.GcmCourseAlert.objects.count(), 0)
+
+        # This should work
+        data = {
+            'registration_id': 'neverwouldhaveplayedsononchalant',
+            'course_id': 'cs241',
+        }
+        resp = self.app.post(
+                '/api/v1/alerts/course/gcm', data=data, headers=headers)
+        self.assertResponseOk(resp)
+        self.assertEqual(m.GcmCourseAlert.objects.count(), 1)
+
+        # Try adding the same thing. Should fail.
+        resp = self.app.post(
+                '/api/v1/alerts/course/gcm', data=data, headers=headers)
+        self.assertEqual(resp.status_code, 400)
+        self.assertJsonResponse(resp, {
+            'error': 'Alert with the given parameters already exists.'
+        })
+        self.assertEqual(m.GcmCourseAlert.objects.count(), 1)
+
+        # Test with all parameters set
+        data = {
+            'registration_id': 'ohmymymy',
+            'course_id': 'psych101',
+            'expiry_date': 1496592355,
+            'term_id': '2014_01',
+            'section_type': 'LEC',
+            'section_num': '001',
+            'user_id': '533e4f7d78d6fe562c16f17a',
+        }
+        resp = self.app.post(
+                '/api/v1/alerts/course/gcm', data=data, headers=headers)
+        self.assertResponseOk(resp)
+        self.assertEqual(m.GcmCourseAlert.objects.count(), 2)

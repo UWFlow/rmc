@@ -7,13 +7,14 @@ import requests
 import course
 import rmc.shared.secrets as s
 import section
+from rmc.shared import util
 
 
 class BaseCourseAlert(me.Document):
     """An abstract base class for notifying when a seat opens in a course.
 
     Subclasses must define the behaviour for sending the alert to the desired
-    audience.
+    audience. See GcmCourseAlert for an example subclass.
 
     Can optionally specify a single section of a course.
     """
@@ -52,6 +53,12 @@ class BaseCourseAlert(me.Document):
 
     # eg. 001
     section_num = me.StringField(default='')
+
+    TO_DICT_FIELDS = ['id', 'course_id', 'created_date', 'expiry_date',
+            'term_id', 'section_type', 'section_num']
+
+    def to_dict(self):
+        return util.to_dict(self, self.TO_DICT_FIELDS)
 
     def send_alert(self, sections):
         """Sends an alert about a seat opening.
@@ -120,6 +127,9 @@ class GcmCourseAlert(BaseCourseAlert):
 
     # Optional user ID associated with this alert.
     user_id = me.ObjectIdField()
+
+    TO_DICT_FIELDS = BaseCourseAlert.TO_DICT_FIELDS + [
+            'registration_id', 'user_id']
 
     def __repr__(self):
         return "<GcmCourseAlert: %s, %s, %s %s>" % (
