@@ -232,6 +232,13 @@
     .first-name-input, .last-name-input {
       width: 49%;
     }
+
+    .email-hint {
+      text-align: right;
+      margin-top: -5px;
+      margin-bottom: 12px;
+      display: none;
+    }
   }
 
   .login-link {

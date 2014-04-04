@@ -77,8 +77,11 @@ require.config({
       deps: ['ext/jquery']
     },
     'ext/smartbanner': {
-      deps:['ext/jquery'],
+      deps: ['ext/jquery'],
       exports: 'smartbanner'
+    },
+    'ext/mailcheck': {
+      deps: ['ext/jquery']
     }
   },
 
@@ -98,6 +101,7 @@ require.config({
     'ext/underscore.string': 'ext/underscore.string-2.0.0',
     'ext/validate': 'ext/jquery.validate.min',
     'ext/smartbanner': 'ext/jquery.smartbanner',
+    'ext/mailcheck': 'ext/mailcheck.min',
 
     'moment': 'ext/moment',
     'moment-timezone': 'ext/moment-timezone'

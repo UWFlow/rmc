@@ -1,4 +1,4 @@
-server/static/js/ext
+server/static/js/ext/*
 server/r.js
 
 # First party code that should conform but doesn't

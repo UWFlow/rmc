@@ -1,7 +1,7 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/bootstrap', 'rmc_backbone', 'facebook',
-  'util', 'ext/validate'],
-function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate) {
+  'util', 'ext/validate', 'ext/mailcheck'],
+function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck) {
 
   var emailLoginModalView = null;
   var emailSignUpModalView = null;
@@ -215,7 +215,9 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate) {
 
     events: {
       'submit': 'onSubmit',
-      'click .login-link': 'showLoginModal'
+      'click .login-link': 'showLoginModal',
+      'blur input[name="email"]': 'onEmailInputBlur',
+      'click .email-hint': 'onEmailSuggestionClick'
     },
 
     render: function() {
@@ -260,6 +262,27 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate) {
         }
       });
       return this;
+    },
+
+    // Adapted code from http://andrewberls.com/blog/post/reducing-bad-signup-emails for suggestion
+    onEmailInputBlur: function() {
+      var $hint = this.$('.email-hint');
+      this.$('input[name="email"]').mailcheck({
+        suggested: function(element, suggestion) {
+          this.$('.email-suggestion').text(suggestion.address + '@' + suggestion.domain);
+          $hint.fadeIn(50);
+        },
+        empty: function(element) {
+          $hint.fadeOut(50); 
+        }
+      });
+    },
+
+    onEmailSuggestionClick: function(e) {
+      e.preventDefault();
+      var $hint = this.$('.email-hint');
+      this.$('input[name="email"]').val(this.$('.email-suggestion').text());
+      $hint.fadeOut(50);
     },
 
     onSubmit: function(e) {
