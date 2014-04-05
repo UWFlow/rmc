@@ -1,3 +1,4 @@
+import datetime
 import json
 
 import werkzeug.datastructures as datastructures
@@ -7,6 +8,11 @@ import rmc.test.lib as testlib
 
 
 class V1Test(testlib.FlaskTestCase):
+    def tearDown(self):
+        # Clear DB for other tests
+        m.GcmCourseAlert.objects.delete()
+        super(V1Test, self).tearDown()
+
     def get_csrf_token_header(self):
         resp = self.app.get('/api/v1/csrf-token')
         headers = datastructures.Headers()
@@ -167,3 +173,36 @@ class V1Test(testlib.FlaskTestCase):
                 '/api/v1/alerts/course/gcm', data=data, headers=headers)
         self.assertResponseOk(resp)
         self.assertEqual(m.GcmCourseAlert.objects.count(), 2)
+
+    def test_delete_gcm_course_alert(self):
+        created_timestamp = 1396710772
+        expiry_timestamp = 1496710772
+
+        alert = m.GcmCourseAlert(
+            registration_id='neverheardsilencequitethisloud',
+            course_id='sci238',
+            created_date=datetime.datetime.fromtimestamp(created_timestamp),
+            expiry_date=datetime.datetime.fromtimestamp(expiry_timestamp),
+        )
+        alert.save()
+        self.assertEqual(m.GcmCourseAlert.objects.count(), 1)
+
+        headers = self.get_csrf_token_header()
+
+        resp = self.app.delete(
+                '/api/v1/alerts/course/gcm/%s' % alert.id, headers=headers)
+        self.assertResponseOk(resp)
+        self.assertJsonResponse(resp, {
+            'gcm_course_alert': {
+                'registration_id': 'neverheardsilencequitethisloud',
+                'user_id': None,
+                'term_id': '',
+                'section_type': '',
+                'expiry_date': 1496696372000,
+                'created_date': 1396696372000,
+                'course_id': 'sci238',
+                'section_num': '',
+                'id': str(alert.id),
+            }
+        })
+        self.assertEqual(m.GcmCourseAlert.objects.count(), 0)

@@ -567,7 +567,7 @@ def add_gcm_course_alert():
     Optional parameters:
         created_date: Timestamp in millis
         expiry_date: Timestamp in millis. Defaults to 1 year later
-        term_id: eg. e.g. "2014_01"
+        term_id: e.g. "2014_01"
         section_type: e.g. "LEC"
         section_num: e.g. "001"
         user_id: ID of the logged in user
@@ -604,6 +604,21 @@ def add_gcm_course_alert():
     except me.NotUniqueError as e:
         raise api_util.ApiBadRequestError(
                 'Alert with the given parameters already exists.')
+
+    return api_util.jsonify({
+        'gcm_course_alert': alert.to_dict(),
+    })
+
+
+@api.route('/alerts/course/gcm/<string:alert_id>', methods=['DELETE'])
+def delete_gcm_course_alert(alert_id):
+    alert = m.GcmCourseAlert.objects.with_id(alert_id)
+
+    if not alert:
+        raise api_util.ApiNotFoundError(
+                'No GCM course alert with id %s found.' % alert_id)
+
+    alert.delete()
 
     return api_util.jsonify({
         'gcm_course_alert': alert.to_dict(),
