@@ -147,7 +147,8 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
     },
 
     events: {
-      'submit': 'onSubmit'
+      'submit': 'onSubmit',
+      'click .signup-link': 'showSignUpModal'
     },
 
     render: function() {
@@ -181,6 +182,17 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
         // front page
         window.location.href = '/profile';
       }).fail(_.bind(displayAjaxError, this, this.$('.errors')));
+    },
+
+    showSignUpModal: function(e) {
+      var $loginModal = this.$('.email-login-modal');
+      var $signupModal = emailSignUpModalView.$('.email-signup-modal');
+
+      $loginModal.modal('hide');
+      $loginModal.on('hidden', function() {
+        $signupModal.modal('show');
+        $loginModal.off('hidden');
+      });
     }
   });
 
@@ -210,7 +222,6 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
   var EmailSignUpModalView = RmcBackbone.View.extend({
     initialize: function(attributes) {
       this.template = _.template($('#email-signup-modal-tpl').html());
-      renderEmailLoginModal();
     },
 
     events: {
@@ -307,7 +318,7 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
       $signupModal.modal('hide');
       $signupModal.on('hidden', function() {
         $loginModal.modal('show');
-        $signupModal.on('hidden', $.noop);
+        $signupModal.off('hidden');
       });
     }
   });
@@ -336,6 +347,9 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
       emailSignUpModalView.render().$el.appendTo('body');
     }
   };
+
+  renderEmailLoginModal();
+  renderEmailSignUpModal();
 
   return {
     renderBanner: renderBanner,
