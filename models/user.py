@@ -43,8 +43,12 @@ class User(me.Document):
             'fbid',
             # TODO(mack): need to create the 'api_key' index on prod
             'api_key',
-            # TODO(sandy): need to create the 'email' index on prod
-            'email',
+            # Allow users with email=None, but non-None emails must be unique
+            {
+                'fields': ['email'],
+                'unique': True,
+                'sparse': True,
+            },
             'referrer_id',
         ],
     }
@@ -566,6 +570,9 @@ class User(me.Document):
         if not user:
             return None
 
+        # TODO(sandy): Since we added a unique index on email, this shouldn't
+        # happen anymore. But keep this around for a bit, in case something
+        # messes up [Apr 8, 2014]
         if user.count() > 1:
             logging.error('Multiple email addressed matched: %s' % email)
             return None
@@ -581,9 +588,6 @@ class User(me.Document):
 
     @staticmethod
     def create_new_user_from_email(first_name, last_name, email, password):
-        if User.objects(email=email):
-            raise User.UserCreationError('That email is already signed up.')
-
         if len(password) < PASSWORD_MIN_LENGTH:
             raise User.UserCreationError(
                     'Passwords must be at least 8 characters long.')
@@ -604,6 +608,8 @@ class User(me.Document):
             if 'email' in e.errors:
                 raise User.UserCreationError('Oops, that email is invalid.')
             raise
+        except me.queryset.NotUniqueError as e:
+            raise User.UserCreationError('That email is already signed up.')
 
         return user
 
