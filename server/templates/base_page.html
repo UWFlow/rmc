@@ -210,10 +210,9 @@
             {% endif %}
           </li>
 
+          <li class="divider-vertical"></li>
+
           {% if current_user %}
-
-            <li class="divider-vertical"></li>
-
             <li class="dropdown">
               <a class="nav-item dropdown-toggle" data-toggle="dropdown">
                 <i class="icon-caret-down"></i>
@@ -225,6 +224,13 @@
                   </a>
                 </li>
               </ul>
+            </li>
+          {% else %}
+            <li>
+              <a class="nav-item" data-toggle="modal" role="button" data-target=".email-login-modal">
+                <i class="icon-signin"></i>
+                Login
+              </a>
             </li>
           {% endif %}
         </ul>
