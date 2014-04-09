@@ -873,8 +873,12 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       // Apparently, it's possible to have mutiple profs (on separate lines):
       // e.g. Behrad Khamesee,\nJan Huissoon
       var profRe = /([\-\w ,\r\n]+)/;
-      // The day can appear in either format: '01/07/2013' or '2013-01-07'
-      var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}-\d{2}-\d{2}))/;
+      // The day can appear in the following formats:
+      // - '01/23/2013'
+      // - '23/01/2013'
+      // - '2013/01/23'
+      // - '2013-01-07'
+      var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}\/\d{2}\/\d{2})|(?:\d{4}-\d{2}-\d{2}))/;
       var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
       var wsRe = /\s+/;
 
@@ -929,10 +933,12 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       // E.g. '3:20PM'
       var endTimeStr = formatTime(slotMatches[3]);
 
-      // The day can appear in either format: '01/07/2013' or '2013-01-07'
-      // E.g. 01/07/2013 (MM/DD/YYYY)
+      // The day can appear in the following formats:
+      // - '01/23/2013'
+      // - '23/01/2013'
+      // - '2013/01/23'
+      // - '2013-01-07'
       var startDateStr = slotMatches[6];
-      // E.g. 02/15/2013 (MM/DD/YYYY)
       var endDateStr = slotMatches[7];
 
       // E.g. PHY   313, TBA
@@ -956,6 +962,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       var dateFormat;
       if (startDateStr.indexOf('-') > -1) {
         dateFormat = 'YYYY-MM-DD';
+      } else if ((/\d{4}\/\d{2}\/\d{2}/).exec(startDateStr)) {
+        dateFormat = 'YYYY/MM/DD';
       } else {
         // Could be either MM/DD/YYYY or DD/MM/YYYY. It's probably MM/DD/YYYY
         // but if that gives impossible results, we'll assume DD/MM/YYYY
