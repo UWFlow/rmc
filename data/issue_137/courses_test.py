@@ -32,15 +32,18 @@ with open("data/departments/opendata2_departments.txt") as departments_file:
             	open_data_ids.append(course['course_id'])
 
             missing_open_data_ids = set(calendar_ids) - set(open_data_ids)
-            print "Department is {0}".format(department)
-            print "Crawling the calendar found {0} courses".format(len(calendar_ids))
-            print "Using the OpenData API found {0} courses".format(len(open_data_ids))
-            print "There were {0} courses missed by the OpenData API".format(len(missing_open_data_ids))
+            # print "Department is {0}".format(department)
+            # print "Crawling the calendar found {0} courses".format(len(calendar_ids))
+            # print "Using the OpenData API found {0} courses".format(len(open_data_ids))
+            # print "There were {0} courses missed by the OpenData API".format(len(missing_open_data_ids))
 
             # The condition we're testing for, allow user input to override
             if (len(missing_open_data_ids) != 0):
+                print "{0} has an error".format(department)
                 cont = raw_input ("Do you want to continue the test? Enter y to continue\n")
                 if cont[0] not in "Yy":
                     assert(False)
+            else:
+                print "{0} is complete".format(department)
         else:
             print "Department found with OpenData that was missed by scraping"

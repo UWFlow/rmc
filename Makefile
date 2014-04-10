@@ -106,3 +106,6 @@ clean:
 run_opendata_tests:
 	PYTHONPATH=.. python data/issue_137/departments_test.py
 	PYTHONPATH=.. python data/issue_137/courses_test.py
+
+get_from_opendata2:
+	PYTHONPATH=.. python data/issue_137/add_courses.py
