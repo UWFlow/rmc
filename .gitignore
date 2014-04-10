@@ -18,3 +18,4 @@ data/exam_schedules/uw_exams_*
 
 # Ignore generated opendata section dumps
 data/opendata_sections/*.json
+data/opendata2_courses/*.json
