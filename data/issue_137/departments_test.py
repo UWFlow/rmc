@@ -11,6 +11,7 @@ import json
 import requests
 from rmc.shared import secrets
 
+
 # First get the OpenData list of departments
 open_data_deps_json =  json.loads (requests.get("https://api.uwaterloo.ca/v2/codes/subjects.json?key={0}".format(
     secrets.OPEN_DATA_API_KEY)).text)
@@ -33,6 +34,16 @@ missing_open_data_ids = set(calendar_deps) - set(open_data_deps)
 print "OpenData found {0} departments".format(len(open_data_deps))
 print "Calendar scraping found {0} departments".format(len(calendar_deps)) 
 print "There were {0} courses that the OpenData API missed".format(len(missing_open_data_ids))
+
+if len(missing_open_data_ids) == 0:
+    print "Successful retrieval of departments, writing to file..."
+    # Open a file to write the departments too
+    with open ("data/departments/opendata2_departments.txt", 'w') as departments_out:
+        departments_out.write(json.dumps(open_data_deps_json['data']))
+else:
+    print "Not all departments could be found"
+    with open ("data/departments/opendata2_departments.txt", 'w') as departments_out:
+        departments_out.write("Warning, departments are missing")
 
 # The condition we're testing for
 assert(len(missing_open_data_ids) == 0)
