@@ -60,20 +60,21 @@ def html_parse(url, num_tries=5, parsers=[soupparser]):
 def get_departments():
     def clean_department(d):
         return {
-                'subject': d['subject'],
-                'name': d['description'],
-                'faculty_id': d['group'],
-                }
+            'subject': d['subject'],
+            'name': d['description'],
+            'faculty_id': d['group'],
+        }
+
+    response = requests.get('%s/codes/subjects.json?key=%s' % (
+        API_UWATERLOO_V2_URL, s.OPEN_DATA_API_KEY)).text
+    open_data_deps_json = json.loads(response)
 
     departments = []
-    open_data_deps_json = json.loads(requests.get("https://api.uwaterloo.ca/v2/codes/subjects.json?key={0}".format(
-        s.OPEN_DATA_API_KEY)).text)
-
     for d in open_data_deps_json['data']:
         departments.append(clean_department(d))
 
-    file_name = os.path.join(
-        sys.path[0], '%s/opendata2_departments.txt' % c.DEPARTMENTS_DATA_DIR)
+    file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)), 
+            '%s/opendata2_departments.txt' % c.DEPARTMENTS_DATA_DIR)
     with open(file_name, 'w') as f:
         json.dump(departments, f)
 
@@ -119,43 +120,39 @@ def file_exists(path):
 def get_opendata2_courses():
     import rmc.shared.constants as c
     api_key = s.OPEN_DATA_API_KEY
-    bad_courses = 0
-    bad_course_names = set()
     good_courses = 0
 
-    get_departments()
-    file_name = os.path.join(sys.path[0], 
+    file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)), 
         '%s/opendata2_departments.txt' % c.DEPARTMENTS_DATA_DIR)
     with open(file_name) as departments_file:
         departments = json.load(departments_file)
-        # Create a text file for every department
-        for d in departments:
-            department = d['subject']
-            current_dep_json = []
 
-            open_data_json = json.loads(requests.get("https://api.uwaterloo.ca/v2/courses/{0}.json?key={1}".format(
+    # Create a text file for every department
+    for d in departments:
+        department = d['subject']
+        print department
+        open_data_json = json.loads(requests.get(
+                'https://api.uwaterloo.ca/v2/courses/{0}.json?key={1}'.format(
                 department.upper(), api_key)).text)
-            open_data_catalog_numbers = []
+        open_data_catalog_numbers = []
 
-            for course in open_data_json['data']:
-                open_data_catalog_numbers.append(course['catalog_number'])
+        for course in open_data_json['data']:
+            open_data_catalog_numbers.append(course['catalog_number'])
 
-            # We now poll the individual endpoints of each course for the data
-            with open("data/opendata2_courses/{0}.json".format(
-                department.lower()), 'w') as courses_out:
-                for course in open_data_catalog_numbers:
-                    good_courses += 1
-                    print "{0} {1}".format(department, course)
-                    json_data = json.loads(requests.get("https://api.uwaterloo.ca/v2/courses/{0}/{1}.json?key={2}".format(
-                        department.upper(), course, s.OPEN_DATA_API_KEY)).text)
-                    current_dep_json.append(json_data['data'])
-                json.dump(current_dep_json, courses_out)
+        # We now poll the individual endpoints of each course for the data
+        current_dep_json = []
+        course_url = 'https://api.uwaterloo.ca/v2/courses/{0}/{1}.json?key={2}'
+        out_file_name = 'data/opendata2_courses/%s.json' % department.lower()
+        with open(out_file_name, 'w') as courses_out:
+            for course in open_data_catalog_numbers:
+                good_courses += 1
+                json_data = json.loads(requests.get(
+                        course_url.format(department.upper(), 
+                        course, s.OPEN_DATA_API_KEY)).text)
+                current_dep_json.append(json_data['data'])
+            json.dump(current_dep_json, courses_out)
 
-            print "{0} is complete".format(department)
-
-    print 'Found {num} bad courses'.format(num=bad_courses)
     print 'Found {num} good courses'.format(num=good_courses)
-    print 'Bad course names: {names}'.format(names=bad_course_names)
 
 
 def get_opendata_exam_schedule():
@@ -170,7 +167,7 @@ def get_opendata_exam_schedule():
     try:
         data = data['data']
     except KeyError:
-        print "crawler.py: ExamSchedule API call failed with data:\n%s" % data
+        print 'crawler.py: ExamSchedule API call failed with data:\n%s' % data
         raise
 
     today = datetime.datetime.today()
@@ -261,7 +258,7 @@ def get_subject_sections_from_opendata(subject, term):
     try:
         sections = data['data']
     except (KeyError, TypeError):
-        logging.exception("crawler.py: Schedule API call failed with"
+        logging.exception('crawler.py: Schedule API call failed with'
                 " url %s and data:\n%s" % (url, data))
         raise
 

@@ -341,6 +341,18 @@ def update_sections():
     rmc_processor.import_opendata_sections()
 
 
+def update_courses():
+    # First get an up to date list of departments and write to a text file
+    print "Crawling for departments"
+    rmc_crawler.get_departments()
+    # Hit the endpoints of the OpenData API for each department
+    print "Crawling for courses"
+    rmc_crawler.get_opendata2_courses()
+    # Load the data in to Mongo
+    print "Loading data in to Mongo"
+    rmc_processor.import_courses()
+
+
 if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC)
 
@@ -353,6 +365,7 @@ if __name__ == '__main__':
         'mongo_points': update_mongo_points,
         'exam_schedule': update_exam_schedule,
         'sections': update_sections,
+        'courses': update_courses,
     }
     parser.add_argument('mode',
             help='one of %s' % ','.join(mode_mapping.keys() + ['all']))
