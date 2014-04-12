@@ -89,6 +89,7 @@ def import_courses():
         if isinstance(courses, dict):
             courses = courses.values()
 
+        # For each course, update it if it already exists, else insert it
         for course in courses:
             if not course:
                 continue
@@ -100,7 +101,7 @@ def import_courses():
                         continue
                     old_course[key] = value
                 old_course.save()
-                upated += 1
+                updated += 1
             else:
                 m.Course(**course).save()
                 added += 1
@@ -134,10 +135,8 @@ def import_courses():
             course.antireqs = normalize_reqs_str(course.antireqs)
         course.save()
 
-    print 'OpenDataV2, added: %d, updated: %d' % (
-            , added, updated)
-
-    print 'imported courses:', m.Course.objects.count()
+    print 'OpenData courses, added: %d, updated: %d' % (added, updated)
+    print 'Total courses:', m.Course.objects.count()
 
 
 def normalize_reqs_str(str_):
