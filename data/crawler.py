@@ -118,7 +118,6 @@ def file_exists(path):
 
 
 def get_opendata2_courses():
-    api_key = s.OPEN_DATA_API_KEY
     good_courses = 0
 
     file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)), 
@@ -132,7 +131,7 @@ def get_opendata2_courses():
         print department
         open_data_json = json.loads(requests.get(
                 'https://api.uwaterloo.ca/v2/courses/{0}.json?key={1}'.format(
-                department.upper(), api_key)).text)
+                department.upper(), s.OPEN_DATA_API_KEY)).text)
         open_data_catalog_numbers = []
 
         for course in open_data_json['data']:
