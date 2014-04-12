@@ -345,9 +345,11 @@ def update_courses():
     # First get an up to date list of departments and write to a text file
     print "Crawling for departments"
     rmc_crawler.get_departments()
+
     # Hit the endpoints of the OpenData API for each department
     print "Crawling for courses"
     rmc_crawler.get_opendata2_courses()
+    
     # Load the data in to Mongo
     print "Loading data in to Mongo"
     rmc_processor.import_courses()

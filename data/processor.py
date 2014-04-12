@@ -20,31 +20,22 @@ def import_departments():
             'id': department['subject'].lower(),
             'name': department['name'],
             'faculty_id': department['faculty_id'].lower(),
-            'url': "http://ugradcalendar.uwaterloo.ca/courses/{0}".format(
+            'url': 'http://ugradcalendar.uwaterloo.ca/courses/{0}'.format(
                     department['subject'].lower()),
         }
 
-    sources = [
-        {
-            'name': 'opendata',
-            'clean_fn': clean_opendata_department,
-            'file_name': 'opendata2_departments.txt',
-        },
-    ]
+    file_name = os.path.join(os.path.dirname(__file__),
+            c.DEPARTMENTS_DATA_DIR, 'opendata2_departments.txt')
 
-    for source in sources:
-        file_name = os.path.join(os.path.dirname(__file__),
-                c.DEPARTMENTS_DATA_DIR, source['file_name'])
+    with open(file_name, 'r') as f:
+        data = json.load(f)
 
-        with open(file_name, 'r') as f:
-            data = json.load(f)
+    for department in data:
+        department = clean_opendata_department(department)
+        if m.Department.objects.with_id(department['id']):
+            continue
 
-        for department in data:
-            department = source['clean_fn'](department)
-            if m.Department.objects.with_id(department['id']):
-                continue
-
-            m.Department(**department).save()
+        m.Department(**department).save()
 
     print 'imported departments:', m.Department.objects.count()
 
@@ -82,46 +73,37 @@ def import_courses():
             'prereqs': course['prerequisites'],
         }
 
-    sources = [
-        {
-            'name': 'opendata2',
-            'clean_fn': clean_opendata_course,
-            'dir': c.OPENDATA2_COURSES_DATA_DIR,
-        },
-    ]
+    added = 0
+    updated = 0
+    for file_name in glob.glob(os.path.join(os.path.dirname(__file__),
+            c.OPENDATA2_COURSES_DATA_DIR, '*.json')):
+        with open(file_name, 'r') as f:
+            courses = json.load(f)
+        print file_name
+        dep_name = get_department_name_from_file_path(file_name)
+        if not m.Department.objects.with_id(dep_name):
+            print 'could not find department %s' % dep_name
+            continue
 
-    for source in sources:
-        source['added'] = 0
-        source['updated'] = 0
-        for file_name in glob.glob(os.path.join(
-                os.path.dirname(__file__), source['dir'], '*.json')):
-            with open(file_name, 'r') as f:
-                courses = json.load(f)
-            print file_name
-            dep_name = get_department_name_from_file_path(file_name)
-            if not m.Department.objects.with_id(dep_name):
-                print 'could not find department %s' % dep_name
+        # The input data can be a list or dict (with course number as key)
+        if isinstance(courses, dict):
+            courses = courses.values()
+
+        for course in courses:
+            if not course:
                 continue
-
-            # The input data can be a list or dict (with course number as key)
-            if type(courses) == dict:
-                courses = courses.values()
-
-            for course in courses:
-                if not course:
-                    continue
-                course = source['clean_fn'](dep_name, course)
-                old_course = m.Course.objects.with_id(course['id'])
-                if old_course:
-                    for key, value in course.iteritems():
-                        if key == 'id':
-                            continue
-                        old_course[key] = value
-                    old_course.save()
-                    source['updated'] += 1
-                else:
-                    m.Course(**course).save()
-                    source['added'] += 1
+            course = clean_opendata_course(dep_name, course)
+            old_course = m.Course.objects.with_id(course['id'])
+            if old_course:
+                for key, value in course.iteritems():
+                    if key == 'id':
+                        continue
+                    old_course[key] = value
+                old_course.save()
+                upated += 1
+            else:
+                m.Course(**course).save()
+                added += 1
 
     # Update courses with terms offered data
     with open(os.path.join(os.path.dirname(__file__),
@@ -152,9 +134,8 @@ def import_courses():
             course.antireqs = normalize_reqs_str(course.antireqs)
         course.save()
 
-    for source in sources:
-        print 'source: %s, added: %d, updated: %d' % (
-                source['name'], source['added'], source['updated'])
+    print 'OpenDataV2, added: %d, updated: %d' % (
+            , added, updated)
 
     print 'imported courses:', m.Course.objects.count()
 
