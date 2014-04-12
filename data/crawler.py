@@ -140,14 +140,14 @@ def get_opendata2_courses():
         # We now poll the individual endpoints of each course for the data
         current_dep_json = []
         course_url = 'https://api.uwaterloo.ca/v2/courses/{0}/{1}.json?key={2}'
+        for course in open_data_catalog_numbers:
+            good_courses += 1
+            json_data = json.loads(requests.get(
+                    course_url.format(department.upper(), 
+                    course, s.OPEN_DATA_API_KEY)).text)
+            current_dep_json.append(json_data['data'])
         out_file_name = 'data/opendata2_courses/%s.json' % department.lower()
         with open(out_file_name, 'w') as courses_out:
-            for course in open_data_catalog_numbers:
-                good_courses += 1
-                json_data = json.loads(requests.get(
-                        course_url.format(department.upper(), 
-                        course, s.OPEN_DATA_API_KEY)).text)
-                current_dep_json.append(json_data['data'])
             json.dump(current_dep_json, courses_out)
 
     print 'Found {num} good courses'.format(num=good_courses)
