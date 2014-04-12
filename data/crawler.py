@@ -118,7 +118,6 @@ def file_exists(path):
 
 
 def get_opendata2_courses():
-    import rmc.shared.constants as c
     api_key = s.OPEN_DATA_API_KEY
     good_courses = 0
 
