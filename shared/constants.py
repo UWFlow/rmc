@@ -25,9 +25,7 @@ else:
     RMC_HOST = "http://localhost:5000"
 
 TERMS_OFFERED_DATA_DIR = 'terms_offered'
-UCALENDAR_COURSES_DATA_DIR = 'ucalendar_courses'
-OPENDATA_COURSES_DATA_DIR = 'opendata_courses'
-UWDATA_COURSES_DATA_DIR = 'uwdata_courses'
+OPENDATA2_COURSES_DATA_DIR = 'opendata2_courses'
 REVIEWS_DATA_DIR = 'reviews'
 DEPARTMENTS_DATA_DIR = 'departments'
 EXAMS_DATA_DIR = 'exam_schedules'

@@ -15,50 +15,34 @@ import sys
 
 
 def import_departments():
-    def clean_uwdata_department(department):
+    def clean_opendata_department(department):
         return {
-            'id': department['Acronym'].lower(),
-            'name': department['Name'],
-            'faculty_id': department['Faculty'].lower(),
-            'url': department['CoursesURL'],
+            'id': department['subject'].lower(),
+            'name': department['name'],
+            'faculty_id': department['faculty_id'].lower(),
+            'url': 'http://ugradcalendar.uwaterloo.ca/courses/{0}'.format(
+                    department['subject'].lower()),
         }
 
-    def clean_ucalendar_department(department):
-        return department
+    file_name = os.path.join(os.path.dirname(__file__),
+            c.DEPARTMENTS_DATA_DIR, 'opendata2_departments.txt')
 
-    sources = [
-        {
-            'name': 'ucalendar',
-            'clean_fn': clean_ucalendar_department,
-            'file_name': 'ucalendar_departments.txt',
-        },
-        {
-            'name': 'uwdata',
-            'clean_fn': clean_uwdata_department,
-            'file_name': 'uwdata_departments.txt',
-        },
-    ]
+    with open(file_name, 'r') as f:
+        data = json.load(f)
 
-    for source in sources:
-        file_name = os.path.join(os.path.dirname(__file__),
-                c.DEPARTMENTS_DATA_DIR, source['file_name'])
+    for department in data:
+        department = clean_opendata_department(department)
+        if m.Department.objects.with_id(department['id']):
+            continue
 
-        with open(file_name, 'r') as f:
-            data = json.load(f)
-
-        for department in data:
-            department = source['clean_fn'](department)
-            if m.Department.objects.with_id(department['id']):
-                continue
-
-            m.Department(**department).save()
+        m.Department(**department).save()
 
     print 'imported departments:', m.Department.objects.count()
 
 
 def import_courses():
     def get_department_name_from_file_path(file_path):
-        return re.findall(r'([^/]*).txt$', file_path)[0].lower()
+        return re.findall(r'([^/]*).json$', file_path)[0].lower()
 
     def build_keywords(department, number, course_title):
         department = department.lower()
@@ -71,104 +55,55 @@ def import_courses():
         keywords.extend(course_title.split(' '))
         return keywords
 
-    # TODO(mack): rs215 seems to be duplicated. see,
-    # http://www.ucalendar.uwaterloo.ca/1213/COURSE/course-RS.html
-    def clean_ucalendar_course(dep, course):
-        try:
-            # Fails on courses from:
-            # http://www.ucalendar.uwaterloo.ca/1213/COURSE/course-BUS.html
-            number = re.findall(
-                r'^.*? (\d+[A-Za-z]*?) .*$', course['intro'])[0].lower()
-        except:
-            return None
-
-        name = course['name'].strip()
-        course_obj = {
-            'id': '%s%s' % (dep, number),
-            'department_id': dep,
-            'number': number,
-            'name': name,
-            'description': course['description'].strip(),
-            '_keywords': build_keywords(dep, number, name),
-        }
-        for note in course['notes']:
-            if re.findall('^Antireq: ', note):
-                course_obj['antireqs'] = re.sub('^Antireq:', '', note).strip()
-            elif re.findall('^Coreq: ', note):
-                course_obj['coreqs'] = re.sub('^Coreq:', '', note).strip()
-            elif re.findall('^Prereq: ', note):
-                course_obj['prereqs'] = re.sub('^Prereq:', '', note).strip()
-
-        return course_obj
+    def clean_description(des):
+        return des or "No description"
 
     def clean_opendata_course(dep, course):
-        number = course['Number'].lower()
-        return {
-            'id': '%s%s' % (dep, number),
-            'department_id': dep,
-            'number': number,
-            'name': course['Title'],
-            'description': course['Description'],
-            '_keywords': build_keywords(
-                dep, number, course['Title']),
-        }
-
-    def clean_uwdata_course(dep, course):
-        course = course['course']
-        number = course['course_number'].lower()
+        number = course['catalog_number'].lower()
         return {
             'id': '%s%s' % (dep, number),
             'department_id': dep,
             'number': number,
             'name': course['title'],
-            'description': course['description'],
+            'description': clean_description(course['description']),
             '_keywords': build_keywords(
                     dep, number, course['title']),
+            'antireqs': course['antirequisites'],
+            'coreqs': course['corequisites'],
+            'prereqs': course['prerequisites'],
         }
 
-    sources = [
-        {
-            'name': 'ucalendar',
-            'clean_fn': clean_ucalendar_course,
-            'dir': c.UCALENDAR_COURSES_DATA_DIR,
-        },
-        {
-            'name': 'opendata',
-            'clean_fn': clean_opendata_course,
-            'dir': c.OPENDATA_COURSES_DATA_DIR,
-        },
-        {
-            'name': 'uwdata',
-            'clean_fn': clean_uwdata_course,
-            'dir': c.UWDATA_COURSES_DATA_DIR,
-        },
-    ]
+    added = 0
+    updated = 0
+    for file_name in glob.glob(os.path.join(os.path.dirname(__file__),
+            c.OPENDATA2_COURSES_DATA_DIR, '*.json')):
+        with open(file_name, 'r') as f:
+            courses = json.load(f)
+        print file_name
+        dep_name = get_department_name_from_file_path(file_name)
+        if not m.Department.objects.with_id(dep_name):
+            print 'could not find department %s' % dep_name
+            continue
 
-    for idx, source in enumerate(sources):
-        source['added'] = 0
-        source['ignored'] = 0
-        for file_name in glob.glob(os.path.join(
-                os.path.dirname(__file__), source['dir'], '*.txt')):
+        # The input data can be a list or dict (with course number as key)
+        if isinstance(courses, dict):
+            courses = courses.values()
 
-            with open(file_name, 'r') as f:
-                courses = json.load(f)
-
-            dep_name = get_department_name_from_file_path(file_name)
-            if not m.Department.objects.with_id(dep_name):
-                print 'could not find department %s' % dep_name
+        for course in courses:
+            if not course:
                 continue
-
-            # The input data can be a list or dict (with course number as key)
-            if type(courses) == dict:
-                courses = courses.values()
-            for course in courses:
-                course = source['clean_fn'](dep_name, course)
-                if course and (idx == 0 or
-                        not m.Course.objects.with_id(course['id'])):
-                    m.Course(**course).save()
-                    source['added'] += 1
-                else:
-                    source['ignored'] += 1
+            course = clean_opendata_course(dep_name, course)
+            old_course = m.Course.objects.with_id(course['id'])
+            if old_course:
+                for key, value in course.iteritems():
+                    if key == 'id':
+                        continue
+                    old_course[key] = value
+                old_course.save()
+                upated += 1
+            else:
+                m.Course(**course).save()
+                added += 1
 
     # Update courses with terms offered data
     with open(os.path.join(os.path.dirname(__file__),
@@ -199,9 +134,8 @@ def import_courses():
             course.antireqs = normalize_reqs_str(course.antireqs)
         course.save()
 
-    for source in sources:
-        print 'source: %s, added: %d, ignored: %d' % (
-                source['name'], source['added'], source['ignored'])
+    print 'OpenDataV2, added: %d, updated: %d' % (
+            , added, updated)
 
     print 'imported courses:', m.Course.objects.count()
 
