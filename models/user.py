@@ -484,6 +484,8 @@ class User(me.Document):
         return _user_schedule_item.UserScheduleItem.objects(user_id=self.id)
 
     def get_current_term_exams(self, current_term_course_ids=None):
+        # TODO(klistwan): Refactor to group section exams with same
+        # datetime and location together.
         if not current_term_course_ids:
             ucs = (self.get_user_courses()
                     .filter(term_id=util.get_current_term_id())

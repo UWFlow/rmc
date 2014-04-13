@@ -110,6 +110,8 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
   if (examObjs && examObjs.length) {
     _work_queue.add(function() {
       var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
+      // Combine exams taking place at the same date, time, and location.
+      examCollection = examCollection.mergeByDateTimeLocation();
 
       // Only show this "final exams" section if there are actually exams taking
       // place in the future

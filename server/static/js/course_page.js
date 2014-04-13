@@ -1,7 +1,7 @@
 require(
-['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'exam', 'ratings',
+['ext/jquery', 'ext/underscore', 'course', 'took_this', 'user', 'tips', 'prof', 'exam', 'ratings',
 'user_course', 'review', 'sign_in'],
-function($, course, tookThis, user, tips, prof, _exam, ratings, user_course, _review, _sign_in) {
+function($, _, course, tookThis, user, tips, prof, _exam, ratings, user_course, _review, _sign_in) {
 
   course.CourseCollection.addToCache(pageData.courseObj);
   user_course.UserCourses.addToCache(pageData.userCourseObjs);
@@ -23,8 +23,12 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course, _re
   $('#course-inner-container').html(courseInnerView.render().el);
   courseInnerView.animateBars();
 
-  if (window.pageData.examObjs.length) {
-    var examCollection = new _exam.ExamCollection(window.pageData.examObjs);
+  var examObjs = window.pageData.examObjs;
+
+  if (examObjs.length) {
+    var examCollection = new _exam.ExamCollection(examObjs);
+    // Combine exams taking place at the same date, time, and location.
+    examCollection = examCollection.mergeByDateTimeLocation();
 
     // Only show this "final exams" section if there are actually exams taking
     // place in the future
