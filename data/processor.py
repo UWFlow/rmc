@@ -312,20 +312,23 @@ def group_similar_exam_sections(exam_sections):
             examschedule.json endpoint.
 
     Returns a consolidated list of sections in the same format, where each item
-        has a unique date/time/location."""
-
+        has a unique date/time/location.
+    """
     def order_sections(sections):
         sections_list = sorted(sections.split(', '))
         return ', '.join(sections_list)
 
+    def is_similar(first, second):
+        return (first.get('start_time') == second.get('start_time') and
+                first.get('end_time') == second.get('end_time') and
+                first.get('date') == second.get('date') and
+                first.get('location') == second.get('location'))
+
     different_sections = []
     for section in exam_sections:
-        similar_exams = [s for s in different_sections if (
-                section.get('start_time') == s.get('start_time') and
-                section.get('end_time') == s.get('end_time') and
-                section.get('date') == s.get('date') and
-                section.get('location') == s.get('location'))]
-        if len(similar_exams):
+        similar_exams = [s for s in different_sections if 
+                is_similar(s, section)]
+        if similar_exams:
             similar_exams[0]['section'] += ', ' + section.get('section')
         else:
             different_sections.append(section)
