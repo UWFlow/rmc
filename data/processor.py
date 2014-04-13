@@ -303,6 +303,42 @@ def import_reviews():
     print 'imported reviews:', m.MenloCourse.objects.count()
 
 
+def group_similar_exam_sections(exam_sections):
+    """Groups together exam sections that have the same date, time, 
+       and location.
+
+    Args:
+        exam_sections: A list of sections for an exam as returned by OpenData's
+            examschedule.json endpoint.
+
+    Returns a consolidated list of sections in the same format, where each item
+        has a unique date/time/location.
+    """
+    def order_sections(sections):
+        sections_list = sorted(sections.split(', '))
+        return ', '.join(sections_list)
+
+    def is_similar(first, second):
+        return (first.get('start_time') == second.get('start_time') and
+                first.get('end_time') == second.get('end_time') and
+                first.get('date') == second.get('date') and
+                first.get('location') == second.get('location'))
+
+    different_sections = []
+    for section in exam_sections:
+        similar_exams = [s for s in different_sections if 
+                is_similar(s, section)]
+        if similar_exams:
+            similar_exams[0]['section'] += ', ' + section.get('section')
+        else:
+            different_sections.append(section)
+
+    for section in different_sections:
+        section['section'] = order_sections(section.get('section'))
+
+    return different_sections
+
+
 def import_opendata_exam_schedules():
     """Import exam schedules data from the OpenData API"""
     today = datetime.today()
@@ -348,7 +384,9 @@ def import_opendata_exam_schedules():
 
         for exam_data in data:
             course_id = m.Course.code_to_id(exam_data.get('course'))
-            for section_data in exam_data.get('sections', []):
+            grouped_sections = group_similar_exam_sections(
+                    exam_data.get('sections', []))
+            for section_data in grouped_sections:
                 section = section_data.get('section')
                 day = section_data.get('day')
 
@@ -410,7 +448,7 @@ def import_opendata_exam_schedules():
                          % (len(processed_exams), EXAM_ITEMS_THRESHOLD))
 
     # Everything should be fine by here, drop the old exams collection
-    m.Exam.objects._collection.drop()
+    m.Exam.objects.delete()
     for exam in processed_exams:
         exam.save()
 
