@@ -73,7 +73,7 @@ def get_departments():
     for d in open_data_deps_json['data']:
         departments.append(clean_department(d))
 
-    file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)), 
+    file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)),
             '%s/opendata2_departments.txt' % c.DEPARTMENTS_DATA_DIR)
     with open(file_name, 'w') as f:
         json.dump(departments, f)
@@ -120,7 +120,7 @@ def file_exists(path):
 def get_opendata2_courses():
     good_courses = 0
 
-    file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)), 
+    file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)),
         '%s/opendata2_departments.txt' % c.DEPARTMENTS_DATA_DIR)
     with open(file_name) as departments_file:
         departments = json.load(departments_file)
@@ -128,10 +128,9 @@ def get_opendata2_courses():
     # Create a text file for every department
     for d in departments:
         department = d['subject']
-        print department
-        open_data_json = json.loads(requests.get(
+        open_data_json = requests.get(
                 'https://api.uwaterloo.ca/v2/courses/{0}.json?key={1}'.format(
-                department.upper(), s.OPEN_DATA_API_KEY)).text)
+                department.upper(), s.OPEN_DATA_API_KEY)).json()
         open_data_catalog_numbers = []
 
         for course in open_data_json['data']:
@@ -142,10 +141,10 @@ def get_opendata2_courses():
         course_url = 'https://api.uwaterloo.ca/v2/courses/{0}/{1}.json?key={2}'
         for course in open_data_catalog_numbers:
             good_courses += 1
-            json_data = json.loads(requests.get(
-                    course_url.format(department.upper(), 
-                    course, s.OPEN_DATA_API_KEY)).text)
+            json_data = requests.get(course_url.format(department.upper(),
+                    course, s.OPEN_DATA_API_KEY)).json()
             current_dep_json.append(json_data['data'])
+
         out_file_name = 'data/opendata2_courses/%s.json' % department.lower()
         with open(out_file_name, 'w') as courses_out:
             json.dump(current_dep_json, courses_out)

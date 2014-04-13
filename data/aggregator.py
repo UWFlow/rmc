@@ -327,8 +327,10 @@ def update_mongo_points():
 def update_exam_schedule():
     # Crawl data and store on disk
     rmc_crawler.get_opendata_exam_schedule()
+
     # Process the data on disk
     errors = rmc_processor.import_opendata_exam_schedules()
+
     print "%d exam schedule items found" % m.Exam.objects().count()
     print "%d exam schedule items skipped" % len(errors)
 
@@ -349,7 +351,7 @@ def update_courses():
     # Hit the endpoints of the OpenData API for each department
     print "Crawling for courses"
     rmc_crawler.get_opendata2_courses()
-    
+
     # Load the data in to Mongo
     print "Loading data in to Mongo"
     rmc_processor.import_courses()
