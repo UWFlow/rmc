@@ -79,7 +79,7 @@ def import_courses():
             c.OPENDATA2_COURSES_DATA_DIR, '*.json')):
         with open(file_name, 'r') as f:
             courses = json.load(f)
-        print file_name
+
         dep_name = get_department_name_from_file_path(file_name)
         if not m.Department.objects.with_id(dep_name):
             print 'could not find department %s' % dep_name

@@ -19,9 +19,6 @@ import mongoengine as me
 
 API_UWATERLOO_V2_URL = 'https://api.uwaterloo.ca/v2'
 
-# TODO(david): Convert this file to use OpenData v2 (v1 is now deprecated and
-#     will be retired April 2014).
-
 reload(sys)
 sys.setdefaultencoding('utf-8')
 
@@ -55,8 +52,6 @@ def html_parse(url, num_tries=5, parsers=[soupparser]):
     return None
 
 
-# TODO(david): Convert more calls to use opendata API
-# TODO(mack): add to text file rather than directly to mongo
 def get_departments():
     def clean_department(d):
         return {
@@ -130,7 +125,7 @@ def get_opendata2_courses():
         department = d['subject']
         open_data_json = requests.get(
                 'https://api.uwaterloo.ca/v2/courses/{0}.json?key={1}'.format(
-                department.upper(), s.OPEN_DATA_API_KEY)).json()
+                department.upper(), s.OPEN_DATA_API_KEY)).json
         open_data_catalog_numbers = []
 
         for course in open_data_json['data']:
@@ -142,7 +137,7 @@ def get_opendata2_courses():
         for course in open_data_catalog_numbers:
             good_courses += 1
             json_data = requests.get(course_url.format(department.upper(),
-                    course, s.OPEN_DATA_API_KEY)).json()
+                    course, s.OPEN_DATA_API_KEY)).json
             current_dep_json.append(json_data['data'])
 
         out_file_name = 'data/opendata2_courses/%s.json' % department.lower()
@@ -266,8 +261,6 @@ def get_opendata_sections():
     current_term_id = m.Term.get_current_term_id()
     next_term_id = m.Term.get_next_term_id()
 
-    # TODO(david): Need to regularly update departments from OpenData:
-    #     https://api.uwaterloo.ca/v2/codes/subjects.json
     # We resolve the query (list()) because Mongo's cursors can time out
     for department in list(m.Department.objects):
         sections = []
@@ -287,8 +280,8 @@ if __name__ == '__main__':
     me.connect(c.MONGO_DB_RMC)
 
     parser = argparse.ArgumentParser()
-    supported_modes = ['departments', 'opendata2_courses',
-                        'terms_offered', 'opendata_sections']
+    supported_modes = ['departments', 'opendata2_courses', 'terms_offered',
+            'opendata_sections']
 
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
