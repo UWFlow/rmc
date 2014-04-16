@@ -140,7 +140,9 @@ def get_opendata2_courses():
                     course, s.OPEN_DATA_API_KEY)).json
             current_dep_json.append(json_data['data'])
 
-        out_file_name = 'data/opendata2_courses/%s.json' % department.lower()
+        out_file_name = os.path.join(
+                os.path.realpath(os.path.dirname(__file__)),
+                'opendata2_courses/%s.json' % department.lower())
         with open(out_file_name, 'w') as courses_out:
             json.dump(current_dep_json, courses_out)
 
