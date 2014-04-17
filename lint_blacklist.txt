@@ -1,4 +1,5 @@
 server/static/js/ext/*
+server/static/js/js_tests/vendor/*
 server/r.js
 
 # First party code that should conform but doesn't
