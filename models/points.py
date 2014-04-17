@@ -6,4 +6,3 @@ class PointSource(object):
     PROFESSOR_COMMENT = 50
     PROFESSOR_RATING = 10
     SHARE_PROFESSOR_REVIEW = 50
-

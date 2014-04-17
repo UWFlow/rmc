@@ -44,5 +44,3 @@ def render_schedule_screenshot(url_to_render, screenshot_filepath):
         else:
             logging.error('Rendering %s failed (returned %d)',
                     screenshot_filepath, retcode)
-
-

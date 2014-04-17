@@ -48,7 +48,7 @@ def import_engineering_critiques(input_file):
             # FIXME(Sandy): Normalize prof names
             prof_names = get_prof_names(prof_name)
             prof = m.Professor(**prof_names)
-            # Note: Manually verified that .save() will not erase existing 
+            # Note: Manually verified that .save() will not erase existing
             # fields that are not set on save (ie. ratings)
             prof.save()
             professor_id = prof.id
