@@ -25,7 +25,7 @@ def import_departments():
         }
 
     file_name = os.path.join(os.path.dirname(__file__),
-            c.DEPARTMENTS_DATA_DIR, 'opendata2_departments.txt')
+            c.DEPARTMENTS_DATA_DIR, 'opendata2_departments.json')
 
     with open(file_name, 'r') as f:
         data = json.load(f)

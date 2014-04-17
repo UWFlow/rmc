@@ -69,7 +69,7 @@ def get_departments():
         departments.append(clean_department(d))
 
     file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)),
-            '%s/opendata2_departments.txt' % c.DEPARTMENTS_DATA_DIR)
+            '%s/opendata2_departments.json' % c.DEPARTMENTS_DATA_DIR)
     with open(file_name, 'w') as f:
         json.dump(departments, f)
 
@@ -116,7 +116,7 @@ def get_opendata2_courses():
     good_courses = 0
 
     file_name = os.path.join(os.path.realpath(os.path.dirname(__file__)),
-        '%s/opendata2_departments.txt' % c.DEPARTMENTS_DATA_DIR)
+        '%s/opendata2_departments.json' % c.DEPARTMENTS_DATA_DIR)
     with open(file_name) as departments_file:
         departments = json.load(departments_file)
 
