@@ -1,10 +1,14 @@
 import os
 
+import mongoengine as me
+
 import rmc.shared.constants as c
 import rmc.models as m
 
 FILE_DIR = os.path.dirname(os.path.realpath(__file__))
 HTML_DIR = os.path.join(c.SHARED_DATA_DIR, 'html_snapshots')
+
+me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
 
 def write(file_path, content):
