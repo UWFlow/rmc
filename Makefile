@@ -99,6 +99,12 @@ alltest: require_virtualenv_in_dev
 test: require_virtualenv_in_dev
 	PYTHONPATH=.. nosetests -a '!slow'
 
+js-test:
+	cd server/static/; \
+	python -c 'import webbrowser; webbrowser.open("http://127.0.0.1:8000/js/js_tests/test.html")'; \
+	python -mSimpleHTTPServer 8000
+
 clean:
 	find . -name '*.pyc' -delete
 	rm -rf server/static/css
+
