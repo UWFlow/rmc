@@ -159,7 +159,8 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
     },
 
     events: {
-      'click .excluding-taken-courses-dropdown .dropdown-menu li': 'changeExcludeTakenCourses',
+      'click .excluding-taken-courses-dropdown .dropdown-menu li':
+          'changeExcludeTakenCourses',
       'click .sort-options .option': 'changeSortMode',
       'input .keywords': 'changeKeywords',
       'paste .keywords': 'changeKeywords'
@@ -308,7 +309,11 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
   });
 
   var init = function() {
+    // Using constructor for side effects makes jshint complain, so disable it
+    // temporarily.
+    /* jshint -W031 */
     new CourseSearchRouter();
+    /* jshint +W031 */
 
     Backbone.history.start({
       pushState: true,

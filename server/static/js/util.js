@@ -1,8 +1,6 @@
 define(['ext/underscore', 'ext/underscore.string', 'ext/jquery'],
 function(_, _s, $) {
 
-  var NUM_RATINGS_SEGMENTS = 5;
-
   var getQueryParam = function(name, url) {
     return getQueryParams(url)[name];
   };
@@ -12,7 +10,9 @@ function(_, _s, $) {
       url = window.location.search;
     }
 
+    /* jshint -W101 */
     // From: http://stevenbenner.com/2010/03/javascript-regex-trick-parse-a-query-string-into-an-object/
+    /* jshint +W101 */
     var queryParams = {};
     var queryStringRE = new RegExp("([^?=&]+)(=([^&]*))?", "g");
     url.replace(queryStringRE, function($0, $1, $2, $3) {

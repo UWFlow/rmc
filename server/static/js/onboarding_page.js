@@ -86,7 +86,8 @@ function($, _, _s, transcript, _util, RmcBackbone, _user, __) {
         return;
       }
 
-      // TODO(mack): fix confusing names between term/termObj and course/courseObj
+      // TODO(mack): fix confusing names between term/termObj and
+      // course/courseObj
       var courseIds = [];
       _.each(coursesByTerm, function(termObj) {
         _.each(termObj.courseIds, function(courseId) {
@@ -95,11 +96,11 @@ function($, _, _s, transcript, _util, RmcBackbone, _user, __) {
       });
 
       // TODO(Sandy): This assumes the /transcript request will succeed and that
-      // google's servers are faster than ours, which may not be the case. But if
-      // we make this request in the success handler, it might not get logged at
-      // all (due to the redirect). We could setTimeout the redirect, but that
-      // would cause delay and also since /transcript should just be succesful,
-      // we'll do this for now. Maybe move to server side
+      // google's servers are faster than ours, which may not be the case. But
+      // if we make this request in the success handler, it might not get logged
+      // at all (due to the redirect). We could setTimeout the redirect, but
+      // that would cause delay and also since /transcript should just be
+      // succesful, we'll do this for now. Maybe move to server side.
       _gaq.push([
         '_trackEvent',
         'USER_GENERIC',

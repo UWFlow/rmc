@@ -151,9 +151,9 @@ function(Backbone, $, _) {
 
           if (val) {
             if (_.isArray(val) && val.length && val[0].$oid) {
-              // TODO(mack): This won't work if the field is supposed to objectid
-              // field but starts out empty as an empty list. We might need a
-              // more explicit way to state the type of each field.
+              // TODO(mack): This won't work if the field is supposed to
+              // objectid field but starts out empty as an empty list. We might
+              // need a more explicit way to state the type of each field.
 
               // Just gonna assume for now that if first item in array is an
               // ObjectId, entire array contains ObjectIds
@@ -178,8 +178,8 @@ function(Backbone, $, _) {
           }
 
           // During set, check if we are setting over an _id that is associated
-          // with a reference field. If so, invalidate the key for the associated
-          // reference field.
+          // with a reference field. If so, invalidate the key for the
+          // associated reference field.
           // TODO(mack): optimize this
           var referenceFields = this.getReferenceFields();
           var cacheKey;
@@ -265,7 +265,8 @@ function(Backbone, $, _) {
     if (model.cid) {
       return model;
     }
-    return (coll[normalizeId(id)] = new this.prototype.model(model));
+    coll[normalizeId(id)] = new this.prototype.model(model);
+    return coll[normalizeId(id)];
   };
 
   Collection.getFromCache = function(ids) {
@@ -280,7 +281,7 @@ function(Backbone, $, _) {
     }
 
     if (_.isArray(ids)) {
-      return new this(_.map(ids, function(id) {
+      return new Collection(_.map(ids, function(id) {
         return this._getOneFromCache(id);
       }, this));
     } else {
@@ -362,8 +363,10 @@ function(Backbone, $, _) {
     }
   });
 
+  /* jshint -W101 */
   // Add _super() helper to each function
   // From: http://pivotallabs.com/users/mbrunsfeld/blog/articles/1999-a-convenient-super-method-for-backbone-js
+  /* jshint +W101 */
   (function(klasses) {
 
     // The super method takes two parameters: a method name

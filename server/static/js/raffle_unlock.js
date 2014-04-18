@@ -173,7 +173,8 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
 
       // How much extra colored bar to show past the right-most prize tick
       var extraPercents = 2;
-      var maxPercentRender = Math.round(100/this.MAX_POINTS_RATIO + extraPercents);
+      var maxPercentRender = Math.round(
+          100/this.MAX_POINTS_RATIO + extraPercents);
 
       if (totalPercent > maxPercentRender) {
         totalPercent = maxPercentRender;
@@ -199,10 +200,9 @@ function(RmcBackbone, $, _, _s, __, util, _user) {
       } else {
         var secondsDelta = Math.floor((end - now) / 1000);
         var timeDelta = util.getTimeDelta(secondsDelta);
-        //var timeStr = _s.sprintf('%02d:%02d:%02d:%02d',
-        //  timeDelta.days, timeDelta.hours, timeDelta.minutes, timeDelta.seconds);
         var timeStr = _s.sprintf('%dd %dh %dm %ds',
-          timeDelta.days, timeDelta.hours, timeDelta.minutes, timeDelta.seconds);
+          timeDelta.days, timeDelta.hours, timeDelta.minutes,
+          timeDelta.seconds);
         this.$('.remaining-time').text(timeStr);
 
         _.delay(_.bind(this.updateRemainingTime, this), 1000);

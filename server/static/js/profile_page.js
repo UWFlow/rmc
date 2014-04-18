@@ -40,7 +40,8 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     _sign_in.renderBanner({
       source: 'BANNER_DEMO_PROFILE_PAGE',
       nextUrl: window.location.origin,
-      message: 'This is a demo account; nothing is saved.<br>When you\'re done playing...'
+      message: ('This is a demo account; nothing is saved.<br>When you\'re ' +
+        'done playing...')
     });
   }
 
@@ -121,7 +122,8 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
         var examScheduleView = new _exam.ExamScheduleView({
           examSchedule: examSchedule
         });
-        $('#exam-schedule-placeholder').replaceWith(examScheduleView.render().el);
+        $('#exam-schedule-placeholder').replaceWith(
+          examScheduleView.render().el);
       }
     });
   }
@@ -158,9 +160,9 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
       $shortlistAlert
         .slideDown("fast")
         .on('close.bs.alert', function() {
-            // Remember the alert was dismissed
-            _util.storeLocalData(hideShortlistAlertKey, true,
-                /* expiration */ +new Date() + (1000 * 60 * 60 * 24 * 30 * 3));
+          // Remember the alert was dismissed
+          _util.storeLocalData(hideShortlistAlertKey, true,
+              /* expiration */ +new Date() + (1000 * 60 * 60 * 24 * 30 * 3));
         });
     }
   });
@@ -171,10 +173,14 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
 
   // Possibly show a modal pop-up to prompt user to review course
   window.setTimeout(function() {
-    if (window.pageData.courseIdToReview || _util.getQueryParam('review_modal')) {
-      // TODO(david): This should be encapsulated in a convenience fn in user_course.js
+    if (window.pageData.courseIdToReview ||
+        _util.getQueryParam('review_modal')) {
+      // TODO(david): This should be encapsulated in a convenience fn in
+      // user_course.js
       var courseId = window.pageData.courseIdToReview;
-      var reviewModal = new _user_course.ReviewModalView({ courseId: courseId });
+      var reviewModal = new _user_course.ReviewModalView({
+        courseId: courseId
+      });
       if (courseId) {
         reviewModal.render().show();
       }
