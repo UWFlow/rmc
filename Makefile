@@ -37,16 +37,24 @@ sitemap: require_virtualenv_in_dev
 
 update_html_snapshots: require_virtualenv_in_dev html_snapshots sitemap
 
-import_menlo: require_virtualenv_in_dev
-	PYTHONPATH=.. python data/processor.py all
-
 import_critiques: require_virtualenv_in_dev
 	PYTHONPATH=.. python data/evals/import_critiques.py data/evals/output/results_testing.txt
 
 aggregate_data: require_virtualenv_in_dev
-	PYTHONPATH=.. python data/aggregator.py all
+	PYTHONPATH=.. python data/aggregator.py daily
 
-init_data: import_menlo aggregate_data
+init_data:
+	@echo "*** Seeding data. This may take up to an hour. ***"
+	@echo
+	PYTHONPATH=.. python data/aggregator.py courses
+	@echo "Importing professors"
+	PYTHONPATH=.. python data/processor.py professors
+	@echo "Importing reviews"
+	PYTHONPATH=.. python data/processor.py reviews
+	@echo "Importing sections"
+	PYTHONPATH=.. python data/aggregator.py sections
+	@echo "Aggregating data"
+	PYTHONPATH=.. python data/aggregator.py daily
 
 export_data:
 	mongodump --db rmc

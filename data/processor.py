@@ -584,9 +584,7 @@ def import_opendata_sections():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    supported_modes = ['professors', 'departments',
-            'courses', 'reviews', 'all']
-
+    supported_modes = ['professors', 'departments', 'courses', 'reviews']
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
 
@@ -604,10 +602,5 @@ if __name__ == '__main__':
         import_opendata_exam_schedules()
     elif args.mode == 'sections':
         import_opendata_sections()
-    elif args.mode == 'all':
-        import_professors()
-        import_departments()
-        import_courses()  # must be after departments
-        import_reviews()  # must be after courses
     else:
         sys.exit('The mode %s is not supported' % args.mode)

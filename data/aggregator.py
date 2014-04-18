@@ -345,7 +345,7 @@ def update_sections():
 
 def update_courses():
     # First get an up to date list of departments and write to a text file
-    print "Crawling for departments"
+    print "Fetching departments"
     rmc_crawler.get_departments()
 
     # Import any departments we don't already have into Mongo
@@ -353,11 +353,11 @@ def update_courses():
     rmc_processor.import_departments()
 
     # Hit the endpoints of the OpenData API for each department
-    print "Crawling for courses"
+    print "Fetching courses"
     rmc_crawler.get_opendata2_courses()
 
     # Load the data into Mongo
-    print "Loading data into Mongo"
+    print "Loading courses into Mongo"
     rmc_processor.import_courses()
 
 
@@ -376,11 +376,19 @@ if __name__ == '__main__':
         'courses': update_courses,
     }
     parser.add_argument('mode',
-            help='one of %s' % ','.join(mode_mapping.keys() + ['all']))
+            help='one of %s' % ','.join(mode_mapping.keys() + ['daily']))
     args = parser.parse_args()
 
-    if args.mode == 'all':
-        for func in mode_mapping.values():
+    if args.mode == 'daily':
+        daily_functions = [
+            update_redis_course_professor_rating,
+            update_redis_friend_mutual_courses,
+            update_mongo_course_rating,
+            update_mongo_course_professors,
+            update_mongo_points,
+            update_exam_schedule,
+        ]
+        for func in daily_functions:
             try:
                 func()
             except Exception as exp:
