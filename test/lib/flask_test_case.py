@@ -28,4 +28,3 @@ class FlaskTestCase(fixtures_test_case.FixturesTestCase):
 
     def assertJsonResponse(self, resp, expected):
         self.assertEqual(deunicode(json.loads(resp.data)), expected)
-

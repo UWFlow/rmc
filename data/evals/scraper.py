@@ -86,7 +86,7 @@ for course in courses:
 
         result_length = len(result)
         if result_length >= 230:
-            # TODO(Sandy): Remember to scrape individual terms for courses 
+            # TODO(Sandy): Remember to scrape individual terms for courses
             # with > 10 results
             print "More than 10 results"
             err_file.write(course + " got more than 10 results (" +
@@ -136,6 +136,6 @@ for course in courses:
     else:
         print "No results"
 
-    
+
 file.close()
 err_file.close()

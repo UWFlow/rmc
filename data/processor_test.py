@@ -13,7 +13,7 @@ class ExamTest(unittest.TestCase):
                     'location': 'DC',
                     'section': '007',
                 }
-            ]), 
+            ]),
             [
                 {
                     'start-time': '4:00 PM',
@@ -39,7 +39,7 @@ class ExamTest(unittest.TestCase):
                     'location': 'DC',
                     'section': '001',
                 }
-            ]), 
+            ]),
             [
                 {
                     'start-time': '4:00 PM',
@@ -71,7 +71,7 @@ class ExamTest(unittest.TestCase):
                     'location': 'MC',
                     'section': '117',
                 }
-            ]), 
+            ]),
             [
                 {
                     'start-time': '4:00 PM',
@@ -87,4 +87,3 @@ class ExamTest(unittest.TestCase):
                 }
             ]
         )
-

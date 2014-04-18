@@ -97,4 +97,3 @@ class FailedScheduleItem(me.Document):
     def __repr__(self):
         return "<FailedScheduleItem: %s, %s, %s, %s %s, %s-%s>" % (
             self.user_id, self.course_id, self.parsed_date)
-

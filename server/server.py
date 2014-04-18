@@ -1045,7 +1045,7 @@ def user_course():
         uc.professor_id = prof_id
 
         # TODO(Sandy): Have some kind of sanity check for professor names.
-        # Don't allow ridiculousness like "Santa Claus", "aksnlf", 
+        # Don't allow ridiculousness like "Santa Claus", "aksnlf",
         # "swear words"
         if m.Professor.objects(id=prof_id).count() == 0:
             first_name, last_name = m.Professor.guess_names(new_prof_name)

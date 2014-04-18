@@ -304,7 +304,7 @@ def import_reviews():
 
 
 def group_similar_exam_sections(exam_sections):
-    """Groups together exam sections that have the same date, time, 
+    """Groups together exam sections that have the same date, time,
        and location.
 
     Args:
@@ -326,7 +326,7 @@ def group_similar_exam_sections(exam_sections):
 
     different_sections = []
     for section in exam_sections:
-        similar_exams = [s for s in different_sections if 
+        similar_exams = [s for s in different_sections if
                 is_similar(s, section)]
         if similar_exams:
             similar_exams[0]['section'] += ', ' + section.get('section')

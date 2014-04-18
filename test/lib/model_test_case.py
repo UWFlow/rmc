@@ -32,4 +32,3 @@ class ModelTestCase(unittest.TestCase):
     def tearDownClass(cls):
         me.connection.disconnect()
         ModelTestCase._drop_test_database()
-
