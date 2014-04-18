@@ -33,10 +33,18 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
       // TODO(mack): remove require() call
       var _user_course = require('user_course');
       return {
-        'user_course': ['user_course_id', _user_course.UserCourses],
-        'profile_user_course': ['profile_user_course_id', _user_course.UserCourses],
-        'friend_user_courses': [ 'friend_user_course_ids', _user_course.UserCourses ],
-        'professors': [ 'professor_ids', _prof.ProfCollection ]
+        'user_course': [
+          'user_course_id', _user_course.UserCourses
+        ],
+        'profile_user_course': [
+          'profile_user_course_id', _user_course.UserCourses
+        ],
+        'friend_user_courses': [
+          'friend_user_course_ids', _user_course.UserCourses
+        ],
+        'professors': [
+          'professor_ids', _prof.ProfCollection
+        ]
       };
     },
 
@@ -101,10 +109,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
           if (_.has(takenCourseIds, splitLower)) {
             // If you've taken the course, add the css class 'taken'
             newSplit = _s.sprintf(
-              '<a class="req taken" href="/course/%s">%s</a>', split.toLowerCase(), split);
+              '<a class="req taken" href="/course/%s">%s</a>',
+              split.toLowerCase(), split);
           } else {
             newSplit = _s.sprintf(
-              '<a class="req" href="/course/%s">%s</a>', split.toLowerCase(), split);
+              '<a class="req" href="/course/%s">%s</a>', split.toLowerCase(),
+              split);
           }
         }
         newSplits.push(newSplit);
@@ -149,12 +159,17 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
               self.courseModel.get('name'))
         );
 
+        mixpanel.track('Add to shortlist', {
+          course_id: self.courseModel.id
+        });
+        mixpanel.people.increment({'Add to shortlist': 1});
+
         // TODO(mack): remove require()
         var _user_course = require('user_course');
         // Add the new user course to the collection cache
         _user_course.UserCourses.addToCache(resp.user_course);
         self.userCourse = _user_course.UserCourses.getFromCache(
-          resp.user_course.id.$oid);
+          resp.user_course.id);
         self.courseModel.set('user_course_id', self.userCourse.id);
 
         self.$('.add-course-btn').tooltip('destroy');
@@ -165,12 +180,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
       };
 
       $.ajax('/api/v1/user/shortlist/' + this.courseModel.id, { type: 'PUT' })
-        .done(function() {
-          mixpanel.track('Add to shortlist', {
-            course_id: self.courseModel.id
-          });
-          mixpanel.people.increment({'Add to shortlist': 1});
-        });
+        .done(onSuccess);
 
       return false;
     },
@@ -180,9 +190,9 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
       $('#confirm-remove-modal').remove();
 
       $('body').append(
-          _.template($('#course-confirm-remove-dialog-tpl').html(), {
-            course_code: this.courseModel.get('code')
-          }));
+        _.template($('#course-confirm-remove-dialog-tpl').html(), {
+          course_code: this.courseModel.get('code')
+        }));
       $('#confirm-remove-modal-button-yes').click(
           _.bind(this.removeCourse, this));
 
@@ -303,7 +313,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
       this.$el.attr('id', domId).html(this.template({
         course: this.courseModel.toJSON(),
         user_course: this.userCourse,
-        //star_uc: window.pageData.ownProfile ? this.userCourse : this.profileUserCourse
         profile_user_course: this.profileUserCourse,
         other_profile: this.otherProfile,
         mode: this.courseModel.getInteractMode()
@@ -328,9 +337,6 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
 
       this.updateAddCourseTooltip();
       this.updateRemoveCourseTooltip();
-
-      var title = '';
-      var termTookName = '';
 
       if (this.canShowAddReview &&
           this.userCourse &&
@@ -453,8 +459,8 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
       });
 
       if (this.canReview) {
-        // TODO(david): Get user review data, and don't show or show altered if no
-        //     user or user didn't take course.
+        // TODO(david): Get user review data, and don't show or show atered if
+        // no user or user didn't take course.
         // TODO(mack): remove circular dependency
         var _user_course = require('user_course');
         this.userCourseView = new _user_course.UserCourseView({

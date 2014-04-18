@@ -9,11 +9,10 @@ function($) {
     $.post(
       '/api/user/unsubscribe', {
         pasta: window.pageData.unsubscribe_user
-      }
-    ).complete(function() {
-      // Failing should have sent a warning to HipChat
-      window.location.href = '/';
-    });
+      }).complete(function() {
+        // Failing should have sent a warning to HipChat
+        window.location.href = '/';
+      });
   });
 
   mixpanel.track('Impression: Unsubscribe page');

@@ -5,10 +5,6 @@ define(
 function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     _course, _user, _bootstrap, _prof, _facebook, _util, _toastr) {
 
-  // TODO(david): This should probably go in term.js (but circular dep) and also
-  //     leaky abstraction from server.
-  var SHORTLIST_TERM_ID = '9999_99';
-
   // TODO(david): Refactor to use sub-models for reviews
   // TODO(david): Refactor this model to match our mongo UserCourse model
   var UserCourse = RmcBackbone.Model.extend({
@@ -39,8 +35,10 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
     },
 
     initialize: function(attrs) {
-      var courseReview = new UserComment(attrs ? attrs.course_review : undefined);
-      var profReview = new UserComment(attrs ? attrs.professor_review : undefined);
+      var courseReview = new UserComment(
+          attrs ? attrs.course_review : undefined);
+      var profReview = new UserComment(
+          attrs ? attrs.professor_review : undefined);
 
       this.set('professor_review', profReview);
       this.set('course_review', courseReview);
@@ -54,10 +52,13 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
       courseReview.set('ratings', courseRatings);
 
       courseRatings.on('change', _.bind(this.onRatingsChange, this, 'COURSE'));
-      profRatings.on('change', _.bind(this.onRatingsChange, this, 'PROFESSOR'));
+      profRatings.on('change',
+          _.bind(this.onRatingsChange, this, 'PROFESSOR'));
 
-      courseReview.on('change:comment', _.bind(this.onCommentsChange, this, 'COURSE'));
-      profReview.on('change:comment', _.bind(this.onCommentsChange, this, 'PROFESSOR'));
+      courseReview.on('change:comment',
+          _.bind(this.onCommentsChange, this, 'COURSE'));
+      profReview.on('change:comment',
+          _.bind(this.onCommentsChange, this, 'PROFESSOR'));
 
       this.on('sync', _.bind(this.onSync, this));
     },
@@ -123,7 +124,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
 
     getReviewJson: function(reviewType) {
       var review = this.get(reviewType);
-      return _.extend({}, review, { 'ratings': review.get('ratings').toJSON() });
+      return _.extend({}, review, {
+        'ratings': review.get('ratings').toJSON()
+      });
     },
 
     hasComments: function() {
@@ -428,10 +431,9 @@ function(RmcBackbone, $, _jqueryui, _, _s, ratings, _select2, _autosize,
      * @return {void}
      */
     tryAutoScroll: function(isRatingChange) {
-      if (isRatingChange) {
-        if (!this.userCourse.get('professor_review').get('ratings').allRated()) {
-          return;
-        }
+      if (isRatingChange &&
+          !this.userCourse.get('professor_review').get('ratings').allRated()) {
+        return;
       }
 
       if (this.canAutoScroll) {

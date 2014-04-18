@@ -364,7 +364,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         futureItems = _(futureItems).sortBy(function(item) {
           return moment(item.get('start_date')).unix();
         });
-        this.setWeek(moment(futureItems[0].get('start_date')).clone().day(1).startOf('day').toDate());
+        this.setWeek(moment(futureItems[0].get('start_date')).clone().day(1)
+            .startOf('day').toDate());
       } else {
         var pastItems = this.get('schedule_items').filter(function(item) {
           return startOfCurrWeek.unix() > moment(item.get('start_date')).unix();
@@ -372,7 +373,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         pastItems = _(pastItems).sortBy(function(item) {
           return moment(item.get('start_date')).unix();
         });
-        this.setWeek(moment(pastItems[pastItems.length-1].get('start_date')).clone().day(1).startOf('day').toDate());
+        this.setWeek(moment(pastItems[pastItems.length-1].get('start_date'))
+            .clone().day(1).startOf('day').toDate());
       }
     },
 
@@ -514,7 +516,6 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
     resize: function(options) {
       this.resizeOptions = options;
 
-      var width = options.width;
       var hourHeight = options.hourHeight;
       var headerHeight = options.headerHeight;
 
@@ -635,9 +636,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       }
 
       if (scheduleData.failed_items.length) {
-        var failedCourses = _.map(scheduleData.failed_items, function(courseId) {
-          return courseId.toUpperCase();
-        });
+        var failedCourses = _.map(
+          scheduleData.failed_items, function(courseId) {
+            return courseId.toUpperCase();
+          }
+        );
 
         window.alert(
           'Uh oh, it seems like ' + failedCourses.join(', ') +
@@ -721,9 +724,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
     },
 
     shareScheduleFacebook: function() {
-     var self = this;
+      var self = this;
 
-      var profileUser = _user.UserCollection.getFromCache(pageData.profileUserId.$oid);
+      var profileUser = _user.UserCollection.getFromCache(
+          pageData.profileUserId.$oid);
       $.getJSON("/api/schedule/screenshot_url", function(data) {
         if (!data.url) {
           mixpanel.track('Schedule Screenshot Not Ready');
@@ -857,9 +861,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       return results;
     };
 
+    /* jshint -W101 */
     // Regexes from:
     // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
     // TODO(Sandy): make this look cleaner (line breaks + comments)
+    /* jshint +W101 */
     var getTitleRe = function() {
       return (/(\w{2,}\ \w{1,5})\ -\ ([^\r\n]+)/g);
     };
@@ -878,7 +884,9 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       // - '23/01/2013'
       // - '2013/01/23'
       // - '2013-01-07'
+      /* jshint -W101 */
       var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}\/\d{2}\/\d{2})|(?:\d{4}-\d{2}-\d{2}))/;
+      /* jshint +W101 */
       var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
       var wsRe = /\s+/;
 
@@ -890,7 +898,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         dayPairRe.source
       ].join(wsRe.source);
 
-      return RegExp(regexStr, 'g');
+      return new RegExp(regexStr, 'g');
     };
 
     var getBodyRe = function() {
@@ -990,8 +998,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
 
       var timeFormats = [dateFormat + (ampm ? ' h:mm A' : ' H:mm')];
 
-      var firstStartMoment = moment.tz(startDateStr + " " + startTimeStr, timeFormats, "America/Toronto");
-      var firstEndMoment = moment.tz(startDateStr + " " + endTimeStr, timeFormats, "America/Toronto");
+      var firstStartMoment = moment.tz(startDateStr + " " + startTimeStr,
+          timeFormats, "America/Toronto");
+      var firstEndMoment = moment.tz(startDateStr + " " + endTimeStr,
+          timeFormats, "America/Toronto");
 
       // Time delta between start and end time, in milliseconds
       var timeDelta = firstEndMoment - firstStartMoment;
@@ -1014,6 +1024,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
             prof_name: profName
           });
         }
+        /* jshint -W101 */
         // When this crosses a DST line, it only changes the date, not the time
         //
         //    > moment("2013-11-02 15:00").add('days', 0).tz("America/Toronto").format()
@@ -1021,6 +1032,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         //    > moment("2013-11-02 15:00").add('days', 1).tz("America/Toronto").format()
         //    "2013-11-03T18:00:00-05:00"
         //
+        /* jshint +W101 */
         currMoment.add('days', 1);
       }
       return processedSlotItems;

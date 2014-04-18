@@ -27,7 +27,8 @@ function($, _, _s, __, _util, _schedule) {
     }
     $('button').addClass('disabled');
 
-    $logger.append('<div class="text-info">Fetching all users who have schedules</div>');
+    $logger.append(
+      '<div class="text-info">Fetching all users who have schedules</div>');
     $.ajax('/api/users/schedule_paste', {
       type: 'GET',
       data: {
@@ -54,8 +55,9 @@ function($, _, _s, __, _util, _schedule) {
     }
     $('button').addClass('disabled');
 
-    $logger.append('<div class="text-info">Fetching users whose schedule failed ' +
-        'to parse</div>');
+    $logger.append(
+      '<div class="text-info">Fetching users whose schedule failed ' +
+      'to parse</div>');
     $.ajax('/api/users/schedule_paste', {
       type: 'GET',
       data: {
@@ -80,8 +82,9 @@ function($, _, _s, __, _util, _schedule) {
     $this.prop('disabled', true);
 
     $.post('/api/schedules/backfill_screenshots', function() {
-      $logger.append('<div class="text-info">Schedule screenshots backfill started.<br>' +
-          'Only schedules that are out of date will be re-rendered.</div>');
+      $logger.append(
+        '<div class="text-info">Schedule screenshots backfill started.<br>' +
+        'Only schedules that are out of date will be re-rendered.</div>');
       $this.prop('disabled', false);
     });
   });
@@ -139,7 +142,8 @@ function($, _, _s, __, _util, _schedule) {
           try {
             scheduleData = new _schedule.parseSchedule(scheduleText);
           } catch(ex) {
-            $logger.append('<div class="text-error indent">Error while parsing: ' +
+            $logger.append(
+              '<div class="text-error indent">Error while parsing: ' +
               ex.toString() +'</div>');
             failedCount += 1;
             return $.Deferred().reject();

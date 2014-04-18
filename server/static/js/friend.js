@@ -214,8 +214,6 @@ function(RmcBackbone, $, _, _s, bootstrap, __, _course, _facebook,
       this.$('.friend-collection-placeholder').replaceWith(
         collectionView.render().$el);
 
-      var self = this;
-
       // Setup up FB Invite Friends buttons
       return this;
     },

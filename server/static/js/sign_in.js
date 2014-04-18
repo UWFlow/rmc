@@ -1,7 +1,8 @@
 define(
 ['ext/jquery', 'ext/underscore', 'ext/bootstrap', 'rmc_backbone', 'facebook',
   'util', 'ext/validate', 'ext/mailcheck'],
-function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck) {
+function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate,
+  _mailcheck) {
 
   var emailLoginModalView = null;
   var emailSignUpModalView = null;
@@ -35,7 +36,7 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
         _facebook.initFacebook(true);
       }
 
-     _facebook.initConnectButton({
+      _facebook.initConnectButton({
         source: this.source,
         nextUrl: this.nextUrl
       });
@@ -96,7 +97,7 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
   });
 
   var renderBanner = function(attributes) {
-     _.defaults(attributes, {
+    _.defaults(attributes, {
       fbConnectText: 'Sign in with Facebook',
       source: 'UNKNOWN'
     });
@@ -275,16 +276,19 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
       return this;
     },
 
-    // Adapted code from http://andrewberls.com/blog/post/reducing-bad-signup-emails for suggestion
+    // Adapted code from
+    // http://andrewberls.com/blog/post/reducing-bad-signup-emails
+    // for suggestion
     onEmailInputBlur: function() {
       var $hint = this.$('.email-hint');
       this.$('input[name="email"]').mailcheck({
         suggested: function(element, suggestion) {
-          this.$('.email-suggestion').text(suggestion.address + '@' + suggestion.domain);
+          this.$('.email-suggestion').text(
+            suggestion.address + '@' + suggestion.domain);
           $hint.fadeIn(50);
         },
         empty: function(element) {
-          $hint.fadeOut(50); 
+          $hint.fadeOut(50);
         }
       });
     },
@@ -298,7 +302,6 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate, _mailcheck)
 
     onSubmit: function(e) {
       e.preventDefault();
-      var $errorsContainer = this.$('.errors');
       var params = this.$('input[name!=confirm_password]').serialize();
 
       mixpanel.track('Login: Email signup');

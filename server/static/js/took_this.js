@@ -35,9 +35,9 @@ function(RmcBackbone, $, _, _s, bootstrap, util) {
     initialize: function(attributes) {
       var currentTermId = attributes.currentTermId;
       var userCourses = attributes.userCourses;
-      var pastTermUserCourses = new RmcBackbone.Collection;
-      var currentTermUserCourses = new RmcBackbone.Collection;
-      var futureTermUserCourses = new RmcBackbone.Collection;
+      var pastTermUserCourses = new RmcBackbone.Collection();
+      var currentTermUserCourses = new RmcBackbone.Collection();
+      var futureTermUserCourses = new RmcBackbone.Collection();
 
       // Sort friend who've taken the course descendingly
       pastTermUserCourses.comparator = function(uc1, uc2) {

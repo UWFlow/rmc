@@ -5,15 +5,18 @@ function($, _, _s) {
   /**
    * Parses transcript text. Will throw exception on failure to parse.
    * @param {string} data Transcript text
-   * @return {array} list of { termName: <X>, courseIds: [<A>, <B>, ...] } objects
+   * @return {array} list of { termName: <X>, courseIds: [<A>, <B>, ...] }
+   *                 objects
    */
   function parseTranscript(data) {
-    var beginMarker = 'UNIVERSITY  OF  WATERLOO  UNDERGRADUATE  UNOFFICIAL  TRANSCRIPT';
+    var beginMarker =
+        'UNIVERSITY  OF  WATERLOO  UNDERGRADUATE  UNOFFICIAL  TRANSCRIPT';
     var endMarker = 'End of Transcript';
 
     var beginIndex = data.indexOf(beginMarker);
     if (beginIndex !== -1) {
-      beginIndex += beginMarker.length; }
+      beginIndex += beginMarker.length;
+    }
     var endIndex = data.indexOf(endMarker);
     if (endIndex === -1) {
       endIndex = data.length;
@@ -53,7 +56,8 @@ function($, _, _s) {
     var coursesByTerm = [];
     // Parse out the term and courses taken in that term
     _.each(termsRaw, function(termRaw, i) {
-      var matches = termRaw.match(/^((?:Spring|Fall|Winter) \d{4})\s+(\d[A-B])/);
+      var matches = termRaw.match(
+          /^((?:Spring|Fall|Winter) \d{4})\s+(\d[A-B])/);
       if (!matches) {
         // This could happen for a term that is a transfer from another school
         return;

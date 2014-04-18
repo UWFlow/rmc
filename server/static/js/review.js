@@ -132,7 +132,7 @@ function(RmcBackbone, $, _, ratings, util) {
           this.addItemView(view);
         }, this);
       } else {
-        throw 'ReviewCollectionView.render() must be called with argument firstOnly';
+        throw 'ReviewCollectionView.render() must be called with arg firstOnly';
       }
 
       return this;

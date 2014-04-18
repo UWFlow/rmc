@@ -13,7 +13,6 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
     '': ''
   };
 
-  var NUM_SEGMENTS = 5;
   // TODO(david): Refactor all the row-fluid to use an actual class name
 
   // A rating of a single metric

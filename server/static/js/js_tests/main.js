@@ -23,16 +23,16 @@ require.config({
   },
 });
 
-require(['require', 'chai', 'mocha', 'ext/jquery'], 
+require(['require', 'chai', 'mocha', 'ext/jquery'],
 		function(require, chai){
 
   /*globals mocha */
   mocha.setup('bdd');
- 
+
   require([
     'transcript_test.js',
   ], function(require) {
     mocha.run();
   });
- 
+
 });

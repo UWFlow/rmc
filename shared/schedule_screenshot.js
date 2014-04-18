@@ -2,7 +2,8 @@ var page = require('webpage').create();
 var system = require('system');
 
 if (system.args.length < 3) {
-  console.error("usage: phantom-schedule-screenshot.js schedule_url path/to/output.png");
+  console.error(
+      "usage: phantom-schedule-screenshot.js schedule_url path/to/output.png");
   phantom.exit(1);
 } else {
   var url = system.args[1];
@@ -12,7 +13,8 @@ if (system.args.length < 3) {
   page.open(url, function() {});
 
   page.onCallback = function(viewportSize) {
-    console.log("Resizing to " + viewportSize.width + "x" + viewportSize.height);
+    console.log("Resizing to " + viewportSize.width + "x" +
+        viewportSize.height);
     page.viewportSize = viewportSize;
     page.clipRect = {
       top: 0,
@@ -31,7 +33,8 @@ if (system.args.length < 3) {
       require(["ext/jquery"], function($) {
         var render = function() {
           var scheduleZIndex = 2147483647;
-          // Put up a white background to hide everything except for the schedule
+          // Put up a white background to hide everything except for the
+          // schedule
           $("<div/>").css({
             width: "100%",
             height: "100%",
@@ -47,8 +50,10 @@ if (system.args.length < 3) {
 
           var $profileContainer = $("#profile-container");
           var height = $profileContainer.outerHeight();
+          /* jshint -W101 */
           // Recommended ratio for photos on facebook is 1.91:1
           // https://developers.facebook.com/docs/opengraph/howtos/maximizing-distribution-media-content/#tags
+          /* jshint +W101 */
           var width = 1.91 * height;
 
           $profileContainer.css({

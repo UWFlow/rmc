@@ -1,7 +1,8 @@
 require(
 ['ext/jquery','course', 'took_this', 'user', 'tips', 'prof', 'exam', 'ratings',
 'user_course', 'review', 'sign_in'],
-function($, course, tookThis, user, tips, prof, _exam, ratings, user_course, _review, _sign_in) {
+function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
+    _review, _sign_in) {
 
   course.CourseCollection.addToCache(pageData.courseObj);
   user_course.UserCourses.addToCache(pageData.userCourseObjs);

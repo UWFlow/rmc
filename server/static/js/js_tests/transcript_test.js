@@ -37,7 +37,7 @@ define(function(require) {
     it('extracts the oldest term\'s courses', function(done) {
       parsedTranscriptPromise.then(function(transcriptData) {
         expect(transcriptData.coursesByTerm[9].courseIds).to.have.members([
-            'che102', 'cs137', 'math115', 'math117', 'phys115', 'se101'
+          'che102', 'cs137', 'math115', 'math117', 'phys115', 'se101'
         ]);
         done();
       });
@@ -60,8 +60,8 @@ define(function(require) {
     it('extracts the most recent term\'s courses', function(done) {
       parsedTranscriptPromise.then(function(transcriptData) {
         expect(transcriptData.coursesByTerm[0].courseIds).to.have.members([
-            'cs343', 'cs348', 'earth121', 'earth121l', 'se390', 'se463', 
-            'wkrpt300'
+          'cs343', 'cs348', 'earth121', 'earth121l', 'se390', 'se463',
+          'wkrpt300'
         ]);
         done();
       });
@@ -80,5 +80,5 @@ define(function(require) {
         done();
       });
     });
-  });   
+  });
 });
