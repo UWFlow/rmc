@@ -27,5 +27,8 @@ MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gm
 # Hourly: Update sections information (which includes enrollment data)
 5 * * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py sections > /dev/null
 
-# Weekly: Update sections information (which includes enrollment data)
+# Weekly: Update the HTML snapshots that we serve to Googlebot
 0 22 * * 3 (cd /home/rmc/rmc && make update_html_snapshots)
+
+# Weekly:
+17 23 * * 0 PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py courses
