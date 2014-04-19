@@ -13,7 +13,7 @@
 SHELL=/bin/sh
 PATH=/home/rmc/.virtualenvs/rmc/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games
 
-MAILTO=redccnt@gmail.com,duan.mack@gmail.com,davidhu91@gmail.com,jiayisandywu@gmail.com
+MAILTO=devs@uwflow.com
 
 # Daily: Aggregate ratings, mutual courses, etc...
 42 7 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py daily
