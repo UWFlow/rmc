@@ -1,0 +1,458 @@
+GO!
+
+Jeffrey Gulbronson
+
+
+My Academics
+
+Course Selection (Undergrad only)
+
+Enroll
+
+GO Pass
+
+
+
+
+my class schedule
+
+add
+
+drop
+
+swap
+
+component swap
+
+appointments
+
+search for classes
+
+
+My Class Schedule
+List View
+Weekly Calendar View
+Select Display Option
+change term
+Winter 2014 | Undergraduate | University of Waterloo
+CS 138 - Intro to Data Abstr and Implem
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+5819
+001
+LEC
+TTh 10:00AM - 11:20AM
+OPT   347
+Michael Godfrey
+01/06/2014 - 04/04/2014
+5820
+101
+TUT
+T 12:30PM - 1:20PM
+MC   2035
+Staff
+01/06/2014 - 04/04/2014
+Exam Information
+
+ECE 106 - Physics of Electrical Eng 2
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4945
+002
+LEC
+T 2:30PM - 3:20PM
+MC   2066
+Omar Ramahi
+01/06/2014 - 04/04/2014
+
+
+
+Th 1:30PM - 2:20PM
+MC   2066
+Omar Ramahi
+01/06/2014 - 04/04/2014
+
+
+
+F 11:30AM - 12:20PM
+MC   2066
+Omar Ramahi
+01/06/2014 - 04/04/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Omar Ramahi
+01/21/2014 - 01/21/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Omar Ramahi
+02/04/2014 - 02/04/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Omar Ramahi
+03/04/2014 - 03/04/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Omar Ramahi
+03/18/2014 - 03/18/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Omar Ramahi
+04/01/2014 - 04/01/2014
+4948
+106
+TUT
+M 8:30AM - 10:20AM
+RCH   308
+Omar Ramahi
+01/06/2014 - 04/04/2014
+4951
+206
+LAB
+F 1:30PM - 4:20PM
+E2 3346
+Manisha Shah
+01/17/2014 - 01/17/2014
+
+
+
+F 1:30PM - 4:20PM
+E2 3346
+Manisha Shah
+01/31/2014 - 01/31/2014
+
+
+
+F 1:30PM - 4:20PM
+E2 3346
+Manisha Shah
+02/14/2014 - 02/14/2014
+
+
+
+F 1:30PM - 4:20PM
+E2 3346
+Manisha Shah
+03/07/2014 - 03/07/2014
+
+
+
+F 1:30PM - 4:20PM
+E2 3346
+Manisha Shah
+03/21/2014 - 03/21/2014
+
+
+
+F 1:30PM - 4:20PM
+E2 3346
+Manisha Shah
+04/04/2014 - 04/04/2014
+Exam Information
+
+ECE 124 - Digital Circuits and Systems
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4952
+002
+LEC
+W 9:30AM - 10:20AM
+MC   2066
+Andrew Kennings
+01/06/2014 - 04/04/2014
+
+
+
+Th 2:30PM - 3:20PM
+RCH   302
+Andrew Kennings
+01/06/2014 - 04/04/2014
+
+
+
+F 9:30AM - 10:20AM
+MC   2066
+Andrew Kennings
+01/06/2014 - 04/04/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Andrew Kennings
+01/14/2014 - 01/14/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Andrew Kennings
+03/11/2014 - 03/11/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Andrew Kennings
+03/25/2014 - 03/25/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Andrew Kennings
+01/28/2014 - 01/28/2014
+
+
+
+T 8:30AM - 9:50AM
+MC   2066
+Andrew Kennings
+02/11/2014 - 02/11/2014
+4955
+106
+TUT
+T 1:30PM - 2:20PM
+MC   4040
+Andrew Kennings
+01/06/2014 - 04/04/2014
+4957
+205
+LAB
+M 1:30PM - 4:20PM
+E2 2356
+Staff
+01/13/2014 - 01/13/2014
+
+
+
+M 1:30PM - 4:20PM
+E2 2356
+Staff
+01/27/2014 - 01/27/2014
+
+
+
+M 1:30PM - 4:20PM
+E2 2356
+Staff
+02/10/2014 - 02/10/2014
+
+
+
+M 1:30PM - 4:20PM
+E2 2356
+Staff
+03/03/2014 - 03/03/2014
+
+
+
+M 1:30PM - 4:20PM
+E2 2356
+Staff
+03/17/2014 - 03/17/2014
+
+
+
+M 1:30PM - 4:20PM
+E2 2356
+Staff
+03/31/2014 - 03/31/2014
+Exam Information
+
+MATH 119 - Calculus 2 for Engineering
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+5723
+002
+LEC
+WF 8:30AM - 9:20AM
+MC   2066
+Sean Speziale
+01/06/2014 - 04/04/2014
+
+
+
+Th 12:30PM - 1:20PM
+MC   2066
+Sean Speziale
+01/06/2014 - 04/04/2014
+
+
+
+Th 8:30AM - 9:50AM
+MC   2066
+Sean Speziale
+01/16/2014 - 01/16/2014
+
+
+
+Th 8:30AM - 9:50AM
+MC   2066
+Sean Speziale
+01/30/2014 - 01/30/2014
+
+
+
+Th 8:30AM - 9:50AM
+MC   2066
+Sean Speziale
+02/13/2014 - 02/13/2014
+
+
+
+Th 8:30AM - 9:50AM
+MC   2066
+Sean Speziale
+03/13/2014 - 03/13/2014
+
+
+
+Th 8:30AM - 9:50AM
+MC   2066
+Sean Speziale
+03/27/2014 - 03/27/2014
+5739
+105
+TUT
+M 10:30AM - 12:20PM
+MC   4058
+Sean Speziale
+01/06/2014 - 04/04/2014
+5962
+201
+TST
+W 2:30PM - 4:20PM
+TBA
+Staff
+02/26/2014 - 02/26/2014
+Exam Information
+
+MATH 135 - Algebra for Hons Mathematics
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+5667
+201
+TST
+M 7:00PM - 8:50PM
+TBA
+Staff
+02/10/2014 - 02/10/2014
+5811
+004
+LEC
+WF 10:30AM - 11:20AM
+MC   2066
+Martin Pei
+01/06/2014 - 04/04/2014
+
+
+
+Th 3:30PM - 4:20PM
+MC   2066
+Martin Pei
+01/06/2014 - 04/04/2014
+5813
+104
+TUT
+T 3:30PM - 4:20PM
+EIT 1015
+Staff
+01/06/2014 - 04/04/2014
+Exam Information
+
+SE 102 - Seminar
+Status	Units	Grading	Grade
+Enrolled
+0.00
+Non-Graded Component
+
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+6951
+001
+SEM
+Th 4:30PM - 5:20PM
+MC   2066
+Andrew Morton
+01/06/2014 - 04/04/2014
+Exam Information
+
+STAT 230 - Probability
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+5561
+101
+TUT
+W 3:30PM - 4:20PM
+M3 1006
+Christian Boudreau,
+Javid Ali
+01/06/2014 - 04/04/2014
+5891
+201
+TST
+Th 4:30PM - 6:20PM
+TBA
+Christian Boudreau,
+Javid Ali
+02/06/2014 - 02/06/2014
+
+
+
+Th 4:30PM - 6:20PM
+TBA
+Christian Boudreau,
+Javid Ali
+03/13/2014 - 03/13/2014
+7208
+002
+LEC
+MWF 12:30PM - 1:20PM
+DC   1350
+Christian Boudreau
+01/06/2014 - 04/04/2014
+Exam Information
+
+Printer Friendly Page
+ 	My Academics	 	 	 	Course Selection (Undergrad Only)	 	 	 	Enroll	 	 	 	Go Pass
+ 	My Class Schedule	 	 	 	Add	 	 	 	Drop	 	 	 	Swap	 	 	 	Component Swap	 	 	 	Appointments	 	 	 	Search For Classes
+GO!
+

@@ -232,10 +232,10 @@ function(_, _s, $) {
   };
 
   /**
-   * The professor names entered by people when reviewing 
-   * courses may not precisely match the professor names 
+   * The professor names entered by people when reviewing
+   * courses may not precisely match the professor names
    * we have from section information. In order to be able to
-   * link the two together, we use the heuristic of taking the 
+   * link the two together, we use the heuristic of taking the
    * first initial and appending the last name.
    *
    * e.g. "Corey Van De Waal" -> "c_waal"
@@ -252,7 +252,7 @@ function(_, _s, $) {
       return nameParts[0].toLowerCase();
     }
   };
-  
+
   /**
    * Converts a professor ID into a readable form.
    * Eg. "byron_weber_becker" => "Byron Weber Becker"
@@ -340,6 +340,6 @@ function(_, _s, $) {
     sectionTypeToCssClass: sectionTypeToCssClass,
     splitCourseId: splitCourseId,
     termIdToQuestId: termIdToQuestId,
-    getCurrentUserId: getCurrentTermName
+    getCurrentTermName: getCurrentTermName
   };
 });

@@ -1,5 +1,3 @@
-/* global it, describe */
-
 define(function(require) {
   var expect = require('chai').expect;
   var transcript = require('transcript');
