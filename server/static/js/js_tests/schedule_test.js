@@ -11,6 +11,7 @@ define(function(require) {
 
     it('extracts the term name', function(done) {
       parsedSchedulePromise.then(function(scheduleData) {
+        console.log(scheduleData);
         expect(scheduleData.term_name).to.equal("Winter 2014");
         done();
       });
@@ -68,6 +69,34 @@ define(function(require) {
       });
     });
 
+    it('extracts the first item\'s class number', function(done) {
+      parsedSchedulePromise.then(function(scheduleData) {
+        expect(scheduleData.processed_items[0].class_num).to.equal('5819');
+        done();
+      });
+    });
+
+    it('extracts the first item\'s room', function(done) {
+      parsedSchedulePromise.then(function(scheduleData) {
+        expect(scheduleData.processed_items[0].room).to.equal('347');
+        done();
+      });
+    });
+
+    it('extracts the first item\'s section number', function(done) {
+      parsedSchedulePromise.then(function(scheduleData) {
+        expect(scheduleData.processed_items[0].section_num).to.equal('001');
+        done();
+      });
+    });
+
+    it('extracts the first item\'s section type', function(done) {
+      parsedSchedulePromise.then(function(scheduleData) {
+        expect(scheduleData.processed_items[0].section_type).to.equal('LEC');
+        done();
+      });
+    });
+
     it('extracts the last item\'s building', function(done) {
       parsedSchedulePromise.then(function(scheduleData) {
         expect(scheduleData.processed_items[342].building).to.equal("DC");
@@ -103,6 +132,34 @@ define(function(require) {
       parsedSchedulePromise.then(function(scheduleData) {
         expect(scheduleData.processed_items[342].end_date).to.equal(
             1396632000);
+        done();
+      });
+    });
+
+    it('extracts the last item\'s class number', function(done) {
+      parsedSchedulePromise.then(function(scheduleData) {
+        expect(scheduleData.processed_items[342].class_num).to.equal('7208');
+        done();
+      });
+    });
+
+    it('extracts the last item\'s room', function(done) {
+      parsedSchedulePromise.then(function(scheduleData) {
+        expect(scheduleData.processed_items[342].room).to.equal('1350');
+        done();
+      });
+    });
+
+    it('extracts the last item\'s section number', function(done) {
+      parsedSchedulePromise.then(function(scheduleData) {
+        expect(scheduleData.processed_items[342].section_num).to.equal('002');
+        done();
+      });
+    });
+
+    it('extracts the last item\'s section type', function(done) {
+      parsedSchedulePromise.then(function(scheduleData) {
+        expect(scheduleData.processed_items[342].section_type).to.equal('LEC');
         done();
       });
     });
