@@ -135,36 +135,49 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
       return Math.max(this.numReviews() - this.numShown);
     },
 
-    // TODO(mack): refactor this mess
     toggleExpand: function() {
-
-      var toggle = _.bind(function() {
-        if (this.expanded) {
-          this.$('.expanded-reviews').fancySlide('up');
-          this.$('.toggle-reviews')
-            .html('See ' + this.numHidden() + ' more ' +
-                util.pluralize(this.numHidden(), 'review') + ' &raquo;');
-        } else {
-          this.$('.expanded-reviews').fancySlide('down');
-          this.$('.toggle-reviews').html('&laquo; Hide reviews');
-        }
-        this.expanded = !this.expanded;
-      }, this);
-
       if (!this.firstExpanded) {
-        this.firstExpanded = true;
-        this.$('.toggle-reviews').text('Loading...');
-        window.setTimeout(_.bind(function() {
-          this.profReviewCollectionView.render(false);
-
-          this.$('.review-post').slice(this.numShown)
-            .wrapAll('<div class="expanded-reviews hide-initial">');
-
-          toggle();
-        }, this), 100);
+        this._loadReviews();
+      } else if (this.expanded) {
+        this._collapseReviews();
       } else {
-        toggle();
+        this._expandReviews();
       }
+    },
+
+    _loadReviews: function() {
+      this.firstExpanded = true;
+      this.$('.toggle-reviews').text('Loading...');
+      window.setTimeout(_.bind(function() {
+        this.profReviewCollectionView.render(false);
+
+        this.$('.review-post').slice(this.numShown)
+          .wrapAll('<div class="expanded-reviews hide-initial">');
+
+        this._expandReviews();
+      }, this), 100);
+    },
+
+    _collapseReviews: function() {
+      var profCardTop = this.$('.expandable-prof').offset().top;
+      var navBarHeight = $("#site-nav").height();
+      var margin = 16;
+
+      $('html,body').animate({
+        scrollTop: profCardTop - navBarHeight - margin
+      }, 300);
+
+      this.$('.expanded-reviews').fancySlide('up');
+      this.$('.toggle-reviews')
+        .html('See ' + this.numHidden() + ' more ' +
+              util.pluralize(this.numHidden(), 'review') + ' &raquo;');
+      this.expanded = false;
+    },
+
+    _expandReviews: function() {
+      this.$('.expanded-reviews').fancySlide('down');
+      this.$('.toggle-reviews').html('&laquo; Hide reviews');
+      this.expanded = true;
     }
   });
 
