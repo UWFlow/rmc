@@ -136,25 +136,16 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
     },
 
     toggleExpand: function() {
-
-      var self = this;
-
       if (!this.firstExpanded) {
-        this.loadReviews();
+        this._loadReviews();
+      } else if (this.expanded) {
+        this._collapseReviews();
       } else {
-        toggle();
-      }
-
-      function toggle() {
-        if (self.expanded) {
-          self.collapseReviews();
-        } else {
-          self.expandReviews();
-        }
+        this._expandReviews();
       }
     },
 
-    loadReviews: function() {
+    _loadReviews: function() {
       this.firstExpanded = true;
       this.$('.toggle-reviews').text('Loading...');
       window.setTimeout(_.bind(function() {
@@ -163,12 +154,11 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
         this.$('.review-post').slice(this.numShown)
           .wrapAll('<div class="expanded-reviews hide-initial">');
 
-        this.expandReviews();
+        this._expandReviews();
       }, this), 100);
     },
 
-    collapseReviews: function() {
-
+    _collapseReviews: function() {
       var profCardTop = this.$('.expandable-prof').offset().top;
       var navBarHeight = $("#site-nav").height();
       var margin = 16;
@@ -184,7 +174,7 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
       this.expanded = false;
     },
 
-    expandReviews: function() {
+    _expandReviews: function() {
       this.$('.expanded-reviews').fancySlide('down');
       this.$('.toggle-reviews').html('&laquo; Hide reviews');
       this.expanded = true;
