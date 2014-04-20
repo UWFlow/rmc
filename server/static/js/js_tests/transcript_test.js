@@ -1,11 +1,11 @@
 define(function(require) {
-  var expect = require('chai').expect;
+  var expect = require('ext/chai').expect;
   var transcript = require('transcript');
-  var $ = require('jquery');
+  var $ = require('ext/jquery');
 
   describe('Transcript parsing', function() {
     var parsedTranscriptPromise = $.get(
-        '/sample_transcript.txt').then(function(r) {
+        '/static/sample_transcript.txt').then(function(r) {
       return transcript.parseTranscript(r);
     });
 
