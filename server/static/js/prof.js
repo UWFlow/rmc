@@ -175,7 +175,7 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
 
       $('html,body').animate({
         scrollTop: profCardTop - navBarHeight - margin
-      }, 100);
+      }, 300);
 
       this.$('.expanded-reviews').fancySlide('up');
       this.$('.toggle-reviews')
