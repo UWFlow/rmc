@@ -135,39 +135,59 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
       return Math.max(this.numReviews() - this.numShown);
     },
 
-    // TODO(mack): refactor this mess
     toggleExpand: function() {
 
-      var toggle = _.bind(function() {
-        if (this.expanded) {
-          $('html,body').animate({
-            scrollTop: this.$('.expandable-prof').offset().top - $("#site-nav").height() - 16
-          }, 100);
-          this.$('.expanded-reviews').fancySlide('up');
-          this.$('.toggle-reviews')
-            .html('See ' + this.numHidden() + ' more ' +
-                util.pluralize(this.numHidden(), 'review') + ' &raquo;');
-        } else {
-          this.$('.expanded-reviews').fancySlide('down');
-          this.$('.toggle-reviews').html('&laquo; Hide reviews');
-        }
-        this.expanded = !this.expanded;
-      }, this);
+      var self = this;
 
       if (!this.firstExpanded) {
-        this.firstExpanded = true;
-        this.$('.toggle-reviews').text('Loading...');
-        window.setTimeout(_.bind(function() {
-          this.profReviewCollectionView.render(false);
-
-          this.$('.review-post').slice(this.numShown)
-            .wrapAll('<div class="expanded-reviews hide-initial">');
-
-          toggle();
-        }, this), 100);
+        this.loadReviews();
       } else {
         toggle();
       }
+
+      function toggle() {
+        if (self.expanded) {
+          self.collapseReviews();
+        } else {
+          self.expandReviews();
+        }
+      }
+    },
+
+    loadReviews: function() {
+      this.firstExpanded = true;
+      this.$('.toggle-reviews').text('Loading...');
+      window.setTimeout(_.bind(function() {
+        this.profReviewCollectionView.render(false);
+
+        this.$('.review-post').slice(this.numShown)
+          .wrapAll('<div class="expanded-reviews hide-initial">');
+
+        this.expandReviews();
+      }, this), 100);
+    },
+
+    collapseReviews: function() {
+
+      var profCardTop = this.$('.expandable-prof').offset().top;
+      var navBarHeight = $("#site-nav").height();
+      var margin = 16;
+
+      $('html,body').animate({
+        scrollTop: profCardTop - navBarHeight - margin
+      }, 100);
+
+      this.$('.expanded-reviews').fancySlide('up');
+      this.$('.toggle-reviews')
+        .html('See ' + this.numHidden() + ' more ' +
+              util.pluralize(this.numHidden(), 'review') + ' &raquo;');
+      this.expanded = false;
+    },
+
+    expandReviews: function() {
+      this.$('.expanded-reviews').fancySlide('down');
+      this.$('.toggle-reviews').html('&laquo; Hide reviews');
+      this.expanded = true;
     }
   });
 
