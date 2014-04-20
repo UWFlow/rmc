@@ -11,7 +11,6 @@ define(function(require) {
 
     it('extracts the term name', function(done) {
       parsedSchedulePromise.then(function(scheduleData) {
-        console.log(scheduleData);
         expect(scheduleData.term_name).to.equal("Winter 2014");
         done();
       });
