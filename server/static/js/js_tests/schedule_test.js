@@ -1,11 +1,11 @@
 define(function(require) {
-  var expect = require('chai').expect;
-  var $ = require('jquery');
+  var expect = require('ext/chai').expect;
+  var $ = require('ext/jquery');
   var schedule_parser = require('schedule_parser');
 
   describe('Schedule parsing', function() {
     var parsedSchedulePromise = $.get(
-        '/sample_schedule.txt').then(function(r) {
+        '/static/sample_schedule.txt').then(function(r) {
       return schedule_parser.parseSchedule(r);
     });
 
