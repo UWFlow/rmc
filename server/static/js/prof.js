@@ -140,6 +140,9 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
 
       var toggle = _.bind(function() {
         if (this.expanded) {
+          $('html,body').animate({
+            scrollTop: this.$('.expandable-prof').offset().top - $("#site-nav").height() - 16
+          }, 100);
           this.$('.expanded-reviews').fancySlide('up');
           this.$('.toggle-reviews')
             .html('See ' + this.numHidden() + ' more ' +
