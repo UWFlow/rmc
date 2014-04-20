@@ -9,158 +9,125 @@ define(function(require) {
       return schedule_parser.parseSchedule(r);
     });
 
-    it('extracts the term name', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.term_name).to.equal("Winter 2014");
-        done();
+    var testParsedScheduleAsync = function(testName, testCallback) {
+      it(testName, function(done) {
+        parsedSchedulePromise.then(function(scheduleData) {
+          try {
+            testCallback(scheduleData);
+            done();
+          } catch (e) {
+            return done(e);
+          }
+        });
       });
+    };
+
+    testParsedScheduleAsync('extracts the term name',
+        function(scheduleData) {
+      expect(scheduleData.term_name).to.equal("Winter 2014");
     });
 
-    it('produces no failed items', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.failed_items.length).to.equal(0);
-        done();
-      });
+    testParsedScheduleAsync('produces no failed items',
+        function(scheduleData) {
+      expect(scheduleData.failed_items.length).to.equal(0);
     });
 
-    it('extracts the correct number of items', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items.length).to.equal(343);
-        done();
-      });
+    testParsedScheduleAsync('extracts the correct number of items',
+        function(scheduleData) {
+      expect(scheduleData.processed_items.length).to.equal(343);
     });
 
-    it('extracts the first item\'s building', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].building).to.equal("OPT");
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s building',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].building).to.equal("OPT");
     });
 
-    it('extracts the first item\'s course ID', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].course_id).to.equal("cs138");
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s course ID',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].course_id).to.equal("cs138");
     });
 
-    it('extracts the first item\'s prof name', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].prof_name).to.equal(
-            "Michael Godfrey");
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s prof name',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].prof_name).to.equal(
+        "Michael Godfrey");
     });
 
-    it('extracts the first item\'s start date', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].start_date).to.equal(
-            1389106800);
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s start date',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].start_date).to.equal(1389106800);
     });
 
-    it('extracts the first item\'s end date', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].end_date).to.equal(
-            1389111600);
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s end date',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].end_date).to.equal(1389111600);
     });
 
-    it('extracts the first item\'s class number', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].class_num).to.equal('5819');
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s class number',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].class_num).to.equal('5819');
     });
 
-    it('extracts the first item\'s room', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].room).to.equal('347');
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s room',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].room).to.equal('347');
     });
 
-    it('extracts the first item\'s section number', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].section_num).to.equal('001');
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s section number',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].section_num).to.equal('001');
     });
 
-    it('extracts the first item\'s section type', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[0].section_type).to.equal('LEC');
-        done();
-      });
+    testParsedScheduleAsync('extracts the first item\'s section type',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[0].section_type).to.equal('LEC');
     });
 
-    it('extracts the last item\'s building', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].building).to.equal("DC");
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s building',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].building).to.equal("DC");
     });
 
-    it('extracts the last item\'s course ID', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].course_id).to.equal(
-            "stat230");
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s course ID',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].course_id).to.equal("stat230");
     });
 
-    it('extracts the last item\'s prof name', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].prof_name).to.equal(
-            "Christian Boudreau");
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s prof name',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].prof_name).to.equal(
+          "Christian Boudreau");
     });
 
-    it('extracts the last item\'s start date', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].start_date).to.equal(
-            1396629000);
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s start date',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].start_date).to.equal(
+          1396629000);
     });
 
-    it('extracts the last item\'s end date', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].end_date).to.equal(
-            1396632000);
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s end date',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].end_date).to.equal(1396632000);
     });
 
-    it('extracts the last item\'s class number', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].class_num).to.equal('7208');
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s class number',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].class_num).to.equal('7208');
     });
 
-    it('extracts the last item\'s room', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].room).to.equal('1350');
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s room',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].room).to.equal('1350');
     });
 
-    it('extracts the last item\'s section number', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].section_num).to.equal('002');
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s section number',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].section_num).to.equal('002');
     });
 
-    it('extracts the last item\'s section type', function(done) {
-      parsedSchedulePromise.then(function(scheduleData) {
-        expect(scheduleData.processed_items[342].section_type).to.equal('LEC');
-        done();
-      });
+    testParsedScheduleAsync('extracts the last item\'s section type',
+        function(scheduleData) {
+      expect(scheduleData.processed_items[342].section_type).to.equal('LEC');
     });
   });
 });
