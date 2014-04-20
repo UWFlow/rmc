@@ -2,7 +2,12 @@ import os
 
 import rmc.shared.secrets as s
 
+# TODO(david): Re-enable minification by changing this directory to 'js_prod'.
+#     Minification was disabled in github.com/UWFlow/rmc/commit/52fae50b
+#     to be able to debug Airbrake issues, but it looks like Airbrake supports
+#     source maps now.
 JS_DIR = 'js'
+
 DEBUG = False
 ENV = 'prod'
 GA_PROPERTY_ID = 'UA-35073503-1'

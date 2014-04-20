@@ -26,8 +26,21 @@ sudo pip install -r requirements.txt
 echo "Compiling compass"
 compass compile server --output-style compressed --force
 
-echo "Compiling js"
-( cd server && node r.js -o build.js )
+# TODO(david): Uncomment the two lines below to re-enable compiling and
+#     minifying JS. This involves doing the following:
+#     1. Fix this compile step: running this will result in an error right now.
+#        This runs the Require.js optimizer (see
+#        http://requirejs.org/docs/optimization.html), which parses out and
+#        tries to run the contents of `require.config({})` in
+#        server/static/js/main.js. However, in github.com/UWFlow/rmc/pull/161 we
+#        moved the raw JSON contents of main.js:require.config() into its own
+#        file, config_settings.js, in order to facilitate a consistent
+#        environment for JS tests.
+#     2. Change JS_DIR in flask_prod.py from 'js' to 'js_prod', where the
+#        minified files end up. This will require producing source maps and
+#        configuring Airbrake to use them.
+#echo "Compiling js"
+#( cd server && node r.js -o build.js )
 
 sudo service rmc_daemon restart
 sudo service celeryd restart
