@@ -1,5 +1,4 @@
-// TODO(jeff): Reuse main.js from the main Javascript folder, adding in the
-// testing libraries mocha and chai
+/* global mochaPhantomJS */
 require(['../config_settings'], function(config_settings) {
   var testPaths = config_settings.paths;
   testPaths['ext/chai'] = 'js_tests/vendor/chai';
@@ -20,7 +19,12 @@ require(['../config_settings'], function(config_settings) {
       'transcript_test.js',
       'schedule_test.js'
     ], function(require) {
-      mocha.run();
+      if (window.mochaPhantomJS) {
+        mochaPhantomJS.run();
+        mochaPhantomJS.exit();
+      } else {
+        mocha.run();
+      }
     });
   });
 });

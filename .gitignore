@@ -12,6 +12,7 @@ shared_data/
 dump.rdb
 secrets.py
 dump/*
+node_modules/
 
 # Ignore daily generated exam files
 data/exam_schedules/uw_exams_*
