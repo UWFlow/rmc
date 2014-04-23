@@ -66,6 +66,11 @@ install_secrets() {
   fi
 }
 
+install_npm_packages() {
+    echo "Installing npm packages"
+    npm install
+}
+
 # Get password up front
 sudo echo
 
@@ -75,3 +80,4 @@ install_virtualenv
 install_pip_requirements
 install_third_party
 install_secrets
+install_npm_packages

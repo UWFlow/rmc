@@ -81,7 +81,7 @@ deploy_skiptest:
 		cat deploy.sh | ssh rmc DEPLOYER=`whoami` sh; \
 	fi
 
-deploy: test deploy_skiptest
+deploy: js-test test deploy_skiptest
 
 pip_install: require_virtualenv_in_dev
 	pip install -r requirements.txt
@@ -107,10 +107,21 @@ alltest: require_virtualenv_in_dev
 test: require_virtualenv_in_dev
 	PYTHONPATH=.. nosetests -a '!slow'
 
-js-test:
+js-test-debug:
 	cd server/; \
 	python -c 'import webbrowser; webbrowser.open("http://127.0.0.1:8000/static/js/js_tests/test.html")'; \
 	python -mSimpleHTTPServer 8000
+
+js-test:
+	@./js_test.sh; \
+	if [[ $$? -eq 0 ]]; then \
+		echo "All JS tests passed"; \
+		true; \
+	else \
+		echo "ERROR: JS tests failed"; \
+		echo ; \
+		false; \
+	fi
 
 clean:
 	find . -name '*.pyc' -delete
