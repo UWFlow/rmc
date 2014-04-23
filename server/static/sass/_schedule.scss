@@ -58,11 +58,11 @@ $toolbarBg: #FAFAFA;
 
   .section-info {
     color: #666;
+    white-space: initial;
 
     .course-code {
       font-weight: bold;
       color: $textColor;
-      white-space: normal;
     }
   }
 
