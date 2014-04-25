@@ -15,6 +15,7 @@ define (function() {
     'ext/smartbanner': 'ext/jquery.smartbanner',
     'ext/mailcheck': 'ext/mailcheck.min',
     'ext/jqueryMigrate': 'ext/jquery-migrate-1.2.1',
+    'ext/jqueryautocomplete': 'ext/jquery.autocomplete',
 
     'moment': 'ext/moment',
     'moment-timezone': 'ext/moment-timezone'
@@ -75,6 +76,9 @@ define (function() {
       deps: ['ext/jquery']
     },
     'ext/jqueryMigrate': {
+      deps: ['ext/jquery']
+    },
+    'ext/jqueryautocomplete': {
       deps: ['ext/jquery']
     }
   };
