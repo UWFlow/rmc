@@ -106,7 +106,7 @@ class BaseCourseAlert(me.Document):
 
     @classmethod
     def delete_expired(cls):
-        cls.objects(expiry_date__gt=datetime.datetime.now()).delete()
+        cls.objects(expiry_date__lt=datetime.datetime.now()).delete()
 
 
 class GcmCourseAlert(BaseCourseAlert):

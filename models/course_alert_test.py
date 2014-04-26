@@ -80,3 +80,4 @@ class BaseCourseAlertTest(testlib.FixturesTestCase):
 
         SimpleCourseAlert.delete_expired()
         self.assertEqual(SimpleCourseAlert.objects.count(), 1)
+        self.assertEqual(SimpleCourseAlert.objects[0].course_id, 'cs241')
