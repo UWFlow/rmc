@@ -54,9 +54,11 @@ require(['config_settings'], function(config_settings) {
 
     require(['ext/underscore.string', 'util', 'rmc_moment',
         'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
-        'points', 'user', 'facebook', 'work_queue', 'ext/smartbanner'],
+        'points', 'user', 'facebook', 'work_queue', 'ext/smartbanner',
+        'search_bar'],
     function(_s, util, moment, Backbone, _bootstrap, _cookie, toastr, _points,
-      _user, _facebook, smartbanner) {
+      _user, _facebook, smartbanner, _wq, _search) {
+      console.log(_user);
 
      // Show a banner to visitors from Android browsers linking
      // to our Android app on the Google Play Store.
@@ -141,6 +143,11 @@ require(['config_settings'], function(config_settings) {
           $('#user-points-placeholder').replaceWith(
               userPointsView.render().$el);
         }
+        // Load the search bar modal
+        console.log(_search);
+        var searchBarView = new _search.SearchBar(
+            { el: $("#search_bar_container") });
+        searchBarView.render();
 
         if (window.pageData.pageScript) {
           require([window.pageData.pageScript]);
