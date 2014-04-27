@@ -9,6 +9,8 @@ To set up your dev environment, run `make install`.
 We work inside a [virtualenv][], so remember to `source
 ~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
 
+To populate the database with courses, sections, and some sample reviews, run `make init_data`.
+
 You should now be ready to boot the local server, with `make local`.
 
 Once it starts running, point your browser to http://localhost:5000/
