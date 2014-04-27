@@ -1,9 +1,11 @@
 """Version 1 of Flow's public, officially-supported API."""
 
 import collections
+import datetime
 
 import bson
 import flask
+import mongoengine as me
 
 import rmc.models as m
 import rmc.server.api.api_util as api_util
@@ -544,6 +546,82 @@ def search_courses():
         'courses': course_dicts,
         'user_courses': user_course_dicts,
         'has_more': has_more,
+    })
+
+
+###############################################################################
+# Alerts
+
+
+@api.route('/alerts/course/gcm', methods=['POST'])
+def add_gcm_course_alert():
+    """Adds an alert to notify when a seat opens up in a course/section via
+    GCM.
+
+    GCM is used to send push notifications to our Android app.
+
+    Requires the following parameters:
+        registration_id: Provided by GCM to identify the device-app pair
+        course_id: ID of the course to alert on
+
+    Optional parameters:
+        created_date: Timestamp in millis
+        expiry_date: Timestamp in millis. Defaults to 1 year later
+        term_id: e.g. "2014_01"
+        section_type: e.g. "LEC"
+        section_num: e.g. "001"
+        user_id: ID of the logged in user
+    """
+    params = flask.request.form
+
+    created_date = datetime.datetime.now()
+
+    expiry_date_param = params.get('expiry_date')
+    if expiry_date_param:
+        expiry_date = datetime.datetime.fromtimestamp(int(expiry_date_param))
+    else:
+        expiry_date = created_date + datetime.timedelta(days=365)
+
+    try:
+        alert_dict = {
+            'registration_id': params['registration_id'],
+            'course_id': params['course_id'],
+            'created_date': created_date,
+            'expiry_date': expiry_date,
+            'term_id': params.get('term_id'),
+            'section_type': params.get('section_type'),
+            'section_num': params.get('section_num'),
+            'user_id': params.get('user_id'),
+        }
+    except KeyError as e:
+        raise api_util.ApiBadRequestError(
+                'Missing required parameter: %s' % e.message)
+
+    alert = m.GcmCourseAlert(**alert_dict)
+
+    try:
+        alert.save()
+    except me.NotUniqueError as e:
+        raise api_util.ApiBadRequestError(
+                'Alert with the given parameters already exists.')
+
+    return api_util.jsonify({
+        'gcm_course_alert': alert.to_dict(),
+    })
+
+
+@api.route('/alerts/course/gcm/<string:alert_id>', methods=['DELETE'])
+def delete_gcm_course_alert(alert_id):
+    alert = m.GcmCourseAlert.objects.with_id(alert_id)
+
+    if not alert:
+        raise api_util.ApiNotFoundError(
+                'No GCM course alert with id %s found.' % alert_id)
+
+    alert.delete()
+
+    return api_util.jsonify({
+        'gcm_course_alert': alert.to_dict(),
     })
 
 
