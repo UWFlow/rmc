@@ -24,7 +24,7 @@
     <tbody>
       <% _.each(term, function(section) { %>
         <tr class="section-<%- sectionTypeToCssClass(section.get('section_type'))
-                %> <%- sectionFullCssClass(section) %>">
+                %> <%- sectionIsFull(section) ? 'full' : ''  %>">
           <td>
             <%- section.get('section_type') %>
             <%- section.get('section_num') %>
@@ -43,6 +43,9 @@
             <span class="enrollment-capacity">
               <%- section.get('enrollment_capacity') %>
             </span>
+            <% if (sectionIsFull(section)) { %>
+              <span class="icon-bell"></span>
+            <% } %>
           </td>
           <td>
             <% _.each(section.get('meetings'), function(meeting) { %>

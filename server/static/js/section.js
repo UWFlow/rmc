@@ -38,10 +38,10 @@ function(RmcBackbone, $, _, _s) {
     render: function() {
       this.$el.html(this.template({
         terms: this.collection.groupedByTerm(),
-        sectionFullCssClass: function(section) {
+        sectionIsFull: function(section) {
           var total = section.get('enrollment_total');
           var cap = section.get('enrollment_capacity');
-          return total >= cap ? 'full' : '';
+          return total >= cap;
         },
         sectionMissingValueText: function(section, courseId) {
           if (_s.startsWith(courseId, 'wkrpt')) {
