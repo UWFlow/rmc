@@ -1,132 +1,36 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('sections-collection-tpl') %}
-<% _.each(_.keys(terms).sort(), function(termId) { %>
-  <h2 class="sections-term-heading"><%- humanizeTermId(termId) %></h2>
-  <% var term = terms[termId]; %>
-  <% if (term[0].has('note')) { %>
-    <p>
-      <strong>Please note:</strong> <%- term[0].get('note') %>
-    </p>
-  <% } %>
-  <table class="sections-table table table-bordered table-rounded">
-    <thead>
-      <tr>
-        <th>Section</th>
-        <th>Class</th>
-        <th>Campus</th>
-        <th>Enrolled</th>
-        <th>Time</th>
-        <th>Location</th>
-        <th>Instructor(s)</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% _.each(term, function(section) { %>
-        <tr class="section-<%- sectionTypeToCssClass(section.get('section_type'))
-                %> <%- sectionIsFull(section) ? 'full' : ''  %>">
-          <td>
-            <%- section.get('section_type') %>
-            <%- section.get('section_num') %>
-          </td>
-          <td>
-            <%- section.get('class_num') %>
-          </td>
-          <td>
-            <%- section.get('campus') %>
-          </td>
-          <td class="enrollment">
-            <span class="enrollment-total">
-              <%- section.get('enrollment_total') %>
-            </span>
-            <span> / </span>
-            <span class="enrollment-capacity">
-              <%- section.get('enrollment_capacity') %>
-            </span>
-            <% if (sectionIsFull(section)) { %>
-              <span class="icon-bell"></span>
-            <% } %>
-          </td>
-          <td>
-            <% _.each(section.get('meetings'), function(meeting) { %>
-              <p>
-                <% if (meeting.start_seconds != null) { %>
-                  <span class="meeting-time">
-                    <%- moment.utc(meeting.start_seconds * 1000).format('h:mm a') %>
-                    &ndash;
-                    <%- moment.utc(meeting.end_seconds * 1000).format('h:mm a') %>
-                  </span>
-                  <% if (meeting.days.length) { %>
-                    {# TODO(david): This is sort of stupid/inefficient. #}
-                    <% var days = meeting.days; %>
-                    <span class="day-<%- _.contains(days, 'M') %>">M</span
-                    ><span class="day-<%- _.contains(days, 'T') %>">T</span
-                    ><span class="day-<%- _.contains(days, 'W') %>">W</span
-                    ><span class="day-<%- _.contains(days, 'Th') %>">Th</span
-                    ><span class="day-<%- _.contains(days, 'F') %>">F</span
-                    ><span class="day-<%- _.contains(days, 'S') %>">S</span
-                    ><span class="day-<%- _.contains(days, 'Su') %>">Su</span>
-                  <% } %>
-                <% } else { %>
-                  <%- sectionMissingValueText(section, section.get('course_id')) %>
-                <% } %>
+<h2 class="sections-term-heading"><%- humanizeTermId(termId) %></h2>
+<% if (term[0].has('note')) { %>
+  <p>
+    <strong>Please note:</strong> <%- term[0].get('note') %>
+  </p>
+<% } %>
+<table class="sections-table table table-bordered table-rounded">
+  <thead>
+    <tr>
+      <th>Section</th>
+      <th>Class</th>
+      <th>Campus</th>
+      <th>Enrolled</th>
+      <th>Time</th>
+      <th>Location</th>
+      <th>Instructor(s)</th>
+    </tr>
+  </thead>
+  <tbody class="sections-table-body-placeholder">
+  </tbody>
+</table>
+<small class="last-updated">
+  Last updated
+  <%- moment(term[0].get('last_updated')).fromNow() %> from
 
-                <% if (meeting.start_date) { %>
-                  <span class="meeting-dates">
-                    <% if (meeting.start_date.$date === meeting.end_date.$date) { %>
-                      (<%- moment(meeting.start_date.$date).format('MMM D') %>)
-                    <% } else { %>
-                      (<%- moment(meeting.start_date.$date).format('MMM D') %>
-                      &ndash;
-                      <%- moment(meeting.end_date.$date).format('MMM D') %>)
-                    <% } %>
-                  </span>
-                <% } %>
-              </p>
-            <% }); %>
-          </td>
-          <td>
-            <% _.each(section.get('meetings'), function(meeting) { %>
-              <p>
-                <% if (meeting.building) { %>
-                  <%- meeting.building %>
-                  <%- meeting.room %>
-                <% } else { %>
-                  <%- sectionMissingValueText(section, section.get('course_id')) %>
-                <% } %>
-              </p>
-            <% }); %>
-          </td>
-          <td>
-            <% _.each(section.get('meetings'), function(meeting) { %>
-              <p>
-                <% if (meeting.prof_id) { %>
-                  <% var profName = humanizeProfId(meeting.prof_id); %>
-                    <% if (shouldLinkifyProfs) { %>
-                      <a href="#<%- normalizeProfName(profName) %>">
-                        <%- profName %>
-                      </a>
-                    <% } else { %>
-                      <%- profName %>
-                    <% } %>
-                  <% } %>
-              </p>
-            <% }); %>
-          </td>
-        </tr>
-      <% }); %>
-    </tbody>
-  </table>
-  <small class="last-updated">
-    Last updated
-    <%- moment(term[0].get('last_updated')).fromNow() %> from
+  <% var courseParts = splitCourseId(term[0].get('course_id')); %>
+  <% var questId = termIdToQuestId(termId); %>
 
-    <% var courseParts = splitCourseId(term[0].get('course_id')); %>
-    <% var questId = termIdToQuestId(termId); %>
-
-    <a href="http://www.adm.uwaterloo.ca/cgi-bin/cgiwrap/infocour/salook.pl?level=under&sess=<%- questId %>&subject=<%- courseParts[0] %>&cournum=<%- courseParts[1] %>"
-        target="_blank">
-      www.adm.uwaterloo.ca</a>.
-   </small>
-<% }); %>
+  <a href="http://www.adm.uwaterloo.ca/cgi-bin/cgiwrap/infocour/salook.pl?level=under&sess=<%- questId %>&subject=<%- courseParts[0] %>&cournum=<%- courseParts[1] %>"
+      target="_blank">
+    www.adm.uwaterloo.ca</a>.
+ </small>
 {% endcall %}
