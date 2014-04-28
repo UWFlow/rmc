@@ -14,6 +14,7 @@ define (function() {
     'ext/validate': 'ext/jquery.validate.min',
     'ext/smartbanner': 'ext/jquery.smartbanner',
     'ext/mailcheck': 'ext/mailcheck.min',
+    'ext/jqueryautocomplete': 'ext/jquery.autocomplete',
 
     'moment': 'ext/moment',
     'moment-timezone': 'ext/moment-timezone'
@@ -71,6 +72,9 @@ define (function() {
       exports: 'smartbanner'
     },
     'ext/mailcheck': {
+      deps: ['ext/jquery']
+    },
+    'ext/jqueryautocomplete': {
       deps: ['ext/jquery']
     }
   };

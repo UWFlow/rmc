@@ -148,6 +148,7 @@ require(['config_settings'], function(config_settings) {
         var searchBarView = new _search.SearchBar(
             { el: $("#search_bar_container") });
         searchBarView.render();
+        searchBarView.setAutocomplete();
 
         if (window.pageData.pageScript) {
           require([window.pageData.pageScript]);
