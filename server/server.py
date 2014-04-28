@@ -1315,4 +1315,4 @@ if __name__ == '__main__':
     })
 
     toolbar = flask_debugtoolbar.DebugToolbarExtension(app)
-    app.run()
+    app.run(host='0.0.0.0')
