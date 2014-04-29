@@ -1,5 +1,6 @@
 define(
-['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string', 'util'],
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
+'util'],
 function(RmcBackbone, $, _, _s, util) {
 
   var Section = RmcBackbone.Model.extend({
@@ -31,7 +32,7 @@ function(RmcBackbone, $, _, _s, util) {
     className: 'sections-collection',
 
     initialize: function(options) {
-      this.sectionCollectionTemplate = _.template($('#sections-collection-tpl').html());
+      this.template = _.template($('#sections-collection-tpl').html());
       this.shouldLinkifyProfs = options.shouldLinkifyProfs;
     },
 
@@ -39,24 +40,31 @@ function(RmcBackbone, $, _, _s, util) {
       var terms = this.collection.groupedByTerm();
 
       _.each(_.keys(terms).sort(), _.bind(function(termId) {
-        this.$el.append(this.sectionCollectionTemplate({
-          term: terms[termId],
-          termId: termId,
-        }));
-
-        _.each(terms[termId], _.bind(function(section) {
-          this.$('.sections-table-body-placeholder').append(
-            new TermView({
-              model: section,
-              shouldLinkifyProfs: this.shouldLinkifyProfs
-            }).render().el);
-        }, this));
-
-        this.$('.sections-table-body-placeholder').removeClass('sections-table-body-placeholder');
-
+        this._addTermTable(terms, termId);
+        _.each(terms[termId], _.bind(this._addSectionRow, this));
+        this.$('.sections-table-body-placeholder').
+          removeClass('sections-table-body-placeholder');
       }, this));
 
       return this;
+    },
+
+    _addTermTable: function(terms, termId) {
+      this.$el.append(this.template({
+        term: terms[termId],
+        termName: util.humanizeTermId(termId),
+        lastUpdated: moment(terms[termId][0].get('last_updated')).fromNow(),
+        courseParts: util.splitCourseId(terms[termId][0].get('course_id')),
+        questId: util.termIdToQuestId(termId),
+      }));
+    },
+
+    _addSectionRow: function(section) {
+      this.$('.sections-table-body-placeholder').append(
+        new TermView({
+        model: section,
+        shouldLinkifyProfs: this.shouldLinkifyProfs
+      }).render().el);
     }
   });
 
@@ -66,18 +74,27 @@ function(RmcBackbone, $, _, _s, util) {
     tagName: 'tr',
 
     initialize: function(options) {
-      this.sectionRowTemplate = _.template($('#section-row-tpl').html());
+      this.template = _.template($('#section-row-tpl').html());
       this.shouldLinkifyProfs = options.shouldLinkifyProfs;
     },
 
+    events: {
+      'click .add-course-alert-btn': 'onAlertAdd'
+    },
+
+    onAlertAdd: function() {
+      console.log(this.model);
+    },
+
     render: function() {
-      this.$el.addClass(util.sectionTypeToCssClass(this.model.get('section_type')));
+      this.$el.addClass(
+        util.sectionTypeToCssClass(this.model.get('section_type')));
 
       if (this._sectionIsFull(this.model)) {
         this.$el.addClass('full');
       }
 
-      this.$el.append(this.sectionRowTemplate({
+      this.$el.append(this.template({
         section: this.model,
 
         sectionIsFull: this._sectionIsFull(this.model),

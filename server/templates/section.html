@@ -1,7 +1,7 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('sections-collection-tpl') %}
-<h2 class="sections-term-heading"><%- humanizeTermId(termId) %></h2>
+<h2 class="sections-term-heading"><%- termName %></h2>
 <% if (term[0].has('note')) { %>
   <p>
     <strong>Please note:</strong> <%- term[0].get('note') %>
@@ -23,12 +23,7 @@
   </tbody>
 </table>
 <small class="last-updated">
-  Last updated
-  <%- moment(term[0].get('last_updated')).fromNow() %> from
-
-  <% var courseParts = splitCourseId(term[0].get('course_id')); %>
-  <% var questId = termIdToQuestId(termId); %>
-
+  Last updated <%- lastUpdated %> from
   <a href="http://www.adm.uwaterloo.ca/cgi-bin/cgiwrap/infocour/salook.pl?level=under&sess=<%- questId %>&subject=<%- courseParts[0] %>&cournum=<%- courseParts[1] %>"
       target="_blank">
     www.adm.uwaterloo.ca</a>.
