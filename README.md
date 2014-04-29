@@ -6,6 +6,7 @@ Plan your courses
 
 To set up your dev environment, run `make install`.
 Alternatively, you can start a virtual machine with [Vagrant](http://www.vagrantup.com/) using `vagrant up`.
+(Note that at least version 1.5 is required.)
 
 We work inside a [virtualenv][], so remember to `source
 ~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
