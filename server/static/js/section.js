@@ -45,7 +45,10 @@ function(RmcBackbone, $, _, _s) {
         }));
 
         this.$('.sections-table-body-placeholder').replaceWith(
-          new TermView({ model: terms[termId] }).render().el);
+          new TermView({
+            model: terms[termId],
+            shouldLinkifyProfs: this.shouldLinkifyProfs
+          }).render().el);
 
       }, this));
 
@@ -60,6 +63,7 @@ function(RmcBackbone, $, _, _s) {
 
     initialize: function(options) {
       this.sectionRowTemplate = _.template($('#section-row-tpl').html());
+      this.shouldLinkifyProfs = options.shouldLinkifyProfs;
     },
 
     render: function() {
