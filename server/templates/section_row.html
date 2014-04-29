@@ -1,95 +1,92 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('section-row-tpl') %}
-<tr class="section-<%- sectionTypeToCssClass(section.get('section_type'))
-        %> <%- sectionIsFull(section) ? 'full' : ''  %>">
-  <td>
-    <%- section.get('section_type') %>
-    <%- section.get('section_num') %>
-  </td>
-  <td>
-    <%- section.get('class_num') %>
-  </td>
-  <td>
-    <%- section.get('campus') %>
-  </td>
-  <td class="enrollment">
-    <span class="enrollment-total">
-      <%- section.get('enrollment_total') %>
-    </span>
-    <span> / </span>
-    <span class="enrollment-capacity">
-      <%- section.get('enrollment_capacity') %>
-    </span>
-    <% if (sectionIsFull(section)) { %>
-      <span class="icon-bell"></span>
-    <% } %>
-  </td>
-  <td>
-    <% _.each(section.get('meetings'), function(meeting) { %>
-      <p>
-        <% if (meeting.start_seconds != null) { %>
-          <span class="meeting-time">
-            <%- moment.utc(meeting.start_seconds * 1000).format('h:mm a') %>
-            &ndash;
-            <%- moment.utc(meeting.end_seconds * 1000).format('h:mm a') %>
-          </span>
-          <% if (meeting.days.length) { %>
-            {# TODO(david): This is sort of stupid/inefficient. #}
-            <% var days = meeting.days; %>
-            <span class="day-<%- _.contains(days, 'M') %>">M</span>
-            <span class="day-<%- _.contains(days, 'T') %>">T</span>
-            <span class="day-<%- _.contains(days, 'W') %>">W</span>
-            <span class="day-<%- _.contains(days, 'Th') %>">Th</span>
-            <span class="day-<%- _.contains(days, 'F') %>">F</span>
-            <span class="day-<%- _.contains(days, 'S') %>">S</span>
-            <span class="day-<%- _.contains(days, 'Su') %>">Su</span>
-          <% } %>
-        <% } else { %>
-          <%- sectionMissingValueText(section, section.get('course_id')) %>
+<td>
+  <%- section.get('section_type') %>
+  <%- section.get('section_num') %>
+</td>
+<td>
+  <%- section.get('class_num') %>
+</td>
+<td>
+  <%- section.get('campus') %>
+</td>
+<td class="enrollment">
+  <span class="enrollment-total">
+    <%- section.get('enrollment_total') %>
+  </span>
+  <span> / </span>
+  <span class="enrollment-capacity">
+    <%- section.get('enrollment_capacity') %>
+  </span>
+  <% if (sectionIsFull) { %>
+    <span class="icon-bell"></span>
+  <% } %>
+</td>
+<td>
+  <% _.each(section.get('meetings'), function(meeting) { %>
+    <p>
+      <% if (meeting.start_seconds != null) { %>
+        <span class="meeting-time">
+          <%- moment.utc(meeting.start_seconds * 1000).format('h:mm a') %>
+          &ndash;
+          <%- moment.utc(meeting.end_seconds * 1000).format('h:mm a') %>
+        </span>
+        <% if (meeting.days.length) { %>
+          {# TODO(david): This is sort of stupid/inefficient. #}
+          <% var days = meeting.days; %>
+          <span class="day-<%- _.contains(days, 'M') %>">M</span>
+          <span class="day-<%- _.contains(days, 'T') %>">T</span>
+          <span class="day-<%- _.contains(days, 'W') %>">W</span>
+          <span class="day-<%- _.contains(days, 'Th') %>">Th</span>
+          <span class="day-<%- _.contains(days, 'F') %>">F</span>
+          <span class="day-<%- _.contains(days, 'S') %>">S</span>
+          <span class="day-<%- _.contains(days, 'Su') %>">Su</span>
         <% } %>
+      <% } else { %>
+        <%- sectionMissingValueText(section, section.get('course_id')) %>
+      <% } %>
 
-        <% if (meeting.start_date) { %>
-          <span class="meeting-dates">
-            <% if (meeting.start_date.$date === meeting.end_date.$date) { %>
-              (<%- moment(meeting.start_date.$date).format('MMM D') %>)
-            <% } else { %>
-              (<%- moment(meeting.start_date.$date).format('MMM D') %>
-              &ndash;
-              <%- moment(meeting.end_date.$date).format('MMM D') %>)
-            <% } %>
-          </span>
-        <% } %>
-      </p>
-    <% }); %>
-  </td>
-  <td>
-    <% _.each(section.get('meetings'), function(meeting) { %>
-      <p>
-        <% if (meeting.building) { %>
-          <%- meeting.building %>
-          <%- meeting.room %>
-        <% } else { %>
-          <%- sectionMissingValueText(section, section.get('course_id')) %>
-        <% } %>
-      </p>
-    <% }); %>
-  </td>
-  <td>
-    <% _.each(section.get('meetings'), function(meeting) { %>
-      <p>
-        <% if (meeting.prof_id) { %>
-          <% var profName = humanizeProfId(meeting.prof_id); %>
-            <% if (shouldLinkifyProfs) { %>
-              <a href="#<%- normalizeProfName(profName) %>">
-                <%- profName %>
-              </a>
-            <% } else { %>
-              <%- profName %>
-            <% } %>
+      <% if (meeting.start_date) { %>
+        <span class="meeting-dates">
+          <% if (meeting.start_date.$date === meeting.end_date.$date) { %>
+            (<%- moment(meeting.start_date.$date).format('MMM D') %>)
+          <% } else { %>
+            (<%- moment(meeting.start_date.$date).format('MMM D') %>
+            &ndash;
+            <%- moment(meeting.end_date.$date).format('MMM D') %>)
           <% } %>
-      </p>
-    <% }); %>
-  </td>
-</tr>
+        </span>
+      <% } %>
+    </p>
+  <% }); %>
+</td>
+<td>
+  <% _.each(section.get('meetings'), function(meeting) { %>
+    <p>
+      <% if (meeting.building) { %>
+        <%- meeting.building %>
+        <%- meeting.room %>
+      <% } else { %>
+        <%- sectionMissingValueText(section, section.get('course_id')) %>
+      <% } %>
+    </p>
+  <% }); %>
+</td>
+<td>
+  <% _.each(section.get('meetings'), function(meeting) { %>
+    <p>
+      <% if (meeting.prof_id) { %>
+        <% var profName = humanizeProfId(meeting.prof_id); %>
+          <% if (shouldLinkifyProfs) { %>
+            <a href="#<%- normalizeProfName(profName) %>">
+              <%- profName %>
+            </a>
+          <% } else { %>
+            <%- profName %>
+          <% } %>
+        <% } %>
+    </p>
+  <% }); %>
+</td>
 {% endcall %}

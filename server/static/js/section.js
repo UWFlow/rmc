@@ -1,6 +1,6 @@
 define(
-['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string'],
-function(RmcBackbone, $, _, _s) {
+['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string', 'util'],
+function(RmcBackbone, $, _, _s, util) {
 
   var Section = RmcBackbone.Model.extend({
   });
@@ -44,11 +44,15 @@ function(RmcBackbone, $, _, _s) {
           termId: termId,
         }));
 
-        this.$('.sections-table-body-placeholder').replaceWith(
-          new TermView({
-            model: terms[termId],
-            shouldLinkifyProfs: this.shouldLinkifyProfs
-          }).render().el);
+        _.each(terms[termId], _.bind(function(section) {
+          this.$('.sections-table-body-placeholder').append(
+            new TermView({
+              model: section,
+              shouldLinkifyProfs: this.shouldLinkifyProfs
+            }).render().el);
+        }, this));
+
+        this.$('.sections-table-body-placeholder').removeClass('sections-table-body-placeholder');
 
       }, this));
 
@@ -59,7 +63,7 @@ function(RmcBackbone, $, _, _s) {
   var TermView = RmcBackbone.View.extend({
     className: 'term-table',
 
-    tagName: 'tbody',
+    tagName: 'tr',
 
     initialize: function(options) {
       this.sectionRowTemplate = _.template($('#section-row-tpl').html());
@@ -67,36 +71,41 @@ function(RmcBackbone, $, _, _s) {
     },
 
     render: function() {
-      _.each(this.model, _.bind(function(section) {
-        this.$el.append(this.sectionRowTemplate({
-          section: section,
+      this.$el.addClass(util.sectionTypeToCssClass(this.model.get('section_type')));
 
-          sectionIsFull: function(section) {
-            var total = section.get('enrollment_total');
-            var cap = section.get('enrollment_capacity');
-            return total >= cap;
-          },
+      if (this._sectionIsFull(this.model)) {
+        this.$el.addClass('full');
+      }
 
-          sectionMissingValueText: function(section, courseId) {
-            if (_s.startsWith(courseId, 'wkrpt')) {
-              return 'N/A';
-            }
-            // ONLN ONLINE
-            // ONLNG ONLINE
-            // ONLNP ONLINE
-            // ONLNJ ONLINE
-            // ONLNR ONLINE
-            var onlinePattern = /ONLN.? ONLINE/;
-            return onlinePattern.test(section.get('campus')) ? 'N/A' : 'TBA';
-          },
+      this.$el.append(this.sectionRowTemplate({
+        section: this.model,
 
-          shouldLinkifyProfs: this.shouldLinkifyProfs
+        sectionIsFull: this._sectionIsFull(this.model),
 
-        }));
-      }, this));
+        sectionMissingValueText: function(section, courseId) {
+          if (_s.startsWith(courseId, 'wkrpt')) {
+            return 'N/A';
+          }
+          // ONLN ONLINE
+          // ONLNG ONLINE
+          // ONLNP ONLINE
+          // ONLNJ ONLINE
+          // ONLNR ONLINE
+          var onlinePattern = /ONLN.? ONLINE/;
+          return onlinePattern.test(section.get('campus')) ? 'N/A' : 'TBA';
+        },
 
+        shouldLinkifyProfs: this.shouldLinkifyProfs
+
+      }));
       return this;
-    }
+    },
+
+    _sectionIsFull: function(section) {
+      var total = section.get('enrollment_total');
+      var cap = section.get('enrollment_capacity');
+      return total >= cap;
+    },
   });
 
   return {
