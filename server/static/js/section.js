@@ -38,7 +38,7 @@ function(RmcBackbone, $, _, _s) {
     render: function() {
       var terms = this.collection.groupedByTerm();
 
-      _.each(_.keys(terms), _.bind(function(termId) {
+      _.each(_.keys(terms).sort(), _.bind(function(termId) {
         this.$el.append(this.sectionCollectionTemplate({
           term: terms[termId],
           termId: termId,
