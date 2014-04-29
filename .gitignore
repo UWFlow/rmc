@@ -2,7 +2,7 @@
 .sass-cache/
 logs/
 test/logs/*
-mongodb/
+mongodb
 server/static/sitemap.txt
 server/static/css/
 server/static/js_prod/
@@ -13,6 +13,7 @@ dump.rdb
 secrets.py
 dump/*
 node_modules/
+.vagrant/
 
 # Ignore daily generated exam files
 data/exam_schedules/uw_exams_*
