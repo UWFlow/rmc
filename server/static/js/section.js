@@ -83,7 +83,21 @@ function(RmcBackbone, $, _, _s, util) {
     },
 
     onAlertAdd: function() {
-      console.log(this.model);
+      $.ajax({
+        url: '/api/v1/alerts/course/email/',
+        type: 'POST',
+        data: {
+          course_id: this.model.get('course_id'),
+          term_id: this.model.get('term_id'),
+          section_type: this.model.get('section_type'),
+          section_num: this.model.get('section_num')
+        }})
+        .done(onAlertAddSuccess);
+
+      return false;
+    },
+
+    onAlertAddSuccess: function() {
     },
 
     render: function() {
