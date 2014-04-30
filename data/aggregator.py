@@ -344,6 +344,7 @@ def update_sections():
 
     # Send push notifications about seat openings.
     num_sent = m.GcmCourseAlert.send_eligible_alerts()
+    num_sent += m.EmailCourseAlert.send_eligible_alerts()
     num_expired = m.GcmCourseAlert.delete_expired()
     print 'Sent %s push notifications and expired %s' % (num_sent, num_expired)
 

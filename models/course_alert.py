@@ -1,3 +1,5 @@
+import boto
+
 import datetime
 import json
 
@@ -7,6 +9,8 @@ import requests
 import course
 import rmc.shared.secrets as s
 import section
+import user
+
 from rmc.shared import util
 
 class BaseCourseAlert(me.Document):
@@ -172,7 +176,6 @@ class GcmCourseAlert(BaseCourseAlert):
 class EmailCourseAlert(BaseCourseAlert):
     """Course alert using email notifications."""
 
-    # Optional user ID associated with this alert.
     user_id = me.ObjectIdField(
         unique_with=BaseCourseAlert.BASE_UNIQUE_FIELDS)
 
@@ -185,4 +188,29 @@ class EmailCourseAlert(BaseCourseAlert):
         )
 
     def send_alert(self, sections):
-        pass
+
+        _conn = boto.connect_ses(
+            aws_access_key_id=s.AWS_KEY_ID,
+            aws_secret_access_key=s.AWS_SECRET_KEY)
+
+        email_body = \
+        """<p>Hey %(first_name)s!</p>
+
+        <p>It looks like you're waiting for %(course_name)s %(section_name)s to
+        open up. Good news, because a seat is available right now! Go check it
+        out on Quest!</p>
+        <br/>
+        <p>Have a Flow-tastic day,</p>
+        <p>The Flow team</p>"""
+
+        _conn.send_email(
+            'UW Flow <flow@uwflow.com>',
+            '%s open spot notification' % (self.course_id.capitalize()),
+            email_body % {
+                'first_name': user.User.objects(id=self.user_id),
+                'course_name': self.course_id.capitalize(),
+                'section_name': self.section_type + ' ' + self.section_num
+            },
+            user.User.objects.get(id=self.user_id).email
+        )
+        return True

@@ -19,9 +19,7 @@
   <span class="enrollment-capacity">
     <%- section.get('enrollment_capacity') %>
   </span>
-  <% if (sectionIsFull) { %>
-    <span class="add-course-alert-btn icon-bell"></span>
-  <% } %>
+  <span class="add-course-alert-btn icon-bell"></span>
 </td>
 <td>
   <% _.each(section.get('meetings'), function(meeting) { %>

@@ -85,7 +85,6 @@ function(RmcBackbone, $, _, _s, util) {
     onAlertAdd: function() {
       // TODO(ryandv): Yay, circular dependencies!
       var _user = require('user');
-      console.log(_user);
       $.ajax({
         url: '/api/v1/alerts/course/email',
         type: 'POST',
