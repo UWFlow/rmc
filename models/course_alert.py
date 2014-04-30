@@ -9,7 +9,6 @@ import rmc.shared.secrets as s
 import section
 from rmc.shared import util
 
-
 class BaseCourseAlert(me.Document):
     """An abstract base class for notifying when a seat opens in a course.
 
@@ -108,7 +107,6 @@ class BaseCourseAlert(me.Document):
     def delete_expired(cls):
         cls.objects(expiry_date__lt=datetime.datetime.now()).delete()
 
-
 class GcmCourseAlert(BaseCourseAlert):
     """Course alert using Google Cloud Messaging (GCM) push notifications.
 
@@ -170,3 +168,21 @@ class GcmCourseAlert(BaseCourseAlert):
 
         # TODO(david): Implement exponential backoff for retries
         return res.ok
+
+class EmailCourseAlert(BaseCourseAlert):
+    """Course alert using email notifications."""
+
+    # Optional user ID associated with this alert.
+    user_id = me.ObjectIdField(
+        unique_with=BaseCourseAlert.BASE_UNIQUE_FIELDS)
+
+    def __repr__(self):
+        return "<EmailCourseAlert: %s, %s, %s %s>" % (
+            self.course_id,
+            self.term_id,
+            self.section_type,
+            self.section_num,
+        )
+
+    def send_alert(self, sections):
+        pass

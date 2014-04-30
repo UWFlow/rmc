@@ -83,14 +83,18 @@ function(RmcBackbone, $, _, _s, util) {
     },
 
     onAlertAdd: function() {
+      // TODO(ryandv): Yay, circular dependencies!
+      var _user = require('user');
+      console.log(_user);
       $.ajax({
-        url: '/api/v1/alerts/course/email/',
+        url: '/api/v1/alerts/course/email',
         type: 'POST',
         data: {
           course_id: this.model.get('course_id'),
-          term_id: this.model.get('term_id'),
           section_type: this.model.get('section_type'),
-          section_num: this.model.get('section_num')
+          section_num: this.model.get('section_num'),
+          term_id: this.model.get('term_id'),
+          user_id: _user.getCurrentUser().get('id'),
         }})
         .done(onAlertAddSuccess);
 

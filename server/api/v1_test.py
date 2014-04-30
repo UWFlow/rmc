@@ -206,3 +206,62 @@ class V1Test(testlib.FlaskTestCase):
             }
         })
         self.assertEqual(m.GcmCourseAlert.objects.count(), 0)
+
+    def test_add_email_course_alert(self):
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 0)
+        headers = self.get_csrf_token_header()
+
+        # Try to add an alert with a missing required field
+        data = {}
+        resp = self.app.post(
+                '/api/v1/alerts/course/email', data=data, headers=headers)
+        self.assertEqual(resp.status_code, 400)
+        self.assertJsonResponse(resp, {
+            'error': 'Missing required parameter: course_id'
+        })
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 0)
+
+        # Require a user_id as well to facilitate email lookup.
+        data = {
+            'course_id': 'cs241',
+        }
+        resp = self.app.post(
+                '/api/v1/alerts/course/email', data=data, headers=headers)
+        self.assertEqual(resp.status_code, 400)
+        self.assertJsonResponse(resp, {
+            'error': 'Missing required parameter: user_id'
+        })
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 0)
+
+        # This should work
+        data = {
+            'course_id': 'cs241',
+            'user_id': '533e4f7d78d6fe562c16f17a',
+        }
+        resp = self.app.post(
+                '/api/v1/alerts/course/email', data=data, headers=headers)
+        self.assertResponseOk(resp)
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)
+
+        # Try adding the same thing. Should fail.
+        resp = self.app.post(
+                '/api/v1/alerts/course/email', data=data, headers=headers)
+        self.assertEqual(resp.status_code, 400)
+        self.assertJsonResponse(resp, {
+            'error': 'Alert with the given parameters already exists.'
+        })
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)
+
+        # Test with all parameters set
+        data = {
+            'course_id': 'psych101',
+            'expiry_date': 1496592355,
+            'term_id': '2014_01',
+            'section_type': 'LEC',
+            'section_num': '001',
+            'user_id': '533e4f7d78d6fe562c16f17a',
+        }
+        resp = self.app.post(
+                '/api/v1/alerts/course/email', data=data, headers=headers)
+        self.assertResponseOk(resp)
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 2)

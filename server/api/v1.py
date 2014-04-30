@@ -624,6 +624,40 @@ def delete_gcm_course_alert(alert_id):
         'gcm_course_alert': alert.to_dict(),
     })
 
+@api.route('/alerts/course/email', methods=['POST'])
+def add_email_course_alert():
+    params = flask.request.form
+
+    created_date = datetime.datetime.now()
+
+    expiry_date_param = params.get('expiry_date')
+    if expiry_date_param:
+        expiry_date = datetime.datetime.fromtimestamp(int(expiry_date_param))
+    else:
+        expiry_date = created_date + datetime.timedelta(days=365)
+
+    try:
+        alert_dict = {
+            'course_id': params['course_id'],
+            'created_date': created_date,
+            'expiry_date': expiry_date,
+            'section_type': params.get('section_type'),
+            'section_num': params.get('section_num'),
+            'term_id': params.get('term_id'),
+            'user_id': params['user_id']
+        }
+    except KeyError as e:
+        raise api_util.ApiBadRequestError(
+            'Missing required parameter: %s' % e.message)
+
+    alert = m.EmailCourseAlert(**alert_dict)
+
+    try:
+        alert.save()
+    except me.NotUniqueError as e:
+        raise api_util.ApiBadRequestError(
+                'Alert with the given parameters already exists.')
+    return api_util.jsonify({})
 
 ###############################################################################
 # Misc.
