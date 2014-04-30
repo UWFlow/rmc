@@ -95,12 +95,25 @@ function(RmcBackbone, $, _, _s, util) {
           term_id: this.model.get('term_id'),
           user_id: _user.getCurrentUser().get('id'),
         }})
-        .done(onAlertAddSuccess);
+        .then(_.bind(this.onAlertAddSuccess, this),
+              _.bind(this.onAlertAddFail, this));
 
       return false;
     },
 
     onAlertAddSuccess: function() {
+      toastr.success(_s.sprintf("You will be emailed when %s %s %s has open seats.",
+                                this.model.get('course_id').toUpperCase(),
+                                this.model.get('section_type'),
+                                this.model.get('section_num')));
+    },
+
+    onAlertAddFail: function() {
+      toastr.error(_s.sprintf("Couldn't create an alert for %s %s %s! " +
+                              "Are you already waiting for this section?",
+                                this.model.get('course_id').toUpperCase(),
+                                this.model.get('section_type'),
+                                this.model.get('section_num')));
     },
 
     render: function() {
