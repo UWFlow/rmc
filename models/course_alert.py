@@ -193,6 +193,8 @@ class EmailCourseAlert(BaseCourseAlert):
             aws_access_key_id=s.AWS_KEY_ID,
             aws_secret_access_key=s.AWS_SECRET_KEY)
 
+        current_user = user.User.objects.get(id=self.user_id)
+
         email_body = \
         """<p>Hey %(first_name)s!</p>
 
@@ -206,11 +208,12 @@ class EmailCourseAlert(BaseCourseAlert):
         _conn.send_email(
             'UW Flow <flow@uwflow.com>',
             '%s open spot notification' % (self.course_id.capitalize()),
-            email_body % {
-                'first_name': user.User.objects(id=self.user_id),
+            '',
+            current_user.email,
+            html_body = email_body % {
+                'first_name': current_user.first_name,
                 'course_name': self.course_id.capitalize(),
                 'section_name': self.section_type + ' ' + self.section_num
             },
-            user.User.objects.get(id=self.user_id).email
         )
         return True
