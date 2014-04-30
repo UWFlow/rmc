@@ -343,10 +343,14 @@ def update_sections():
     rmc_processor.import_opendata_sections()
 
     # Send push notifications about seat openings.
-    num_sent = m.GcmCourseAlert.send_eligible_alerts()
-    num_sent += m.EmailCourseAlert.send_eligible_alerts()
-    num_expired = m.GcmCourseAlert.delete_expired()
-    print 'Sent %s push notifications and expired %s' % (num_sent, num_expired)
+    send_alerts()
+
+def send_alerts():
+    pushes_sent = m.GcmCourseAlert.send_eligible_alerts()
+    pushes_expired = m.GcmCourseAlert.delete_expired()
+    print 'Sent %s push notifications and expired %s' % (pushes_sent, pushes_expired)
+    emails_sent = m.EmailCourseAlert.send_eligible_alerts()
+    print 'Sent %s email notifications' % (emails_sent)
 
 
 def update_courses():
@@ -379,6 +383,7 @@ if __name__ == '__main__':
         'mongo_points': update_mongo_points,
         'exam_schedule': update_exam_schedule,
         'sections': update_sections,
+        'alerts': send_alerts,
         'courses': update_courses,
     }
     parser.add_argument('mode',
