@@ -511,6 +511,19 @@ def add_course_to_shortlist(course_id):
         'user_course': user_course.to_dict(),
     })
 
+@api.route('/user/alerts', defaults={'user_id': None}, methods=['GET'])
+@api.route('/users/<string:user_id>/alerts', methods=['GET'])
+def get_user_email_alerts(user_id):
+    """Get a list of active email alerts for a given user."""
+    if user_id == None:
+        user_id = _get_user_require_auth().id
+
+    alerts = m.EmailCourseAlert.objects(user_id=user_id)
+
+    return api_util.jsonify({
+        'alerts': [alert.to_dict() for alert in alerts]
+    })
+
 
 # TODO(david): Add corresponding remove course endpoint
 

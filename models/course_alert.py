@@ -179,6 +179,8 @@ class EmailCourseAlert(BaseCourseAlert):
     user_id = me.ObjectIdField(
         unique_with=BaseCourseAlert.BASE_UNIQUE_FIELDS)
 
+    TO_DICT_FIELDS = BaseCourseAlert.TO_DICT_FIELDS + ['user_id']
+
     def __repr__(self):
         return "<EmailCourseAlert: %s, %s, %s %s>" % (
             self.course_id,
