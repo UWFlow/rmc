@@ -299,3 +299,24 @@ class V1Test(testlib.FlaskTestCase):
         })
         self.assertEqual(m.EmailCourseAlert.objects.count(), 0)
 
+    def test_delete_email_course_alert_not_found(self):
+        created_timestamp = 1396710772
+        expiry_timestamp = 1496710772
+
+        alert = m.EmailCourseAlert(
+            user_id='533e4f7d78d6fe562c16f17a',
+            course_id='sci238',
+            created_date=datetime.datetime.fromtimestamp(created_timestamp),
+            expiry_date=datetime.datetime.fromtimestamp(expiry_timestamp),
+        )
+        alert.save()
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)
+
+        headers = self.get_csrf_token_header()
+
+        wrong_id='d72462467a93ece2f40eb842'
+
+        resp = self.app.delete(
+                '/api/v1/alerts/course/gcm/%s' % wrong_id, headers=headers)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)

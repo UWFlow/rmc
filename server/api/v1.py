@@ -674,7 +674,12 @@ def add_email_course_alert():
 
 @api.route('/alerts/course/email/<string:alert_id>', methods=['DELETE'])
 def delete_email_course_alert(alert_id):
-    alert = m.EmailCourseAlert.objects.get(id=alert_id)
+    alert = m.EmailCourseAlert.objects.with_id(alert_id)
+
+    if not alert:
+        raise api_util.ApiNotFoundError(
+                'No GCM course alert with id %s found.' % alert_id)
+
     alert.delete()
     return api_util.jsonify({
         'email_course_alert': alert.to_dict()
