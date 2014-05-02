@@ -1,13 +1,17 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
-'util'],
-function(RmcBackbone, $, _, _s, util) {
+'alert', 'util'],
+function(RmcBackbone, $, _, _s, alert, util) {
 
   var Section = RmcBackbone.Model.extend({
   });
 
   var SectionCollection = RmcBackbone.Collection.extend({
     model: Section,
+
+    initialize: function() {
+      this.alerts = new alert.AlertCollection();
+    },
 
     comparator: function(section) {
       var type = section.get('section_type');
@@ -63,6 +67,12 @@ function(RmcBackbone, $, _, _s, util) {
       this.$('.sections-table-body-placeholder').append(
         new TermView({
         model: section,
+        hasAlert: this.collection.alerts.some(function(alert) {
+          return alert.get('term_id') === section.get('term_id') &&
+            alert.get('section_type') === section.get('section_type') &&
+              alert.get('section_num') === section.get('section_num') &&
+                alert.get('course_id') === section.get('course_id');
+        }),
         shouldLinkifyProfs: this.shouldLinkifyProfs
       }).render().el);
     }
@@ -76,6 +86,7 @@ function(RmcBackbone, $, _, _s, util) {
     initialize: function(options) {
       this.template = _.template($('#section-row-tpl').html());
       this.shouldLinkifyProfs = options.shouldLinkifyProfs;
+      this.hasAlert = options.hasAlert;
     },
 
     events: {
@@ -128,6 +139,8 @@ function(RmcBackbone, $, _, _s, util) {
         section: this.model,
 
         sectionIsFull: this._sectionIsFull(this.model),
+
+        hasAlert: this.hasAlert,
 
         sectionMissingValueText: function(section, courseId) {
           if (_s.startsWith(courseId, 'wkrpt')) {
