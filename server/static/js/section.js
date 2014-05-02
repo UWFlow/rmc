@@ -10,6 +10,7 @@ function(RmcBackbone, $, _, _s, _alert, util) {
     model: Section,
 
     onReset: function(alerts) {
+      // TODO(ryandv): our version of underscore is too old to have _.where
       this.each(function(section) {
         var alertForSection = alerts.find(function(alert) {
           return alert.get('term_id') === section.get('term_id') &&
@@ -80,14 +81,14 @@ function(RmcBackbone, $, _, _s, _alert, util) {
 
     _addSectionRow: function(section) {
       this.$('.sections-table-body-placeholder').append(
-        new TermView({
+        new SectionView({
         model: section,
         shouldLinkifyProfs: this.shouldLinkifyProfs
       }).render().el);
     }
   });
 
-  var TermView = RmcBackbone.View.extend({
+  var SectionView = RmcBackbone.View.extend({
     className: 'term-table',
 
     tagName: 'tr',
@@ -139,7 +140,6 @@ function(RmcBackbone, $, _, _s, _alert, util) {
     },
 
     onAlertRemove: function() {
-      console.log(this.model.isNew());
       this.model.get('alert').destroy({
         success: _.bind(this.onAlertRemSuccess, this),
         error: _.bind(this.onAlertRemFail, this)

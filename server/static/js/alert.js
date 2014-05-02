@@ -16,7 +16,11 @@ function(RmcBackbone, $, _, toastr) {
           user_id: _user.getCurrentUser().get('id'),
         }})
         .then(_.bind(function(data) {
-          this.set(data);
+          this.set({
+            id: data.id,
+            created_date: data.created_date,
+            expiry_date: data.expiry_date
+          });
           options.success();
         }, this), options.error);
     },
@@ -31,7 +35,7 @@ function(RmcBackbone, $, _, toastr) {
           section_type: this.get('section_type'),
           section_num: this.get('section_num'),
           term_id: this.get('term_id'),
-          user_id: _user.getCurrentUser().get('id'),
+          user_id: this.get('id')
         }})
         .then(options.success, options.error);
     },
@@ -41,9 +45,6 @@ function(RmcBackbone, $, _, toastr) {
     model: Alert,
 
     url: '/api/v1/user/alerts',
-
-    initialize: function() {
-    },
 
     parse: function(response) {
       return response.alerts;

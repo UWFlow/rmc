@@ -209,12 +209,12 @@ class EmailCourseAlert(BaseCourseAlert):
 
         _conn.send_email(
             'UW Flow <flow@uwflow.com>',
-            '%s open spot notification' % (self.course_id.capitalize()),
+            '%s open spot notification' % (self.course_id.upper()),
             '',
             current_user.email,
             html_body = email_body % {
                 'first_name': current_user.first_name,
-                'course_name': self.course_id.capitalize(),
+                'course_name': self.course_id.upper(),
                 'section_name': self.section_type + ' ' + self.section_num
             },
         )
