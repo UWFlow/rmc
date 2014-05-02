@@ -350,7 +350,9 @@ def send_alerts():
     pushes_expired = m.GcmCourseAlert.delete_expired()
     print 'Sent %s push notifications and expired %s' % (pushes_sent, pushes_expired)
     emails_sent = m.EmailCourseAlert.send_eligible_alerts()
-    print 'Sent %s email notifications' % (emails_sent)
+    emails_expired = m.EmailCourseAlert.delete_expired()
+    print 'Sent %s email notifications and expired %s' % (emails_sent,
+                                                          emails_expired)
 
 
 def update_courses():
