@@ -3,20 +3,21 @@ define(
 function(RmcBackbone, $, _, toastr) {
 
   var Alert = RmcBackbone.Model.extend({
-    save: function() {
+
+    save: function(options) {
+      var _user = require('user');
       $.ajax({
         url: '/api/v1/alerts/course/email',
         type: 'POST',
         data: {
-          course_id: this.model.get('course_id'),
-          section_type: this.model.get('section_type'),
-          section_num: this.model.get('section_num'),
-          term_id: this.model.get('term_id'),
+          course_id: this.get('course_id'),
+          section_type: this.get('section_type'),
+          section_num: this.get('section_num'),
+          term_id: this.get('term_id'),
           user_id: _user.getCurrentUser().get('id'),
         }})
-        .then(_.bind(this.onAlertAddSuccess, this),
-              _.bind(this.onAlertAddFail, this));
-    }
+        .then(options.success, options.error);
+    },
   });
 
   var AlertCollection = RmcBackbone.Collection.extend({

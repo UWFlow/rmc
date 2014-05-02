@@ -1,7 +1,7 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
 'alert', 'util'],
-function(RmcBackbone, $, _, _s, alert, util) {
+function(RmcBackbone, $, _, _s, _alert, util) {
 
   var Section = RmcBackbone.Model.extend({
   });
@@ -10,7 +10,7 @@ function(RmcBackbone, $, _, _s, alert, util) {
     model: Section,
 
     initialize: function() {
-      this.alerts = new alert.AlertCollection();
+      this.alerts = new _alert.AlertCollection();
     },
 
     comparator: function(section) {
@@ -67,7 +67,7 @@ function(RmcBackbone, $, _, _s, alert, util) {
       this.$('.sections-table-body-placeholder').append(
         new TermView({
         model: section,
-        hasAlert: this.collection.alerts.some(function(alert) {
+        alert: this.collection.alerts.find(function(alert) {
           return alert.get('term_id') === section.get('term_id') &&
             alert.get('section_type') === section.get('section_type') &&
               alert.get('section_num') === section.get('section_num') &&
@@ -86,28 +86,26 @@ function(RmcBackbone, $, _, _s, alert, util) {
     initialize: function(options) {
       this.template = _.template($('#section-row-tpl').html());
       this.shouldLinkifyProfs = options.shouldLinkifyProfs;
-      this.hasAlert = options.hasAlert;
+      this.alert = options.alert;
     },
 
     events: {
-      'click .add-course-alert-btn': 'onAlertAdd'
+      'click .add-course-alert-btn': 'onAlertAdd',
+      'change:alert': 'render'
     },
 
     onAlertAdd: function() {
-      // TODO(ryandv): Yay, circular dependencies!
-      var _user = require('user');
-      $.ajax({
-        url: '/api/v1/alerts/course/email',
-        type: 'POST',
-        data: {
-          course_id: this.model.get('course_id'),
-          section_type: this.model.get('section_type'),
-          section_num: this.model.get('section_num'),
-          term_id: this.model.get('term_id'),
-          user_id: _user.getCurrentUser().get('id'),
-        }})
-        .then(_.bind(this.onAlertAddSuccess, this),
-              _.bind(this.onAlertAddFail, this));
+      this.alert = new _alert.Alert({
+        course_id: this.model.get('course_id'),
+        section_type: this.model.get('section_type'),
+        section_num: this.model.get('section_num'),
+        term_id: this.model.get('term_id'),
+      });
+
+      this.alert.save({
+        success: _.bind(this.onAlertAddSuccess, this),
+        error: _.bind(this.onAlertAddFail, this)
+      });
 
       return false;
     },
@@ -120,8 +118,9 @@ function(RmcBackbone, $, _, _s, alert, util) {
     },
 
     onAlertAddFail: function() {
+      this.alert = undefined;
       toastr.error(_s.sprintf("Couldn't create an alert for %s %s %s! " +
-                              "Are you already waiting for this section?",
+                              "Are you already waiting on this section?",
                                 this.model.get('course_id').toUpperCase(),
                                 this.model.get('section_type'),
                                 this.model.get('section_num')));
@@ -140,7 +139,7 @@ function(RmcBackbone, $, _, _s, alert, util) {
 
         sectionIsFull: this._sectionIsFull(this.model),
 
-        hasAlert: this.hasAlert,
+        hasAlert: !_.isUndefined(this.alert),
 
         sectionMissingValueText: function(section, courseId) {
           if (_s.startsWith(courseId, 'wkrpt')) {
