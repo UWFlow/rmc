@@ -147,6 +147,7 @@ function(RmcBackbone, $, _, _s, _alert, util) {
     },
 
     onAlertRemSuccess: function() {
+      this.model.unset('alert');
       toastr.info(_s.sprintf(
         'You will no longer be emailed when ' +
           '%s %s %s has open seats.',
