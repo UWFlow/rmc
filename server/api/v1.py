@@ -670,7 +670,15 @@ def add_email_course_alert():
     except me.NotUniqueError as e:
         raise api_util.ApiBadRequestError(
                 'Alert with the given parameters already exists.')
-    return api_util.jsonify({})
+    return api_util.jsonify(alert.to_dict())
+
+@api.route('/alerts/course/email/<string:alert_id>', methods=['DELETE'])
+def delete_email_course_alert(alert_id):
+    alert = m.EmailCourseAlert.objects.get(id=alert_id)
+    alert.delete()
+    return api_util.jsonify({
+        'email_course_alert': alert.to_dict()
+    });
 
 ###############################################################################
 # Misc.
