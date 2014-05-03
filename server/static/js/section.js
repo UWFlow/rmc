@@ -96,77 +96,9 @@ function(RmcBackbone, $, _, _s, _alert, util) {
     initialize: function(options) {
       this.template = _.template($('#section-row-tpl').html());
       this.shouldLinkifyProfs = options.shouldLinkifyProfs;
-      this.model.on("change:alert", this.render, this);
-    },
-
-    events: {
-      'click .add-course-alert-btn': 'onAlertAdd',
-      'click .rem-course-alert-btn': 'onAlertRemove',
-    },
-
-    onAlertAdd: function() {
-      var alert = new _alert.Alert({
-        course_id: this.model.get('course_id'),
-        section_type: this.model.get('section_type'),
-        section_num: this.model.get('section_num'),
-        term_id: this.model.get('term_id'),
-      });
-
-      this.model.set({ alert: alert });
-
-      alert.save({
-        success: _.bind(this.onAlertAddSuccess, this),
-        error: _.bind(this.onAlertAddFail, this)
-      });
-
-      return false;
-    },
-
-    onAlertAddSuccess: function() {
-      toastr.success(_s.sprintf("You will be emailed when %s %s %s has open seats.",
-                                this.model.get('course_id').toUpperCase(),
-                                this.model.get('section_type'),
-                                this.model.get('section_num')));
-    },
-
-    onAlertAddFail: function() {
-      this.model.unset('alert');
-      toastr.error(_s.sprintf(
-        "Couldn't create an alert for %s %s %s! " +
-          "Are you already waiting on this section?",
-          this.model.get('course_id').toUpperCase(),
-          this.model.get('section_type'),
-          this.model.get('section_num')));
-    },
-
-    onAlertRemove: function() {
-      this.model.get('alert').destroy({
-        success: _.bind(this.onAlertRemSuccess, this),
-        error: _.bind(this.onAlertRemFail, this)
-      });
-    },
-
-    onAlertRemSuccess: function() {
-      this.model.unset('alert');
-      toastr.info(_s.sprintf(
-        'You will no longer be emailed when ' +
-          '%s %s %s has open seats.',
-          this.model.get('course_id').toUpperCase(),
-          this.model.get('section_type'),
-          this.model.get('section_num')));
-    },
-
-    onAlertRemFail: function() {
-      toastr.error(_s.sprintf(
-        'Uh-oh! Something went wrong trying to ' +
-          'remove this alert!',
-          this.model.get('course_id').toUpperCase(),
-          this.model.get('section_type'),
-          this.model.get('section_num')));
     },
 
     render: function() {
-      this.$el.empty();
       this.$el.addClass('section-' +
         util.sectionTypeToCssClass(this.model.get('section_type')));
 
@@ -176,8 +108,6 @@ function(RmcBackbone, $, _, _s, _alert, util) {
 
       this.$el.append(this.template({
         section: this.model,
-
-        sectionIsFull: this._sectionIsFull(this.model),
 
         hasAlert: this.model.has('alert'),
 
@@ -197,7 +127,31 @@ function(RmcBackbone, $, _, _s, _alert, util) {
         shouldLinkifyProfs: this.shouldLinkifyProfs
 
       }));
+
+      this._renderAlertIcon();
+
       return this;
+    },
+
+    _renderAlertIcon: function() {
+      if (this._sectionIsFull(this.model)) {
+        var alert = this.model.get('alert');
+
+        if (!alert) {
+          alert = new _alert.Alert({
+            course_id: this.model.get('course_id'),
+            section_type: this.model.get('section_type'),
+            section_num: this.model.get('section_num'),
+            term_id: this.model.get('term_id'),
+          });
+        }
+
+        var alertView = new _alert.AlertView({
+          model: alert
+        });
+
+        alertView.setElement(this.$('.alert-placeholder')).render();
+      }
     },
 
     _sectionIsFull: function(section) {
