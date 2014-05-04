@@ -165,6 +165,19 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
               /* expiration */ +new Date() + (1000 * 60 * 60 * 24 * 30 * 3));
         });
     }
+
+    // Show "email course alert" alert if not previously dismissed
+    var hideCourseAlertAlertKey = 'hide-course-alert-alert';
+    var $courseAlertAlert = $('#course-alert-alert');
+    if ($courseAlertAlert.length && !_util.getLocalData(hideCourseAlertAlertKey)){
+      $courseAlertAlert
+        .slideDown("fast")
+        .on('close.bs.alert', function() {
+          // Remember the alert was dismissed
+          _util.storeLocalData(hideCourseAlertAlertKey, true,
+              /* expiration */ +new Date() + (1000 * 60 * 60 * 24 * 30 * 3));
+        });
+    }
   });
 
   $('#referral-alert .referral-link-box').bind('click', function(evt) {

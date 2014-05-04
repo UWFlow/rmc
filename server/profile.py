@@ -463,6 +463,7 @@ def render_profile_page(profile_user_id, current_user=None):
         schedule_item_objs=schedule_item_dicts,
         failed_schedule_item_objs=failed_schedule_item_dicts,
         has_shortlisted=profile_user.has_shortlisted,
+        has_email_alerts=profile_user.has_email_alerts,
         show_import_schedule=show_import_schedule,
         show_import_schedule_button=own_profile and (not
                 profile_user.has_schedule),
