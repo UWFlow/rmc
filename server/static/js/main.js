@@ -59,7 +59,7 @@ require(['config_settings'], function(config_settings) {
     function(_s, util, moment, Backbone, _bootstrap, _cookie, toastr, _points,
       _user, _facebook, smartbanner, _wq, _search) {
       console.log(_user);
-
+      console.log(_search);
      // Show a banner to visitors from Android browsers linking
      // to our Android app on the Google Play Store.
       $(function() {
@@ -143,12 +143,6 @@ require(['config_settings'], function(config_settings) {
           $('#user-points-placeholder').replaceWith(
               userPointsView.render().$el);
         }
-        // Load the search bar modal
-        console.log(_search);
-        var searchBarView = new _search.SearchBar(
-            { el: $("#search_bar_container") });
-        searchBarView.render();
-        searchBarView.setAutocomplete();
 
         if (window.pageData.pageScript) {
           require([window.pageData.pageScript]);
@@ -165,6 +159,11 @@ require(['config_settings'], function(config_settings) {
         $(document.body).on('pageScriptComplete', function(evt) {
           $('[rel="tooltip"]').tooltip();
           $(document.body).data('rendered', true);
+          // Load the search bar modal
+          var searchBarView = new _search.SearchBar(
+              { el: $("#search_bar_container") });
+          searchBarView.render();
+          searchBarView.getData();
         });
 
         // TODO(Sandy): We don't use these cookies anymore, so remove them from

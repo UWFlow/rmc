@@ -95,6 +95,88 @@
   outline: none;
 }
 
+// JEFF ADDED FROM HERE
+
+.left-inner-addon {
+    position: relative;
+}
+.left-inner-addon input {
+    padding-left: 30px;
+}
+.left-inner-addon i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+}
+
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: #ffffff;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(0, 170, 255, 0.57);
+    border-top: 0px;
+}
+
+.ui-autocomplete li
+{
+    height: 35px;
+    border-style: solid;
+    border-width: 1px;
+    border-left: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
+    border-color: rgba(0, 170, 255, 0.57);
+    white-space: nowrap;
+    overflow: hidden;
+/*    -o-text-overflow: ellipsis;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;*/
+    display: block;
+}
+
+.ui-autocomplete a
+{
+    background-color: #ffffff;
+    color:#000000;
+    padding-left: 0px;
+    padding-top: 7px;
+    padding-bottom: 5px;
+    font-size: 20px;
+    height: 35px;
+    text-decoration: none;
+}
+
+.ui-autocomplete img
+{
+    margin-left: 4px;
+    margin-right: 7px;
+    margin-top: -6px;
+    margin-bottom: 1px;
+    height: 30px;
+    width: 35px;
+}
+
+.ui-autocomplete .search-icon
+{
+    margin-left: 9px;
+    margin-right: 11px;
+    margin-top: -6px;
+    margin-bottom: 1px;
+    /*visibility: hidden;*/
+    color: #666;
+}
+
+.ui-autocomplete a.ui-state-hover
+{
+    font-weight: normal !important;
+    background-color: rgba(92, 201, 255, 0.10);
+    color: #000000;
+}
+  /* I
+
 
 /****************************
  * Base page styles
