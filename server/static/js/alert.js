@@ -18,7 +18,7 @@ function(RmcBackbone, $, _, _s, toastr) {
         section_type: data.section_type,
         section_num: data.section_num,
         term_id: data.term_id,
-        user_id: data.id
+        user_id: data.user_id
       };
     },
   });
@@ -89,6 +89,26 @@ function(RmcBackbone, $, _, _s, toastr) {
           this.model.get('section_num')));
     },
 
+    showAlertAddTooltip: function() {
+      this.$el.tooltip('destroy')
+      .tooltip({
+        title: 'Email me when a seat opens',
+        trigger: 'hover',
+        placement: 'right',
+        animation: false
+      });
+    },
+
+    showAlertRemTooltip: function() {
+      this.$el.tooltip('destroy')
+      .tooltip({
+        title: 'Stop receiving alerts for this section',
+        trigger: 'hover',
+        placement: 'right',
+        animation: false
+      });
+    },
+
     onAlertRemFail: function() {
       toastr.error(_s.sprintf(
         'Uh-oh! Something went wrong trying to ' +
@@ -99,9 +119,17 @@ function(RmcBackbone, $, _, _s, toastr) {
     },
 
     render: function() {
+      var modelIsNew = this.model.isNew();
       this.$el.removeClass();
-      this.$el.addClass(this.model.isNew() ?
+      this.$el.addClass(modelIsNew ?
         'add-course-alert-btn icon-bell' : 'rem-course-alert-btn icon-remove');
+
+      if (modelIsNew) {
+        this.showAlertAddTooltip();
+      } else {
+        this.showAlertRemTooltip();
+      }
+
       return this;
     }
 
