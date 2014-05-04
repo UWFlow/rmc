@@ -4,7 +4,7 @@ define(
 function(RmcBackbone, $, _, _s, toastr) {
 
   var Alert = RmcBackbone.Model.extend({
-    url: '/api/v1/alerts/course/email',
+    urlRoot: '/api/v1/alerts/course/email',
 
     initialize: function() {
       var _user = require('user');
@@ -21,30 +21,9 @@ function(RmcBackbone, $, _, _s, toastr) {
         user_id: data.id
       };
     },
-
-    // TODO(ryandv): Why does this not fire when not overridden ._.
-    destroy: function(options) {
-      var _user = require('user');
-      $.ajax({
-        url: '/api/v1/alerts/course/email/' + this.get('id'),
-        type: 'DELETE',
-        data: {
-          course_id: this.get('course_id'),
-          section_type: this.get('section_type'),
-          section_num: this.get('section_num'),
-          term_id: this.get('term_id'),
-          user_id: this.get('id')
-        }})
-        .then(_.bind(function() {
-          this.unset('id');
-          this.trigger('destroy');
-          options.success();
-        }, this), options.error);
-    },
   });
 
   var AlertView = RmcBackbone.View.extend({
-
     tagName: 'span',
 
     events: {
@@ -52,9 +31,11 @@ function(RmcBackbone, $, _, _s, toastr) {
     },
 
     initialize: function() {
-      this.model.on('destroy', this.render, this);
-      this.model.on('sync', this.onAlertAddSuccess, this);
-      this.model.on('error', this.onAlertAddFail, this);
+      this.model.on('destroy', this.removeId, this);
+    },
+
+    removeId: function() {
+      this.model.unset('id');
     },
 
     onClick: function() {
@@ -99,6 +80,7 @@ function(RmcBackbone, $, _, _s, toastr) {
     },
 
     onAlertRemSuccess: function() {
+      this.render();
       toastr.info(_s.sprintf(
         'You will no longer be emailed when ' +
           '%s %s %s has open seats.',
