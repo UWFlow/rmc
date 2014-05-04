@@ -10,6 +10,7 @@ import mongoengine as me
 import flask.ext.bcrypt as bcrypt
 
 import course as _course
+import course_alert as _course_alert
 import exam as _exam
 import points as _points
 import term as _term
@@ -277,6 +278,11 @@ class User(me.Document):
         # TODO(Sandy): Actually this only works assuming users never remove
         # their schedule and we'll have to do actual queries when 2013_05 comes
         return self.schedules_imported > 0
+
+    @property
+    def has_email_alerts(self):
+        alerts = _course_alert.EmailCourseAlert.objects(user_id=self.id)
+        return alerts.count() > 0
 
     @property
     def should_renew_fb_token(self):

@@ -79,3 +79,24 @@ class UserTest(testlib.ModelTestCase):
         self.assertEquals(user.first_name, first_name)
         self.assertEquals(user.last_name, last_name)
         self.assertTrue(bcrypt.check_password_hash(user.password, password))
+
+    def test_user_has_email_alerts(self):
+        user = gen_user(
+            first_name='Winston',
+            last_name='Bishop')
+        user.save()
+
+        self.assertFalse(user.has_email_alerts)
+
+        created_timestamp = 1396710772
+        expiry_timestamp = 1496710772
+
+        alert = m.EmailCourseAlert(
+            user_id=user.id,
+            course_id='sci238',
+            created_date=datetime.datetime.fromtimestamp(created_timestamp),
+            expiry_date=datetime.datetime.fromtimestamp(expiry_timestamp),
+        )
+        alert.save()
+
+        self.assertTrue(user.has_email_alerts)
