@@ -639,7 +639,7 @@ def delete_gcm_course_alert(alert_id):
 
 @api.route('/alerts/course/email', methods=['POST'])
 def add_email_course_alert():
-    params = flask.request.form
+    params = flask.json.loads(flask.request.data)
 
     created_date = datetime.datetime.now()
 
@@ -657,7 +657,7 @@ def add_email_course_alert():
             'section_type': params.get('section_type'),
             'section_num': params.get('section_num'),
             'term_id': params.get('term_id'),
-            'user_id': params['user_id']
+            'user_id': params['user_id']['$oid']
         }
     except KeyError as e:
         raise api_util.ApiBadRequestError(

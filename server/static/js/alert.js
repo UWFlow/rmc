@@ -4,30 +4,22 @@ define(
 function(RmcBackbone, $, _, _s, toastr) {
 
   var Alert = RmcBackbone.Model.extend({
-    //TODO(ryandv): Can we just use Backbone.emulateJSON here?
-    //  or better yet, upgrade Backbone and pass it in as an option
-    //  to save
-    save: function(options) {
+    url: '/api/v1/alerts/course/email',
+
+    initialize: function() {
       var _user = require('user');
-      $.ajax({
-        url: '/api/v1/alerts/course/email',
-        type: 'POST',
-        data: {
-          course_id: this.get('course_id'),
-          section_type: this.get('section_type'),
-          section_num: this.get('section_num'),
-          term_id: this.get('term_id'),
-          user_id: _user.getCurrentUser().get('id'),
-        }})
-        .then(_.bind(function(data) {
-          this.set({
-            id: data.id,
-            created_date: data.created_date,
-            expiry_date: data.expiry_date
-          });
-          this.trigger('sync');
-          options.success();
-        }, this), options.error);
+      this.set({ user_id: _user.getCurrentUser().get('id') });
+    },
+
+    parse: function(data) {
+      return {
+        id: data.id,
+        course_id: data.course_id,
+        section_type: data.section_type,
+        section_num: data.section_num,
+        term_id: data.term_id,
+        user_id: data.id
+      };
     },
 
     // TODO(ryandv): Why does this not fire when not overridden ._.
@@ -60,7 +52,9 @@ function(RmcBackbone, $, _, _s, toastr) {
     },
 
     initialize: function() {
-      this.model.on('sync destroy', this.render, this);
+      this.model.on('destroy', this.render, this);
+      this.model.on('sync', this.onAlertAddSuccess, this);
+      this.model.on('error', this.onAlertAddFail, this);
     },
 
     onClick: function() {
@@ -72,7 +66,7 @@ function(RmcBackbone, $, _, _s, toastr) {
     },
 
     onAlertAdd: function() {
-      this.model.save({
+      this.model.save({}, {
         success: _.bind(this.onAlertAddSuccess, this),
         error: _.bind(this.onAlertAddFail, this)
       });
@@ -80,6 +74,7 @@ function(RmcBackbone, $, _, _s, toastr) {
     },
 
     onAlertAddSuccess: function() {
+      this.render();
       toastr.success(_s.sprintf("You will be emailed when %s %s %s " +
                                 "has open seats.",
                                 this.model.get('course_id').toUpperCase(),
