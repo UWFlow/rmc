@@ -8,7 +8,9 @@ function(RmcBackbone, $, _, _s, toastr) {
 
     initialize: function() {
       var _user = require('user');
-      this.set({ user_id: {'$oid': _user.getCurrentUser().get('id') } });
+      var currentUser = _user.getCurrentUser();
+      if (_.isNull(currentUser)) { return; }
+      this.set({ user_id: {'$oid': currentUser.get('id') } });
     },
 
     parse: function(data) {
@@ -66,7 +68,7 @@ function(RmcBackbone, $, _, _s, toastr) {
     onAlertAddFail: function() {
       toastr.error(_s.sprintf(
         "Couldn't create an alert for %s %s %s! " +
-          "Are you already waiting on this section?",
+          "Are you logged in?",
           this.model.get('course_id').toUpperCase(),
           this.model.get('section_type'),
           this.model.get('section_num')));
