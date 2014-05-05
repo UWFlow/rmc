@@ -8,7 +8,7 @@ function(RmcBackbone, $, _, _s, toastr) {
 
     initialize: function() {
       var _user = require('user');
-      this.set({ user_id: _user.getCurrentUser().get('id') });
+      this.set({ user_id: {'$oid': _user.getCurrentUser().get('id') } });
     },
 
     parse: function(data) {

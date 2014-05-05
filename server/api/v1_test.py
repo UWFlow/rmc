@@ -294,7 +294,7 @@ class V1Test(testlib.FlaskTestCase):
         self.assertResponseOk(resp)
         self.assertJsonResponse(resp, {
             'email_course_alert': {
-                'user_id': { '$oid': '533e4f7d78d6fe562c16f17a' },
+                'user_id': '533e4f7d78d6fe562c16f17a',
                 'term_id': '',
                 'section_type': '',
                 'expiry_date': 1496696372000,
