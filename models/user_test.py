@@ -100,3 +100,24 @@ class UserTest(testlib.ModelTestCase):
         alert.save()
 
         self.assertTrue(user.has_email_alerts)
+
+    def test_user_get_email_alerts(self):
+        user = gen_user(
+            first_name='Winston',
+            last_name='Bishop')
+        user.save()
+
+        self.assertEqual(list(user.get_email_alerts()), [])
+
+        created_timestamp = 1396710772
+        expiry_timestamp = 1496710772
+
+        alert = m.EmailCourseAlert(
+            user_id=user.id,
+            course_id='sci238',
+            created_date=datetime.datetime.fromtimestamp(created_timestamp),
+            expiry_date=datetime.datetime.fromtimestamp(expiry_timestamp),
+        )
+        alert.save()
+
+        self.assertEqual(list(user.get_email_alerts()), [alert])

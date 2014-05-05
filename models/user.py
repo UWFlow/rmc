@@ -310,6 +310,9 @@ class User(me.Document):
     def get_user_courses(self):
         return _user_course.UserCourse.objects(id__in=self.course_history)
 
+    def get_email_alerts(self):
+        return _course_alert.EmailCourseAlert.objects(user_id=self.id)
+
     @classmethod
     def cls_mutual_courses_redis_key(cls, user_id_one, user_id_two):
         if user_id_one < user_id_two:
