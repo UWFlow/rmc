@@ -173,6 +173,15 @@ class Course(me.Document):
 
         return reviews
 
+    # TODO(ryandv): Copied out of get_course_and_user_dicts; DRY up and complete
+    # extraction
+    def to_dict_with_sections(self):
+        course_dict = self.to_dict()
+        sections = section.Section.get_for_course_and_recent_terms(
+            course_dict['id'])
+        course_dict['sections'] = [s.to_dict() for s in sections]
+        return course_dict
+
     # TODO(mack): this function is way too overloaded, even to separate into
     # multiple functions based on usage
     @classmethod

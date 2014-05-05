@@ -464,8 +464,16 @@ def render_profile_page(profile_user_id, current_user=None):
         failed_schedule_item_objs=failed_schedule_item_dicts,
         has_shortlisted=profile_user.has_shortlisted,
         has_email_alerts=profile_user.has_email_alerts,
+        alerted_courses=get_alerted_courses(current_user),
         show_import_schedule=show_import_schedule,
         show_import_schedule_button=own_profile and (not
                 profile_user.has_schedule),
         course_id_to_review=course_id_to_review,
     )
+
+def get_alerted_courses(user):
+    alerts = user.get_email_alerts()
+
+    alerted_courses = m.Course.objects(
+        id__in=[alert.course_id for alert in alerts])
+    return [course.to_dict_with_sections() for course in alerted_courses]

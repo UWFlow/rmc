@@ -36,8 +36,8 @@
   {% if own_profile and not has_email_alerts %}
     <div class="alert fade in alert-info hide-initial" id="course-alert-alert">
       <button type="button" class="close" data-dismiss="alert">×</button>
-      <p class="lead">Waiting on a full section to open up? <strong>Receive an
-        email when a seat opens:</strong></p>
+      <p class="lead">Waiting for a full section to open up? <strong>Receive an
+        email alert when a seat opens:</strong></p>
       <a href="/courses">
         <span class="shortlist-screenshot-wrap">
           <img src="/static/img/how_to_add_course_alert.png" class="shortlist-screenshot-img">
@@ -78,6 +78,7 @@
 
   <div id="schedule-input-modal-placeholder"></div>
   <div id="class-schedule-placeholder"></div>
+  <div id="alerted-courses-placeholder"></div>
   <div id="exam-schedule-placeholder"></div>
   <div id="profile-terms-placeholder"></div>
 {% endblock %}
@@ -86,6 +87,8 @@
 {% block templates %}
   {% include 'friend.html' %}
   {% include 'course.html' %}
+  {% include 'section.html' %}
+  {% include 'section_row.html' %}
   {% include 'term.html' %}
   {% include 'ratings.html' %}
   {% include 'user_course.html' %}
@@ -99,6 +102,7 @@
   window.pageData.transcriptObj = {{ transcript_obj|tojson|safe }};
   window.pageData.userObjs = {{ user_objs|tojson|safe }};
   window.pageData.userCourseObjs = {{ user_course_objs|tojson|safe }};
+  window.pageData.alertedCourses = {{ alerted_courses|tojson|safe }};
   window.pageData.professorObjs = {{ professor_objs|tojson|safe }};
   window.pageData.courseObjs = {{ course_objs|tojson|safe }};
   window.pageData.profileUserId = {{ profile_user_id|tojson|safe }};

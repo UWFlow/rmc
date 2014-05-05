@@ -107,6 +107,17 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     });
   }
 
+  var alertedCourses = window.pageData.alertedCourses;
+  if (alertedCourses && alertedCourses.length !==0) {
+    _work_queue.add(function() {
+      var courseCollectionView = new _course.CourseCollectionView({
+        courses: new _course.CourseCollection(alertedCourses)
+      });
+      $('#alerted-courses-placeholder').append('<h1>Active Course Alerts</h1>');
+      $('#alerted-courses-placeholder').append(courseCollectionView.render().el);
+    });
+  }
+
   var examObjs = window.pageData.examObjs;
   if (examObjs && examObjs.length) {
     _work_queue.add(function() {
