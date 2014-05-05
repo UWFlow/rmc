@@ -113,7 +113,7 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
       var courseCollectionView = new _course.CourseCollectionView({
         courses: new _course.CourseCollection(alertedCourses)
       });
-      $('#alerted-courses-placeholder').append('<h1>Active Course Alerts</h1>');
+      $('#alerted-courses-placeholder').append('<h1>Seat Opening Alerts</h1>');
       $('#alerted-courses-placeholder').append(courseCollectionView.render().el);
     });
   }
