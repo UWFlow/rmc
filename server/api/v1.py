@@ -678,7 +678,7 @@ def delete_email_course_alert(alert_id):
 
     if not alert:
         raise api_util.ApiNotFoundError(
-                'No GCM course alert with id %s found.' % alert_id)
+                'No email course alert with id %s found.' % alert_id)
 
     alert.delete()
     return api_util.jsonify({
