@@ -158,7 +158,7 @@ require(['config_settings'], function(config_settings) {
           $('[rel="tooltip"]').tooltip();
           $(document.body).data('rendered', true);
           // Load the search bar modal
-          var searchBarView = new _search.SearchBar(
+          var searchBarView = new _search.SearchBarView(
               { el: $("#search_bar_container") });
           searchBarView.render();
           searchBarView.getData();
