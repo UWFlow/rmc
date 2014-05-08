@@ -343,7 +343,7 @@ def csrf_token():
 # /users/:user_id endpoints: info about a user
 
 
-def _get_user_require_auth(user_id=None):
+def _get_user_require_auth(user_id=None, return_none_if_error=False):
     """Return the requested user only if authenticated and authorized.
 
     Defaults to the current user if no user_id given.
@@ -352,6 +352,8 @@ def _get_user_require_auth(user_id=None):
     """
     current_user = view_helpers.get_current_user()
     if not current_user:
+        if return_none_if_error:
+            return None
         raise api_util.ApiBadRequestError('Must authenticate as a user.')
 
     if not user_id:
@@ -629,28 +631,34 @@ def delete_gcm_course_alert(alert_id):
 def search_bar():
     """Search courses to see if the request value is a subset of the name
     """
-    dataNeeded = flask.request.args.get('dataNeeded')
-    if ('c' in dataNeeded):
+    result_types = flask.request.args.get('result_types').split(',')
+    if 'courses' in result_types:
         courses = sorted(list(m.Course.objects().only('id', 'name')),
                 key=lambda c: c.id)
         course_dicts = [{'label': c.id, 'name': c.name, 'type': 'course'}
                 for c in courses]
     else:
         course_dicts = {}
-    #print courses
-    if ('f' in dataNeeded):
-        user = _get_user_require_auth(None)
-        friends = user.get_friends()
-        friend_dicts = [{'label': f.name, 'program': f.program_name,
-                        'type': 'friend', 'id': f.id,
-                        'pic': f.profile_pic_urls['default']} for f in friends]
+    if 'friends' in result_types:
+        user = _get_user_require_auth(None, True)
+        if user:
+            friends = user.get_friends()
+            friend_dicts = [{'label': f.name,
+                                'program': f.program_name,
+                                'type': 'friend',
+                                'id': f.id,
+                                'pic': f.profile_pic_urls['default']
+                            } for f in friends]
+        else:
+            friend_dicts = [{}]
     else:
-        friend_dicts = {}
-    toReturn = api_util.jsonify({
+        friend_dicts = [{}]
+    print "Friends dict: ", friend_dicts
+    to_return = api_util.jsonify({
                     'friends': friend_dicts,
                     'courses': course_dicts
                 })
-    return toReturn
+    return to_return
 
 ###############################################################################
 # Misc.
