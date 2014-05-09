@@ -1,12 +1,33 @@
-define(['ext/backbone', 'ext/jquery', 'ext/underscore', 'util',
-    'search_bar_util'],
-function(RmcBackbone, $, _, _util, _search_util) {
+define(['ext/backbone', 'ext/jquery', 'ext/underscore', 'util'],
+function(RmcBackbone, $, _, _util) {
+
+  var duration = 400;
+  var extraWidth = $('.nav').width();
+  var baseWidth = 200;
+  var moving = false;
+
+  var programToString = function(program) {
+    if (program) {
+      return program;
+    } else {
+      return "";
+    }
+  };
+
+  var formatCourseResult = function(course) {
+    return '<a style="display:block;"><i class="icon-book search-icon"></i>'+
+        '<b>'+course.label.toUpperCase()+'</b> &nbsp;&nbsp;&nbsp;&nbsp;'+
+        course.name + '</a>';
+  };
+
+  var formatFriendResult = function(friend) {
+    return '<a style="display:block;"><img src="'+friend.pic +
+        '" width="20" height="20">'+'<b>'+friend.label+'</b> &nbsp;&nbsp;' +
+        programToString(friend.program)+'</a>';
+  };
+
   var SearchBarView = RmcBackbone.View.extend({
     initialize: function() {
-      SearchBarView.duration = 400;
-      SearchBarView.extraWidth = $('.nav').width();
-      SearchBarView.baseWidth = 200;
-      SearchBarView.moving = false;
     },
     render: function() {
       var template = _.template($('#search-bar-tpl').html());
@@ -19,49 +40,48 @@ function(RmcBackbone, $, _, _util, _search_util) {
     },
     onFocus: function(event){
       $('.search-div').css('opacity', 1.0);
-      if (SearchBarView.moving) {
+      if (moving) {
         return;
       } else {
-        SearchBarView.moving = true;
+        moving = true;
       }
       $('.search-bar').attr('placeholder', '');
       $(".search-div").animate({
-        width: '+=' + SearchBarView.extraWidth,
-        duration: SearchBarView.duration,
+        width: '+=' + extraWidth,
+        duration: duration,
         queue: false
       },
       'easeOutCubic',
       function() {
-        $(".search-div").width(SearchBarView.extraWidth +
-            SearchBarView.baseWidth);
-        SearchBarView.moving = false;
+        $(".search-div").width(extraWidth + baseWidth);
+        moving = false;
       });
       $(".nav").hide({
-        duration: SearchBarView.duration,
+        duration: duration,
         queue: false
       });
       $('search-bar').autocomplete("open");
     },
     onBlur: function(event){
       $('.search-div').css('opacity', 0.8);
-      if (SearchBarView.moving) {
+      if (moving) {
         return;
       } else {
-        SearchBarView.moving = true;
+        moving = true;
       }
       $('.search-bar').attr('placeholder', 'Search courses/friends');
       $(".search-div").animate({
-        width: '-=' + SearchBarView.extraWidth,
-        duration: SearchBarView.duration,
+        width: '-=' + extraWidth,
+        duration: duration,
         queue: false
       },
       'easeOutCubic',
       function() {
-        $('search-div').width(SearchBarView.baseWidth);
-        SearchBarView.moving = false;
+        $('search-div').width(baseWidth);
+        moving = false;
       });
       $('.nav').show({
-        duration: SearchBarView.duration,
+        duration: duration,
         queue: false
       });
       setTimeout(function() {
@@ -96,8 +116,8 @@ function(RmcBackbone, $, _, _util, _search_util) {
                 _util.getLocalData('courses')),
             minLength: 2,
             open: function() {
-              $('.ui-menu').width(SearchBarView.extraWidth +
-                  SearchBarView.baseWidth);
+              $('.ui-menu').width(extraWidth +
+                  baseWidth);
               $('ul.ui-autocomplete').css({'list-style': 'none'});
             },
             delay: 0,
@@ -113,10 +133,10 @@ function(RmcBackbone, $, _, _util, _search_util) {
           .data('autocomplete')._renderItem = function(ul, item) {
             if (item.type === 'course') {
               toReturn = $('<li>').data('item.autocomplete', item).append(
-                  _search_util.formatCourseResult(item));
+                  formatCourseResult(item));
             } else {
               toReturn = $('<li>').data('item.autocomplete', item).append(
-                  _search_util.formatFriendResult(item));
+                  formatFriendResult(item));
             }
             toReturn.appendTo(ul);
           };
