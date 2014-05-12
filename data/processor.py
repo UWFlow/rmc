@@ -439,10 +439,10 @@ def import_opendata_exam_schedules():
                 processed_exams.append(exam)
 
     # Do some sanity checks to make sure OpenData is being reasonable.
-    # TODO(Sandy): More sanity checks here welcome
     # This number is arbitrary and just reminds us to double-check
     # TODO(Sandy): This ranges from 775 (Fall & Winter) to 325 (Spring)
-    EXAM_ITEMS_THRESHOLD = 325
+    season = m.Term.get_season_from_id(m.Term.get_current_term_id())
+    EXAM_ITEMS_THRESHOLD = 325 if season == 'Spring' else 775
     if len(processed_exams) < EXAM_ITEMS_THRESHOLD:
         raise ValueError("processor.py: too few exam items %d (< %d)"
                          % (len(processed_exams), EXAM_ITEMS_THRESHOLD))
@@ -452,7 +452,6 @@ def import_opendata_exam_schedules():
     for exam in processed_exams:
         exam.save()
 
-    # TODO(Sandy): When done, update time in exam.js
     return errors
 
 
