@@ -40,7 +40,6 @@ function(RmcBackbone, $, _, _util) {
       'keydown .search-bar': 'onSearchBoxKeyDown'
     },
     onFocus: function(event){
-      console.log($('ul.pull-right').width());
       $('.search-div').css('opacity', 1.0);
       if (moving) {
         return;
@@ -91,14 +90,15 @@ function(RmcBackbone, $, _, _util) {
       },0);
     },
     getData: function() {
-      var result_types = '';
       var toReturn;
+      var result_types = [];
       if (!_util.getLocalData('courses')) {
-        result_types += 'courses,';
+        result_types.push('courses');
       }
       if (!_util.getLocalData('friends')) {
-        result_types += 'friends,';
+        result_types.push('friends');
       }
+      result_types.join(',');
       $.ajax({
         dataType: 'json',
         url: '/api/v1/search/bar?result_types=' + result_types,
