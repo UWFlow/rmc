@@ -40,7 +40,6 @@ function(RmcBackbone, $, _, _util) {
       'keydown .search-bar': 'onSearchBoxKeyDown'
     },
     onFocus: function(event){
-      console.log($('ul.pull-right').width());
       $('.search-div').css('opacity', 1.0);
       if (moving) {
         return;

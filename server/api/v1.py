@@ -561,7 +561,6 @@ def search_bar():
         course_dicts = {}
     if 'friends' in result_types:
         user = view_helpers.get_current_user()
-        print user
         if user:
             friends = user.get_friends()
             friend_dicts = [{'label': f.name,
