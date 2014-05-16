@@ -343,7 +343,7 @@ def csrf_token():
 # /users/:user_id endpoints: info about a user
 
 
-def _get_user_require_auth(user_id=None, return_none_if_error=False):
+def _get_user_require_auth(user_id=None):
     """Return the requested user only if authenticated and authorized.
 
     Defaults to the current user if no user_id given.
@@ -352,8 +352,6 @@ def _get_user_require_auth(user_id=None, return_none_if_error=False):
     """
     current_user = view_helpers.get_current_user()
     if not current_user:
-        if return_none_if_error:
-            return None
         raise api_util.ApiBadRequestError('Must authenticate as a user.')
 
     if not user_id:
@@ -640,7 +638,8 @@ def search_bar():
     else:
         course_dicts = {}
     if 'friends' in result_types:
-        user = _get_user_require_auth(None, True)
+        user = view_helpers.get_current_user()
+        print user
         if user:
             friends = user.get_friends()
             friend_dicts = [{'label': f.name,
@@ -653,7 +652,6 @@ def search_bar():
             friend_dicts = [{}]
     else:
         friend_dicts = [{}]
-    print "Friends dict: ", friend_dicts
     to_return = api_util.jsonify({
                     'friends': friend_dicts,
                     'courses': course_dicts

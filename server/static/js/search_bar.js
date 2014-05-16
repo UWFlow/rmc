@@ -2,7 +2,7 @@ define(['ext/backbone', 'ext/jquery', 'ext/underscore', 'util'],
 function(RmcBackbone, $, _, _util) {
 
   var duration = 400;
-  var extraWidth = $('.nav').width();
+  var extraWidth;
   var baseWidth = 200;
   var moving = false;
 
@@ -28,6 +28,7 @@ function(RmcBackbone, $, _, _util) {
 
   var SearchBarView = RmcBackbone.View.extend({
     initialize: function() {
+      extraWidth = $('ul.pull-right').width();
     },
     render: function() {
       var template = _.template($('#search-bar-tpl').html());
@@ -39,6 +40,7 @@ function(RmcBackbone, $, _, _util) {
       'keydown .search-bar': 'onSearchBoxKeyDown'
     },
     onFocus: function(event){
+      console.log($('ul.pull-right').width());
       $('.search-div').css('opacity', 1.0);
       if (moving) {
         return;
