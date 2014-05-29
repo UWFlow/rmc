@@ -77,7 +77,7 @@ function(_, _s, $) {
 
   /**
    * Dumb simple hash code function based on Java's String.hashCode().
-   * @param {string} str The string to hfash.
+   * @param {string} str The string to hash.
    * @return {number} The hash code as an integer.
    */
   var getHashCode = function(str) {
@@ -202,33 +202,6 @@ function(_, _s, $) {
     // Handle older formats that were just the unwrapped JSON-encoded value.
     return (_.isObject(data) && 'val' in data) ? data.val : data;
   };
-
-  // var doesLocalDataExist = function(key) {
-  //   if (!window.localStorage) {
-  //     return false;
-  //   }
-  //   var userId = getCurrentUserId() || '';
-  //   var userKey = userId + '|' + key;
-  //   var data = window.localStorage[userKey];
-
-  //   if (data != null) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // };
-
-  // var isLocalDataExpired = function(key) {
-  //   var userId = getCurrentUserId() || '';
-  //   var userKey = userId + '|' + key;
-  //   var data = window.localStorage[userKey];
-
-  //   if (data && data.exp && +new Date() >= data.exp) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // };
 
   var scrollToElementId = function(id) {
     // Compensate for nav bar height
