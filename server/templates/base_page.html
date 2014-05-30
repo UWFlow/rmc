@@ -51,15 +51,12 @@
     {% endblock %}
 
     {% call macros.us_template('search-bar-tpl') %}
-    <div class="pull-right search-div" style="height: 54px; width: 200px;
-        float: right; opacity: 0.8; margin-right: 10px;">
-      <form class="navbar-form" role="search" style="margin-top: -2px; ">
-        <div class="input-group left-inner-addon" style="height: 100%;
-            width: 100%; padding-top: 4px;">
-          <i class="icon-search" style="padding-top: 13px;"></i>
-          <input type="text" style="height: 38px; width: 100%; box-sizing:
-              border-box;" class="form-control search-bar"
-              placeholder="Search courses/friends" name="srch-term" id="srch-term">
+    <div class="pull-right search-div" >
+      <form class="navbar-form" role="search">
+        <div class="input-group left-inner-addon">
+          <i class="icon-search"></i>
+          <input type="text" class="form-control search-bar"
+              placeholder="Search courses/friends">
         </div>
       </form>
     </div>
@@ -252,7 +249,7 @@
           {% endif %}
         </ul>
 
-        <div id="search_bar_container"></div>
+        <div id="search-bar-container"></div>
 
       </div>
     </div>
