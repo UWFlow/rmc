@@ -170,6 +170,38 @@
   color: #000000;
 }
 
+.search-div
+{
+  height: 54px;
+  width: 200px;
+  float: right;
+  opacity: 0.8;
+  margin-right: 10px;
+  margin-top: 4px;
+}
+
+.search-div .navbar-form
+{
+  margin-top: -2px;
+}
+
+.serch_dov .input-group
+{
+  height: 100%;
+  width: 100%;
+}
+
+.search-div .icon-search
+{
+  padding-top: 13px;
+}
+
+.search-div .search-bar
+{
+  height: 38px;
+  width: 100%;
+  box-sizing: border-box;
+}
 /****************************
  * Base page styles
  *************************/
