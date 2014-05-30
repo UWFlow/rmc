@@ -333,8 +333,6 @@ function(_, _s, $) {
     getReferrerId: getReferrerId,
     storeLocalData: storeLocalData,
     getLocalData: getLocalData,
-    //doesLocalDataExist: doesLocalDataExist,
-    //isLocalDataExpired: isLocalDataExpired,
     scrollToElementId: scrollToElementId,
     humanizeTermId: humanizeTermId,
     humanizeProfId: humanizeProfId,
