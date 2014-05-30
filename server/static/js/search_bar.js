@@ -99,51 +99,59 @@ function(RmcBackbone, $, _, _util) {
         result_types.push('friends');
       }
       result_types.join(',');
-      $.ajax({
-        dataType: 'json',
-        url: '/api/v1/search/bar?result_types=' + result_types,
-        success: function(data) {
-          if (result_types.indexOf('courses') >= 0) {
-            // 12096e5 = 2 weeks in milliseconds
-            _util.storeLocalData('courses', data.courses,
-                +(new Date()) + 12096e5);
-          }
-          if (result_types.indexOf('friends') >= 0) {
-            // 86400000 is 1 day in milliseconds
-            _util.storeLocalData('friends', data.friends,
-                +(new Date()) + 86400000);
-          }
-          $('.search-bar').autocomplete({
-            source: $.merge($.merge([], _util.getLocalData('friends')),
-                _util.getLocalData('courses')),
-            minLength: 2,
-            open: function() {
-              $('.ui-menu').width(extraWidth +
-                  baseWidth);
-              $('ul.ui-autocomplete').css({'list-style': 'none'});
-            },
-            delay: 0,
-            autoFocus: true,
-            select: function( event, ui ) {
-              if (ui.item.type === 'course') {
-                window.location.href = '/courses/' + ui.item.label;
-              } else {
-                window.location.href = '/profile/' + ui.item.id;
-              }
-            }
-          })
-          .data('autocomplete')._renderItem = function(ul, item) {
-            if (item.type === 'course') {
-              toReturn = $('<li>').data('item.autocomplete', item).append(
-                  formatCourseResult(item));
+      var setUpAutocomplete = function() {
+        $('.search-bar').autocomplete({
+          source: $.merge($.merge([], _util.getLocalData('friends')),
+              _util.getLocalData('courses')),
+          minLength: 2,
+          open: function() {
+            $('.ui-menu').width(extraWidth +
+                baseWidth);
+            $('ul.ui-autocomplete').css({'list-style': 'none'});
+          },
+          delay: 0,
+          autoFocus: true,
+          select: function( event, ui ) {
+            if (ui.item.type === 'course') {
+              window.location.href = '/courses/' + ui.item.label;
             } else {
-              toReturn = $('<li>').data('item.autocomplete', item).append(
-                  formatFriendResult(item));
+              window.location.href = '/profile/' + ui.item.id;
             }
-            toReturn.appendTo(ul);
-          };
-        }
-      });
+          }
+        })
+        .data('autocomplete')._renderItem = function(ul, item) {
+          if (item.type === 'course') {
+            toReturn = $('<li>').data('item.autocomplete', item).append(
+                formatCourseResult(item));
+          } else {
+            toReturn = $('<li>').data('item.autocomplete', item).append(
+                formatFriendResult(item));
+          }
+          toReturn.appendTo(ul);
+        };
+      };
+
+      if (result_types.length > 0) {
+        $.ajax({
+          dataType: 'json',
+          url: '/api/v1/search/bar?result_types=' + result_types,
+          success: function(data) {
+            if (result_types.indexOf('courses') >= 0) {
+              // 12096e5 = 2 weeks in milliseconds
+              _util.storeLocalData('courses', data.courses,
+                  +(new Date()) + 12096e5);
+            }
+            if (result_types.indexOf('friends') >= 0) {
+              // 86400000 is 1 day in milliseconds
+              _util.storeLocalData('friends', data.friends,
+                  +(new Date()) + 86400000);
+            }
+            setUpAutocomplete();
+          }
+        });
+      } else {
+        setUpAutocomplete();
+      }
     },
     onSearchBoxKeyDown: function(e) {
       if (e.keyCode === 9) {  //tab pressed
