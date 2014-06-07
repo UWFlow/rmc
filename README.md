@@ -4,7 +4,7 @@ Plan your courses
 
 ## Getting up and running
 
-To set up your dev environment, run `make install`. ()
+To set up your dev environment, run `make install`.
 
 We work inside a [virtualenv][], so remember to `source
 ~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
