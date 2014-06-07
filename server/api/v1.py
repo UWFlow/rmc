@@ -549,6 +549,38 @@ def search_courses():
     })
 
 
+@api.route('/search/bar')
+def search_bar():
+    """Search courses to see if the request value is a subset of the name
+    """
+    result_types = flask.request.args.get('result_types').split(',')
+    if 'courses' in result_types:
+        courses = sorted(list(m.Course.objects().only('id', 'name')),
+                key=lambda c: c.id)
+        course_dicts = [{'label': c.id, 'name': c.name, 'type': 'course'}
+                for c in courses]
+    else:
+        course_dicts = {}
+    if 'friends' in result_types:
+        user = view_helpers.get_current_user()
+        if user:
+            friends = user.get_friends()
+            friend_dicts = [{'label': f.name,
+                                'program': f.program_name,
+                                'type': 'friend',
+                                'id': f.id,
+                                'pic': f.profile_pic_urls['default']
+                            } for f in friends]
+        else:
+            friend_dicts = [{}]
+    else:
+        friend_dicts = [{}]
+    to_return = api_util.jsonify({
+                    'friends': friend_dicts,
+                    'courses': course_dicts
+                })
+    return to_return
+
 ###############################################################################
 # Alerts
 

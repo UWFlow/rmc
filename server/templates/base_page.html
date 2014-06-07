@@ -1,3 +1,5 @@
+{% import 'macros.html' as macros %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -47,6 +49,18 @@
     </script>
     {% block head_scripts %}
     {% endblock %}
+
+    {% call macros.us_template('search-bar-tpl') %}
+    <div class="pull-right search-div" >
+      <form class="navbar-form" role="search">
+        <div class="input-group left-inner-addon">
+          <i class="icon-search"></i>
+          <input type="text" class="form-control search-bar"
+              placeholder="Search courses/friends">
+        </div>
+      </form>
+    </div>
+    {% endcall %}
 
     <script>
       window.pageData = {};
@@ -234,8 +248,12 @@
             </li>
           {% endif %}
         </ul>
+
+        <div id="search-bar-container"></div>
+
       </div>
     </div>
+
     <div id="sign-in-banner-container"></div>
 
     <header id="site-header">
