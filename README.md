@@ -4,9 +4,7 @@ Plan your courses
 
 ## Getting up and running
 
-To set up your dev environment, run `make install`.
-Alternatively, you can start a virtual machine with [Vagrant](http://www.vagrantup.com/) using `vagrant up`.
-(Note that at least version 1.5 is required.)
+To set up your dev environment, run `make install`. ()
 
 We work inside a [virtualenv][], so remember to `source
 ~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
@@ -15,13 +13,13 @@ You should now be ready to boot the local server, with `make local`.
 
 Once it starts running, point your browser to http://localhost:5000/
 
-## MongoDB error on Linux
+### MongoDB error on Linux
 
 If you are getting a connection refused error when trying to run `make local` and are on Linux, this is
 most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
 and let it warm up for about 30 seconds to 1 minute. Then kill the process, and run `make local` again. It should work now.
 
-## Getting seed data
+### Getting seed data
 
 Run the following to get some basic course data into the DB.
 
