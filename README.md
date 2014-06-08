@@ -9,13 +9,9 @@ To set up your dev environment, run `make install`.
 We work inside a [virtualenv][], so remember to `source
 ~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
 
-To populate the database with courses, sections, and some sample reviews, run `make init_data`.
-
 You should now be ready to boot the local server, with `make local`.
 
 Once it starts running, point your browser to http://localhost:5000/
-
-## MongoDB error on Linux
 
 If you are getting a connection refused error when trying to run `make local` and are on Linux, this is
 most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
@@ -24,6 +20,7 @@ and let it warm up for about 30 seconds to 1 minute. Then kill the process, and 
 ## Getting seed data
 
 Run the following to get some basic course data into the DB.
+Note that for `make init_data` to work, you must have `make local` running in another tab.
 
 ```sh
 make init_data

@@ -44,7 +44,7 @@ aggregate_data: require_virtualenv_in_dev
 	PYTHONPATH=.. python data/aggregator.py daily
 
 init_data:
-	@echo "*** Seeding data. This may take up to an hour. ***"
+	@echo "*** Make sure that make local is running. Seeding data... This may take up to an hour. ***"
 	@echo
 	PYTHONPATH=.. python data/aggregator.py courses
 	@echo "Importing professors"
