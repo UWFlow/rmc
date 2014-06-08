@@ -631,10 +631,10 @@ def search_bar():
     """
     result_types = flask.request.args.get('result_types').split(',')
     if 'courses' in result_types:
-        courses = sorted(list(m.Course.objects().only('id', 'name')),
-                key=lambda c: c.id)
-        course_dicts = [{'label': c.id, 'name': c.name, 'type': 'course'}
-                for c in courses]
+        courses = sorted(list(m.Course.objects().only('id', 'name',
+                '_keywords')), key=lambda c: c.id)
+        course_dicts = [{'label': c.id, 'name': c.name,
+                'type': 'course', 'tokens': c._keywords} for c in courses]
     else:
         course_dicts = {}
     if 'friends' in result_types:
@@ -645,12 +645,14 @@ def search_bar():
                                 'program': f.program_name,
                                 'type': 'friend',
                                 'id': f.id,
-                                'pic': f.profile_pic_urls['default']
+                                'pic': f.profile_pic_urls['default'],
+                                'tokens': [f.first_name, f.last_name]
                             } for f in friends]
         else:
             friend_dicts = [{}]
     else:
         friend_dicts = [{}]
+
     to_return = api_util.jsonify({
                     'friends': friend_dicts,
                     'courses': course_dicts

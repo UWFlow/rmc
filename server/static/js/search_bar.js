@@ -1,66 +1,13 @@
+/*global Bloodhound, Handlebars */
+
 define(['ext/backbone', 'ext/jquery', 'ext/underscore', 'util',
-    'ext/typeahead'],
+    'ext/typeahead', 'ext/handlebars'],
 function(RmcBackbone, $, _, _util, _typeahead) {
 
   var duration = 400;
   var extraWidth;
   var baseWidth = 200;
   var moving = false;
-
-  var substringMatcher = function(strs) {
-    return function findMatches(q, cb) {
-      var matches, substrRegex;
-
-      // an array that will be populated with substring matches
-      matches = [];
-
-      // regex used to determine if a string contains the substring `q`
-      substrRegex = new RegExp(q, 'i');
-
-      // iterate through the pool of strings and for any string that
-      // contains the substring `q`, add it to the `matches` array
-      $.each(strs, function(i, str) {
-        if (substrRegex.test(str)) {
-          // the typeahead jQuery plugin expects suggestions to a
-          // JavaScript object, refer to typeahead docs for more info
-          matches.push({ value: str });
-        }
-      });
-
-      cb(matches);
-    };
-  };
-
-  var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
-    'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
-    'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
-    'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
-    'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
-    'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-    'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
-    'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
-    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
-  ];
-
-  // var programToString = function(program) {
-  //   if (program) {
-  //     return program;
-  //   } else {
-  //     return "";
-  //   }
-  // };
-
-  // var formatCourseResult = function(course) {
-  //   return '<a style="display:block;"><i class="icon-book search-icon"></i>'+
-  //       '<b>'+course.label.toUpperCase()+'</b> &nbsp;&nbsp;&nbsp;&nbsp;'+
-  //       course.name + '</a>';
-  // };
-
-  // var formatFriendResult = function(friend) {
-  //   return '<a style="display:block;"><img src="'+friend.pic +
-  //       '" width="20" height="20">'+'<b>'+friend.label+'</b> &nbsp;&nbsp;' +
-  //       programToString(friend.program)+'</a>';
-  // };
 
   var SearchBarView = RmcBackbone.View.extend({
     initialize: function() {
@@ -83,19 +30,30 @@ function(RmcBackbone, $, _, _util, _typeahead) {
         moving = true;
       }
       $('.search-bar').attr('placeholder', '');
-      $(".search-div").animate({
+      $('.twitter-typeahead').animate({
         width: '+=' + extraWidth,
         duration: duration,
         queue: false
       },
       'easeOutCubic',
       function() {
-        $(".search-div").width(extraWidth + baseWidth);
+        $(".twitter-typeahead").width(extraWidth + baseWidth);
         moving = false;
       });
-      $(".nav").hide({
+      $(".nav.pull-right").hide({
         duration: duration,
         queue: false
+      });
+      $('.search-div').animate({
+        width: '+=' + extraWidth,
+        duration: duration,
+        queue: false
+      },
+      'easeOutCubic',
+      function() {
+        $('.search-div').width(extraWidth + baseWidth);
+        moving = false;
+        $('.twitter-typeahead').typeahead('open');
       });
     },
     onBlur: function(event){
@@ -105,24 +63,32 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       } else {
         moving = true;
       }
-      $('.search-bar').attr('placeholder', 'Search courses/friends');
-      $(".search-div").animate({
+      $('.twitter-typeahead').animate({
         width: '-=' + extraWidth,
         duration: duration,
         queue: false
       },
       'easeOutCubic',
       function() {
-        $('search-div').width(baseWidth);
+        $('.twitter-typeahead').width(baseWidth);
         moving = false;
       });
-      $('.nav').show({
+      $('.nav.pull-right').show({
         duration: duration,
         queue: false
       });
+      $('.search-div').animate({
+        width: '-=' + extraWidth,
+        duration: duration,
+        queue: false
+      },
+      'easeOutCubic',
+      function() {
+        $('.search-div').width(baseWidth);
+        moving = false;
+      });
     },
     getData: function() {
-      //var toReturn;
       var result_types = [];
       if (!_util.getLocalData('courses')) {
         result_types.push('courses');
@@ -131,21 +97,104 @@ function(RmcBackbone, $, _, _util, _typeahead) {
         result_types.push('friends');
       }
       result_types.join(',');
+
+      var onOpened = function($e) {
+        $('.tt-dropdown-menu').css('width', baseWidth+extraWidth);
+      };
+
+      var onselected = function(event, datum, name) {
+        if (datum.type === 'course') {
+          window.location.href = '/courses/' + datum.label;
+        } else if (datum.type === 'friend') {
+          window.location.href = '/profile/' + datum.id;
+        }
+      };
+
+      var itemName = function(item) {
+        if (item.type === 'course') {
+          return item.label + ' - ' + item.name;
+        } else if (item.type === 'friend') {
+          return item.label;
+        }
+      };
+
+      var customSuggestionTemplate = function(item) {
+        var formatter;
+        if (item.type === 'course') {
+          formatter = Handlebars.compile('<span style="display:block;">' +
+              '<i class="icon-book search-icon"></i><p>{{label}} - {{name}}' +
+              '</p></span>');
+        } else if (item.type === 'friend') {
+          formatter = Handlebars.compile('<span style="display:block;">' +
+              '<img src=" {{pic}}" width="20" height="20">{{label}}</span>');
+        }
+        return formatter(item);
+      };
+
       var setUpAutocomplete = function() {
         $('.search-bar').typeahead({
           hint: true,
+          autoselect: true,
           highlight: true,
-          minLength: 1,
-          template: '<li > <a style="display:block;"><i class="icon-book' +
-          'search-icon"></i><b>{{value}}</b>&nbsp;&nbsp;&nbsp;&nbsp;</a></li>'
+          minLength: 2,
+          limit: 5,
         },
         {
-          name: 'states',
-          displayKey: 'value',
-          source: substringMatcher(states)
-        });
+          name: 'friendsAndCourses',
+          displayKey: itemName,
+          source: engine.ttAdapter(),
+          templates: {
+            empty: '<div class="empty-message"><span style="display:block;">' +
+            '<p> No results found </p></span></div>',
+            suggestion: customSuggestionTemplate
+          }
+        })
+        .on('typeahead:opened', onOpened)
+        .on('typeahead:selected', onselected);
+        $('.icon-search').zIndex(1);
       };
-      setUpAutocomplete();
+      var engine;
+      if (result_types.length > 0) {
+        $.ajax({
+          dataType: 'json',
+          url: '/api/v1/search/bar?result_types=' + result_types,
+          success: function(data) {
+            if (result_types.indexOf('courses') >= 0) {
+               // 12096e5 = 2 weeks in milliseconds
+              _util.storeLocalData('courses', data.courses,
+                  +(new Date()) + 12096e5);
+            }
+            if (result_types.indexOf('friends') >= 0) {
+               // 86400000 is 1 day in milliseconds
+              _util.storeLocalData('friends', data.friends,
+                  +(new Date()) + 86400000);
+            }
+            engine = new Bloodhound({
+              name: 'friendsAndCourses',
+              local: $.merge($.merge([], _util.getLocalData('friends')),
+                  _util.getLocalData('courses')),
+              datumTokenizer: function(d) {
+                return Bloodhound.tokenizers.whitespace(d.tokens.join(' '));
+              },
+              queryTokenizer: Bloodhound.tokenizers.whitespace
+            });
+            engine.initialize();
+            setUpAutocomplete();
+          }
+        });
+      } else {
+        engine = new Bloodhound({
+          name: 'friendsAndCourses',
+          local: $.merge($.merge([], _util.getLocalData('friends')),
+              _util.getLocalData('courses')),
+          datumTokenizer: function(d) {
+            return Bloodhound.tokenizers.whitespace(d.tokens.join(' '));
+          },
+          queryTokenizer: Bloodhound.tokenizers.whitespace
+        });
+        engine.initialize();
+        setUpAutocomplete();
+      }
     },
     onSearchBoxKeyDown: function(e) {
       if (e.keyCode === 9) {  //tab pressed

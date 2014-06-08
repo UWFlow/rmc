@@ -107,67 +107,78 @@
   pointer-events: none;
 }
 
-.ui-autocomplete {
-  max-height: 200px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  background-color: #ffffff;
-  border-style: solid;
-  border-width: 1px;
-  border-color: rgba(0, 170, 255, 0.57);
-  border-top: 0px;
-}
-
-.ui-autocomplete li
-{
-  height: 35px;
-  border-style: solid;
-  border-width: 1px;
-  border-left: 0px;
-  border-right: 0px;
-  border-bottom: 0px;
-  border-color: rgba(0, 170, 255, 0.57);
-  white-space: nowrap;
-  overflow: hidden;
-  display: block;
-}
-
-.ui-autocomplete a
-{
-  background-color: #ffffff;
-  color:#000000;
-  padding-left: 0px;
-  padding-top: 7px;
-  padding-bottom: 5px;
-  font-size: 20px;
-  height: 35px;
-  text-decoration: none;
-}
-
-.ui-autocomplete img
-{
-  margin-left: 4px;
-  margin-right: 7px;
-  margin-top: -6px;
-  margin-bottom: 1px;
+.tt-query,
+.tt-hint {
+  width: 396px;
   height: 30px;
-  width: 35px;
+  padding: 8px 12px;
+  font-size: 24px;
+  line-height: 30px;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  outline: none;
 }
 
-.ui-autocomplete .search-icon
+.tt-query {
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+.tt-hint {
+  color: #999
+}
+
+.tt-dropdown-menu {
+width: 422px;
+margin-top: 6px;
+padding: 0px 0;
+background-color: #fff;
+border: 1px solid #ccc;
+border: 1px solid rgba(0, 0, 0, 0.2);
+box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-dropdown-menu .empty-message {
+  text-align: center;
+}
+
+.tt-dropdown-menu .empty-message p {
+  padding-top: 5px;
+}
+
+.tt-suggestion {
+  padding: 3px 0px;
+  font-size: 18px;
+  line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor { /* UPDATE: newer versions use .tt-suggestion.tt-cursor */
+  color: #fff;
+  background-color: #0097cf;
+
+}
+
+.tt-suggestion p {
+  margin: 0;
+  padding-left: 40px;
+}
+
+.tt-suggestion .search-icon
 {
-  margin-left: 9px;
   margin-right: 11px;
-  margin-top: -6px;
+  margin-top: -10px;
   margin-bottom: 1px;
+  margin-left: 0px;
   color: #666;
 }
 
-.ui-autocomplete a.ui-state-hover
+.tt-suggestion img
 {
-  font-weight: normal !important;
-  background-color: rgba(92, 201, 255, 0.10);
-  color: #000000;
+  margin-left: 4px;
+  margin-right: 7px;
+  margin-top: -4px;
+  margin-bottom: -1px;
+  height: 26px;
+  width: 26px;
 }
 
 .search-div
@@ -203,12 +214,12 @@
   box-sizing: border-box;
 }
 /****************************
- * Base page styles
- *************************/
+* Base page styles
+*************************/
 
 // Uncomment to debug boxes
 //* {
-  //outline: 1px rgba(255, 0, 0, 0.2) solid;
+//outline: 1px rgba(255, 0, 0, 0.2) solid;
 //}
 
 body {
