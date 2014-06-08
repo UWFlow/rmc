@@ -30,31 +30,33 @@ function(RmcBackbone, $, _, _util, _typeahead) {
         moving = true;
       }
       $('.search-bar').attr('placeholder', '');
-      $('.twitter-typeahead').animate({
-        width: '+=' + extraWidth,
-        duration: duration,
-        queue: false
-      },
-      'easeOutCubic',
-      function() {
-        $(".twitter-typeahead").width(extraWidth + baseWidth);
-        moving = false;
-      });
-      $(".nav.pull-right").hide({
-        duration: duration,
-        queue: false
-      });
-      $('.search-div').animate({
-        width: '+=' + extraWidth,
-        duration: duration,
-        queue: false
-      },
-      'easeOutCubic',
-      function() {
-        $('.search-div').width(extraWidth + baseWidth);
-        moving = false;
-        $('.twitter-typeahead').typeahead('open');
-      });
+      if ($('.twitter-typeahead').width() !== (extraWidth+baseWidth)) {
+        $('.twitter-typeahead').animate({
+          width: '+=' + extraWidth,
+          duration: duration,
+          queue: false
+        },
+        'easeOutCubic',
+        function() {
+          $(".twitter-typeahead").width(extraWidth + baseWidth);
+          moving = false;
+        });
+        $(".nav.pull-right").hide({
+          duration: duration,
+          queue: false
+        });
+        $('.search-div').animate({
+          width: '+=' + extraWidth,
+          duration: duration,
+          queue: false
+        },
+        'easeOutCubic',
+        function() {
+          $('.search-div').width(extraWidth + baseWidth);
+          moving = false;
+          $('.twitter-typeahead').typeahead('open');
+        });
+      }
     },
     onBlur: function(event){
       $('.search-div').css('opacity', 0.8);
@@ -63,30 +65,32 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       } else {
         moving = true;
       }
-      $('.twitter-typeahead').animate({
-        width: '-=' + extraWidth,
-        duration: duration,
-        queue: false
-      },
-      'easeOutCubic',
-      function() {
-        $('.twitter-typeahead').width(baseWidth);
-        moving = false;
-      });
-      $('.nav.pull-right').show({
-        duration: duration,
-        queue: false
-      });
-      $('.search-div').animate({
-        width: '-=' + extraWidth,
-        duration: duration,
-        queue: false
-      },
-      'easeOutCubic',
-      function() {
-        $('.search-div').width(baseWidth);
-        moving = false;
-      });
+      if ($('.twitter-typeahead').width() !== baseWidth) {
+        $('.twitter-typeahead').animate({
+          width: '-=' + extraWidth,
+          duration: duration,
+          queue: false
+        },
+        'easeOutCubic',
+        function() {
+          $('.twitter-typeahead').width(baseWidth);
+          moving = false;
+        });
+        $('.nav.pull-right').show({
+          duration: duration,
+          queue: false
+        });
+        $('.search-div').animate({
+          width: '-=' + extraWidth,
+          duration: duration,
+          queue: false
+        },
+        'easeOutCubic',
+        function() {
+          $('.search-div').width(baseWidth);
+          moving = false;
+        });
+      }
     },
     getData: function() {
       var result_types = [];
@@ -121,12 +125,27 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       var customSuggestionTemplate = function(item) {
         var formatter;
         if (item.type === 'course') {
-          formatter = Handlebars.compile('<span style="display:block;">' +
-              '<i class="icon-book search-icon"></i><p>{{label}} - {{name}}' +
-              '</p></span>');
+          formatter = Handlebars.compile('<div><p class="image-paragraph">' +
+              '<img src="/static/img/book_image.png" class="' +
+              'search-icon"></p><span class="primary-title">' +
+              '<p> {{department_id}} {{number}} </p>' + '</span>' +
+              '<span class="secondary-title"><p>{{name}}</p></span></div>');
+          item.department_id = item.department_id.toUpperCase();
         } else if (item.type === 'friend') {
-          formatter = Handlebars.compile('<span style="display:block;">' +
-              '<img src=" {{pic}}" width="20" height="20">{{label}}</span>');
+          console.log(item.program);
+          if (item.program == null) {
+            formatter = Handlebars.compile('<div><p class=' +
+                '"image-paragraph-profile"><img src={{pic}} class="' +
+                'profile-pic"></p><span class="primary-title"> <p> {{label}}' +
+                '</p> </span><span class="secondary-title"><p> &nbsp; </p>' +
+                '</span></div>');
+          } else {
+            formatter = Handlebars.compile('<div><p class=' +
+                '"image-paragraph-profile"><img src={{pic}} class="' +
+                'profile-pic"></p><span class="primary-title"> <p> {{label}}' +
+                '</p></span><span class="secondary-title"><p>{{program}}</p>' +
+                '</span></div>');
+          }
         }
         return formatter(item);
       };
@@ -144,7 +163,7 @@ function(RmcBackbone, $, _, _util, _typeahead) {
           displayKey: itemName,
           source: engine.ttAdapter(),
           templates: {
-            empty: '<div class="empty-message"><span style="display:block;">' +
+            empty: '<div class="empty-message"><span style="display:block;">'+
             '<p> No results found </p></span></div>',
             suggestion: customSuggestionTemplate
           }

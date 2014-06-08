@@ -632,9 +632,11 @@ def search_bar():
     result_types = flask.request.args.get('result_types').split(',')
     if 'courses' in result_types:
         courses = sorted(list(m.Course.objects().only('id', 'name',
-                '_keywords')), key=lambda c: c.id)
+                '_keywords', 'department_id', 'number')), key=lambda c: c.id)
         course_dicts = [{'label': c.id, 'name': c.name,
-                'type': 'course', 'tokens': c._keywords} for c in courses]
+                'type': 'course', 'tokens': c._keywords,
+                'department_id': c.department_id,
+                'number': c.number} for c in courses]
     else:
         course_dicts = {}
     if 'friends' in result_types:
