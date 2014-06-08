@@ -38,7 +38,8 @@ require(['config_settings'], function(config_settings) {
 
   // Underscore and jQuery need to be loaded first, otherwise RequireJS might
   // try to execute things that depend on them first since loading is async
-  require(['ext/underscore', 'ext/jquery'], function(_, $) {
+  require(['ext/underscore', 'ext/jquery', 'ext/jqueryMigrate'],
+      function(_, $) {
 
     window._ = _;
     window.$ = $;

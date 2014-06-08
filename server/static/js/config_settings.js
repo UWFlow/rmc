@@ -1,7 +1,7 @@
 define (function() {
   var paths = {
     'ext/backbone': 'ext/backbone-0.9.2',
-    'ext/jquery': 'ext/jquery-1.8.1',
+    'ext/jquery': 'ext/jquery-1.11.1',
     'ext/bootstrap': 'ext/bootstrap-2.1.1',
     'ext/select2': 'ext/select2.min',
     'ext/autosize': 'ext/jquery.autosize',
@@ -14,6 +14,7 @@ define (function() {
     'ext/validate': 'ext/jquery.validate.min',
     'ext/smartbanner': 'ext/jquery.smartbanner',
     'ext/mailcheck': 'ext/mailcheck.min',
+    'ext/jqueryMigrate': 'ext/jquery-migrate-1.2.1',
 
     'moment': 'ext/moment',
     'moment-timezone': 'ext/moment-timezone'
@@ -71,6 +72,9 @@ define (function() {
       exports: 'smartbanner'
     },
     'ext/mailcheck': {
+      deps: ['ext/jquery']
+    },
+    'ext/jqueryMigrate': {
       deps: ['ext/jquery']
     }
   };
