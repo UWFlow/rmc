@@ -1,30 +1,66 @@
-define(['ext/backbone', 'ext/jquery', 'ext/underscore', 'util'],
-function(RmcBackbone, $, _, _util) {
+define(['ext/backbone', 'ext/jquery', 'ext/underscore', 'util',
+    'ext/typeahead'],
+function(RmcBackbone, $, _, _util, _typeahead) {
 
   var duration = 400;
   var extraWidth;
   var baseWidth = 200;
   var moving = false;
 
-  var programToString = function(program) {
-    if (program) {
-      return program;
-    } else {
-      return "";
-    }
+  var substringMatcher = function(strs) {
+    return function findMatches(q, cb) {
+      var matches, substrRegex;
+
+      // an array that will be populated with substring matches
+      matches = [];
+
+      // regex used to determine if a string contains the substring `q`
+      substrRegex = new RegExp(q, 'i');
+
+      // iterate through the pool of strings and for any string that
+      // contains the substring `q`, add it to the `matches` array
+      $.each(strs, function(i, str) {
+        if (substrRegex.test(str)) {
+          // the typeahead jQuery plugin expects suggestions to a
+          // JavaScript object, refer to typeahead docs for more info
+          matches.push({ value: str });
+        }
+      });
+
+      cb(matches);
+    };
   };
 
-  var formatCourseResult = function(course) {
-    return '<a style="display:block;"><i class="icon-book search-icon"></i>'+
-        '<b>'+course.label.toUpperCase()+'</b> &nbsp;&nbsp;&nbsp;&nbsp;'+
-        course.name + '</a>';
-  };
+  var states = ['Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California',
+    'Colorado', 'Connecticut', 'Delaware', 'Florida', 'Georgia', 'Hawaii',
+    'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana',
+    'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota',
+    'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+    'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+    'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+    'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  ];
 
-  var formatFriendResult = function(friend) {
-    return '<a style="display:block;"><img src="'+friend.pic +
-        '" width="20" height="20">'+'<b>'+friend.label+'</b> &nbsp;&nbsp;' +
-        programToString(friend.program)+'</a>';
-  };
+  // var programToString = function(program) {
+  //   if (program) {
+  //     return program;
+  //   } else {
+  //     return "";
+  //   }
+  // };
+
+  // var formatCourseResult = function(course) {
+  //   return '<a style="display:block;"><i class="icon-book search-icon"></i>'+
+  //       '<b>'+course.label.toUpperCase()+'</b> &nbsp;&nbsp;&nbsp;&nbsp;'+
+  //       course.name + '</a>';
+  // };
+
+  // var formatFriendResult = function(friend) {
+  //   return '<a style="display:block;"><img src="'+friend.pic +
+  //       '" width="20" height="20">'+'<b>'+friend.label+'</b> &nbsp;&nbsp;' +
+  //       programToString(friend.program)+'</a>';
+  // };
 
   var SearchBarView = RmcBackbone.View.extend({
     initialize: function() {
@@ -61,7 +97,6 @@ function(RmcBackbone, $, _, _util) {
         duration: duration,
         queue: false
       });
-      $('search-bar').autocomplete("open");
     },
     onBlur: function(event){
       $('.search-div').css('opacity', 0.8);
@@ -85,12 +120,9 @@ function(RmcBackbone, $, _, _util) {
         duration: duration,
         queue: false
       });
-      setTimeout(function() {
-        $('search-bar').autocomplete('close');
-      },0);
     },
     getData: function() {
-      var toReturn;
+      //var toReturn;
       var result_types = [];
       if (!_util.getLocalData('courses')) {
         result_types.push('courses');
@@ -100,58 +132,20 @@ function(RmcBackbone, $, _, _util) {
       }
       result_types.join(',');
       var setUpAutocomplete = function() {
-        $('.search-bar').autocomplete({
-          source: $.merge($.merge([], _util.getLocalData('friends')),
-              _util.getLocalData('courses')),
-          minLength: 2,
-          open: function() {
-            $('.ui-menu').width(extraWidth +
-                baseWidth);
-            $('ul.ui-autocomplete').css({'list-style': 'none'});
-          },
-          delay: 0,
-          autoFocus: true,
-          select: function( event, ui ) {
-            if (ui.item.type === 'course') {
-              window.location.href = '/courses/' + ui.item.label;
-            } else {
-              window.location.href = '/profile/' + ui.item.id;
-            }
-          }
-        })
-        .data('autocomplete')._renderItem = function(ul, item) {
-          if (item.type === 'course') {
-            toReturn = $('<li>').data('item.autocomplete', item).append(
-                formatCourseResult(item));
-          } else {
-            toReturn = $('<li>').data('item.autocomplete', item).append(
-                formatFriendResult(item));
-          }
-          toReturn.appendTo(ul);
-        };
-      };
-
-      if (result_types.length > 0) {
-        $.ajax({
-          dataType: 'json',
-          url: '/api/v1/search/bar?result_types=' + result_types,
-          success: function(data) {
-            if (result_types.indexOf('courses') >= 0) {
-              // 12096e5 = 2 weeks in milliseconds
-              _util.storeLocalData('courses', data.courses,
-                  +(new Date()) + 12096e5);
-            }
-            if (result_types.indexOf('friends') >= 0) {
-              // 86400000 is 1 day in milliseconds
-              _util.storeLocalData('friends', data.friends,
-                  +(new Date()) + 86400000);
-            }
-            setUpAutocomplete();
-          }
+        $('.search-bar').typeahead({
+          hint: true,
+          highlight: true,
+          minLength: 1,
+          template: '<li > <a style="display:block;"><i class="icon-book' +
+          'search-icon"></i><b>{{value}}</b>&nbsp;&nbsp;&nbsp;&nbsp;</a></li>'
+        },
+        {
+          name: 'states',
+          displayKey: 'value',
+          source: substringMatcher(states)
         });
-      } else {
-        setUpAutocomplete();
-      }
+      };
+      setUpAutocomplete();
     },
     onSearchBoxKeyDown: function(e) {
       if (e.keyCode === 9) {  //tab pressed
