@@ -55,7 +55,7 @@ require(['config_settings'], function(config_settings) {
 
     require(['ext/underscore.string', 'util', 'rmc_moment',
         'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
-        'points', 'user', 'facebook', 'work_queue', 'ext/smartbanner',
+        'points', 'user', 'facebook', 'ext/smartbanner', 'work_queue',
         'search_bar'],
     function(_s, util, moment, Backbone, _bootstrap, _cookie, toastr, _points,
       _user, _facebook, smartbanner, _wq, _search) {
@@ -159,8 +159,9 @@ require(['config_settings'], function(config_settings) {
           $('[rel="tooltip"]').tooltip();
           $(document.body).data('rendered', true);
           // Load the search bar modal
-          var searchBarView = new _search.SearchBarView(
-              { el: $("#search-bar-container") });
+          var searchBarView = new _search.SearchBarView({
+            el: $("#search-bar-container")
+          });
           searchBarView.render();
           searchBarView.getData();
         });

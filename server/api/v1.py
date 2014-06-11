@@ -627,39 +627,42 @@ def delete_gcm_course_alert(alert_id):
 
 @api.route('/search/bar')
 def search_bar():
-    """Search courses to see if the request value is a subset of the name
+    """Returns an array of course objects and an array of friend objects which
+    are searchable by the unified search-bar
     """
     result_types = flask.request.args.get('result_types').split(',')
     if 'courses' in result_types:
         courses = sorted(list(m.Course.objects().only('id', 'name',
                 '_keywords', 'department_id', 'number')), key=lambda c: c.id)
-        course_dicts = [{'label': c.id, 'name': c.name,
-                'type': 'course', 'tokens': c._keywords,
-                'department_id': c.department_id,
-                'number': c.number} for c in courses]
+        course_dicts = [{
+            'label': c.id,
+            'name': c.name,
+            'type': 'course',
+            'tokens': c._keywords,
+            'department_id': c.department_id,
+            'number': c.number
+        } for c in courses]
     else:
-        course_dicts = {}
+        course_dicts = []
+    friend_dicts = []
     if 'friends' in result_types:
         user = view_helpers.get_current_user()
         if user:
             friends = user.get_friends()
-            friend_dicts = [{'label': f.name,
-                                'program': f.program_name,
-                                'type': 'friend',
-                                'id': f.id,
-                                'pic': f.profile_pic_urls['default'],
-                                'tokens': [f.first_name, f.last_name]
-                            } for f in friends]
-        else:
-            friend_dicts = [{}]
-    else:
-        friend_dicts = [{}]
+            friend_dicts = [{
+                'label': f.name,
+                'program': f.program_name,
+                'type': 'friend',
+                'id': f.id,
+                'pic': f.profile_pic_urls['square'],
+                'tokens': [f.first_name, f.last_name,
+                        f.program_name.split(' ')]
+            } for f in friends]
 
-    to_return = api_util.jsonify({
-                    'friends': friend_dicts,
-                    'courses': course_dicts
-                })
-    return to_return
+    return api_util.jsonify({
+        'friends': friend_dicts,
+        'courses': course_dicts
+    })
 
 ###############################################################################
 # Misc.
