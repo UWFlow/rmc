@@ -30,6 +30,7 @@
     {% endif %}
 
     <link rel="stylesheet" href="{{ '/static/css/ext.css'|version }}">
+    <link rel="stylesheet" href="{{ '/static/css/search_bar.css' }}">
     {% block stylesheets %}
     {% endblock %}
 
@@ -49,18 +50,6 @@
     </script>
     {% block head_scripts %}
     {% endblock %}
-
-    {% call macros.us_template('search-bar-tpl') %}
-    <div class="pull-right search-div" >
-      <form class="navbar-form" role="search">
-        <div class="input-group left-inner-addon">
-          <i class="icon-search"></i>
-          <input type="text" class="form-control search-bar"
-              placeholder="Search courses/friends">
-        </div>
-      </form>
-    </div>
-    {% endcall %}
 
     <script>
       window.pageData = {};
@@ -296,6 +285,7 @@
     </footer>
 
     {% include 'points.html' %}
+    {% include 'search_bar.html' %}
     {% block templates %}
     {% endblock %}
 

@@ -655,8 +655,7 @@ def search_bar():
                 'type': 'friend',
                 'id': f.id,
                 'pic': f.profile_pic_urls['square'],
-                'tokens': [f.first_name, f.last_name,
-                        f.program_name.split(' ')]
+                'tokens': [f.first_name, f.last_name]
             } for f in friends]
 
     return api_util.jsonify({
