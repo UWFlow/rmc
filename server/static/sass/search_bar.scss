@@ -1,7 +1,20 @@
 @import 'variables';
 
-.tt-query {
+.left-inner-addon {
+  position: relative;
 
+  input {
+    padding-left: 30px;
+  }
+
+  i {
+    position: absolute;
+    padding: 10px 12px;
+    pointer-events: none;
+  }
+}
+
+.tt-query {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
 
   .tt-hint {
@@ -16,8 +29,12 @@
   }
 }
 
-.twitter-typeahead .tt-hint {
-  color: #999
+.twitter-typeahead {
+  width: 100%;
+
+  .tt-hint {
+    color: #999
+  }
 }
 
 .tt-dropdown-menu {
@@ -25,9 +42,10 @@
   margin-top: 6px;
   padding: 0px 0;
   background-color: #fff;
-  border: 1px solid #ccc;
   border: 1px solid rgba(0, 0, 0, 0.2);
-  box-shadow: 0 5px 10px rgba(0,0,0,.2);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+  max-height: 250px;
+  overflow-y: auto;
 
   .empty-message {
     text-align: center;
@@ -63,28 +81,19 @@
   }
 
   .search-icon {
-    margin-right: 11px;
-    margin-top: 0px;
-    margin-bottom: 1px;
-    margin-left: -2px;
-    height: 45px;
-    width: 45px;
+    margin: 3px 20px 1px 1px;
+    height: 39px;
+    width: 39px;
   }
 
   .profile-pic {
-    margin-right: 20px;
-    margin-top: 2px;
-    margin-bottom: 1px;
-    margin-left: -1px;
+    margin: 2px 20px 1px -1px;
     height: 38px;
     width: 38px;
   }
 
    img {
-    margin-left: 4px;
-    margin-right: 7px;
-    margin-top: -4px;
-    margin-bottom: -1px;
+    margin: -4px 7px -1px 4px;
   }
 
   .image-paragraph {
@@ -99,29 +108,28 @@
   }
 }
 
-.tt-suggestion.tt-cursor {
-  color: #fff;
-  background-color: $flowBlue;
+.tt-suggestion {
+  &.tt-cursor {
+    color: #fff;
+    background-color: $flowBlue;
+  }
 
+  .primary-title  p {
+    margin-bottom: 0px;
+    padding-top: 0px;
+    padding-left: 0px;
+  }
+
+  .secondary-title p {
+    margin-bottom: 0px;
+    padding-left: 0px;
+  }
 }
 
-.tt-suggestion .primary-title  p {
-  margin-bottom: 0px;
-  padding-top: 0px;
-  padding-left: 0px;
-}
-
-.tt-suggestion .secondary-title p {
-  margin-bottom: 0px;
-  padding-left: 0px;
-}
-
-.search-div
-{
+.search-div {
   height: 54px;
   width: 200px;
   float: right;
-  opacity: 0.8;
   margin-right: 10px;
   margin-top: 4px;
 

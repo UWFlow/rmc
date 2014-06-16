@@ -1,5 +1,3 @@
-{% import 'macros.html' as macros %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -30,7 +28,6 @@
     {% endif %}
 
     <link rel="stylesheet" href="{{ '/static/css/ext.css'|version }}">
-    <link rel="stylesheet" href="{{ '/static/css/search_bar.css' }}">
     {% block stylesheets %}
     {% endblock %}
 
@@ -191,7 +188,7 @@
           </div>
         </div>
 
-        <ul class="nav pull-right">
+        <ul class="nav pull-right navbar-minus-searchbar">
           <li class="{{ 'active' if nav_item == 'courses' else '' }}">
             <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Explore courses</a>
           </li>

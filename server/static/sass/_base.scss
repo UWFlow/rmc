@@ -7,6 +7,7 @@
 @import 'compass/css3';
 @import 'compass/utilities/general/clearfix';
 @import 'points';
+@import 'search_bar';
 @import 'jquery.smartbanner';
 
 /*****************************
@@ -93,18 +94,6 @@
 .btn {
   // Suppress the blue outline on clicked buttons seen in Chrome.
   outline: none;
-}
-
-.left-inner-addon {
-  position: relative;
-}
-.left-inner-addon input {
-  padding-left: 30px;
-}
-.left-inner-addon i {
-  position: absolute;
-  padding: 10px 12px;
-  pointer-events: none;
 }
 
 /****************************

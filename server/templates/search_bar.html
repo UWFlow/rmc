@@ -15,13 +15,13 @@
 {% call macros.us_template('friend-result-item-tpl') %}
 <div>
   <p class="image-paragraph-profile">
-    <img src=<%= pic %> class="profile-pic">
+    <img src=<%- pic %> class="profile-pic">
   </p>
   <span class="primary-title">
-    <p> <%= label %> </p>
+    <p> <%- label %> </p>
   </span>
   <span class="secondary-title">
-    <p> <%= program %> </p>
+    <p><%= program ? _.escape(program) : '&nbsp' %></p>
   </span>
 </div>
 {% endcall %}
@@ -32,19 +32,16 @@
     <img src="/static/img/FlowBlue_96px_SharpCorners.png" class="search-icon">
   </p>
   <span class="primary-title">
-    <p> <%= department_id %> <%= number %> </p>
+    <p> <%- department_id %> <%- number %> </p>
   </span>
   <span class="secondary-title">
-    <p> <%= name %> </p>
+    <p> <%- name %> </p>
   </span>
 </div>
 {% endcall %}
 
 {% call macros.us_template('empty-results-message-tpl') %}
-
 <div class="empty-message">
-  <span style="display:block;">
-    <p> No results found </p>
-  </span>
+  <p> No results found </p>
 </div>
 {% endcall %}
