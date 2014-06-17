@@ -4,10 +4,10 @@ define(['ext/backbone', 'ext/jquery', 'ext/underscore', 'util',
     'ext/typeahead'],
 function(RmcBackbone, $, _, _util, _typeahead) {
 
-  var onOpenedOuter = function(self) {
+  var onOpenedOuter = function(context) {
     return function($e) {
       $('.tt-dropdown-menu').css('width',
-          self.baseWidth + self.extraWidth);
+          context.baseWidth + context.extraWidth);
     };
   };
 
@@ -38,7 +38,7 @@ function(RmcBackbone, $, _, _util, _typeahead) {
     return formatter(item);
   };
 
-  var initBloodhoundWithAutocomplete = function(self) {
+  var initBloodhoundWithAutocomplete = function(context) {
     var engine = new Bloodhound({
       name: 'friendsAndCourses',
       local: [].concat(_util.getLocalData('friends'),
@@ -50,10 +50,10 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       limit: 20
     });
     engine.initialize();
-    setUpAutocomplete('.search-bar', engine, self);
+    setUpAutocomplete('.search-bar', engine, context);
   };
 
-  var setUpAutocomplete = function(searchBarElement, engine, self) {
+  var setUpAutocomplete = function(searchBarElement, engine, context) {
     $(searchBarElement).typeahead(
       {
         hint: true,
@@ -72,7 +72,7 @@ function(RmcBackbone, $, _, _util, _typeahead) {
         }
       }
     )
-    .on('typeahead:opened', onOpenedOuter(self))
+    .on('typeahead:opened', onOpenedOuter(context))
     .on('typeahead:selected', onSelected);
   };
 
@@ -94,13 +94,12 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       'blur .search-bar': 'onBlur'
     },
 
-    onFocus: function(event){
+    onFocus: function(event) {
       var self = this;
       if (self.moving) {
         return;
-      } else {
-        self.moving = true;
       }
+      self.moving = true;
       $(".nav.pull-right").hide(self.duration);
       self.$('.search-div').animate(
         {
@@ -114,13 +113,12 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       );
     },
 
-    onBlur: function(event){
+    onBlur: function(event) {
       var self = this;
       if (self.moving) {
         return;
-      } else {
-        self.moving = true;
       }
+      self.moving = true;
       $(".nav.pull-right").show(self.duration);
       self.$('.search-div').animate(
         {
