@@ -22,7 +22,7 @@ function(RmcBackbone, $, _, _util, _typeahead) {
 
   var itemName = function(item) {
     if (item.type === 'course') {
-      return item.label + ' - ' + item.name;
+      return _util.humanizeCourseId(item.label) + ' - ' + item.name;
     } else if (item.type === 'friend') {
       return item.label;
     }

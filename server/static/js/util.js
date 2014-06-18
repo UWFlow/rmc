@@ -295,6 +295,14 @@ function(_, _s, $) {
   };
 
   /**
+   * Converts a course ID into a readable form.
+   * Eg. "earth121l" => "EARTH 121L"
+   */
+  var humanizeCourseId = function(courseId) {
+    return splitCourseId(courseId).join(' ');
+  };
+
+  /**
    * Convert a term ID from our format to Quest's funky 4-digit code. Eg.
    * 2013_09 => 1139, 2014_01 => 1141.
    */
@@ -339,6 +347,7 @@ function(_, _s, $) {
     normalizeProfName: normalizeProfName,
     sectionTypeToCssClass: sectionTypeToCssClass,
     splitCourseId: splitCourseId,
+    humanizeCourseId: humanizeCourseId,
     termIdToQuestId: termIdToQuestId,
     getCurrentTermName: getCurrentTermName
   };
