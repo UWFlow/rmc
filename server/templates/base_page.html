@@ -188,7 +188,7 @@
           </div>
         </div>
 
-        <ul class="nav pull-right">
+        <ul class="nav pull-right navbar-minus-searchbar">
           <li class="{{ 'active' if nav_item == 'courses' else '' }}">
             <a class="nav-item" href="/courses"><i class="icon-reorder"></i> Explore courses</a>
           </li>
@@ -234,8 +234,12 @@
             </li>
           {% endif %}
         </ul>
+
+        <div id="search-bar-container"></div>
+
       </div>
     </div>
+
     <div id="sign-in-banner-container"></div>
 
     <header id="site-header">
@@ -278,6 +282,7 @@
     </footer>
 
     {% include 'points.html' %}
+    {% include 'search_bar.html' %}
     {% block templates %}
     {% endblock %}
 

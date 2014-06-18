@@ -55,10 +55,10 @@ require(['config_settings'], function(config_settings) {
 
     require(['ext/underscore.string', 'util', 'rmc_moment',
         'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
-        'points', 'user', 'facebook', 'work_queue', 'ext/smartbanner'],
+        'points', 'user', 'facebook', 'ext/smartbanner', 'work_queue',
+        'search_bar'],
     function(_s, util, moment, Backbone, _bootstrap, _cookie, toastr, _points,
-      _user, _facebook, smartbanner) {
-
+      _user, _facebook, smartbanner, _work_queue, _search_bar) {
      // Show a banner to visitors from Android browsers linking
      // to our Android app on the Google Play Store.
       $(function() {
@@ -158,6 +158,12 @@ require(['config_settings'], function(config_settings) {
         $(document.body).on('pageScriptComplete', function(evt) {
           $('[rel="tooltip"]').tooltip();
           $(document.body).data('rendered', true);
+          // Load the search bar modal
+          var searchBarView = new _search_bar.SearchBarView({
+            el: $("#search-bar-container")
+          });
+          searchBarView.render();
+          searchBarView.getData();
         });
 
         // TODO(Sandy): We don't use these cookies anymore, so remove them from

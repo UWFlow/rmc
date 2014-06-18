@@ -7,6 +7,7 @@
 @import 'compass/css3';
 @import 'compass/utilities/general/clearfix';
 @import 'points';
+@import 'search_bar';
 @import 'jquery.smartbanner';
 
 /*****************************
@@ -94,7 +95,6 @@
   // Suppress the blue outline on clicked buttons seen in Chrome.
   outline: none;
 }
-
 
 /****************************
  * Base page styles
