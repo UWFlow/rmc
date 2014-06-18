@@ -158,12 +158,16 @@ require(['config_settings'], function(config_settings) {
         $(document.body).on('pageScriptComplete', function(evt) {
           $('[rel="tooltip"]').tooltip();
           $(document.body).data('rendered', true);
-          // Load the search bar modal
-          var searchBarView = new _search_bar.SearchBarView({
-            el: $('.unified-search-bar')
-          });
-          searchBarView.render();
-          searchBarView.getData();
+
+          // Load the search bar modal only if localstorage is supported.
+          // TODO(david): Don't make the search bar depend on localStorage.
+          if (window.localStorage) {
+            var searchBarView = new _search_bar.SearchBarView({
+              el: $('.unified-search-bar')
+            });
+            searchBarView.render();
+            searchBarView.getData();
+          }
         });
 
         // TODO(Sandy): We don't use these cookies anymore, so remove them from
