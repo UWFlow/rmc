@@ -1,42 +1,37 @@
 {% import 'macros.html' as macros %}
 
 {% call macros.us_template('search-bar-tpl') %}
-<div class="pull-right search-div" >
-  <form class="navbar-form" role="search">
-    <div class="input-group left-inner-addon">
-      <i class="icon-search"></i>
-      <input type="text" class="form-control search-bar"
-          placeholder="Search courses/friends">
-    </div>
-  </form>
-</div>
+<form class="navbar-form" role="search">
+  <div class="input-group left-inner-addon">
+    <i class="icon-search"></i>
+    <input type="text" class="form-control search-bar"
+        placeholder="Search courses/friends">
+  </div>
+</form>
 {% endcall %}
 
 {% call macros.us_template('friend-result-item-tpl') %}
 <div>
-  <p class="image-paragraph-profile">
-    <img src=<%- pic %> class="profile-pic">
-  </p>
-  <span class="primary-title">
-    <p> <%- label %> </p>
-  </span>
-  <span class="secondary-title">
-    <p><%= program ? _.escape(program) : '&nbsp' %></p>
-  </span>
+  <img src="<%- pic %>" class="profile-pic">
+  <div class="primary-title suggestion-text">
+    <%- label %>
+  </div>
+  <div class="secondary-title suggestion-text">
+    <%= program ? _.escape(program) : '&nbsp' %>
+  </div>
 </div>
 {% endcall %}
 
 {% call macros.us_template('course-result-item-tpl') %}
 <div>
-  <p class="image-paragraph">
-    <img src="/static/img/FlowBlue_96px_SharpCorners.png" class="search-icon">
-  </p>
-  <span class="primary-title">
-    <p> <%- department_id %> <%- number %> </p>
-  </span>
-  <span class="secondary-title">
-    <p> <%- name %> </p>
-  </span>
+  <img src="/static/img/FlowBlue_96px_SharpCorners.png"
+      class="search-course-icon">
+  <div class="primary-title suggestion-text">
+     <%- department_id %> <%- number %>
+  </div>
+  <div class="secondary-title suggestion-text">
+    <%- name %>
+  </div>
 </div>
 {% endcall %}
 

@@ -160,7 +160,7 @@ require(['config_settings'], function(config_settings) {
           $(document.body).data('rendered', true);
           // Load the search bar modal
           var searchBarView = new _search_bar.SearchBarView({
-            el: $("#search-bar-container")
+            el: $('.unified-search-bar')
           });
           searchBarView.render();
           searchBarView.getData();
