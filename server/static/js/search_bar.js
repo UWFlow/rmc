@@ -127,7 +127,7 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       if (resultTypes.length > 0) {
         $.ajax({
           dataType: 'json',
-          url: '/api/v1/search/bar?result_types=' + resultTypes,
+          url: '/api/v1/search/unified?result_types=' + resultTypes,
           success: function(data) {
             if (resultTypes.indexOf('courses') >= 0) {
               _util.storeLocalData('courses', data.courses,
