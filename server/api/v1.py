@@ -577,7 +577,7 @@ def search_unified():
             friends = user.get_friends()
             friend_dicts = [{
                 'label': f.name,
-                'program': f.program_name,
+                'program': f.short_program_name,
                 'type': 'friend',
                 'id': f.id,
                 'pic': f.profile_pic_urls['square'],
