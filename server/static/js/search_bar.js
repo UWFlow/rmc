@@ -4,6 +4,7 @@ define(['ext/backbone', 'ext/jquery', 'ext/underscore', 'util',
     'ext/typeahead'],
 function(RmcBackbone, $, _, _util, _typeahead) {
 
+  // TODO(david): Move these functions to be direct methods of SearchBarView
   var onOpenedOuter = function(context) {
     return function($e) {
       $('.tt-dropdown-menu').css('width',
@@ -21,7 +22,7 @@ function(RmcBackbone, $, _, _util, _typeahead) {
 
   var itemName = function(item) {
     if (item.type === 'course') {
-      return item.label + ' - ' + item.name;
+      return _util.humanizeCourseId(item.label) + ' - ' + item.name;
     } else if (item.type === 'friend') {
       return item.label;
     }
@@ -76,17 +77,20 @@ function(RmcBackbone, $, _, _util, _typeahead) {
     .on('typeahead:selected', onSelected);
   };
 
+  // TODO(david): This search bar collapses when screen is too narrow.
   var SearchBarView = RmcBackbone.View.extend({
     initialize: function() {
-      this.moving = false;
-      this.duration = 300;
-      this.baseWidth = 200;
-      this.extraWidth = $('.navbar-minus-searchbar').width();
+      this.duration = 200;
+      this.baseWidth = 205;
+      this.$navBar = $('.navbar-minus-searchbar');
+      this.extraWidth = this.$navBar.width();
     },
 
     render: function() {
       var template = _.template($('#search-bar-tpl').html());
-      this.$el.html(template);
+      this.$el
+        .html(template)
+        .width(this.baseWidth);
     },
 
     events: {
@@ -95,40 +99,19 @@ function(RmcBackbone, $, _, _util, _typeahead) {
     },
 
     onFocus: function(event) {
-      var self = this;
-      if (self.moving) {
-        return;
-      }
-      self.moving = true;
-      $(".nav.pull-right").hide(self.duration);
-      self.$('.search-div').animate(
-        {
-          width: (self.baseWidth + self.extraWidth)
-        },
-        self.duration,
-        function() {
-          self.$(".search-div").width(self.extraWidth + self.baseWidth);
-          self.moving = false;
-        }
-      );
+      // TODO(david): Investigate the wobble that happens at the end of the
+      //     animation. Should use CSS 3 transitions.
+      this.$navBar.hide(this.duration);
+      this.$el.animate({
+        width: this.baseWidth + this.extraWidth
+      }, this.duration);
     },
 
     onBlur: function(event) {
-      var self = this;
-      if (self.moving) {
-        return;
-      }
-      self.moving = true;
-      $(".nav.pull-right").show(self.duration);
-      self.$('.search-div').animate(
-        {
-          width: self.baseWidth
-        },
-        self.duration,
-        function() {
-          self.moving = false;
-        }
-      );
+      this.$navBar.show(this.duration);
+      this.$el.animate({
+        width: this.baseWidth
+      }, this.duration);
     },
 
     getData: function() {
@@ -144,7 +127,7 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       if (resultTypes.length > 0) {
         $.ajax({
           dataType: 'json',
-          url: '/api/v1/search/bar?result_types=' + resultTypes,
+          url: '/api/v1/search/unified?result_types=' + resultTypes,
           success: function(data) {
             if (resultTypes.indexOf('courses') >= 0) {
               _util.storeLocalData('courses', data.courses,

@@ -38,14 +38,15 @@
 }
 
 .tt-dropdown-menu {
-  width: 422px;
   margin-top: 6px;
-  padding: 0px 0;
+  padding: 0;
   background-color: #fff;
   border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
   max-height: 250px;
   overflow-y: auto;
+  box-sizing: border-box;
 
   .empty-message {
     text-align: center;
@@ -57,85 +58,51 @@
 }
 
 .tt-suggestion {
-  padding: 3px 0px;
-  font-size: 18px;
-  line-height: 22px;
+  padding: 5px 0px;
 
-  p {
-    margin: 0px;
-    padding-left: 70px;
+  &.tt-cursor {
+    background-color: $flowBlue;
+
+    .suggestion-text {
+      color: white;
+    }
+  }
+
+  .suggestion-text {
+    margin: 0;
     white-space: nowrap;
     overflow: hidden;
   }
 
-  span {
-    white-space: nowrap;
-  }
-
   .primary-title {
-    font-size: 20px;
+    font-size: 18px;
+    padding-top: 2px;
+    padding-left: 0px;
+    color: $textColor;
   }
 
   .secondary-title {
-    font-size: 16px;
-  }
-
-  .search-icon {
-    margin: 3px 20px 1px 1px;
-    height: 39px;
-    width: 39px;
-  }
-
-  .profile-pic {
-    margin: 2px 20px 1px -1px;
-    height: 38px;
-    width: 38px;
+    font-size: 15px;
+    padding-top: 1px;
+    padding-left: 0px;
+    color: #666;
+    font-weight: 300;
   }
 
    img {
-    margin: -4px 7px -1px 4px;
-  }
-
-  .image-paragraph {
-    padding-left: 8px;
+    width: 40px;
+    height: 40px;
+    margin: 0 9px;
     float: left;
-  }
-
-  .image-paragraph-profile {
-    padding-left: 10px;
-    padding-top: 1px;
-    float: left;
+    border-radius: 3px;
   }
 }
 
-.tt-suggestion {
-  &.tt-cursor {
-    color: #fff;
-    background-color: $flowBlue;
-  }
-
-  .primary-title  p {
-    margin-bottom: 0px;
-    padding-top: 0px;
-    padding-left: 0px;
-  }
-
-  .secondary-title p {
-    margin-bottom: 0px;
-    padding-left: 0px;
-  }
-}
-
-.search-div {
+.unified-search-bar {
   height: 54px;
-  width: 200px;
   float: right;
   margin-right: 10px;
-  margin-top: 4px;
-
-  .navbar-form {
-    margin-top: -2px;
-  }
+  margin-top: 3px;
 
   .input-group {
     height: 100%;
