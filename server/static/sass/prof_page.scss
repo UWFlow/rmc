@@ -1,0 +1,68 @@
+@import 'base';
+@import 'term';
+@import 'course';
+@import 'prof';
+@import 'sign_in';
+
+.course-header {
+  margin-top: 20px;
+
+  // TODO(david): Does it actually make sense to have inconsistent title styling?
+  .page-title {
+    font-size: 60px;
+  }
+
+  #rating-box-container .rating-box {
+    float: right;
+    width: 105px;
+    height: 80px;
+    margin-top: 5px;
+
+    .rating {
+      font-size: 55px;
+      line-height: 55px;
+    }
+
+    .num-ratings {
+      font-size: 14px;
+      line-height: 14px;
+      top: 0px;
+    }
+  }
+}
+
+.user-review-box {
+  margin-top: 10px;
+}
+
+.review-post {
+  margin-top: 25px;
+
+  .ratings {
+    @include transform(scale(0.9));
+  }
+}
+
+.toggle-tips {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 10px 0px 10px 20px;
+  background-color: rgba(0, 0, 0, 0.06);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: lighten($textColor, 20%);
+  z-index: 1;
+  @include transition(all 0.2s ease-out);
+
+  &:hover {
+    @include transition(all 0.2s ease-out);
+    text-decoration: none;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.course .course-content {
+  margin-left: 0px;
+  margin-top: 20px;
+}

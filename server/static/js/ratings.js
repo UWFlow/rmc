@@ -68,7 +68,10 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
     render: function() {
       var ratings = this.ratings;
-      this.$el.html(this.template({ ratings: ratings, subject: this.subject }));
+      this.$el.html(this.template({
+        ratings: ratings,
+        subject: this.subject
+      }));
 
       this.$('[title]').tooltip();
 

@@ -13,6 +13,7 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
   var userCourse = courseModel.get('user_course');
 
   var overallRating = courseModel.getOverallRating();
+  console.log(overallRating);
   var ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
   $('#rating-box-container').html(ratingBoxView.render().el);
 
