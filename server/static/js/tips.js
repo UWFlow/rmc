@@ -21,23 +21,22 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review,
     expanded: false,
     numShown: 3,
 
-    defaults: {
-      title: 'Course comments'
-    },
-
     events: {
       'click .toggle-tips': 'toggleExpand'
     },
 
     initialize: function(options) {
       this.reviews = options.reviews;
-      this.title = this.defaults.title;
+      this.title = "Course Comments";
       this.course = null;
-      if (typeof options.course !== 'undefined') {
+      // Possible pageType values are 'prof' and 'course'
+      this.pageType = options.pageType;
+      options = options || {};
+      if (this.pageType === 'prof') {
         this.title = options.course.id.toUpperCase();
         this.course = options.course;
       }
-      if (typeof options.numShown !== 'undefined') {
+      if (options.numShown) {
         this.numShown = options.numShown;
       }
       this.tipsCollectionView = new TipsCollectionView({
@@ -51,40 +50,29 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review,
         numHidden: this.numHidden(),
         title: this.title
       }));
+      var expandFooter = $('');
       var renderedTips = this.tipsCollectionView.render().$el;
-      if (this.title !== this.defaults.title) {
+      if (this.pageType === 'prof') {
         if (this.numHidden() > 0) {
           var expandFooter = $('<div class="toggle-tips">See ' +
             this.numHidden() + ' more reviews &raquo;</div>');
-        } else {
-          var expandFooter = $('');
         }
 
-        this.courses = new _course.CourseCollection();
-        var courseObjs = [this.course];
-
-        _course.CourseCollection.addToCache(courseObjs);
-
-        _.each(courseObjs, function(courseObj) {
-          var id = courseObj.id;
-          var course = _course.CourseCollection.getFromCache(id);
-          this.courses.add(course);
-        }, this);
+        this.courses = new _course.CourseCollection([this.course]);
 
         var courseCollectionView = new _course.CourseCollectionView({
           courses: this.courses,
           canShowAddReview: true
         });
 
-        this.$('h2').replaceWith(courseCollectionView.render().$el);
-      } else {
-        var expandFooter = $('');
+        this.$('.tip-title').replaceWith(courseCollectionView.render().$el);
       }
       this.$('.tips-collection-placeholder').replaceWith(
         renderedTips.add(expandFooter));
-
-      this.$('.review-post').slice(this.numShown)
-        .wrapAll('<div class="expanded-tips hide-initial">');
+      if (this.pageType === 'prof') {
+        this.$('.review-post').slice(this.numShown)
+          .wrapAll('<div class="expanded-tips hide-initial">');
+      }
 
       return this;
     },
@@ -100,8 +88,13 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review,
     toggleExpand: function() {
       if (this.expanded) {
         this.$('.expanded-tips').fancySlide('up');
-        this.$('.toggle-tips')
-          .html('See ' + this.numHidden() + ' more tips &raquo;');
+        if (this.numHidden() == 1) {
+          this.$('.toggle-tips').html(
+              'See ' + this.numHidden() + ' more review &raquo;');
+        } else {
+          this.$('.toggle-tips').html(
+              'See ' + this.numHidden() + ' more reviews &raquo;');
+        }
       } else {
         this.$('.expanded-tips').fancySlide('down');
         this.$('.toggle-tips').html('&laquo; Hide reviews');

@@ -314,14 +314,3 @@ def get_reviews_for_course_prof(course_id, prof_id):
     ).only('professor_review', 'course_review', 'user_id', 'term_id')
 
     return itertools.chain(menlo_reviews, user_reviews)
-
-def get_reviews_for_prof(prof_id):
-    menlo_reviews = MenloCourse.objects(
-        professor_id=prof_id,
-    ).only('professor_review', 'course_id')
-
-    user_reviews = UserCourse.objects(
-        professor_id=prof_id,
-    ).only('professor_review', 'user_id', 'term_id', 'course_id')
-
-    return itertools.chain(menlo_reviews, user_reviews)

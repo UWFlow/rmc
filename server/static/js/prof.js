@@ -20,7 +20,7 @@ function($, _, _s, bootstrap, jqSlide, RmcBackbone, ratings, util, review) {
       // TODO(david): Use some other instructional placeholder
       if (!attributes || !attributes.pictureUrl) {
         var attrs = attributes ? attributes : this.defaults;
-        var kittenNum = util.getHashCode(attrs.name) % pageData.NUM_KITTENS;
+        var kittenNum = util.getKittenNumFromName(attrs.name);
         this.set('pictureUrl',
             '/static/img/kittens/color/' + kittenNum + '.jpg');
       }

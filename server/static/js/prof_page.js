@@ -1,59 +1,68 @@
 require(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ratings', 'util', 'review',
  'tips', 'sign_in'],
-function(backbone, $, _, ratings, util, _review, tips) {
-  var overallRating = new ratings.RatingCollection(
+function(backbone, $, _, ratings, util, _review, tips, _sign_in) {
+  var averageRating = new ratings.RatingCollection(
     pageData.profRatings.filter(function(r) {
-      return r.name !== 'overall' && r.name !== 'easiness'
+      return r.name !== 'overall';
     }));
 
-  var overallRatingsView = new ratings.RatingsView({
-    ratings: overallRating,
+  var averageRatingsView = new ratings.RatingsView({
+    ratings: averageRating,
     subject: 'professor'
   });
 
-  var kittenNum = util.getHashCode(pageData.profName) % pageData.NUM_KITTENS;
+  var kittenNum = util.getKittenNumFromName(pageData.profName);
   $('.prof-info-placeholder').replaceWith(
-    _.template($('#prof-inner-tpl').html())({
+    _.template($('#prof-inner-tpl').html(), {
       'kittenNum': kittenNum
     })
   );
 
-  $('.career-rating-placeholder').html(overallRatingsView.render().el);
+  $('.career-rating-placeholder').html(averageRatingsView.render().el);
+
+  var overallProfRating = _.find(pageData.profRatings, function(r) {
+    return r.name === 'overall';
+  });
 
   var ratingBoxView = new ratings.RatingBoxView({
-    model: new ratings.RatingModel (pageData.profRatings.filter(function(r) {
-      return r.name === 'overall'
-    })[0])
+    model: new ratings.RatingModel(overallProfRating)
   });
 
   $('#rating-box-container').html(ratingBoxView.render().el);
 
   $('.prof-courses-placeholder').replaceWith(
-      _.template($('#prof-courses-tpl').html())({
+      _.template($('#prof-courses-tpl').html(), {
           'courses': window.pageData.profCourses
       })
   );
 
-  _.each(window.pageData.tipObjsByCourse, function(course_reviews) {
-    if (course_reviews.reviews.length === 0) {
+// For info on the jquery syntax used here, see:
+// http://stackoverflow.com/questions/5598494/how-to-create-an-empty-non-null-
+// jquery-object-ready-for-appending
+  var tipsViews = $();
+  _.each(window.pageData.tipObjsByCourse, function(courseReviews) {
+    if (courseReviews.reviews.length === 0) {
       return;
     }
-    var tipsCollection = new _review.ReviewCollection(course_reviews.reviews);
+    var reviewCollection = new _review.ReviewCollection(courseReviews.reviews);
     var fullCourse = _.find(window.pageData.profCoursesFull,
         function(course) {
-          return course.id.toUpperCase() === course_reviews.course_id;
+          return course.id === courseReviews.course_id;
         }
     );
     var tipsView = new tips.ExpandableTipsView({
-      reviews: tipsCollection,
+      reviews: reviewCollection,
       numShown: 3,
-      course: fullCourse
+      course: fullCourse,
+      pageType: 'prof'
     });
     var rendered_prof_review = $(tipsView.render().el);
     $('#tips-collection-container').replaceWith(rendered_prof_review.add(
-        $('<div id=tips-collection-container></div>')));
+        $('<div id=tips-collection-container></div')));
+    //tipsViews = tipsViews.add(tipsView.render().el);
   });
-
+  //$('#tips-collection-container').replaceWith(
+    //      $('<empty-root>').append(tipsViews).html());
   $(document.body).trigger('pageScriptComplete');
 });

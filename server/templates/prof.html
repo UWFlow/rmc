@@ -51,3 +51,32 @@
   <% } %>
 </div>
 {% endcall %}
+
+{% call macros.us_template('prof-inner-tpl') %}
+  <div class="row-fluid">
+    <div class="span6 left-col">
+      <p class="description">
+        <img src="/static/img/kittens/color/<%- kittenNum %>.jpg"
+            class="prof-picture">
+      </p>
+    </div>
+    <div class="span6 right-col">
+      <div class="career-rating-placeholder">
+      </div>
+    </div>
+  </div>
+{% endcall %}
+
+{% call macros.us_template('prof-courses-tpl') %}
+<div class="row-fluid more-info">
+  <div class="span12">
+  <% /* %>
+    <% _.each(courses, function(course) { %>
+      <ul>
+        <a href='/course/<%- course %>'> <%- course %> </a>
+      </ul>
+    <% }) %>
+    <% */ %>
+  </div>
+</div>
+{% endcall %}

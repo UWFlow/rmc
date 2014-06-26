@@ -4,14 +4,14 @@
   <link rel="stylesheet" href="{{ '/static/css/prof_page.css'|version }}">
 {% endblock %}
 
-{% block page_title %}{{ prof_obj['name'] }}{% endblock %}
+{% block page_title %}{{ prof_name }}{% endblock %}
 
 {% block header %}
   <div class="container-fluid course-header">
     <div class="row-fluid">
       <div class="span10">
-        <h1 class="page-title">{{ prof_obj['name'] }}</h1>
-        <p class="lead"> Teaches {{ prof_departments }}</p>
+        <h1 class="page-title">{{ prof_name }}</h1>
+        <p class="lead"> Teaches {{ prof_departments_string }}</p>
       </div>
       <div class="span2" id="rating-box-container"></div>
     </div>
@@ -21,19 +21,16 @@
 {% block scripts %}
 <script>
   window.pageData.profRatings = {{ prof_ratings|tojson|safe }};
-  window.pageData.profName = '{{ prof_obj['name']|safe}}';
+  window.pageData.profName = '{{ prof_name|safe }}';
   window.pageData.profCourses = {{prof_courses|tojson|safe}};
   window.pageData.tipObjs = {{tip_objs|tojson|safe}};
   window.pageData.tipObjsByCourse = {{tip_objs_by_course|tojson|safe}}
   window.pageData.profCoursesFull = {{prof_courses_full|tojson|safe}}
-  window.pageData.profDepartments = {{prof_departments|tojson|safe}};
+  window.pageData.profDepartmentsString = {{prof_departments_string|tojson|safe}};
 </script>
 {% endblock %}
 
 {% block body %}
-
-<div style="height: 15px;">
-</div>
 
 <div class="container-fluid">
   <div class="row-fluid">
@@ -72,5 +69,4 @@
   {% include 'section.html' %}
   {% include 'review.html' %}
   {% include 'sign_in.html' %}
-  {% include 'prof_page_views.html' %}
 {% endblock %}

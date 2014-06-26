@@ -13,7 +13,6 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
   var userCourse = courseModel.get('user_course');
 
   var overallRating = courseModel.getOverallRating();
-  console.log(overallRating);
   var ratingBoxView = new ratings.RatingBoxView({ model: overallRating });
   $('#rating-box-container').html(ratingBoxView.render().el);
 
@@ -54,7 +53,10 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
 
   if (window.pageData.tipObjs && pageData.tipObjs.length) {
     var tipsCollection = new _review.ReviewCollection(window.pageData.tipObjs);
-    var tipsView = new tips.ExpandableTipsView({ reviews: tipsCollection });
+    var tipsView = new tips.ExpandableTipsView({
+      reviews: tipsCollection,
+      pageType: 'course'
+    });
     $('#tips-collection-container').replaceWith(tipsView.render().el);
   }
 

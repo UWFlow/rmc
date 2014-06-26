@@ -8,6 +8,7 @@ import review as _review
 import rmc.shared.constants as c
 from rmc.shared import util
 import user_course
+import itertools
 
 # TODO(mack): remove this from here?
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
@@ -140,43 +141,33 @@ class Professor(me.Document):
 
     def get_ratings_for_career(self):
         def safe_division(a, b):
-            print a, b
             if b == 0.0:
-                return 0
+                return 0.0
             else:
-                return a/b
+                return float(a)/b
         courses_taught = self.get_courses_taught()
         clarity = 0
-        clarity_count = 0.0
+        clarity_count = 0
         passion = 0
-        passion_count = 0.0
-        easiness = 0
-        easiness_count = 0.0
-        overall = 0
-        overall_count = 0.0
+        passion_count = 0
         for c in courses_taught:
-            rating = self.get_ratings_for_course(c)
-            for r in rating:
+            ratings = self.get_ratings_for_course(c)
+            for r in ratings:
                 if r.get('name') == 'clarity':
-                    clarity += int(r.get('count') * r.get('rating'))
+                    clarity += round(r.get('count') * r.get('rating'))
                     clarity_count += r.get('count')
                 elif r.get('name') == 'passion':
-                    passion += int(r.get('count') * r.get('rating'))
+                    passion += round(r.get('count') * r.get('rating'))
                     passion_count += r.get('count')
-                # elif r.get('name') == 'easiness':
-                #     easiness += int(r.get('count') * r.get('rating'))
-                #     easiness_count += r.get('count')
 
-        overall_count = clarity_count + easiness_count + passion_count
-        overall = clarity + easiness + passion
+        overall_count = clarity_count + passion_count
+        overall = clarity + passion
 
         return [
             {'count': clarity_count, 'name': 'clarity',
                     'rating': safe_division(clarity, clarity_count)},
             {'count': passion_count, 'name': 'passion',
                     'rating': safe_division(passion, passion_count)},
-            {'count': easiness_count, 'name': 'easiness',
-                    'rating': safe_division(easiness, easiness_count)},
             {'count': overall_count, 'name': 'overall',
                     'rating': safe_division(overall, overall_count)},
         ]
@@ -219,24 +210,41 @@ class Professor(me.Document):
 
         return prof_review_dicts
 
+    def get_reviews_for_self(self):
+        menlo_reviews = user_course.MenloCourse.objects(
+            professor_id=self.id,
+        ).only('professor_review', 'course_id')
+
+        user_reviews = user_course.UserCourse.objects(
+            professor_id=self.id,
+        ).only('professor_review', 'user_id', 'term_id', 'course_id')
+
+        return itertools.chain(menlo_reviews, user_reviews)
+
     def get_reviews_for_all_courses(self, current_user):
         courses_taught = self.get_courses_taught()
         course_reviews = []
         for course in courses_taught:
             course_reviews.append({
-                'course_id': course.upper(),
+                'course_id': course,
                 'reviews': self.get_reviews_for_course(course,
                         current_user)
             })
         return course_reviews
 
     def get_courses_taught(self):
-        ucs = user_course.get_reviews_for_prof(self.id)
+        ucs = self.get_reviews_for_self()
+
+        ucs = filter(
+                lambda uc: len(uc.professor_review.comment)
+                    >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
+                ucs)
+
         courses_taught = set([uc['course_id']for uc in ucs])
-        return sorted (courses_taught)
+        return sorted(courses_taught)
 
     def get_departments_taught(self):
-        ucs = user_course.get_reviews_for_prof(self.id)
+        ucs = self.get_reviews_for_self()
         ucs = filter(
                 lambda uc: len(uc.professor_review.comment)
                     >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
@@ -244,7 +252,7 @@ class Professor(me.Document):
         r = re.compile(r"([a-z]+)([0-9]+)")
         departments_taught = set([r.match(uc['course_id']).group(1).upper()
                 for uc in ucs])
-        return ', '.join(sorted (departments_taught))
+        return sorted(departments_taught)
 
     def to_dict(self, course_id=None, current_user=None):
         dict_ = {
