@@ -44,6 +44,9 @@ class Professor(me.Document):
     # eg. Becker
     last_name = me.StringField(required=True)
 
+    # eg. ['MATH', 'CS']
+    departments_taught = me.ListField(me.StringField())
+
     clarity = me.EmbeddedDocumentField(_rating.AggregateRating,
                                        default=_rating.AggregateRating())
     easiness = me.EmbeddedDocumentField(_rating.AggregateRating,
