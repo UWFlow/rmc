@@ -1,7 +1,7 @@
 require(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ratings', 'util', 'review',
- 'tips'],
-function(backbone, $, _, ratings, util, review, tips) {
+ 'tips', 'ext/react'],
+function(backbone, $, _, ratings, util, review, tips, react) {
 
   var overallRatings = _.filter(pageData.profRatings, function(r) {
     return r.name !== 'overall';

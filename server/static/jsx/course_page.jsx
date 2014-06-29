@@ -52,52 +52,52 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
   });
   $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
 
-  var CommentData = React.createClass({displayName: 'CommentData',
+  var CommentData = React.createClass({
     render: function() {
       var author;
       if (this.props.anon) {
         author = (
-          React.DOM.div(null
-          )
+          <div>
+          </div>
         );
       } else if (this.props.author.id) {
         author = (
-          React.DOM.div(null, 
-            React.DOM.a({href: "/profile/{this.props.author.id.$oid"}, 
-              this.props.author.name
-            ), 
-            React.DOM.span({className: "muted"}, " on ")
-          )
+          <div>
+            <a href="/profile/{this.props.author.id.$oid">
+              {this.props.author.name}
+            </a>
+            <span className="muted"> on </span>
+          </div>
         );
       } else {
         var _user = require('user');
         var program = _user.getShortProgramName(
             this.props.author.program_name);
         author = (
-          React.DOM.div(null, 
-          React.DOM.span({className: "muted"}, 
-            "A ", ('aeiou'.indexOf(program[0].toLowerCase()) !== -1) ? 'n' : ''
-          ), 
-          program, 
-          React.DOM.span({className: "muted"}, " student on")
-          )
+          <div>
+          <span className="muted">
+            A {('aeiou'.indexOf(program[0].toLowerCase()) !== -1) ? 'n' : ''}
+          </span>
+          {program}
+          <span className="muted"> student on</span>
+          </div>
         );
       }
       var date = moment(this.props.date).format('MMM D, YYYY');
       return (
-        React.DOM.div(null, 
-          React.DOM.small({className: "comment-date"}, 
-            author, 
-            React.DOM.span({className: "muted"}, 
-              date
-            )
-          )
-        )
+        <div>
+          <small className="comment-date">
+            {author}
+            <span className="muted">
+              {date}
+            </span>
+          </small>
+        </div>
       );
     }
   });
 
-  var Comment = React.createClass({displayName: 'Comment',
+  var Comment = React.createClass({
     getAnonAvatar: function() {
       var kittenNum = util.getHashCode(this.props.data.comment) %
           pageData.NUM_KITTENS;
@@ -129,18 +129,18 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
       }
 
       return (
-        React.DOM.div({className: "row-fluid"}, 
-          React.DOM.div({className: "span3 author"}, 
-            React.DOM.img({class: "img-rounded", width: "50", height: "50", 
-                src: author_pic_url, className: "author-pic"}), 
-            CommentData({author: this.props.data.author, anon: anon, 
-                date: this.props.data.comment_date.$date}
-            )
-          ), 
-          React.DOM.div({className: "comment-text span9"}, 
-            this.props.data.comment
-          )
-        )
+        <div className="row-fluid">
+          <div className="span3 author">
+            <img class="img-rounded" width="50" height="50"
+                src={author_pic_url} className="author-pic" />
+            <CommentData author={this.props.data.author} anon={anon}
+                date={this.props.data.comment_date.$date}>
+            </CommentData>
+          </div>
+          <div className="comment-text span9">
+            {this.props.data.comment}
+          </div>
+        </div>
       );
     }
   });
@@ -154,7 +154,7 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
     '': ''
   };
 
-  var BinaryRating = React.createClass({displayName: 'BinaryRating',
+  var BinaryRating = React.createClass({
     render: function() {
       var cx = React.addons.classSet;
       var yes_btn_classes = cx({
@@ -166,56 +166,56 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
         'active btn-danger': this.props.data.rating === 0
       });
       return (
-        React.DOM.div({className: "row-fluid read-only"}, 
-          React.DOM.span({className: "span5 choice-name"}, 
-            _.str.capitalize(adjectiveMap[this.props.data.name]) + '?'
-          ), 
-          React.DOM.span({className: "span7 btn-group rating-choices"}, 
-            React.DOM.button({type: "button", className: yes_btn_classes}, 
-              React.DOM.i({className: "thumb-icon icon-thumbs-up"}), 
-              "Yes"
-            ), 
-            React.DOM.button({type: "button", className: no_btn_classes}, 
-              React.DOM.i({className: "thumb-icon icon-thumbs-down"}), 
-              "No"
-            )
-          )
-        )
+        <div className="row-fluid read-only">
+          <span className="span5 choice-name">
+            {_.str.capitalize(adjectiveMap[this.props.data.name]) + '?'}
+          </span>
+          <span className="span7 btn-group rating-choices">
+            <button type="button" className={yes_btn_classes}>
+              <i className="thumb-icon icon-thumbs-up"></i>
+              Yes
+            </button>
+            <button type="button" className={no_btn_classes}>
+              <i className="thumb-icon icon-thumbs-down"></i>
+              No
+            </button>
+          </span>
+        </div>
       );
     }
   });
 
-  var RatingBox = React.createClass({displayName: 'RatingBox',
+  var RatingBox = React.createClass({
     render: function() {
       var ratings = this.props.data.map(function(rating) {
         return (
-          BinaryRating({data: rating})
+          <BinaryRating data={rating}></BinaryRating>
         );
       });
       return (
-        React.DOM.div(null, 
-          ratings
-        )
+        <div>
+          {ratings}
+        </div>
       );
     }
   });
 
-  var Review = React.createClass({displayName: 'Review',
+  var Review = React.createClass({
     render: function() {
       return (
-        React.DOM.div({className: "row-fluid"}, 
-          React.DOM.div({className: "span8"}, 
-            Comment({data: this.props.data})
-          ), 
-          React.DOM.div({className: "span4"}, 
-            RatingBox({data: this.props.data.ratings})
-          )
-        )
+        <div className="row-fluid">
+          <div className="span8">
+            <Comment data={this.props.data} />
+          </div>
+          <div className="span4">
+            <RatingBox data={this.props.data.ratings} />
+          </div>
+        </div>
       )
     }
   });
 
-  var ReviewList = React.createClass({displayName: 'ReviewList',
+  var ReviewList = React.createClass({
     render: function() {
       var sortedReviews =  _.sortBy(this.props.data,
           function(r) {
@@ -225,32 +225,32 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
 
       var reviewNodes = sortedReviews.map(function (review) {
         return (
-          React.DOM.div({className: "review-post"}, 
-            Review({data: review})
-          )
+          <div className="review-post">
+            <Review data={review}></Review>
+          </div>
         );
       });
       return (
-        React.DOM.div(null, 
-          reviewNodes
-        )
+        <div>
+          {reviewNodes}
+        </div>
       );
     }
   });
 
-  var ReviewBox = React.createClass({displayName: 'ReviewBox',
+  var ReviewBox = React.createClass({
     render: function() {
       return (
-        React.DOM.div(null, 
-          React.DOM.h2({class: "tip-title"}, "Course Comments"), 
-          ReviewList({data: this.props.data})
-        )
+        <div>
+          <h2 class="tip-title">Course Comments</h2>
+          <ReviewList data={this.props.data}></ReviewList>
+        </div>
       );
     }
   });
 
   React.renderComponent(
-    ReviewBox({data: window.pageData.tipObjs}),
+    <ReviewBox data={window.pageData.tipObjs} />,
     document.getElementById('tips-collection-container')
   );
 
