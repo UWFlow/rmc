@@ -56,9 +56,9 @@ require(['config_settings'], function(config_settings) {
     require(['ext/underscore.string', 'util', 'rmc_moment',
         'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
         'points', 'user', 'facebook', 'ext/smartbanner', 'work_queue',
-        'search_bar'],
+        'search_bar', 'sign_in'],
     function(_s, util, moment, Backbone, _bootstrap, _cookie, toastr, _points,
-      _user, _facebook, smartbanner, _work_queue, _search_bar) {
+      _user, _facebook, smartbanner, _work_queue, _search_bar, _sign_in) {
      // Show a banner to visitors from Android browsers linking
      // to our Android app on the Google Play Store.
       $(function() {
@@ -169,6 +169,10 @@ require(['config_settings'], function(config_settings) {
             searchBarView.getData();
           }
         });
+
+        // Render the login modal
+        _sign_in.renderEmailLoginModal();
+        _sign_in.renderEmailSignUpModal();
 
         // TODO(Sandy): We don't use these cookies anymore, so remove them from
         // the client. Though this doesn't matter as much anymore, now that

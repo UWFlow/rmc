@@ -1,6 +1,6 @@
 require(
-['facebook', 'ext/jquery', 'util', 'sign_in', 'ext/cookie', 'rmc_moment'],
-function(_facebook, $, _util, _sign_in, _cookie, _moment) {
+['facebook', 'ext/jquery', 'util', 'ext/cookie', 'rmc_moment'],
+function(_facebook, $, _util, _cookie, _moment) {
   $('.header-bg').css('opacity', 1.0);
   $('.sign-up-box').addClass('animated');
 

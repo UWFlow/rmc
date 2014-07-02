@@ -351,9 +351,6 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate,
     }
   };
 
-  renderEmailLoginModal();
-  renderEmailSignUpModal();
-
   return {
     renderBanner: renderBanner,
     renderModal: renderModal,
