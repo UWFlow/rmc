@@ -610,7 +610,7 @@ class User(me.Document):
             raise
         except me.queryset.NotUniqueError as e:
             raise User.UserCreationError('That email is already signed up.'
-                    ' (Try Facebook login?)')
+                    ' (Maybe you already signed up with Facebook?)')
 
         return user
 
