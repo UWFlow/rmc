@@ -31,12 +31,6 @@ function(backbone, $, _, ratings, util, _review, tips, _sign_in) {
 
   $('#rating-box-container').html(ratingBoxView.render().el);
 
-  $('.prof-courses-placeholder').replaceWith(
-      _.template($('#prof-courses-tpl').html(), {
-          'courses': window.pageData.profCourses
-      })
-  );
-
 // For info on the jquery syntax used here, see:
 // http://stackoverflow.com/questions/5598494/how-to-create-an-empty-non-null-
 // jquery-object-ready-for-appending

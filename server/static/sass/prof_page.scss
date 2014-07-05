@@ -4,10 +4,13 @@
 @import 'prof';
 @import 'sign_in';
 
+.description {
+  margin-bottom: 0px;
+}
+
 .course-header {
   margin-top: 20px;
 
-  // TODO(david): Does it actually make sense to have inconsistent title styling?
   .page-title {
     font-size: 60px;
   }
@@ -44,7 +47,7 @@
 }
 
 .toggle-tips {
-  margin-top: 15px;
+  margin-top: 0px;
   margin-bottom: 15px;
   padding: 10px 0px 10px 20px;
   background-color: rgba(0, 0, 0, 0.06);
@@ -52,6 +55,7 @@
   text-transform: uppercase;
   color: lighten($textColor, 20%);
   z-index: 1;
+  border-bottom: 1px solid #ccc;
   @include transition(all 0.2s ease-out);
 
   &:hover {
@@ -65,14 +69,39 @@
 .course .course-content {
   margin-left: 0px;
   margin-top: 20px;
+  border-left: none;
+  border-right: none;
 }
 
 #course-inner-container {
   margin-top: 15px;
+  border-bottom: 1px solid #ccc;
 }
 
 .prof-picture {
-  margin-right: auto;
   margin-left: auto;
+  margin-right: auto;
   display: block;
+  padding: 4px;
+  border: 1px solid #ccc;
+}
+.course {
+  .course-content {
+    border-left: none;
+    border-right: none;
+  }
+  &.course.expanded {
+    width: 100%;
+    left: 0%;
+  }
+}
+
+.tips-collection {
+  padding-bottom: 15px;
+  border-bottom: 1px solid #ccc;
+}
+
+.all-tips {
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
 }
