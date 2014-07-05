@@ -8,6 +8,19 @@
   margin-bottom: 0px;
 }
 
+.course-inner {
+  .row-fluid {
+    border-left: 1px solid #dddddd;
+    border-right: 1px solid #dddddd;
+  }
+
+  .ratings {
+    .row-fluid {
+      border: none;
+    }
+  }
+}
+
 .course-header {
   margin-top: 20px;
 
@@ -75,16 +88,25 @@
 
 #course-inner-container {
   margin-top: 15px;
-  border-bottom: 1px solid #ccc;
+
+  .number-of-courses {
+    padding-top: 15px;
+    margin-bottom: 0px;
+    border-top: 1px solid #dddddd;
+    font-size: 28px;
+    font-weight: bold;
+  }
 }
 
 .prof-picture {
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
+  float: left;
+  margin-left: 10px;
+  display: inline-block;
   padding: 4px;
+  width: 30%;
   border: 1px solid #ccc;
 }
+
 .course {
   .course-content {
     border-left: none;
@@ -98,10 +120,31 @@
 
 .tips-collection {
   padding-bottom: 15px;
-  border-bottom: 1px solid #ccc;
 }
 
 .all-tips {
   border-left: 1px solid #ccc;
   border-right: 1px solid #ccc;
+}
+
+// TODO Jeff: Look to use inheritance below from the course page scss
+
+.prof-info {
+  float: left;
+  width: 60%;
+  display: inline-block;
+  position: relative;
+}
+
+.dl-horizontal {
+  margin-top: 30px;
+  dt {
+    float: left;
+    width: 70px;
+    margin-top: 5px;
+  }
+  dd {
+    margin-left: 80px;
+    margin-top: 5px;
+  }
 }

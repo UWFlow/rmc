@@ -21,6 +21,15 @@ function(backbone, $, _, ratings, util, _review, tips, _sign_in) {
 
   $('.career-rating-placeholder').html(averageRatingsView.render().el);
 
+  var numberOfCourses = pageData.profCourses.length;
+  if (numberOfCourses > 1) {
+    $('.number-of-courses').text(numberOfCourses + " Courses");
+  } else if (numberOfCourses == 1) {
+    $('.number-of-courses').text('1 Course');
+  } else {
+    $('.number-of-courses').text('No Courses Found');
+  }
+
   var overallProfRating = _.find(pageData.profRatings, function(r) {
     return r.name === 'overall';
   });
