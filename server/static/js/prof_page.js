@@ -1,7 +1,7 @@
 require(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ratings', 'util', 'review',
- 'tips', 'sign_in'],
-function(backbone, $, _, ratings, util, _review, tips, _sign_in) {
+ 'tips'],
+function(backbone, $, _, ratings, util, _review, tips) {
   var averageRating = new ratings.RatingCollection(
     pageData.profRatings.filter(function(r) {
       return r.name !== 'overall';
@@ -63,9 +63,6 @@ function(backbone, $, _, ratings, util, _review, tips, _sign_in) {
     var rendered_prof_review = $(tipsView.render().el);
     $('#tips-collection-container').replaceWith(rendered_prof_review.add(
         $('<div id=tips-collection-container></div')));
-    //tipsViews = tipsViews.add(tipsView.render().el);
   });
-  //$('#tips-collection-container').replaceWith(
-    //      $('<empty-root>').append(tipsViews).html());
   $(document.body).trigger('pageScriptComplete');
 });
