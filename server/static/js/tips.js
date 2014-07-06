@@ -54,8 +54,13 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review,
       var renderedTips = this.tipsCollectionView.render().$el;
       if (this.pageType === 'prof') {
         if (this.numHidden() > 0) {
-          var expandFooter = $('<div class="toggle-tips">See ' +
-            this.numHidden() + ' more reviews &raquo;</div>');
+          if (this.numHidden() == 1) {
+            var expandFooter = $('<div class="toggle-tips">See ' +
+              '1 more review &raquo;</div>');
+          } else {
+            var expandFooter = $('<div class="toggle-tips">See ' +
+              this.numHidden() + ' more reviews &raquo;</div>');
+          }
         }
 
         this.courses = new _course.CourseCollection([this.course]);

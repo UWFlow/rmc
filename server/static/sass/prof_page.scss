@@ -2,6 +2,7 @@
 @import 'term';
 @import 'course';
 @import 'prof';
+@import '_prof_info';
 
 .description {
   margin-bottom: 0px;
@@ -9,8 +10,10 @@
 
 .course-inner {
   .row-fluid {
-    border-left: 1px solid #dddddd;
-    border-right: 1px solid #dddddd;
+    &.more-info {
+      border-left: none;
+      border-right: none;
+    }
   }
 
   .ratings {
@@ -58,20 +61,22 @@
   }
 }
 
+// TODO (Jeff) Look to use inheritance here
+
 .toggle-tips {
-  margin-top: 0px;
-  margin-bottom: 15px;
-  padding: 10px 0px 10px 20px;
+  margin-top: 15px;
+  padding: 5px;
+  padding-left: 20%;
   background-color: rgba(0, 0, 0, 0.06);
   letter-spacing: 3px;
   text-transform: uppercase;
   color: lighten($textColor, 20%);
   z-index: 1;
-  border-bottom: 1px solid #ccc;
   @include transition(all 0.2s ease-out);
 
   &:hover {
     @include transition(all 0.2s ease-out);
+    cursor: pointer;
     text-decoration: none;
     color: white;
     background-color: rgba(0, 0, 0, 0.6);
@@ -89,9 +94,9 @@
   margin-top: 15px;
 
   .number-of-courses {
-    padding-top: 15px;
+    padding-top: 60px;
     margin-bottom: 0px;
-    border-top: 1px solid #dddddd;
+    border-top: 1px solid $wellBorderColor;
     font-size: 28px;
     font-weight: bold;
   }
@@ -103,7 +108,7 @@
   display: inline-block;
   padding: 4px;
   width: 30%;
-  border: 1px solid #ccc;
+  border: 1px solid $wellBorderColor;
 }
 
 .course {
@@ -122,28 +127,16 @@
 }
 
 .all-tips {
-  border-left: 1px solid #ccc;
-  border-right: 1px solid #ccc;
+  border-left: 1px solid $wellBorderColor;
+  border-right: 1px solid $wellBorderColor;
+  border-bottom: 1px solid $wellBorderColor;
+  margin-bottom: 42px;
 }
-
-// TODO Jeff: Look to use inheritance below from the course page scss
 
 .prof-info {
-  float: left;
-  width: 60%;
-  display: inline-block;
-  position: relative;
+  top: -35px;
 }
 
-.dl-horizontal {
-  margin-top: 30px;
-  dt {
-    float: left;
-    width: 70px;
-    margin-top: 5px;
-  }
-  dd {
-    margin-left: 80px;
-    margin-top: 5px;
-  }
+.span6.left-col {
+  padding-left: 10px;
 }
