@@ -609,7 +609,8 @@ class User(me.Document):
                 raise User.UserCreationError('Oops, that email is invalid.')
             raise
         except me.queryset.NotUniqueError as e:
-            raise User.UserCreationError('That email is already signed up.')
+            raise User.UserCreationError('That email is already signed up.'
+                    ' (Try Facebook login?)')
 
         return user
 
