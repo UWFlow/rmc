@@ -96,7 +96,6 @@ function(_, _s, $) {
    * Get the kitten URL based off the name and number of pictures available
    * @param {string} name The name of the person who the picture is for
    * @return {number} The number for the kitten pic to use
-   *
    */
   var getKittenNumFromName = function(name) {
     return getHashCode(name) % pageData.NUM_KITTENS;

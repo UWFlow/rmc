@@ -61,13 +61,13 @@
   }
 }
 
-// TODO (Jeff) Look to use inheritance here
+// TODO(jeff): Look to use inheritance here form what is used on course pages
 
 .toggle-tips {
   margin-top: 15px;
   padding: 5px;
   padding-left: 20%;
-  background-color: rgba(0, 0, 0, 0.06);
+  background-color: rgba(black, 0.06);
   letter-spacing: 3px;
   text-transform: uppercase;
   color: lighten($textColor, 20%);
@@ -79,7 +79,7 @@
     cursor: pointer;
     text-decoration: none;
     color: white;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(black, 0.6);
   }
 }
 
@@ -94,6 +94,7 @@
   margin-top: 15px;
 
   .number-of-courses {
+    margin-top: 0px;
     padding-top: 60px;
     margin-bottom: 0px;
     border-top: 1px solid $wellBorderColor;
@@ -127,9 +128,8 @@
 }
 
 .all-tips {
-  border-left: 1px solid $wellBorderColor;
-  border-right: 1px solid $wellBorderColor;
-  border-bottom: 1px solid $wellBorderColor;
+  border: 1px solid $wellBorderColor;
+  border-top: none;
   margin-bottom: 42px;
 }
 
@@ -138,5 +138,9 @@
 }
 
 .span6.left-col {
+  padding-left: 10px;
+}
+
+.span3.author {
   padding-left: 10px;
 }

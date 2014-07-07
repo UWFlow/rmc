@@ -55,23 +55,21 @@
 {% call macros.us_template('prof-inner-tpl') %}
   <div class="row-fluid">
     <div class="span6 left-col">
- <img width="150" height="150"
- class="prof-picture img-polaroid" src="/static/img/kittens//color/<%- kittenNum %>.jpg"></img>
-  <div id="<%- normalizeProfName(name) %>" class="prof-info">
-    <dl class="dl-horizontal">
-      <dt>Email</dt>
-      <dd>Coming soon...</dd>
-      <dt>Phone</dt>
-      <dd>Coming soon...</dd>
-      <dt>Office</dt>
-      <dd>Coming soon...</dd>
-    </dl>
-  </div>
-
+      <img width="150" height="150" class="prof-picture img-polaroid"
+          src="/static/img/kittens//color/<%- kittenNum %>.jpg"></img>
+      <div id="<%- normalizeProfName(name) %>" class="prof-info">
+        <dl class="dl-horizontal">
+          <dt>Email</dt>
+          <dd>Coming soon...</dd>
+          <dt>Phone</dt>
+          <dd>Coming soon...</dd>
+          <dt>Office</dt>
+          <dd>Coming soon...</dd>
+        </dl>
+      </div>
     </div>
     <div class="span6 right-col">
-      <div class="career-rating-placeholder">
-      </div>
+      <div class="career-rating-placeholder"></div>
     </div>
   </div>
 {% endcall %}

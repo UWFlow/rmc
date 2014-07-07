@@ -36,9 +36,7 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review,
         this.title = options.course.id.toUpperCase();
         this.course = options.course;
       }
-      if (options.numShown) {
-        this.numShown = options.numShown;
-      }
+      this.numShown = options.numShown;
       this.tipsCollectionView = new TipsCollectionView({
         collection: this.reviews
       });
@@ -53,14 +51,12 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review,
       var expandFooter = $('');
       var renderedTips = this.tipsCollectionView.render().$el;
       if (this.pageType === 'prof') {
-        if (this.numHidden() > 0) {
-          if (this.numHidden() == 1) {
-            var expandFooter = $('<div class="toggle-tips">See ' +
-              '1 more review &raquo;</div>');
-          } else {
-            var expandFooter = $('<div class="toggle-tips">See ' +
-              this.numHidden() + ' more reviews &raquo;</div>');
-          }
+        if (this.numHidden() === 1) {
+          var expandFooter = $('<div class="toggle-tips">See ' +
+            '1 more review &raquo;</div>');
+        } else if (this.numHidden() > 0) {
+          var expandFooter = $('<div class="toggle-tips">See ' +
+            this.numHidden() + ' more reviews &raquo;</div>');
         }
 
         this.courses = new _course.CourseCollection([this.course]);
@@ -71,7 +67,10 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review,
         });
 
         this.$('.tip-title').replaceWith(courseCollectionView.render().$el);
+      } else {
+        this.$('.tip-title').text("Course Comments");
       }
+
       this.$('.tips-collection-placeholder').replaceWith(
         renderedTips.add(expandFooter));
       if (this.pageType === 'prof') {
@@ -93,7 +92,7 @@ function($, _, _s, bootstrap, RmcBackbone, user, jqSlide, _review,
     toggleExpand: function() {
       if (this.expanded) {
         this.$('.expanded-tips').fancySlide('up');
-        if (this.numHidden() == 1) {
+        if (this.numHidden() === 1) {
           this.$('.toggle-tips').html(
               'See ' + this.numHidden() + ' more review &raquo;');
         } else {

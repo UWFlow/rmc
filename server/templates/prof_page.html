@@ -11,7 +11,7 @@
     <div class="row-fluid">
       <div class="span10">
         <h1 class="page-title">{{ prof_name }}</h1>
-        <p class="lead"> Teaches {{ prof_departments_string }}</p>
+        <p class="lead"> Teaches {{ prof_departments_list|join(', ') }}</p>
       </div>
       <div class="span2" id="rating-box-container"></div>
     </div>
@@ -21,12 +21,12 @@
 {% block scripts %}
 <script>
   window.pageData.profRatings = {{ prof_ratings|tojson|safe }};
-  window.pageData.profName = '{{ prof_name|safe }}';
+  window.pageData.profName = {{ prof_name|tojson|safe }};
   window.pageData.profCourses = {{prof_courses|tojson|safe}};
   window.pageData.tipObjs = {{tip_objs|tojson|safe}};
-  window.pageData.tipObjsByCourse = {{tip_objs_by_course|tojson|safe}}
-  window.pageData.profCoursesFull = {{prof_courses_full|tojson|safe}}
-  window.pageData.profDepartmentsString = {{prof_departments_string|tojson|safe}};
+  window.pageData.tipObjsByCourse = {{tip_objs_by_course|tojson|safe}};
+  window.pageData.profCoursesFull = {{prof_courses_full|tojson|safe}};
+  window.pageData.profDepartmentsList = {{prof_departments_list|tojson|safe}};
 </script>
 {% endblock %}
 
@@ -40,18 +40,20 @@
       <div id="course-inner-container">
         <div class="course-inner">
           <div class="prof-info-placeholder"></div>
-
           <div class="prof-courses-placeholder"></div>
-
-          <p class="number-of-courses"></p>
-
+          <h2 class="number-of-courses">
+            {% if prof_courses|length() > 1 %}
+              {{ prof_courses|length() }} Courses
+            {% elif prof_courses|length() == 1 %}
+              1 Course
+            {% else %}
+              No Courses
+            {% endif %}
+          </h2>
           <div class="section-collection-placeholder"></div>
-
         </div>
       </div>
-
       <div id="tips-collection-container">
-
       </div>
     </div>
   </div>

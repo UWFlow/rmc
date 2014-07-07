@@ -1,11 +1,12 @@
 require(
 ['ext/backbone', 'ext/jquery', 'ext/underscore', 'ratings', 'util', 'review',
  'tips'],
-function(backbone, $, _, ratings, util, _review, tips) {
-  var averageRating = new ratings.RatingCollection(
-    pageData.profRatings.filter(function(r) {
-      return r.name !== 'overall';
-    }));
+function(backbone, $, _, ratings, util, review, tips) {
+
+  var overallRatings = _.filter(pageData.profRatings, function(r) {
+    return r.name !== 'overall';
+  });
+  var averageRating = new ratings.RatingCollection(overallRatings);
 
   var averageRatingsView = new ratings.RatingsView({
     ratings: averageRating,
@@ -13,22 +14,12 @@ function(backbone, $, _, ratings, util, _review, tips) {
   });
 
   var kittenNum = util.getKittenNumFromName(pageData.profName);
-  $('.prof-info-placeholder').replaceWith(
-    _.template($('#prof-inner-tpl').html(), {
-      'kittenNum': kittenNum
-    })
-  );
+  var profInner =  _.template($('#prof-inner-tpl').html(), {
+    'kittenNum': kittenNum
+  })
+  $('.prof-info-placeholder').replaceWith(profInner);
 
   $('.career-rating-placeholder').html(averageRatingsView.render().el);
-
-  var numberOfCourses = pageData.profCourses.length;
-  if (numberOfCourses > 1) {
-    $('.number-of-courses').text(numberOfCourses + " Courses");
-  } else if (numberOfCourses == 1) {
-    $('.number-of-courses').text('1 Course');
-  } else {
-    $('.number-of-courses').text('No Courses Found');
-  }
 
   var overallProfRating = _.find(pageData.profRatings, function(r) {
     return r.name === 'overall';
@@ -40,15 +31,11 @@ function(backbone, $, _, ratings, util, _review, tips) {
 
   $('#rating-box-container').html(ratingBoxView.render().el);
 
-// For info on the jquery syntax used here, see:
-// http://stackoverflow.com/questions/5598494/how-to-create-an-empty-non-null-
-// jquery-object-ready-for-appending
-  var tipsViews = $();
   _.each(window.pageData.tipObjsByCourse, function(courseReviews) {
     if (courseReviews.reviews.length === 0) {
       return;
     }
-    var reviewCollection = new _review.ReviewCollection(courseReviews.reviews);
+    var reviewCollection = new review.ReviewCollection(courseReviews.reviews);
     var fullCourse = _.find(window.pageData.profCoursesFull,
         function(course) {
           return course.id === courseReviews.course_id;
@@ -60,8 +47,8 @@ function(backbone, $, _, ratings, util, _review, tips) {
       course: fullCourse,
       pageType: 'prof'
     });
-    var rendered_prof_review = $(tipsView.render().el);
-    $('#tips-collection-container').replaceWith(rendered_prof_review.add(
+    var renderedProfReviews = $(tipsView.render().el);
+    $('#tips-collection-container').replaceWith(renderedProfReviews.add(
         $('<div id=tips-collection-container></div')));
   });
   $(document.body).trigger('pageScriptComplete');
