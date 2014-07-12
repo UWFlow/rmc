@@ -401,44 +401,33 @@ def login_with_facebook():
             },
         )
     else:
-        # New user, or existing email logins user.
+        # New user. Sign up with their Facebook info
         now = datetime.now()
-        user_data = {
+        user_obj = {
+            'email': req.form.get('email'),
             'fb_access_token': fb_access_token,
             'fb_access_token_expiry_date': fb_access_token_expiry_date,
             'fbid': fbid,
+            'first_name': req.form.get('first_name'),
             'friend_fbids': flask.json.loads(req.form.get('friend_fbids')),
             'gender': req.form.get('gender'),
+            'join_date': now,
+            'join_source': m.User.JoinSource.FACEBOOK,
+            'last_name': req.form.get('last_name'),
             'last_visited': now,
+            'middle_name': req.form.get('middle_name'),
         }
 
-        user = m.User.objects(email=req.form.get('email')).first()
-        if user:
-            # Update existing account with Facebook data
-            referrer_id = None
-            for k, v in user_data.iteritems():
-                user[k] = v
-            user.save()
-        else:
-            # Create an account with their Facebook data
-            user_data.update({
-                'email': req.form.get('email'),
-                'first_name': req.form.get('first_name'),
-                'join_date': now,
-                'join_source': m.User.JoinSource.FACEBOOK,
-                'last_name': req.form.get('last_name'),
-                'middle_name': req.form.get('middle_name'),
-            })
+        referrer_id = req.form.get('referrer_id')
+        if referrer_id:
+            try:
+                user_obj['referrer_id'] = bson.ObjectId(referrer_id)
+            except bson.errors.InvalidId:
+                pass
 
-            referrer_id = req.form.get('referrer_id')
-            if referrer_id:
-                try:
-                    user_data['referrer_id'] = bson.ObjectId(referrer_id)
-                except bson.errors.InvalidId:
-                    pass
-
-            user = m.User(**user_data)
-            user.save()
+        # Create the user
+        user = m.User(**user_obj)
+        user.save()
 
         # Authenticate
         view_helpers.login_as_user(user)
