@@ -8,10 +8,15 @@ import review as _review
 import rmc.shared.constants as c
 from rmc.shared import util
 import user_course
+import itertools
 
 # TODO(mack): remove this from here?
 r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
+_COURSE_NAME_REGEX = re.compile(r'([a-z]+)([0-9]+)')
+
+def safe_division(a, b):
+    return (0.0 if b == 0.0 else float(a) / b)
 
 class Professor(me.Document):
 
@@ -87,6 +92,7 @@ class Professor(me.Document):
     # TODO(mack): store all ratings under single hash which is
     # supposed to be more memory efficient (and probably faster
     # fetching as well)
+    # example course_id is math117
     def get_professor_course_redis_key(self, course_id, rating_name):
         return ':'.join([course_id, self.id, rating_name])
 
@@ -137,6 +143,41 @@ class Professor(me.Document):
 
         return util.dict_to_list(rating_dict)
 
+    def get_ratings_for_career(self):
+        """Returns an aggregate of all the ratings for a prof"""
+        courses_taught = self.get_courses_taught()
+        clarity = 0
+        clarity_count = 0
+        passion = 0
+        passion_count = 0
+
+        for c in courses_taught:
+            ratings = self.get_ratings_for_course(c)
+            for r in ratings:
+                if r.get('name') == 'clarity':
+                    clarity += round(r.get('count') * r.get('rating'))
+                    clarity_count += r.get('count')
+                elif r.get('name') == 'passion':
+                    passion += round(r.get('count') * r.get('rating'))
+                    passion_count += r.get('count')
+
+        overall_count = clarity_count + passion_count
+        overall = clarity + passion
+
+        return [{
+            'count': clarity_count,
+            'name': 'clarity',
+            'rating': safe_division(clarity, clarity_count)
+        }, {
+            'count': passion_count,
+            'name': 'passion',
+            'rating': safe_division(passion, passion_count)
+        }, {
+            'count': overall_count,
+            'name': 'overall',
+            'rating': safe_division(overall, overall_count)
+        }]
+
     @classmethod
     def get_reduced_professors_for_courses(cls, courses):
         professor_ids = set()
@@ -174,6 +215,53 @@ class Professor(me.Document):
                 prof_review_dicts, date_getter, util.MIN_NUM_REVIEWS)
 
         return prof_review_dicts
+
+    def get_reviews_for_self(self):
+        """Returns all reviews for a prof, over all courses taught"""
+        menlo_reviews = user_course.MenloCourse.objects(
+            professor_id=self.id,
+        ).only('professor_review', 'course_id')
+
+        user_reviews = user_course.UserCourse.objects(
+            professor_id=self.id,
+        ).only('professor_review', 'user_id', 'term_id', 'course_id')
+
+        return itertools.chain(menlo_reviews, user_reviews)
+
+    def get_reviews_for_all_courses(self, current_user):
+        """Returns all reviews for a prof as a dict, organized by course id"""
+        courses_taught = self.get_courses_taught()
+        course_reviews = []
+        for course in courses_taught:
+            course_reviews.append({
+                'course_id': course,
+                'reviews': self.get_reviews_for_course(course,
+                        current_user)
+            })
+        return course_reviews
+
+    def get_courses_taught(self):
+        """Returns an array of course_id's for each course the prof taught"""
+        ucs = self.get_reviews_for_self()
+
+        ucs = filter(
+                lambda uc: len(uc.professor_review.comment)
+                    >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
+                ucs)
+
+        courses_taught = set(uc['course_id'] for uc in ucs)
+        return sorted(courses_taught)
+
+    def get_departments_taught(self):
+        """Returns an array of the departments the prof has taught in"""
+        ucs = self.get_reviews_for_self()
+        ucs = filter(
+                lambda uc: len(uc.professor_review.comment)
+                    >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
+                ucs)
+        departments_taught = set(_COURSE_NAME_REGEX.match(uc['course_id']).
+                group(1).upper() for uc in ucs)
+        return sorted(departments_taught)
 
     def to_dict(self, course_id=None, current_user=None):
         dict_ = {

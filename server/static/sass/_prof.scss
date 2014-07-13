@@ -1,4 +1,5 @@
 @import 'review';
+@import '_prof_info';
 
 .expandable-prof {
   position: relative;
@@ -12,38 +13,6 @@
   .prof-picture {
     float: left;
     width: 30%;
-  }
-
-  .prof-info {
-    float: left;
-    margin-left: 20px;
-    width: 60%;
-    display: inline-block;
-
-    // Padding-top and top move the anchor position upwards
-    // This is so that it is anchored above the name, not below
-    position: relative;
-    padding-top: 60px;
-    top: -60px;
-
-    .prof-name {
-      line-height: 24px;
-      margin-bottom: 25px;
-    }
-
-    .dept-name {
-      font-weight: lighter;
-    }
-
-    .dl-horizontal {
-      dt {
-        width: 50px;
-      }
-      dd {
-        margin-left: 70px;
-        font-style: italic;
-      }
-    }
   }
 
   .prof-rating-container .rating-box {

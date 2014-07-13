@@ -1,0 +1,146 @@
+@import 'base';
+@import 'term';
+@import 'course';
+@import 'prof';
+@import '_prof_info';
+
+.description {
+  margin-bottom: 0px;
+}
+
+.course-inner {
+  .row-fluid {
+    &.more-info {
+      border-left: none;
+      border-right: none;
+    }
+  }
+
+  .ratings {
+    .row-fluid {
+      border: none;
+    }
+  }
+}
+
+.course-header {
+  margin-top: 20px;
+
+  .page-title {
+    font-size: 60px;
+  }
+
+  #rating-box-container .rating-box {
+    float: right;
+    width: 105px;
+    height: 80px;
+    margin-top: 5px;
+
+    .rating {
+      font-size: 55px;
+      line-height: 55px;
+    }
+
+    .num-ratings {
+      font-size: 14px;
+      line-height: 14px;
+      top: 0px;
+    }
+  }
+}
+
+.user-review-box {
+  margin-top: 10px;
+}
+
+.review-post {
+  margin-top: 25px;
+
+  .ratings {
+    @include transform(scale(0.9));
+  }
+}
+
+// TODO(jeff): Look to use inheritance here form what is used on course pages
+
+.toggle-tips {
+  margin-top: 15px;
+  padding: 5px;
+  padding-left: 20%;
+  background-color: rgba(black, 0.06);
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: lighten($textColor, 20%);
+  z-index: 1;
+  @include transition(all 0.2s ease-out);
+
+  &:hover {
+    @include transition(all 0.2s ease-out);
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    background-color: rgba(black, 0.6);
+  }
+}
+
+.course .course-content {
+  margin-left: 0px;
+  margin-top: 20px;
+  border-left: none;
+  border-right: none;
+}
+
+#course-inner-container {
+  margin-top: 15px;
+
+  .number-of-courses {
+    margin-top: 0px;
+    padding-top: 60px;
+    margin-bottom: 0px;
+    border-top: 1px solid $wellBorderColor;
+    font-size: 28px;
+    font-weight: bold;
+  }
+}
+
+.prof-picture {
+  float: left;
+  margin-left: 10px;
+  display: inline-block;
+  padding: 4px;
+  width: 30%;
+  border: 1px solid $wellBorderColor;
+}
+
+.course {
+  .course-content {
+    border-left: none;
+    border-right: none;
+  }
+  &.course.expanded {
+    width: 100%;
+    left: 0%;
+  }
+}
+
+.tips-collection {
+  padding-bottom: 15px;
+}
+
+.all-tips {
+  border: 1px solid $wellBorderColor;
+  border-top: none;
+  margin-bottom: 42px;
+}
+
+.prof-info {
+  top: -35px;
+}
+
+.span6.left-col {
+  padding-left: 10px;
+}
+
+.span3.author {
+  padding-left: 10px;
+}

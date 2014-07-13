@@ -1,0 +1,75 @@
+{% extends 'base_page.html' %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ '/static/css/prof_page.css'|version }}">
+{% endblock %}
+
+{% block page_title %}{{ prof_name }}{% endblock %}
+
+{% block header %}
+  <div class="container-fluid course-header">
+    <div class="row-fluid">
+      <div class="span10">
+        <h1 class="page-title">{{ prof_name }}</h1>
+        <p class="lead"> Teaches {{ prof_departments_list|join(', ') }}</p>
+      </div>
+      <div class="span2" id="rating-box-container"></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  window.pageData.profRatings = {{ prof_ratings|tojson|safe }};
+  window.pageData.profName = {{ prof_name|tojson|safe }};
+  window.pageData.profCourses = {{prof_courses|tojson|safe}};
+  window.pageData.tipObjs = {{tip_objs|tojson|safe}};
+  window.pageData.tipObjsByCourse = {{tip_objs_by_course|tojson|safe}};
+  window.pageData.profCoursesFull = {{prof_courses_full|tojson|safe}};
+  window.pageData.profDepartmentsList = {{prof_departments_list|tojson|safe}};
+</script>
+{% endblock %}
+
+{% block body %}
+
+<div class="container-fluid">
+  <div class="row-fluid">
+    <div class="span3" id="took-this-sidebar-container">
+    </div>
+    <div class="span9">
+      <div id="course-inner-container">
+        <div class="course-inner">
+          <div class="prof-info-placeholder"></div>
+          <div class="prof-courses-placeholder"></div>
+          <h2 class="number-of-courses">
+            {% if prof_courses|length() > 1 %}
+              {{ prof_courses|length() }} Courses
+            {% elif prof_courses|length() == 1 %}
+              1 Course
+            {% else %}
+              No Courses
+            {% endif %}
+          </h2>
+          <div class="section-collection-placeholder"></div>
+        </div>
+      </div>
+      <div id="tips-collection-container">
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block templates %}
+  {% include 'prof.html' %}
+  {% include 'tips.html' %}
+  {% include 'took_this.html' %}
+  {% include 'course.html' %}
+  {% include 'term.html' %}
+  {% include 'ratings.html' %}
+  {% include 'user_course.html' %}
+  {% include 'exam.html' %}
+  {% include 'section.html' %}
+  {% include 'review.html' %}
+{% endblock %}

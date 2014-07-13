@@ -53,7 +53,10 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
 
   if (window.pageData.tipObjs && pageData.tipObjs.length) {
     var tipsCollection = new _review.ReviewCollection(window.pageData.tipObjs);
-    var tipsView = new tips.ExpandableTipsView({ reviews: tipsCollection });
+    var tipsView = new tips.ExpandableTipsView({
+      reviews: tipsCollection,
+      pageType: 'course'
+    });
     $('#tips-collection-container').replaceWith(tipsView.render().el);
   }
 
