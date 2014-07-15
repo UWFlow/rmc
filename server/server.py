@@ -331,6 +331,7 @@ def prof_page(prof_id):
 
     return flask.render_template('prof_page.html',
         page_script='prof_page.js',
+        prof_contact_info=prof.get_contact_info(),
         prof_name=prof.name,
         prof_ratings=prof.get_ratings_for_career(),
         prof_courses=courses_taught,

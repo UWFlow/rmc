@@ -36,13 +36,19 @@ class Professor(me.Document):
     id = me.StringField(primary_key=True)
 
     # TODO(mack): available in menlo data
-    # department_id = me.StringField()
+    department = me.StringField(required=False)
 
     # eg. Byron Weber
     first_name = me.StringField(required=True)
 
     # eg. Becker
     last_name = me.StringField(required=True)
+
+    office = me.StringField(required=False)
+
+    uw_user_id = me.StringField(required=False)
+
+    phone_extension = me.StringField(required=False)
 
     clarity = me.EmbeddedDocumentField(_rating.AggregateRating,
                                        default=_rating.AggregateRating())
@@ -262,6 +268,14 @@ class Professor(me.Document):
         departments_taught = set(_COURSE_NAME_REGEX.match(uc['course_id']).
                 group(1).upper() for uc in ucs)
         return sorted(departments_taught)
+
+    def get_contact_info(self):
+
+        return {
+            'office': self.office,
+            'department': self.department,
+            'uw_user_id': self.uw_user_id
+        }
 
     def to_dict(self, course_id=None, current_user=None):
         dict_ = {
