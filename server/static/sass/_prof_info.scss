@@ -13,6 +13,15 @@
     .prof-name {
       line-height: 24px;
       margin-bottom: 25px;
+
+      .prof-link {
+        text-decoration: none;
+        color: $textColor;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
 
     .dept-name {

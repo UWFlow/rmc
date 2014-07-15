@@ -4,7 +4,9 @@
   <img width="150" height="150"
     class="prof-picture img-polaroid" src="<%- pictureUrl %>"></img>
   <div id="<%- normalizeProfName(name) %>" class="prof-info">
-    <h3 class="prof-name"><%- name %></h3>
+    <h3 class="prof-name">
+      <a href="/professor/<%- id %>" class="prof-link"><%- name %></a>
+    </h3>
     <dl class="dl-horizontal">
       <dt>Email</dt>
       <dd>Coming soon...</dd>
