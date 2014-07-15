@@ -271,10 +271,23 @@ class Professor(me.Document):
 
     def get_contact_info(self):
 
+        def format_email(uw_id):
+            if uw_id:
+                return uw_id + "@uwaterloo.ca"
+            else:
+                return None
+
+        def format_extension(ext):
+            if ext:
+                return 'ext. ' + ext
+            else:
+                return None
+
+        placeholder = 'Coming soon...'
         return {
-            'office': self.office,
-            'department': self.department,
-            'uw_user_id': self.uw_user_id
+            'office': self.office or placeholder,
+            'extension': format_extension(self.phone_extension) or placeholder,
+            'uw_user_id': format_email(self.uw_user_id) or placeholder
         }
 
     def to_dict(self, course_id=None, current_user=None):

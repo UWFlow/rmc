@@ -587,8 +587,8 @@ def import_prof_contact_info():
     """
     # Looks for: lastname + ", " + firstname + extension + office + ", " +
     # department + uw_user_id
-    PROF_CONTACT_REGEX = ''.join(['\w+', '\,\s', '\w+', '\s+', '<B>\w+<\/B>',
-      '\s+\w+\s\w+', '\,\s', '(\w|\s)+', '<I>\((\w|\s)+\)<\/I>'])
+    PROF_CONTACT_REGEX = ''.join(['(\w|-)+', '\,\s', '\w+\s+', '<B>\w+<\/B>',
+      '\s+\w+\s\w+', '\,\s', "(\w|\s|\&|\')+", '<I>\((\w|\s)+\)<\/I>'])
     PROF_SPLIT_REGEX = '(' + '|'.join(['<B>', '<\/B>', '<I>\(', '\)<\/I>',
         ',']) + ')'
 
@@ -611,8 +611,14 @@ def import_prof_contact_info():
                     'uw_user_id': info_list[10]
                 }
 
-                prof = m.Professor.objects(first_name=info_dict['first_name'],
-                        last_name=info_dict['last_name'])[0]
+                profs = m.Professor.objects(first_name=info_dict['first_name'],
+                        last_name=info_dict['last_name'])
+
+                if profs:
+                    prof = profs[0]
+                else:
+                  continue
+
                 if prof:
                     prof.office = info_dict['office']
                     prof.department = info_dict['department']
@@ -630,7 +636,7 @@ if __name__ == '__main__':
     me.connect(c.MONGO_DB_RMC, host=c.MONGO_HOST, port=c.MONGO_PORT)
 
     if args.mode == 'professors':
-        #import_professors()
+        import_professors()
         import_prof_contact_info();
     elif args.mode == 'departments':
         import_departments()
