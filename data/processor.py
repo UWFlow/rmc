@@ -581,6 +581,12 @@ def import_opendata_sections():
             num_added, num_updated)
 
 
+def import_prof_contact_info:
+    PROF_CONTACT_REGEX =
+        '\w+\,\s\w+\s+<B>\w+<\/B>\s+\w+\s\w+\,\s(\w|\s)+<I>\((\w|\s)+\)<\/I>'
+
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     supported_modes = ['professors', 'departments', 'courses', 'reviews']
@@ -591,6 +597,7 @@ if __name__ == '__main__':
 
     if args.mode == 'professors':
         import_professors()
+        import_prof_contact_info();
     elif args.mode == 'departments':
         import_departments()
     elif args.mode == 'courses':
