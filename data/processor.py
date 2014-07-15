@@ -28,7 +28,7 @@ def import_departments():
             c.DEPARTMENTS_DATA_DIR, 'opendata2_departments.json')
 
     with open(file_name, 'r') as f:
-        _data = json.load(f)
+        data = json.load(f)
 
     for department in data:
         department = clean_opendata_department(department)
@@ -597,11 +597,10 @@ def import_prof_contact_info():
 
     with open(filename, 'r') as f:
         for i, line in enumerate(f):
-            if i % 10 == 0:
-                print i
             if re.match(PROF_CONTACT_REGEX, line):
                 info_list = [w.strip() for w in
                         re.split(PROF_SPLIT_REGEX, line)]
+
                 info_dict = {
                     'last_name': info_list[0],
                     'first_name': info_list[2],
@@ -637,7 +636,7 @@ if __name__ == '__main__':
 
     if args.mode == 'professors':
         import_professors()
-        import_prof_contact_info();
+        import_prof_contact_info()
     elif args.mode == 'departments':
         import_departments()
     elif args.mode == 'courses':

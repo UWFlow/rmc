@@ -297,7 +297,7 @@ if __name__ == '__main__':
 
     parser = argparse.ArgumentParser()
     supported_modes = ['departments', 'opendata2_courses', 'terms_offered',
-            'opendata_sections']
+            'opendata_sections', 'profs']
 
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()

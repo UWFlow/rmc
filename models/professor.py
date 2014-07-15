@@ -270,7 +270,9 @@ class Professor(me.Document):
         return sorted(departments_taught)
 
     def get_contact_info(self):
-
+        """ Returns a dict containing the professor's email, phone extension
+            and office location
+        """
         def format_email(uw_id):
             if uw_id:
                 return uw_id + "@uwaterloo.ca"

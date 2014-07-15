@@ -14,7 +14,6 @@ function(backbone, $, _, ratings, util, review, tips) {
   });
 
   var kittenNum = util.getKittenNumFromName(pageData.profName);
-  console.log(window.pageData.profContactInfo);
   var profInner =  _.template($('#prof-inner-tpl').html(), {
     'kittenNum': kittenNum,
     'uwUserId': window.pageData.profContactInfo.uw_user_id,
