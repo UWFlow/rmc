@@ -5,7 +5,7 @@ define(function(require) {
 
   describe('Schedule parsing', function() {
     var parsedSchedulePromise = $.get(
-        '/static/sample_schedule.txt').then(function(r) {
+        '/static/js/js_tests/schedule/data/basic.txt').then(function(r) {
       return schedule_parser.parseSchedule(r);
     });
 

@@ -16,8 +16,8 @@ require(['../config_settings'], function(config_settings) {
     mocha.setup('bdd');
 
     require([
-      'transcript_test.js',
-      'schedule_test.js'
+      'transcript/basic_test.js',
+      'schedule/basic_test.js'
     ], function(require) {
       if (window.mochaPhantomJS) {
         mochaPhantomJS.run();

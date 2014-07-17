@@ -5,7 +5,7 @@ define(function(require) {
 
   describe('Transcript parsing', function() {
     var parsedTranscriptPromise = $.get(
-        '/static/sample_transcript.txt').then(function(r) {
+        '/static/js/js_tests/transcript/data/basic.txt').then(function(r) {
       return transcript.parseTranscript(r);
     });
 
