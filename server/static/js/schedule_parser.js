@@ -18,24 +18,6 @@ define(function(require) {
     // TODO(david): Change other places where we assume uppercase to any case
     var ampm = !!(/:\d{2}[AP]M/i.exec(data));
 
-    var extractMatches = function(input, regex) {
-      var results = [];
-      var match = regex.exec(input);
-      var lastIndex = -1;
-      while (match) {
-        if (lastIndex !== -1) {
-          var result = input.substring(lastIndex, match.index);
-          results.push(result);
-        }
-        lastIndex = match.index;
-        match = regex.exec(input);
-      }
-      if (lastIndex > -1) {
-        results.push(input.substring(lastIndex));
-      }
-      return results;
-    };
-
     /* jshint -W101 */
     // Regexes from:
     // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
@@ -45,7 +27,7 @@ define(function(require) {
       return (/(\w{2,}\ \w{1,5})\ -\ ([^\r\n]+)/g);
     };
 
-    var getPartialBodyRe = function() {
+    var getSlotItemRe = function() {
       var wsRe = /\s+/;
       var daysOfWeekRe = /([MThWF]{0,6})/;
       var timeRe = ampm ? /([012]?\d\:[0-5]\d[AP]M)/ : /([012]?\d\:[0-5]\d)/;
@@ -77,27 +59,40 @@ define(function(require) {
       return new RegExp(regexStr, 'g');
     };
 
-    var getBodyRe = function() {
+    var getClassItemRe = function() {
+      var wsRe = /\s+/;
       // Note: Changed from the github version, added bracket on class number
       var classNumRe = /(\d{4})/;
       var sectionNumRe = /(\d{3})/;
       var sectionTypeRe = /(\w{3})/;
-      var partialRegex = getPartialBodyRe();
-      var wsRe = /\s+/;
+      var slotItemRe = getSlotItemRe();
 
       var regexStr = [
         classNumRe.source,
         sectionNumRe.source,
         sectionTypeRe.source,
-        partialRegex.source
       ].join(wsRe.source);
+
+      // Match one or more slot items
+      regexStr = _s.sprintf('%s(?:%s%s)+',
+          regexStr, wsRe.source, slotItemRe.source);
 
       return new RegExp(regexStr, 'g');
     };
 
+    var getCourseRe = function() {
+      var regexStr = [
+        getTitleRe().source,
+        // Match any character
+        /[\w\W]+?/.source,
+        // Match one or more class items
+        _s.sprintf('(?:%s%s)+', /\s+/.source, getClassItemRe().source)
+      ].join('');
+      return new RegExp(regexStr, 'g');
+    };
+
     // Exact each course item from the schedule
-    var titleRe = getTitleRe();
-    var rawItems = extractMatches(data, titleRe);
+    var rawItems = data.match(getCourseRe());
 
     var formatTime = function(timeStr) {
       // '2:20PM' => '2:20 PM'
@@ -105,7 +100,7 @@ define(function(require) {
     };
 
     var processSlotItem = function(cNum, sNum, sType, slotItem) {
-      var slotMatches = getPartialBodyRe().exec(slotItem);
+      var slotMatches = getSlotItemRe().exec(slotItem);
 
       // If there's no day-time information, we can't generate schedule items
       if (!slotMatches[1] || !slotMatches[2] || !slotMatches[3]) {
@@ -225,11 +220,11 @@ define(function(require) {
     _.each(rawItems, function(rawItem) {
       // Grab info from the overall course item
       // E.g. CS 466 -> cs466
-      var courseId = titleRe.exec(data)[1].replace(/\s+/g, '').toLowerCase();
+      var courseId = getTitleRe().exec(rawItem)[1]
+          .replace(/\s+/g, '').toLowerCase();
 
-      var bodyRe = getBodyRe();
       // Extract each of the class items
-      var classItems = extractMatches(rawItem, bodyRe);
+      var classItems = rawItem.match(getClassItemRe());
 
       if (!classItems.length) {  // No class items extracted.
         failedCourses.push(courseId);
@@ -242,7 +237,7 @@ define(function(require) {
       courses.push(course);
 
       _.each(classItems, _.bind(function(cId, classItem) {
-        var classMatches = getBodyRe().exec(classItem);
+        var classMatches = getClassItemRe().exec(classItem);
 
         // Grab the info from the first entry of a class item
         // E.g. 5300
@@ -253,8 +248,7 @@ define(function(require) {
         var sectionType = classMatches[3];
 
         // Process each schedule slot of that class item
-        var partialBodyRe = getPartialBodyRe();
-        var slotItems = classItem.match(partialBodyRe);
+        var slotItems = classItem.match(getSlotItemRe());
 
         var processSlotItemBound =
           _.bind(processSlotItem, this, classNum, sectionNum, sectionType);
