@@ -3,6 +3,7 @@ define(function(require) {
   var _util = require('util');
   var moment = require('rmc_moment');
   var _ = require('ext/underscore');
+  var _s = require('ext/underscore.string');
 
   var parseSchedule = function(data) {
     // Get the term for the schedule. E.g. Fall 2012
@@ -45,9 +46,12 @@ define(function(require) {
     };
 
     var getPartialBodyRe = function() {
+      var wsRe = /\s+/;
       var daysOfWeekRe = /([MThWF]{0,6})/;
       var timeRe = ampm ? /([012]?\d\:[0-5]\d[AP]M)/ : /([012]?\d\:[0-5]\d)/;
-      var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
+      // This can be days of week + time pair, TBA, or empty
+      var dayTimePairRe = new RegExp(_s.sprintf('(?:%s%s%s - %s|TBA)?',
+          daysOfWeekRe.source, wsRe.source, timeRe.source, timeRe.source));
       // This could be a room, or 'TBA'
       var locationRe = /([\-\w ,]+)/;
       // Apparently, it's possible to have mutiple profs (on separate lines):
@@ -62,11 +66,9 @@ define(function(require) {
       var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}\/\d{2}\/\d{2})|(?:\d{4}-\d{2}-\d{2}))/;
       /* jshint +W101 */
       var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
-      var wsRe = /\s+/;
 
       var regexStr = [
-        daysOfWeekRe.source,
-        timePairRe.source,
+        dayTimePairRe.source,
         locationRe.source,
         profRe.source,
         dayPairRe.source
@@ -104,6 +106,11 @@ define(function(require) {
 
     var processSlotItem = function(cNum, sNum, sType, slotItem) {
       var slotMatches = getPartialBodyRe().exec(slotItem);
+
+      // If there's no day-time information, we can't generate schedule items
+      if (!slotMatches[1] || !slotMatches[2] || !slotMatches[3]) {
+        return [];
+      }
 
       // Grab info from the slot item
       // E.g. TTh -> ['T', 'Th']
@@ -228,7 +235,6 @@ define(function(require) {
         failedCourses.push(courseId);
       }
 
-
       var course = {
         course_id: courseId,
         items: []
@@ -237,13 +243,6 @@ define(function(require) {
 
       _.each(classItems, _.bind(function(cId, classItem) {
         var classMatches = getBodyRe().exec(classItem);
-
-        // TODO(david): Did not match. Maybe a TBA and times are not there. Need
-        // to inform user.
-        if (!classMatches) {
-          failedCourses.push(cId);
-          return;
-        }
 
         // Grab the info from the first entry of a class item
         // E.g. 5300

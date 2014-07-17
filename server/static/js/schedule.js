@@ -635,9 +635,17 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         return;
       }
 
-      if (scheduleData.failed_courses.length) {
+      var missingInfoCourses = _.reduce(scheduleData.courses,
+        function(courses, course) {
+          if (!course.items.length) {
+            courses.push(course.course_id);
+          }
+          return courses;
+        }, []);
+      if (scheduleData.failed_courses.length || missingInfoCourses.length) {
         var failedCourses = _.map(
-          scheduleData.failed_courses, function(courseId) {
+          _.union(scheduleData.failed_courses, missingInfoCourses),
+          function(courseId) {
             return courseId.toUpperCase();
           }
         );

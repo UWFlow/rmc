@@ -1,0 +1,93 @@
+GO!
+
+Alpha Beta
+											
+	
+My Academics
+		
+Course Selection (Undergrad only)
+		
+Enroll
+		
+GO Pass
+
+											
+																				
+	
+my class schedule
+		
+add
+		
+drop
+		
+swap
+		
+component swap
+		
+appointments
+		
+search for classes
+
+																				
+My Class Schedule
+List View
+Weekly Calendar View
+Select Display Option
+change term
+Spring 2014 | Undergraduate | University of Waterloo
+COOP 4 - Co-operative Work Term
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Credit/No Credit Co-op
+ 
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4276
+001
+WRK
+TBA
+TBA
+Staff
+05/05/2014 - 30/07/2014
+Exam Information
+ 
+ENGL 210F - Genres of Business Communicat
+Status	Units	Grading	Grade	Requirement Designation
+Enrolled
+0.50
+Degree Reqment, Not in GPA
+ 
+Degree Requirement, Not in Average (Taken)
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4333
+081
+LEC
+ 
+TBA
+Sylvia Terzian
+05/05/2014 - 30/07/2014
+Exam Schedule
+Materials
+ 
+PD 3 - Communication
+Status	Units	Grading	Grade
+Enrolled
+0.50
+Credit / Non-Credit Basis
+ 
+Class Nbr	Section	Component	Days & Times	Room	Instructor	Start/End Date
+4428
+082
+LEC
+ 
+TBA
+Andrew McMurry
+05/05/2014 - 30/07/2014
+Exam Schedule
+Materials
+ 
+Printer Friendly Page
+ 	My Academics	 	 	 	Course Selection (Undergrad Only)	 	 	 	Enroll	 	 	 	Go Pass	 	 
+ 	My Class Schedule	 	 	 	Add	 	 	 	Drop	 	 	 	Swap	 	 	 	Component Swap	 	 	 	Appointments	 	 	 	Search For Classes	 	 
+GO!
+

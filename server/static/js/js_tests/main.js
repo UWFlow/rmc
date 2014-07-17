@@ -17,7 +17,8 @@ require(['../config_settings'], function(config_settings) {
 
     require([
       'transcript/basic_test.js',
-      'schedule/basic_test.js'
+      'schedule/basic_test.js',
+      'schedule/tba_date_test.js'
     ], function(require) {
       if (window.mochaPhantomJS) {
         mochaPhantomJS.run();
