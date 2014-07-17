@@ -38,7 +38,7 @@ define(function(require) {
       var locationRe = /([\-\w ,]+)/;
       // Apparently, it's possible to have mutiple profs (on separate lines):
       // e.g. Behrad Khamesee,\nJan Huissoon
-      var profRe = /([\-\w .,\r\n]+)/;
+      var profRe = /([\-\w '.,\r\n]+)/;
       // The day can appear in the following formats:
       // - '01/23/2013'
       // - '23/01/2013'
