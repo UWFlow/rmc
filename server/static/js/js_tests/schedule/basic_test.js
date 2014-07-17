@@ -38,10 +38,16 @@ define(function(require) {
     });
 
     testParsedScheduleAsync(
-        'extracts the correct number of items for course multiple time entries',
+        'validate course that has multiple class and slot items',
         function(scheduleData) {
       expect(scheduleData.courses[1].course_id).to.equal('ece106');
       expect(scheduleData.courses[1].items.length).to.equal(63);
+      expect(scheduleData.courses[1].items[0].section_type).to.equal('LEC');
+      expect(scheduleData.courses[1].items[43].section_type).to.equal('LEC');
+      expect(scheduleData.courses[1].items[44].section_type).to.equal('TUT');
+      expect(scheduleData.courses[1].items[56].section_type).to.equal('TUT');
+      expect(scheduleData.courses[1].items[57].section_type).to.equal('LAB');
+      expect(scheduleData.courses[1].items[62].section_type).to.equal('LAB');
     });
 
     testParsedScheduleAsync('extracts the first course\'s course ID',
