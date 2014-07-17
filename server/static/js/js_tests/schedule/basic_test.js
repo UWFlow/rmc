@@ -24,110 +24,128 @@ define(function(require) {
 
     testParsedScheduleAsync('extracts the term name',
         function(scheduleData) {
-      expect(scheduleData.term_name).to.equal("Winter 2014");
+      expect(scheduleData.term_name).to.equal('Winter 2014');
     });
 
-    testParsedScheduleAsync('produces no failed items',
+    testParsedScheduleAsync('produces correct number of courses',
         function(scheduleData) {
-      expect(scheduleData.failed_items.length).to.equal(0);
+      expect(scheduleData.courses.length).to.equal(7);
     });
 
-    testParsedScheduleAsync('extracts the correct number of items',
+    testParsedScheduleAsync('produces no failed courses',
         function(scheduleData) {
-      expect(scheduleData.processed_items.length).to.equal(343);
+      expect(scheduleData.failed_courses.length).to.equal(0);
+    });
+
+    testParsedScheduleAsync(
+        'extracts the correct number of items for course multiple time entries',
+        function(scheduleData) {
+      expect(scheduleData.courses[1].course_id).to.equal('ece106');
+      expect(scheduleData.courses[1].items.length).to.equal(63);
+    });
+
+    testParsedScheduleAsync('extracts the first course\'s course ID',
+        function(scheduleData) {
+      expect(scheduleData.courses[0].course_id).to.equal('cs138');
+    });
+
+    testParsedScheduleAsync(
+        'extracts the correct number of items for course with one time entry',
+        function(scheduleData) {
+      expect(scheduleData.courses[0].items.length).to.equal(39);
     });
 
     testParsedScheduleAsync('extracts the first item\'s building',
         function(scheduleData) {
-      expect(scheduleData.processed_items[0].building).to.equal("OPT");
-    });
-
-    testParsedScheduleAsync('extracts the first item\'s course ID',
-        function(scheduleData) {
-      expect(scheduleData.processed_items[0].course_id).to.equal("cs138");
+      expect(scheduleData.courses[0].items[0].building).to.equal('OPT');
     });
 
     testParsedScheduleAsync('extracts the first item\'s prof name',
         function(scheduleData) {
-      expect(scheduleData.processed_items[0].prof_name).to.equal(
-        "Michael Godfrey");
+      expect(scheduleData.courses[0].items[0].prof_name).to
+          .equal('Michael Godfrey');
     });
 
     testParsedScheduleAsync('extracts the first item\'s start date',
         function(scheduleData) {
-      expect(scheduleData.processed_items[0].start_date).to.equal(1389106800);
+      expect(scheduleData.courses[0].items[0].start_date).to.equal(1389106800);
     });
 
     testParsedScheduleAsync('extracts the first item\'s end date',
         function(scheduleData) {
-      expect(scheduleData.processed_items[0].end_date).to.equal(1389111600);
+      expect(scheduleData.courses[0].items[0].end_date).to.equal(1389111600);
     });
 
     testParsedScheduleAsync('extracts the first item\'s class number',
         function(scheduleData) {
-      expect(scheduleData.processed_items[0].class_num).to.equal('5819');
+      expect(scheduleData.courses[0].items[0].class_num).to.equal('5819');
     });
 
     testParsedScheduleAsync('extracts the first item\'s room',
         function(scheduleData) {
-      expect(scheduleData.processed_items[0].room).to.equal('347');
+      expect(scheduleData.courses[0].items[0].room).to.equal('347');
     });
 
     testParsedScheduleAsync('extracts the first item\'s section number',
         function(scheduleData) {
-      expect(scheduleData.processed_items[0].section_num).to.equal('001');
+      expect(scheduleData.courses[0].items[0].section_num).to.equal('001');
     });
 
     testParsedScheduleAsync('extracts the first item\'s section type',
         function(scheduleData) {
-      expect(scheduleData.processed_items[0].section_type).to.equal('LEC');
-    });
-
-    testParsedScheduleAsync('extracts the last item\'s building',
-        function(scheduleData) {
-      expect(scheduleData.processed_items[342].building).to.equal("DC");
+      expect(scheduleData.courses[0].items[0].section_type).to.equal('LEC');
     });
 
     testParsedScheduleAsync('extracts the last item\'s course ID',
         function(scheduleData) {
-      expect(scheduleData.processed_items[342].course_id).to.equal("stat230");
+      expect(scheduleData.courses[6].course_id).to.equal('stat230');
+    });
+
+    testParsedScheduleAsync(
+        'extracts the correct number of items for last course',
+        function(scheduleData) {
+      expect(scheduleData.courses[6].items.length).to.equal(54);
+    });
+
+    testParsedScheduleAsync('extracts the last item\'s building',
+        function(scheduleData) {
+      expect(scheduleData.courses[6].items[53].building).to.equal('DC');
     });
 
     testParsedScheduleAsync('extracts the last item\'s prof name',
         function(scheduleData) {
-      expect(scheduleData.processed_items[342].prof_name).to.equal(
-          "Christian Boudreau");
+      expect(scheduleData.courses[6].items[53].prof_name).to
+          .equal('Christian Boudreau');
     });
 
     testParsedScheduleAsync('extracts the last item\'s start date',
         function(scheduleData) {
-      expect(scheduleData.processed_items[342].start_date).to.equal(
-          1396629000);
+      expect(scheduleData.courses[6].items[53].start_date).to.equal(1396629000);
     });
 
     testParsedScheduleAsync('extracts the last item\'s end date',
         function(scheduleData) {
-      expect(scheduleData.processed_items[342].end_date).to.equal(1396632000);
+      expect(scheduleData.courses[6].items[53].end_date).to.equal(1396632000);
     });
 
     testParsedScheduleAsync('extracts the last item\'s class number',
         function(scheduleData) {
-      expect(scheduleData.processed_items[342].class_num).to.equal('7208');
+      expect(scheduleData.courses[6].items[53].class_num).to.equal('7208');
     });
 
     testParsedScheduleAsync('extracts the last item\'s room',
         function(scheduleData) {
-      expect(scheduleData.processed_items[342].room).to.equal('1350');
+      expect(scheduleData.courses[6].items[53].room).to.equal('1350');
     });
 
     testParsedScheduleAsync('extracts the last item\'s section number',
         function(scheduleData) {
-      expect(scheduleData.processed_items[342].section_num).to.equal('002');
+      expect(scheduleData.courses[6].items[53].section_num).to.equal('002');
     });
 
     testParsedScheduleAsync('extracts the last item\'s section type',
         function(scheduleData) {
-      expect(scheduleData.processed_items[342].section_type).to.equal('LEC');
+      expect(scheduleData.courses[6].items[53].section_type).to.equal('LEC');
     });
   });
 });

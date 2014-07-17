@@ -102,7 +102,7 @@ define(function(require) {
       return timeStr.match(/(AM|PM|\d{1,2}:\d{2})/g).join(' ');
     };
 
-    var processSlotItem = function(cId, cNum, sNum, sType, slotItem) {
+    var processSlotItem = function(cNum, sNum, sType, slotItem) {
       var slotMatches = getPartialBodyRe().exec(slotItem);
 
       // Grab info from the slot item
@@ -187,7 +187,6 @@ define(function(require) {
       while (currMoment <= slotEndMoment) {
         if (hasClassOnDay[currMoment.day()]) {
           processedSlotItems.push({
-            course_id: cId,
             class_num: cNum,
             section_num: sNum,
             section_type: sType,
@@ -212,8 +211,8 @@ define(function(require) {
       return processedSlotItems;
     };
 
-    var processedItems = [];
-    var failedItems = [];
+    var courses = [];
+    var failedCourses = [];
 
     // Process each course item
     _.each(rawItems, function(rawItem) {
@@ -226,8 +225,15 @@ define(function(require) {
       var classItems = extractMatches(rawItem, bodyRe);
 
       if (!classItems.length) {  // No class items extracted.
-        failedItems.push(courseId);
+        failedCourses.push(courseId);
       }
+
+
+      var course = {
+        course_id: courseId,
+        items: []
+      };
+      courses.push(course);
 
       _.each(classItems, _.bind(function(cId, classItem) {
         var classMatches = getBodyRe().exec(classItem);
@@ -235,7 +241,7 @@ define(function(require) {
         // TODO(david): Did not match. Maybe a TBA and times are not there. Need
         // to inform user.
         if (!classMatches) {
-          failedItems.push(courseId);
+          failedCourses.push(cId);
           return;
         }
 
@@ -252,11 +258,13 @@ define(function(require) {
         var slotItems = classItem.match(partialBodyRe);
 
         var processSlotItemBound =
-          _.bind(processSlotItem, this, cId, classNum, sectionNum, sectionType);
+          _.bind(processSlotItem, this, classNum, sectionNum, sectionType);
 
         var processedSlotItems = _.map(slotItems, processSlotItemBound);
+
         if (processedSlotItems.length > 0) {
-          processedItems = processedItems.concat(
+          course.items = course.items.concat(
+            // Collapse the list of lists into a list
             _.reduce(processedSlotItems, function(a, b) {
               return a.concat(b);
             })
@@ -266,9 +274,9 @@ define(function(require) {
     });
 
     return {
-      processed_items: processedItems,
+      courses: courses,
       term_name: termName,
-      failed_items: failedItems
+      failed_courses: failedCourses
     };
   };
 
