@@ -50,6 +50,7 @@ class OnboardingTest(testlib.AcceptanceTestCase):
         wait.until(window_opened)
 
         self.driver.switch_to_window(self.driver.window_handles[1])
+        wait.until(lambda d: d.find_element_by_name('email'))
 
         email_input = self.driver.find_element_by_name('email')
         pass_input = self.driver.find_element_by_name('pass')
@@ -78,7 +79,7 @@ class OnboardingTest(testlib.AcceptanceTestCase):
         ))
         textarea.send_keys('\n')
 
-        wait = WebDriverWait(self.driver, 2)
+        wait = WebDriverWait(self.driver, 5)
         wait.until(EC.title_contains('Joe Chengsen'))
 
     def _assert_profile_page_state(self):

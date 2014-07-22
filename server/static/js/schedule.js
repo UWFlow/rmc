@@ -614,7 +614,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         exceptionThrown = true;
       }
 
-      if (exceptionThrown || !scheduleData.processed_items.length) {
+      if (exceptionThrown || !scheduleData.courses.length) {
         $.ajax('/api/schedule/log', {
           data: {
             schedule: data
@@ -635,9 +635,17 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         return;
       }
 
-      if (scheduleData.failed_items.length) {
+      var missingInfoCourses = _.reduce(scheduleData.courses,
+        function(courses, course) {
+          if (!course.items.length) {
+            courses.push(course.course_id);
+          }
+          return courses;
+        }, []);
+      if (scheduleData.failed_courses.length || missingInfoCourses.length) {
         var failedCourses = _.map(
-          scheduleData.failed_items, function(courseId) {
+          _.union(scheduleData.failed_courses, missingInfoCourses),
+          function(courseId) {
             return courseId.toUpperCase();
           }
         );

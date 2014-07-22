@@ -737,13 +737,10 @@ def upload_schedule():
     user = view_helpers.get_current_user()
 
     schedule_data = util.json_loads(req.form.get('schedule_data'))
-    processed_items = schedule_data['processed_items']
-    failed_items = schedule_data['failed_items']
+    courses = schedule_data['courses']
+    failed_courses = schedule_data['failed_courses']
     term_name = schedule_data['term_name']
     term_id = m.Term.id_from_name(term_name)
-
-    # FIXME TODO(david): Save these in models and display on schedule
-    #failed_items = schedule_data['failed_items']
 
     rmclogger.log_event(
         rmclogger.LOG_CATEGORY_API,
@@ -764,53 +761,56 @@ def upload_schedule():
     for usi in m.UserScheduleItem.objects(user_id=user.id, term_id=term_id):
         usi.delete()
 
-    for item in processed_items:
-        try:
-            # Create this UserScheduleItem
-            first_name, last_name = m.Professor.guess_names(item['prof_name'])
-            prof_id = m.Professor.get_id_from_name(
-                first_name=first_name,
-                last_name=last_name,
-            )
-            if first_name and last_name:
-                if not m.Professor.objects.with_id(prof_id):
-                    m.Professor(
-                        id=prof_id,
-                        first_name=first_name,
-                        last_name=last_name,
-                    ).save()
+    for course in courses:
+        # Add this item to the user's course history
+        # FIXME(Sandy): See if we can get program_year_id from Quest
+        # Or just increment their last one
+        user.add_course(course['course_id'], term_id)
 
-            usi = m.UserScheduleItem(
-                user_id=user.id,
-                class_num=item['class_num'],
-                building=item['building'],
-                room=item.get('room'),
-                section_type=item['section_type'].upper(),
-                section_num=item['section_num'],
-                start_date=datetime.utcfromtimestamp(item['start_date']),
-                end_date=datetime.utcfromtimestamp(item['end_date']),
-                course_id=item['course_id'],
-                prof_id=prof_id,
-                term_id=term_id,
-            )
+        for item in course['items']:
             try:
-                usi.save()
-            except me.NotUniqueError as ex:
-                # Likely the case where the user pastes in two or more valid
-                # schedules into the same input box
-                logging.info('Duplicate error on UserScheduleItem .save(): %s'
-                        % (ex))
+                # Create this UserScheduleItem
+                first_name, last_name = m.Professor.guess_names(
+                        item['prof_name'])
+                prof_id = m.Professor.get_id_from_name(
+                    first_name=first_name,
+                    last_name=last_name,
+                )
+                if first_name and last_name:
+                    if not m.Professor.objects.with_id(prof_id):
+                        m.Professor(
+                            id=prof_id,
+                            first_name=first_name,
+                            last_name=last_name,
+                        ).save()
 
-            # Add this item to the user's course history
-            # FIXME(Sandy): See if we can get program_year_id from Quest
-            # Or just increment their last one
-            user.add_course(usi.course_id, usi.term_id)
+                usi = m.UserScheduleItem(
+                    user_id=user.id,
+                    class_num=item['class_num'],
+                    building=item['building'],
+                    room=item.get('room'),
+                    section_type=item['section_type'].upper(),
+                    section_num=item['section_num'],
+                    start_date=datetime.utcfromtimestamp(item['start_date']),
+                    end_date=datetime.utcfromtimestamp(item['end_date']),
+                    course_id=course['course_id'],
+                    prof_id=prof_id,
+                    term_id=term_id,
+                )
+                try:
+                    usi.save()
+                except me.NotUniqueError as ex:
+                    # Likely the case where the user pastes in two or more
+                    # valid schedules into the same input box
+                    logging.info(
+                            'Duplicate error on UserScheduleItem .save(): %s'
+                            % (ex))
 
-        except KeyError:
-            logging.error("Invalid item in uploaded schedule: %s" % (item))
+            except KeyError:
+                logging.error("Invalid item in uploaded schedule: %s" % (item))
 
     # Add courses that failed to fully parse, probably due to unavailable times
-    for course_id in set(failed_items):
+    for course_id in set(failed_courses):
         fsi = m.FailedScheduleItem(
             user_id=user.id,
             course_id=course_id,

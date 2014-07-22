@@ -3,6 +3,7 @@ define(function(require) {
   var _util = require('util');
   var moment = require('rmc_moment');
   var _ = require('ext/underscore');
+  var _s = require('ext/underscore.string');
 
   var parseSchedule = function(data) {
     // Get the term for the schedule. E.g. Fall 2012
@@ -17,24 +18,6 @@ define(function(require) {
     // TODO(david): Change other places where we assume uppercase to any case
     var ampm = !!(/:\d{2}[AP]M/i.exec(data));
 
-    var extractMatches = function(input, regex) {
-      var results = [];
-      var match = regex.exec(input);
-      var lastIndex = -1;
-      while (match) {
-        if (lastIndex !== -1) {
-          var result = input.substring(lastIndex, match.index);
-          results.push(result);
-        }
-        lastIndex = match.index;
-        match = regex.exec(input);
-      }
-      if (lastIndex > -1) {
-        results.push(input.substring(lastIndex));
-      }
-      return results;
-    };
-
     /* jshint -W101 */
     // Regexes from:
     // https://github.com/vikstrous/Quest-Schedule-Exporter/blob/master/index.php
@@ -44,15 +27,18 @@ define(function(require) {
       return (/(\w{2,}\ \w{1,5})\ -\ ([^\r\n]+)/g);
     };
 
-    var getPartialBodyRe = function() {
+    var getSlotItemRe = function() {
+      var wsRe = /\s+/;
       var daysOfWeekRe = /([MThWF]{0,6})/;
       var timeRe = ampm ? /([012]?\d\:[0-5]\d[AP]M)/ : /([012]?\d\:[0-5]\d)/;
-      var timePairRe = new RegExp(timeRe.source + ' - ' + timeRe.source);
+      // This can be days of week + time pair, TBA, or empty
+      var dayTimePairRe = new RegExp(_s.sprintf('(?:%s%s%s - %s|TBA)?',
+          daysOfWeekRe.source, wsRe.source, timeRe.source, timeRe.source));
       // This could be a room, or 'TBA'
       var locationRe = /([\-\w ,]+)/;
       // Apparently, it's possible to have mutiple profs (on separate lines):
       // e.g. Behrad Khamesee,\nJan Huissoon
-      var profRe = /([\-\w .,\r\n]+)/;
+      var profRe = /([\-\w '.,\r\n]+)/;
       // The day can appear in the following formats:
       // - '01/23/2013'
       // - '23/01/2013'
@@ -62,11 +48,9 @@ define(function(require) {
       var dayRe = /((?:\d{2}\/\d{2}\/\d{4})|(?:\d{4}\/\d{2}\/\d{2})|(?:\d{4}-\d{2}-\d{2}))/;
       /* jshint +W101 */
       var dayPairRe = new RegExp(dayRe.source + ' - ' + dayRe.source);
-      var wsRe = /\s+/;
 
       var regexStr = [
-        daysOfWeekRe.source,
-        timePairRe.source,
+        dayTimePairRe.source,
         locationRe.source,
         profRe.source,
         dayPairRe.source
@@ -75,35 +59,53 @@ define(function(require) {
       return new RegExp(regexStr, 'g');
     };
 
-    var getBodyRe = function() {
+    var getClassItemRe = function() {
+      var wsRe = /\s+/;
       // Note: Changed from the github version, added bracket on class number
       var classNumRe = /(\d{4})/;
       var sectionNumRe = /(\d{3})/;
       var sectionTypeRe = /(\w{3})/;
-      var partialRegex = getPartialBodyRe();
-      var wsRe = /\s+/;
+      var slotItemRe = getSlotItemRe();
 
       var regexStr = [
         classNumRe.source,
         sectionNumRe.source,
         sectionTypeRe.source,
-        partialRegex.source
       ].join(wsRe.source);
+
+      // Match one or more slot items
+      regexStr = _s.sprintf('%s(?:%s%s)+',
+          regexStr, wsRe.source, slotItemRe.source);
 
       return new RegExp(regexStr, 'g');
     };
 
+    var getCourseRe = function() {
+      var regexStr = [
+        getTitleRe().source,
+        // Match any character
+        /[\w\W]+?/.source,
+        // Match one or more class items
+        _s.sprintf('(?:%s%s)+', /\s+/.source, getClassItemRe().source)
+      ].join('');
+      return new RegExp(regexStr, 'g');
+    };
+
     // Exact each course item from the schedule
-    var titleRe = getTitleRe();
-    var rawItems = extractMatches(data, titleRe);
+    var rawItems = data.match(getCourseRe());
 
     var formatTime = function(timeStr) {
       // '2:20PM' => '2:20 PM'
       return timeStr.match(/(AM|PM|\d{1,2}:\d{2})/g).join(' ');
     };
 
-    var processSlotItem = function(cId, cNum, sNum, sType, slotItem) {
-      var slotMatches = getPartialBodyRe().exec(slotItem);
+    var processSlotItem = function(cNum, sNum, sType, slotItem) {
+      var slotMatches = getSlotItemRe().exec(slotItem);
+
+      // If there's no day-time information, we can't generate schedule items
+      if (!slotMatches[1] || !slotMatches[2] || !slotMatches[3]) {
+        return [];
+      }
 
       // Grab info from the slot item
       // E.g. TTh -> ['T', 'Th']
@@ -187,7 +189,6 @@ define(function(require) {
       while (currMoment <= slotEndMoment) {
         if (hasClassOnDay[currMoment.day()]) {
           processedSlotItems.push({
-            course_id: cId,
             class_num: cNum,
             section_num: sNum,
             section_type: sType,
@@ -212,32 +213,31 @@ define(function(require) {
       return processedSlotItems;
     };
 
-    var processedItems = [];
-    var failedItems = [];
+    var courses = [];
+    var failedCourses = [];
 
     // Process each course item
     _.each(rawItems, function(rawItem) {
       // Grab info from the overall course item
       // E.g. CS 466 -> cs466
-      var courseId = titleRe.exec(data)[1].replace(/\s+/g, '').toLowerCase();
+      var courseId = getTitleRe().exec(rawItem)[1]
+          .replace(/\s+/g, '').toLowerCase();
 
-      var bodyRe = getBodyRe();
       // Extract each of the class items
-      var classItems = extractMatches(rawItem, bodyRe);
+      var classItems = rawItem.match(getClassItemRe());
 
       if (!classItems.length) {  // No class items extracted.
-        failedItems.push(courseId);
+        failedCourses.push(courseId);
       }
 
-      _.each(classItems, _.bind(function(cId, classItem) {
-        var classMatches = getBodyRe().exec(classItem);
+      var course = {
+        course_id: courseId,
+        items: []
+      };
+      courses.push(course);
 
-        // TODO(david): Did not match. Maybe a TBA and times are not there. Need
-        // to inform user.
-        if (!classMatches) {
-          failedItems.push(courseId);
-          return;
-        }
+      _.each(classItems, _.bind(function(cId, classItem) {
+        var classMatches = getClassItemRe().exec(classItem);
 
         // Grab the info from the first entry of a class item
         // E.g. 5300
@@ -248,15 +248,16 @@ define(function(require) {
         var sectionType = classMatches[3];
 
         // Process each schedule slot of that class item
-        var partialBodyRe = getPartialBodyRe();
-        var slotItems = classItem.match(partialBodyRe);
+        var slotItems = classItem.match(getSlotItemRe());
 
         var processSlotItemBound =
-          _.bind(processSlotItem, this, cId, classNum, sectionNum, sectionType);
+          _.bind(processSlotItem, this, classNum, sectionNum, sectionType);
 
         var processedSlotItems = _.map(slotItems, processSlotItemBound);
+
         if (processedSlotItems.length > 0) {
-          processedItems = processedItems.concat(
+          course.items = course.items.concat(
+            // Collapse the list of lists into a list
             _.reduce(processedSlotItems, function(a, b) {
               return a.concat(b);
             })
@@ -266,9 +267,9 @@ define(function(require) {
     });
 
     return {
-      processed_items: processedItems,
+      courses: courses,
       term_name: termName,
-      failed_items: failedItems
+      failed_courses: failedCourses
     };
   };
 

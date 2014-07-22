@@ -1,0 +1,262 @@
+
+
+
+
+
+GO!
+
+
+
+
+Charlie Delta
+
+
+
+
+My Academics
+
+Course Selection (Undergrad only)
+
+Enroll
+
+GO Pass
+
+
+
+
+
+
+my class schedule
+
+add
+
+drop
+
+swap
+
+component swap
+
+appointments
+
+search for classes
+
+
+
+
+
+My Class Schedule
+
+
+
+
+
+List View
+Weekly Calendar View
+
+Select Display Option
+
+
+
+
+
+Fall 2014 | Undergraduate | University of Waterloo
+
+
+
+
+
+AFM 101 - Intro to Financial Accounting
+
+
+Status  Units   Grading Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+
+Class Nbr       Section Component       Days & Times    Room    Instructor      Start/End Date
+3385
+003
+LEC
+MWF 10:30AM - 11:20AM
+HH 1101
+Donna Psutka
+09/08/2014 - 12/01/2014
+3398
+103
+TUT
+F 11:30AM - 12:20PM
+AL    211
+Staff
+09/08/2014 - 12/01/2014
+3430
+201
+TST
+Th 6:30PM - 8:50PM
+TBA
+Staff
+10/16/2014 - 10/16/2014
+
+
+
+Exam Information
+
+
+
+
+CS 135 - Designing Functional Programs
+
+
+Status  Units   Grading Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+
+Class Nbr       Section Component       Days & Times    Room    Instructor      Start/End Date
+5901
+201
+TST
+M 7:00PM - 8:50PM
+TBA
+Staff
+09/29/2014 - 09/29/2014
+
+
+
+M 7:00PM - 8:50PM
+TBA
+Staff
+10/27/2014 - 10/27/2014
+5969
+105
+TUT
+Th 1:30PM - 2:20PM
+MC   4045
+Staff
+09/08/2014 - 12/01/2014
+6020
+005
+LEC
+TTh 2:30PM - 3:50PM
+OPT   347
+Rosina Kharal
+09/08/2014 - 12/01/2014
+
+
+
+Exam Information
+
+
+
+MATH 135 - Algebra for Hons Mathematics
+
+
+Status  Units   Grading Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+
+Class Nbr       Section Component       Days & Times    Room    Instructor      Start/End Date
+5685
+003
+LEC
+MWF 9:30AM - 10:20AM
+PHY   145
+Anna Bertiger
+09/08/2014 - 12/01/2014
+5765
+201
+TST
+M 7:00PM - 8:50PM
+TBA
+Staff
+10/06/2014 - 10/06/2014
+
+
+
+Exam Information
+
+
+
+MATH 137 - Calculus 1 for Honours Math
+
+
+Status  Units   Grading Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+
+Class Nbr       Section Component       Days & Times    Room    Instructor      Start/End Date
+5694
+003
+LEC
+MWF 8:30AM - 9:20AM
+B1    271
+Serge D'Alessio
+09/08/2014 - 12/01/2014
+5766
+201
+TST
+M 7:00PM - 8:50PM
+TBA
+Staff
+10/20/2014 - 10/20/2014
+
+
+
+Exam Information
+
+
+
+SPCOM 100 - Interpersonal Communication
+
+
+Status  Units   Grading Grade
+Enrolled
+0.50
+Numeric Grading Basis
+
+
+Class Nbr       Section Component       Days & Times    Room    Instructor      Start/End Date
+8107
+004
+LEC
+M 11:30AM - 2:20PM
+EV3 4408
+Staff
+09/08/2014 - 12/01/2014
+
+
+
+Exam Information
+
+
+
+Printer Friendly Page
+
+
+
+
+
+        My Academics                            Course Selection (Undergrad Only)                               Enroll                              Go Pass
+
+
+        My Class Schedule                               Add                             Drop                       Swap                             Component Swap                          Appointments                            Search For Classes
+
+
+
+
+
+
+GO!
+
+
+
+
+
+
+
+In [7]:
