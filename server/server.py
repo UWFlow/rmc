@@ -1009,6 +1009,15 @@ def remove_course():
         return ''
 
     current_user.update(pull__course_history=user_course.id)
+
+    # Remove calendar items corresponding to the user course
+    if not m.Term.is_shortlist_term(user_course.term_id):
+        m.UserScheduleItem.objects(
+            user_id=current_user.id,
+            course_id=user_course.course_id,
+            term_id=user_course.term_id,
+        ).delete()
+
     user_course.delete()
 
     return ''
