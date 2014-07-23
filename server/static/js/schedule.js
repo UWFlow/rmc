@@ -692,6 +692,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       this.$el.html(this.template({}));
       this.$('.schedule-input-placeholder')
         .replaceWith(this.scheduleInputView.render().el);
+      // Set a tabIndex so that it can have focus, and thus be dismissed by esc
+      this.$('.schedule-input-modal').prop('tabIndex', '0');
       return this;
     }
   });
