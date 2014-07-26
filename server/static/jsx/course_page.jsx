@@ -63,10 +63,14 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
     document.getElementById('tips-collection-container')
   );
 
+  React.renderComponent(
+    <rc.ProfCollection data={window.pageData.professorObjs} />,
+    document.getElementById('professor-review-container')
+  );
+
+
   // TODO(david): Handle no professors for course
-  var profsCollection = courseModel.get('professors');
-  var profsView = new prof.ProfCollectionView({ collection: profsCollection });
-  $('#professor-review-container').html(profsView.render().el);
+  //$('#professor-review-container').html(profsView.render().el);
 
   if (!window.pageData.currentUserId) {
     _sign_in.renderBanner({

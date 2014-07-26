@@ -12,7 +12,7 @@ function(React, util, moment) {
         );
       } else if (this.props.author.id) {
         author = (
-          React.DOM.div(null, 
+          React.DOM.span(null, 
             React.DOM.a({href: "/profile/{this.props.author.id.$oid"}, 
               this.props.author.name
             ), 
@@ -24,12 +24,12 @@ function(React, util, moment) {
         var program = _user.getShortProgramName(
             this.props.author.program_name);
         author = (
-          React.DOM.div(null, 
-          React.DOM.span({className: "muted"}, 
-            "A ", ('aeiou'.indexOf(program[0].toLowerCase()) !== -1) ? 'n' : ''
-          ), 
-          program, 
-          React.DOM.span({className: "muted"}, " student on")
+          React.DOM.span(null, 
+            React.DOM.span({className: "muted"}, 
+              "A ", ('aeiou'.indexOf(program[0].toLowerCase()) !== -1) ? 'n' : ''
+            ), 
+            program, 
+            React.DOM.span({className: "muted"}, " student on ")
           )
         );
       }
@@ -166,6 +166,12 @@ function(React, util, moment) {
   });
 
   var ReviewList = React.createClass({displayName: 'ReviewList',
+    getDefaultProps: function() {
+      return {
+        numToHide: 0
+      };
+    },
+
     render: function() {
       var sortedReviews =  _.sortBy(this.props.data,
           function(r) {
@@ -173,7 +179,8 @@ function(React, util, moment) {
           }
       );
 
-      var reviewNodes = sortedReviews.map(function (review) {
+      var reviewNodes = _.initial(sortedReviews, this.props.numToHide).map(
+          function (review) {
         return (
           React.DOM.div({className: "review-post"}, 
             Review({data: review})
@@ -201,11 +208,13 @@ function(React, util, moment) {
 
   var RatingRow = React.createClass({displayName: 'RatingRow',
     render: function() {
+      if (this.props.data.name === 'overall') {
+        return (React.DOM.div(null));
+      }
       var barWidth = 42;
       var barStyle = {
         width: this.props.data.rating * 100 + "%"
       };
-      console.log(this.props.data);
       return (
         React.DOM.div({className: "row-fluid", 
             title: "People think this was helpful, maybe..."}, 
@@ -235,7 +244,11 @@ function(React, util, moment) {
   var RatingsBox = React.createClass({displayName: 'RatingsBox',
     render: function() {
       var ratingBars = this.props.data.map(function (ratingWithAttributes) {
-        var rating = ratingWithAttributes.attributes;
+        var rating = ratingWithAttributes;
+        if (rating.attributes) {
+          rating = rating.attributes;
+        }
+
         return (
           RatingRow({data: rating})
         );
@@ -293,10 +306,141 @@ function(React, util, moment) {
     }
   });
 
+  OverallRating = React.createClass({displayName: 'OverallRating',
+    render: function() {
+      var rating = this.props.data.rating;
+      var count = this.props.data.count;
+      if (this.props.data.count === 0) {
+        rating = '--';
+      } else {
+        rating = (React.DOM.span(null, Math.round(rating * 100), React.DOM.sup({className: "percent"}, 
+                  "%")));
+      }
 
+      return (
+        React.DOM.div({className: "rating-box"}, 
+          React.DOM.div({className: "rating"}, 
+            rating
+          ), 
+          React.DOM.div({className: "num-ratings"}, 
+            count, " ratings"
+          )
+        )
+      );
+    }
+  });
+
+  ProfCard = React.createClass({displayName: 'ProfCard',
+    render: function() {
+      var kittenNum = util.getKittenNumFromName(this.props.data.name);
+      var pictureUrl = "/static/img/kittens/color/" + kittenNum + ".jpg";
+
+      return (
+        React.DOM.div(null, 
+          React.DOM.img({width: "150", height: "150", className: "prof-picture img-polaroid", 
+              src: pictureUrl}), 
+          React.DOM.div({className: "prof-info"}, 
+            React.DOM.h3({className: "prof-name"}, 
+              React.DOM.a({href: "professor/{this.props.data.id}", className: "prof-link"}, 
+                this.props.data.name
+              )
+            ), 
+            React.DOM.dl({className: "dl-horizontal"}, 
+              React.DOM.dt(null, "Email"), 
+              React.DOM.dd(null, "Coming soon..."), 
+              React.DOM.dt(null, "Phone"), 
+              React.DOM.dd(null, "Coming soon..."), 
+              React.DOM.dt(null, "Office"), 
+              React.DOM.dd(null, "Coming soon...")
+            )
+          )
+        )
+      );
+    }
+  });
+
+  ProfExpandableView = React.createClass({displayName: 'ProfExpandableView',
+    getInitialState: function() {
+      return {
+        expanded: false,
+        collapsedNum: 3
+      };
+    },
+
+    getNumberHidden: function() {
+      if (this.state.expanded) {
+        return 0;
+      } else {
+        return this.props.data.course_reviews.length - this.state.collapsedNum;
+      }
+    },
+
+    toggleExpanded: function() {
+      this.setState({expanded: !this.state.expanded});
+    },
+
+    render: function() {
+      var expandLink = (React.DOM.div(null));
+      if (this.getNumberHidden() > 0 || this.state.expanded) {
+        var expandString;
+        if (this.state.expanded) {
+          expandString = "Hide " + (this.props.data.course_reviews.length -
+              this.state.collapsedNum) + " reviews";
+        } else {
+          expandString = "Show " + this.getNumberHidden() + " reviews";
+        }
+        expandLink = (
+          React.DOM.a({className: "toggle-reviews", 
+              onClick: this.toggleExpanded}, expandString));
+      }
+
+      return (
+        React.DOM.div({className: "well expandable-prof"}, 
+          React.DOM.div({className: "row-fluid"}, 
+            React.DOM.div({className: "span6"}, 
+              ProfCard({data: this.props.data})
+            ), 
+            React.DOM.div({className: "span6"}, 
+              React.DOM.div({className: "row-fluid"}, 
+                React.DOM.div({className: "span12 prof-rating-container"}, 
+                  OverallRating({data: _.find(this.props.data.course_ratings,
+                      function(rating) {
+                        return rating.name === 'overall';
+                      })})
+                )
+              ), 
+              React.DOM.div({className: "row-fluid"}, 
+                React.DOM.div({className: "span12"}, 
+                  RatingsBox({data: this.props.data.course_ratings})
+                )
+              )
+            )
+          ), 
+          ReviewList({data: this.props.data.course_reviews, 
+              numToHide: this.getNumberHidden()}), 
+          expandLink
+        )
+      );
+    }
+  });
+
+  ProfCollection = React.createClass({displayName: 'ProfCollection',
+    render: function() {
+      var profViews = this.props.data.map(function(profObj) {
+        return (ProfExpandableView({data: profObj}));
+      });
+
+      return (
+        React.DOM.div(null, 
+          profViews
+        )
+      );
+    }
+  });
 
   return {
     CourseInnerView: CourseInnerView,
-    ReviewBox: ReviewBox
+    ReviewBox: ReviewBox,
+    ProfCollection: ProfCollection
   };
 });

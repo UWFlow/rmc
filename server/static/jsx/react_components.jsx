@@ -12,25 +12,25 @@ function(React, util, moment) {
         );
       } else if (this.props.author.id) {
         author = (
-          <div>
+          <span>
             <a href="/profile/{this.props.author.id.$oid">
               {this.props.author.name}
             </a>
             <span className="muted"> on </span>
-          </div>
+          </span>
         );
       } else {
         var _user = require('user');
         var program = _user.getShortProgramName(
             this.props.author.program_name);
         author = (
-          <div>
-          <span className="muted">
-            A {('aeiou'.indexOf(program[0].toLowerCase()) !== -1) ? 'n' : ''}
+          <span>
+            <span className="muted">
+              A {('aeiou'.indexOf(program[0].toLowerCase()) !== -1) ? 'n' : ''}
+            </span>
+            {program}
+            <span className="muted"> student on </span>
           </span>
-          {program}
-          <span className="muted"> student on</span>
-          </div>
         );
       }
       var date = moment(this.props.date).format('MMM D, YYYY');
@@ -166,6 +166,12 @@ function(React, util, moment) {
   });
 
   var ReviewList = React.createClass({
+    getDefaultProps: function() {
+      return {
+        numToHide: 0
+      };
+    },
+
     render: function() {
       var sortedReviews =  _.sortBy(this.props.data,
           function(r) {
@@ -173,7 +179,8 @@ function(React, util, moment) {
           }
       );
 
-      var reviewNodes = sortedReviews.map(function (review) {
+      var reviewNodes = _.initial(sortedReviews, this.props.numToHide).map(
+          function (review) {
         return (
           <div className="review-post">
             <Review data={review}></Review>
@@ -201,11 +208,13 @@ function(React, util, moment) {
 
   var RatingRow = React.createClass({
     render: function() {
+      if (this.props.data.name === 'overall') {
+        return (<div></div>);
+      }
       var barWidth = 42;
       var barStyle = {
         width: this.props.data.rating * 100 + "%"
       };
-      console.log(this.props.data);
       return (
         <div className="row-fluid"
             title="People think this was helpful, maybe...">
@@ -235,7 +244,11 @@ function(React, util, moment) {
   var RatingsBox = React.createClass({
     render: function() {
       var ratingBars = this.props.data.map(function (ratingWithAttributes) {
-        var rating = ratingWithAttributes.attributes;
+        var rating = ratingWithAttributes;
+        if (rating.attributes) {
+          rating = rating.attributes;
+        }
+
         return (
           <RatingRow data={rating} />
         );
@@ -293,10 +306,141 @@ function(React, util, moment) {
     }
   });
 
+  OverallRating = React.createClass({
+    render: function() {
+      var rating = this.props.data.rating;
+      var count = this.props.data.count;
+      if (this.props.data.count === 0) {
+        rating = '--';
+      } else {
+        rating = (<span>{Math.round(rating * 100)}<sup className="percent">
+                  %</sup></span>);
+      }
 
+      return (
+        <div className="rating-box">
+          <div className="rating">
+            {rating}
+          </div>
+          <div className="num-ratings">
+            {count} ratings
+          </div>
+        </div>
+      );
+    }
+  });
+
+  ProfCard = React.createClass({
+    render: function() {
+      var kittenNum = util.getKittenNumFromName(this.props.data.name);
+      var pictureUrl = "/static/img/kittens/color/" + kittenNum + ".jpg";
+
+      return (
+        <div>
+          <img width="150" height="150" className="prof-picture img-polaroid"
+              src={pictureUrl} ></img>
+          <div className="prof-info">
+            <h3 className="prof-name">
+              <a href="professor/{this.props.data.id}" className="prof-link">
+                {this.props.data.name}
+              </a>
+            </h3>
+            <dl className="dl-horizontal">
+              <dt>Email</dt>
+              <dd>Coming soon...</dd>
+              <dt>Phone</dt>
+              <dd>Coming soon...</dd>
+              <dt>Office</dt>
+              <dd>Coming soon...</dd>
+            </dl>
+          </div>
+        </div>
+      );
+    }
+  });
+
+  ProfExpandableView = React.createClass({
+    getInitialState: function() {
+      return {
+        expanded: false,
+        collapsedNum: 3
+      };
+    },
+
+    getNumberHidden: function() {
+      if (this.state.expanded) {
+        return 0;
+      } else {
+        return this.props.data.course_reviews.length - this.state.collapsedNum;
+      }
+    },
+
+    toggleExpanded: function() {
+      this.setState({expanded: !this.state.expanded});
+    },
+
+    render: function() {
+      var expandLink = (<div></div>);
+      if (this.getNumberHidden() > 0 || this.state.expanded) {
+        var expandString;
+        if (this.state.expanded) {
+          expandString = "Hide " + (this.props.data.course_reviews.length -
+              this.state.collapsedNum) + " reviews";
+        } else {
+          expandString = "Show " + this.getNumberHidden() + " reviews";
+        }
+        expandLink = (
+          <a className="toggle-reviews"
+              onClick={this.toggleExpanded}>{expandString}</a>);
+      }
+
+      return (
+        <div className="well expandable-prof">
+          <div className="row-fluid">
+            <div className="span6">
+              <ProfCard data={this.props.data}/>
+            </div>
+            <div className="span6">
+              <div className="row-fluid">
+                <div className="span12 prof-rating-container">
+                  <OverallRating data={_.find(this.props.data.course_ratings,
+                      function(rating) {
+                        return rating.name === 'overall';
+                      })} />
+                </div>
+              </div>
+              <div className="row-fluid">
+                <div className="span12">
+                  <RatingsBox data={this.props.data.course_ratings} />
+                </div>
+              </div>
+            </div>
+          </div>
+          <ReviewList data={this.props.data.course_reviews}
+              numToHide={this.getNumberHidden()} />
+          {expandLink}
+        </div>
+      );
+    }
+  });
+
+  ProfCollection = React.createClass({
+    render: function() {
+      var profViews = this.props.data.map(function(profObj) {
+        return (<ProfExpandableView data={profObj} />);
+      });
+
+      return (
+        <div>
+          {profViews}
+        </div>
+      );
+    }
+  });
 
   return {
     CourseInnerView: CourseInnerView,
-    ReviewBox: ReviewBox
+    ReviewBox: ReviewBox,
+    ProfCollection: ProfCollection
   };
 });
