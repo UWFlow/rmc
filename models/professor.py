@@ -36,13 +36,19 @@ class Professor(me.Document):
     id = me.StringField(primary_key=True)
 
     # TODO(mack): available in menlo data
-    # department_id = me.StringField()
+    department = me.StringField(required=False)
 
     # eg. Byron Weber
     first_name = me.StringField(required=True)
 
     # eg. Becker
     last_name = me.StringField(required=True)
+
+    office = me.StringField(required=False)
+
+    uw_user_id = me.StringField(required=False)
+
+    phone_extension = me.StringField(required=False)
 
     clarity = me.EmbeddedDocumentField(_rating.AggregateRating,
                                        default=_rating.AggregateRating())
@@ -262,6 +268,29 @@ class Professor(me.Document):
         departments_taught = set(_COURSE_NAME_REGEX.match(uc['course_id']).
                 group(1).upper() for uc in ucs)
         return sorted(departments_taught)
+
+    def get_contact_info(self):
+        """ Returns a dict containing the professor's email, phone extension
+            and office location
+        """
+        def format_email(uw_id):
+            if uw_id:
+                return uw_id + "@uwaterloo.ca"
+            else:
+                return None
+
+        def format_extension(ext):
+            if ext:
+                return 'ext. ' + ext
+            else:
+                return None
+
+        placeholder = 'Coming soon...'
+        return {
+            'office': self.office or placeholder,
+            'extension': format_extension(self.phone_extension) or placeholder,
+            'uw_user_id': format_email(self.uw_user_id) or placeholder
+        }
 
     def to_dict(self, course_id=None, current_user=None):
         dict_ = {

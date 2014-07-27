@@ -18,6 +18,7 @@ import mongoengine as me
 
 
 API_UWATERLOO_V2_URL = 'https://api.uwaterloo.ca/v2'
+PROF_CONTACT_INFO_URL = 'http://www.ist.uwaterloo.ca/phone/pers_dir_detail'
 
 reload(sys)
 sys.setdefaultencoding('utf-8')
@@ -278,12 +279,25 @@ def get_opendata_sections():
             json.dump(sections, f)
 
 
+def get_prof_contact_info():
+    """Get prof contact info and write the relevant parts to a file for
+       processing later
+    """
+    response = requests.get(PROF_CONTACT_INFO_URL);
+    relevant_info = response.text.split('PRE')[1];
+
+    filename = os.path.join(os.path.dirname(__file__),
+            '%s/%s.txt' % (c.PROFS_DIR, 'contact_info'))
+    with open(filename, 'w') as f:
+        f.write(relevant_info)
+
+
 if __name__ == '__main__':
     me.connect(c.MONGO_DB_RMC)
 
     parser = argparse.ArgumentParser()
     supported_modes = ['departments', 'opendata2_courses', 'terms_offered',
-            'opendata_sections']
+            'opendata_sections', 'profs']
 
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
@@ -298,5 +312,7 @@ if __name__ == '__main__':
         get_opendata_exam_schedule()
     elif args.mode == 'opendata_sections':
         get_opendata_sections()
+    elif args.mode == 'profs':
+        get_prof_contact_info()
     else:
         sys.exit('The mode %s is not supported' % args.mode)

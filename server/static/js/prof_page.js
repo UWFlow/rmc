@@ -15,7 +15,10 @@ function(backbone, $, _, ratings, util, review, tips) {
 
   var kittenNum = util.getKittenNumFromName(pageData.profName);
   var profInner =  _.template($('#prof-inner-tpl').html(), {
-    'kittenNum': kittenNum
+    'kittenNum': kittenNum,
+    'uwUserId': window.pageData.profContactInfo.uw_user_id,
+    'extension': window.pageData.profContactInfo.extension,
+    'office': window.pageData.profContactInfo.office
   })
   $('.prof-info-placeholder').replaceWith(profInner);
 
