@@ -27,7 +27,7 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
   //courseInnerView.animateBars();
 
    React.renderComponent(
-      rc.CourseInnerView({data: courseModel.attributes}),
+      <rc.CourseInnerView data={courseModel.attributes} />,
       document.getElementById('course-inner-container')
     );
 
@@ -59,12 +59,12 @@ function($, course, tookThis, user, tips, prof, _exam, ratings, user_course,
   $('#took-this-sidebar-container').html(tookThisSidebarView.render().el);
 
   React.renderComponent(
-    rc.ReviewBox({data: window.pageData.tipObjs}),
+    <rc.ReviewBox data={window.pageData.tipObjs} />,
     document.getElementById('tips-collection-container')
   );
 
   React.renderComponent(
-    rc.ProfCollection({data: window.pageData.professorObjs}),
+    <rc.ProfCollection data={window.pageData.professorObjs} />,
     document.getElementById('professor-review-container')
   );
 

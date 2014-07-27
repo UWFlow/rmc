@@ -68,6 +68,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
 
     render: function() {
       var ratings = this.ratings;
+      console.log(ratings);
       this.$el.html(this.template({
         ratings: ratings,
         subject: this.subject

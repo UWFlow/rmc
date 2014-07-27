@@ -16,6 +16,7 @@ define (function() {
     'ext/mailcheck': 'ext/mailcheck.min',
     'ext/jqueryMigrate': 'ext/jquery-migrate-1.2.1',
     'ext/typeahead': 'ext/typeahead.bundle',
+    'ext/react': 'ext/react-with-addons',
 
     'moment': 'ext/moment',
     'moment-timezone': 'ext/moment-timezone'
