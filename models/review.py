@@ -1,6 +1,7 @@
 from datetime import datetime
 import mongoengine as me
 import logging
+import uuid
 
 
 class Privacy(object):
@@ -38,6 +39,9 @@ class BaseReview(me.EmbeddedDocument):
     # (either created, modified, or deleted)
     rating_change_date = me.DateTimeField()
     privacy = me.IntField(choices=Privacy.choices(), default=Privacy.FRIENDS)
+    id = me.StringField()
+    num_found_useful = me.IntField(default=0)
+    num_rated_useful_total = me.IntField(default=0)
 
     # Minimum number of characters for a review to pass
     # TODO(david): Have a function to do this. First, we need consistent review
@@ -116,7 +120,12 @@ class BaseReview(me.EmbeddedDocument):
             'comment_date': self.comment_date,
             'privacy': Privacy.to_str(self.privacy),
             'ratings': self.get_ratings_array(),
+            'num_rated_useful_total': self.num_rated_useful_total,
+            'num_found_useful': self.num_found_useful
         }
+
+        if current_user and not current_user.rated_review(self.id):
+            dict_['id'] = self.id,
 
         if author_id:
             # TODO(david): Remove circular dependency

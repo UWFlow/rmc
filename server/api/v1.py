@@ -512,6 +512,42 @@ def add_course_to_shortlist(course_id):
     })
 
 
+@api.route('/user/rate_review_for_user/', methods=['PUT'])
+def rate_review_for_user():
+    """Rates the review with the id in data as helpful or not
+    for the given user
+    """
+    values = flask.request.values
+    review_id = values.get('review_id[]')
+    found_helpful = values.get('found_helpful')
+
+    uc_review = None
+    filtered_courses = m.UserCourse.objects(course_review__id=review_id)
+    if len(filtered_courses) > 0:
+        uc = filtered_courses[0]
+        uc_review = uc.course_review
+    else:
+        for prof_doc in [m.UserCourse, m.MenloCourse]:
+            filtered_courses = prof_doc.objects(professor_review__id=review_id)
+            if len(filtered_courses) > 0:
+                uc = filtered_courses[0]
+                uc_review = uc.professor_review
+                break;
+
+    if uc_review:
+        uc_review.num_rated_useful_total += 1
+        if found_helpful == 'true':
+            uc_review.num_found_useful += 1
+        uc.save()
+
+    user = _get_user_require_auth()
+    user.rated_review_ids.append(review_id)
+    user.save()
+
+    return api_util.jsonify({
+        'success': True
+    })
+
 # TODO(david): Add corresponding remove course endpoint
 
 

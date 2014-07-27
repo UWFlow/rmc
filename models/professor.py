@@ -2,6 +2,7 @@ from bson import json_util
 import mongoengine as me
 import re
 import redis
+import uuid
 
 import rating as _rating
 import review as _review
@@ -204,13 +205,20 @@ class Professor(me.Document):
         # Quality filter.
         # TODO(david): Eventually do this in mongo query or enforce quality
         #     metrics on front-end
-        ucs = filter(
-                lambda uc: len(uc.professor_review.comment)
-                    >= _review.ProfessorReview.MIN_REVIEW_LENGTH,
-                ucs)
+        prof_review_dicts = []
+        for uc in ucs:
+            if (len(uc.professor_review.comment) <
+                    _review.ProfessorReview.MIN_REVIEW_LENGTH):
+                continue
 
-        prof_review_dicts = [uc.professor_review.to_dict(current_user,
-            getattr(uc, 'user_id', None)) for uc in ucs]
+            if not uc.professor_review.id:
+                # TODO(jeff): look in to using bson.ObjectId() instead
+                uc.professor_review.id = uuid.uuid1().hex
+                # why is validate=False needed?
+                uc.save(validate=False)
+
+            prof_review_dicts.append(uc.professor_review.to_dict(current_user,
+                getattr(uc, 'user_id', None)))
 
         # Try to not show older reviews, if we have enough results
         date_getter = lambda review: review['comment_date']

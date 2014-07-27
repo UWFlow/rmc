@@ -18,6 +18,20 @@ function(RmcBackbone, $, _, ratings, util) {
         this.set('comment_date', util.toDate(attrs.comment_date));
       }
 
+      if (attrs) {
+        if (attrs.id) {
+          this.set('id', attrs.id);
+        } else {
+          this.set('id', null);
+        }
+        if (attrs.num_found_useful) {
+          this.set('num_found_useful', attrs.num_found_useful)
+        }
+        if (attrs.num_rated_useful_total) {
+          this.set('num_rated_useful_total', attrs.num_rated_useful_total);
+        }
+      }
+
       if (attrs && attrs.author && attrs.author.profile_pic_url) {
         this.set('author_pic_url', attrs.author.profile_pic_url);
       } else if (attrs && attrs.author && attrs.author.program_name) {
@@ -81,6 +95,30 @@ function(RmcBackbone, $, _, ratings, util) {
         readOnly: true
       });
       this.template = _.template($('#review-tpl').html());
+    },
+
+    events: {
+      'click .review-btn': 'reviewButtonClicked'
+    },
+
+    reviewButtonClicked: function(e) {
+      if (e.target.textContent === 'Yes') {
+        this.model.set('num_found_useful',
+            parseInt(this.model.get('num_found_useful')) + 1);
+      }
+      this.model.set('num_rated_useful_total',
+          parseInt(this.model.get('num_rated_useful_total')) + 1);
+
+      $.ajax('/api/v1/user/rate_review_for_user/', {
+        type: 'PUT',
+        data: {
+          'review_id': this.model.get('id'),
+          'found_helpful': e.target.textContent === 'Yes'
+        }
+      });
+
+      this.model.set('id', null);
+      this.render();
     },
 
     render: function() {

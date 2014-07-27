@@ -171,6 +171,8 @@ class User(me.Document):
 
     last_prompted_for_review = me.DateTimeField(default=datetime.datetime.min)
 
+    rated_review_ids = me.ListField(me.StringField())
+
     @property
     def name(self):
         return '%s %s' % (self.first_name, self.last_name)
@@ -380,6 +382,9 @@ class User(me.Document):
         return User.objects(id__in=self.friend_ids).only(
                 *(User.CORE_FIELDS + ['id', 'num_points', 'num_invites',
                 'program_name']))
+
+    def rated_review(self, review_id):
+        return review_id in self.rated_review_ids
 
     def to_dict(self, extended=True, include_course_ids=False):
         user_dict = {
