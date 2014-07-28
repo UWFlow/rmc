@@ -366,6 +366,13 @@ def update_courses():
     rmc_processor.import_courses()
 
 
+def update_professors_departments():
+    """Update the departments_taught field for each professor in Mongo"""
+    for prof in m.Professor.objects():
+        prof.departments_taught = prof.get_departments_taught()
+        prof.save()
+
+
 if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC)
 
@@ -379,6 +386,7 @@ if __name__ == '__main__':
         'exam_schedule': update_exam_schedule,
         'sections': update_sections,
         'courses': update_courses,
+        'prof_departments': update_professors_departments
     }
     parser.add_argument('mode',
             help='one of %s' % ','.join(mode_mapping.keys() + ['daily']))
@@ -392,6 +400,7 @@ if __name__ == '__main__':
             update_mongo_course_professors,
             update_mongo_points,
             update_exam_schedule,
+            update_professors_departments
         ]
         for func in daily_functions:
             try:

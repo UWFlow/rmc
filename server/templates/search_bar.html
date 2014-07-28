@@ -35,6 +35,23 @@
 </div>
 {% endcall %}
 
+{% call macros.us_template('prof-result-item-tpl') %}
+<div>
+  <img src="/static/img/kittens/color/<%- kittenNum %>.jpg"
+      class="search-course-icon">
+  <div class="primary-title suggestion-text">
+    <%- name %>
+  </div>
+  <div class="secondary-title suggestion-text">
+    <% if (departments_taught.length > 0) { %>
+    <%-  'Professor - Teaches ' + departments_taught.join(', ') %>
+    <% } else { %>
+         Professor
+    <% } %>
+  </div>
+</div>
+{% endcall %}
+
 {% call macros.us_template('empty-results-message-tpl') %}
 <div class="empty-message">
   <p> No results found </p>

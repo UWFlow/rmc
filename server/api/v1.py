@@ -584,9 +584,23 @@ def search_unified():
                 'tokens': [f.first_name, f.last_name]
             } for f in friends]
 
+    prof_dicts = []
+    if 'professors' in result_types:
+        professors = m.Professor.objects().only('id', 'first_name',
+                'last_name', 'departments_taught')
+        prof_dicts = [{
+            'label': p.name,
+            'departments_taught': p.departments_taught,
+            'type': 'prof',
+            'prof_id': p.id,
+            'name': p.name,
+            'tokens': [p.first_name, p.last_name, 'professor']
+        } for p in professors]
+
     return api_util.jsonify({
         'friends': friend_dicts,
-        'courses': course_dicts
+        'courses': course_dicts,
+        'professors': prof_dicts
     })
 
 

@@ -17,6 +17,8 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       window.location.href = '/courses/' + datum.label;
     } else if (datum.type === 'friend') {
       window.location.href = '/profile/' + datum.id;
+    } else if (datum.type === 'prof') {
+      window.location.href = '/professor/' + datum.prof_id;
     }
   };
 
@@ -25,6 +27,8 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       return _util.humanizeCourseId(item.label) + ' - ' + item.name;
     } else if (item.type === 'friend') {
       return item.label;
+    } else if (item.type === 'prof') {
+      return item.name;
     }
   };
 
@@ -35,6 +39,9 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       item.department_id = item.department_id.toUpperCase();
     } else if (item.type === 'friend') {
       formatter = _.template($('#friend-result-item-tpl').html());
+    } else if (item.type === 'prof') {
+      formatter = _.template($('#prof-result-item-tpl').html());
+      item.kittenNum = _util.getKittenNumFromName(item.name);
     }
     return formatter(item);
   };
@@ -43,7 +50,8 @@ function(RmcBackbone, $, _, _util, _typeahead) {
     var engine = new Bloodhound({
       name: 'friendsAndCourses',
       local: [].concat(_util.getLocalData('friends'),
-          _util.getLocalData('courses')),
+          _util.getLocalData('courses'),
+          _util.getLocalData('professors')),
       datumTokenizer: function(d) {
         return Bloodhound.tokenizers.whitespace(d.tokens.join(' '));
       },
@@ -64,7 +72,7 @@ function(RmcBackbone, $, _, _util, _typeahead) {
         limit: 20
       },
       {
-        name: 'friendsAndCourses',
+        name: 'friendsAndCoursesAndProfessors',
         displayKey: itemName,
         source: engine.ttAdapter(),
         templates: {
@@ -123,6 +131,9 @@ function(RmcBackbone, $, _, _util, _typeahead) {
       if (!_util.getLocalData('friends')) {
         resultTypes.push('friends');
       }
+      if (!_util.getLocalData('professors')) {
+        resultTypes.push('professors');
+      }
       resultTypes.join(',');
       if (resultTypes.length > 0) {
         $.ajax({
@@ -136,6 +147,10 @@ function(RmcBackbone, $, _, _util, _typeahead) {
             if (resultTypes.indexOf('friends') >= 0) {
               _util.storeLocalData('friends', data.friends,
                   +(new Date()) + 1000 * 60 * 60 * 24);
+            }
+            if (resultTypes.indexOf('professors') >= 0) {
+              _util.storeLocalData('professors', data.professors,
+                  +(new Date()) + 1000 * 60 * 60 * 24 * 28);
             }
             initBloodhoundWithAutocomplete(self);
           }
