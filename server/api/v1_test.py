@@ -181,8 +181,8 @@ class V1Test(testlib.FlaskTestCase):
         alert = m.GcmCourseAlert(
             registration_id='neverheardsilencequitethisloud',
             course_id='sci238',
-            created_date=datetime.datetime.fromtimestamp(created_timestamp),
-            expiry_date=datetime.datetime.fromtimestamp(expiry_timestamp),
+            created_date=datetime.datetime.utcfromtimestamp(created_timestamp),
+            expiry_date=datetime.datetime.utcfromtimestamp(expiry_timestamp),
         )
         alert.save()
         self.assertEqual(m.GcmCourseAlert.objects.count(), 1)
@@ -198,8 +198,8 @@ class V1Test(testlib.FlaskTestCase):
                 'user_id': None,
                 'term_id': '',
                 'section_type': '',
-                'expiry_date': 1496696372000,
-                'created_date': 1396696372000,
+                'expiry_date': expiry_timestamp * 1000,
+                'created_date': created_timestamp * 1000,
                 'course_id': 'sci238',
                 'section_num': '',
                 'id': str(alert.id),
