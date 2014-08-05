@@ -1,0 +1,1 @@
+{ "indexes" : [ { "v" : 1, "key" : { "_id" : 1 }, "ns" : "rmc_test.exam", "name" : "_id_" }, { "v" : 1, "key" : { "_types" : 1, "course_id" : 1 }, "ns" : "rmc_test.exam", "background" : false, "name" : "_types_1_course_id_1" } ] }
