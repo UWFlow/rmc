@@ -518,21 +518,21 @@ def rate_review_for_user():
     for the given user
     """
     values = flask.request.values
-    review_id = values.get('review_id[]')
+    review_id = values.get('review_id')
     found_helpful = values.get('found_helpful')
+    review_type = values.get('review_type')
 
     uc_review = None
-    filtered_courses = m.UserCourse.objects(course_review__id=review_id)
+    filtered_courses = m.UserCourse.objects(id=review_id)
     if len(filtered_courses) > 0:
         uc = filtered_courses[0]
-        uc_review = uc.course_review
+        uc_review = uc.course_review if review_type == 'course' else uc.professor_review
     else:
-        for prof_doc in [m.UserCourse, m.MenloCourse]:
-            filtered_courses = prof_doc.objects(professor_review__id=review_id)
-            if len(filtered_courses) > 0:
-                uc = filtered_courses[0]
-                uc_review = uc.professor_review
-                break;
+        filtered_courses = m.MenloCourse.objects(
+                id=review_id)
+        if len(filtered_courses) > 0:
+            uc = filtered_courses[0]
+            uc_review = uc.professor_review
 
     if uc_review:
         uc_review.num_rated_useful_total += 1
@@ -541,7 +541,7 @@ def rate_review_for_user():
         uc.save()
 
     user = _get_user_require_auth()
-    user.rated_review_ids.append(review_id)
+    user.rated_review_ids.append(review_id + review_type)
     user.save()
 
     return api_util.jsonify({

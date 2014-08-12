@@ -1,7 +1,6 @@
 from datetime import datetime
 import mongoengine as me
 import logging
-import uuid
 
 
 class Privacy(object):
@@ -39,7 +38,6 @@ class BaseReview(me.EmbeddedDocument):
     # (either created, modified, or deleted)
     rating_change_date = me.DateTimeField()
     privacy = me.IntField(choices=Privacy.choices(), default=Privacy.FRIENDS)
-    id = me.StringField()
     num_found_useful = me.IntField(default=0)
     num_rated_useful_total = me.IntField(default=0)
 
@@ -114,7 +112,8 @@ class BaseReview(me.EmbeddedDocument):
         if 'privacy' in kwargs:
             self.privacy = Privacy.to_int(kwargs['privacy'])
 
-    def to_dict(self, current_user=None, author_id=None):
+    def to_dict(self, current_user=None, author_id=None, user_course_id=None,
+            review_type=None):
         dict_ = {
             'comment': self.comment,
             'comment_date': self.comment_date,
@@ -124,8 +123,12 @@ class BaseReview(me.EmbeddedDocument):
             'num_found_useful': self.num_found_useful
         }
 
-        if current_user and not current_user.rated_review(self.id):
-            dict_['id'] = self.id,
+        if user_course_id:
+            if current_user and not current_user.rated_review(
+                    str(user_course_id) + review_type):
+                dict_['user_course_id'] = str(user_course_id)
+            if review_type:
+                dict_['review_type'] = review_type
 
         if author_id:
             # TODO(david): Remove circular dependency
@@ -172,6 +175,11 @@ class CourseReview(BaseReview):
         if hasattr(self, 'old_usefulness'):
             cur_course.usefulness.update_aggregate_after_replacement(
                 self.old_usefulness, self.usefulness)
+
+    def to_dict(self, current_user=None, author_id=None, user_course_id=None):
+        temp_dict = super(CourseReview, self).to_dict(current_user, author_id,
+                user_course_id, 'course')
+        return temp_dict
 
 
 class ProfessorReview(BaseReview):
@@ -225,3 +233,8 @@ class ProfessorReview(BaseReview):
 
         cur_professor.update_redis_ratings_for_course(
                 cur_course.id, redis_changes)
+
+    def to_dict(self, current_user=None, author_id=None, user_course_id=None):
+        temp_dict = super(ProfessorReview, self).to_dict(current_user,
+                author_id, user_course_id, 'prof')
+        return temp_dict

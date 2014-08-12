@@ -19,8 +19,8 @@ function(RmcBackbone, $, _, ratings, util) {
       }
 
       if (attrs) {
-        if (attrs.id) {
-          this.set('id', attrs.id);
+        if (attrs.user_course_id) {
+          this.set('id', attrs.user_course_id);
         } else {
           this.set('id', null);
         }
@@ -29,6 +29,9 @@ function(RmcBackbone, $, _, ratings, util) {
         }
         if (attrs.num_rated_useful_total) {
           this.set('num_rated_useful_total', attrs.num_rated_useful_total);
+        }
+        if (attrs.review_type) {
+         this.set('review_type', attrs.review_type);
         }
       }
 
@@ -113,6 +116,7 @@ function(RmcBackbone, $, _, ratings, util) {
         type: 'PUT',
         data: {
           'review_id': this.model.get('id'),
+          'review_type': this.model.get('review_type'),
           'found_helpful': e.target.textContent === 'Yes'
         }
       });

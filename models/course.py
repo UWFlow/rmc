@@ -1,7 +1,6 @@
 import collections
 import logging
 import re
-import uuid
 
 import mongoengine as me
 import pymongo
@@ -165,13 +164,9 @@ class Course(me.Document):
                     review.CourseReview.MIN_REVIEW_LENGTH):
                 continue
 
-            if not uc.course_review.id:
-                # TODO(jeff): look in to using bson.ObjectId() instead
-                uc.course_review.id = uuid.uuid1().hex
-                uc.save()
+            reviews.append(uc.course_review.to_dict(current_user, uc.user_id,
+                uc.id))
 
-            reviews.append(uc.course_review.to_dict(current_user, uc.user_id))
-        return reviews
         # Filter out old reviews if we have enough results.
         date_getter = lambda review: review['comment_date']
         reviews = util.publicly_visible_ratings_and_reviews_filter(

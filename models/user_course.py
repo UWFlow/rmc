@@ -205,7 +205,8 @@ class UserCourse(me.Document):
         # TODO(david): Reuse code below for other to_dict() methods
         def map_field(prop):
             val = getattr(self, prop)
-            return val.to_dict() if hasattr(val, 'to_dict') else val
+            return dict(val.to_dict(), **{'user_course_id': str(self.id)}) \
+                if hasattr(val, 'to_dict') else val
 
         return {f: map_field(f) for f in fields}
 
