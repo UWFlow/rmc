@@ -10,7 +10,9 @@ function(RmcBackbone, $, _, ratings, util) {
       anonymous: false,  // TODO(david): Get rid of this, replace with privacy
       author: null,
       author_pic_url: '',
-      ratings: null
+      ratings: null,
+      num_voted_helpful: 0,
+      num_voted_not_helpful: 0
     },
 
     initialize: function(attrs) {
@@ -20,18 +22,16 @@ function(RmcBackbone, $, _, ratings, util) {
 
       if (attrs) {
         if (attrs.user_course_id) {
-          this.set('id', attrs.user_course_id);
-        } else {
-          this.set('id', null);
+          this.set('user_course_id', attrs.user_course_id);
         }
-        if (attrs.num_found_useful) {
-          this.set('num_found_useful', attrs.num_found_useful)
+        if (attrs.num_found_helpful) {
+          this.set('num_voted_helpful', attrs.num_voted_helpful);
         }
-        if (attrs.num_rated_useful_total) {
-          this.set('num_rated_useful_total', attrs.num_rated_useful_total);
+        if (attrs.num_voted_not_helpful) {
+          this.set('num_voted_not_helpful', attrs.num_voted_not_helpful);
         }
         if (attrs.review_type) {
-         this.set('review_type', attrs.review_type);
+          this.set('review_type', attrs.review_type);
         }
       }
 
@@ -105,23 +105,24 @@ function(RmcBackbone, $, _, ratings, util) {
     },
 
     reviewButtonClicked: function(e) {
-      if (e.target.textContent === 'Yes') {
-        this.model.set('num_found_useful',
-            parseInt(this.model.get('num_found_useful')) + 1);
+      if (e.target.classList.contains('yes-btn')) {
+        this.model.set('num_voted_helpful',
+            this.model.get('num_voted_helpful') + 1);
+      } else if (e.target.classList.contains('no-btn')) {
+        this.model.set('num_voted_not_helpful',
+            this.model.get('num_voted_not_helpful') + 1);
       }
-      this.model.set('num_rated_useful_total',
-          parseInt(this.model.get('num_rated_useful_total')) + 1);
 
       $.ajax('/api/v1/user/rate_review_for_user/', {
         type: 'PUT',
         data: {
-          'review_id': this.model.get('id'),
+          'review_id': this.model.get('user_course_id'),
           'review_type': this.model.get('review_type'),
-          'found_helpful': e.target.textContent === 'Yes'
+          'voted_helpful': e.target.classList.contains('yes-btn')
         }
       });
 
-      this.model.set('id', null);
+      this.model.set('can_vote', false);
       this.render();
     },
 

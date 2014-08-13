@@ -38,8 +38,8 @@ class BaseReview(me.EmbeddedDocument):
     # (either created, modified, or deleted)
     rating_change_date = me.DateTimeField()
     privacy = me.IntField(choices=Privacy.choices(), default=Privacy.FRIENDS)
-    num_found_useful = me.IntField(default=0)
-    num_rated_useful_total = me.IntField(default=0)
+    num_voted_helpful = me.IntField(default=0)
+    num_voted_not_helpful = me.IntField(default=0)
 
     # Minimum number of characters for a review to pass
     # TODO(david): Have a function to do this. First, we need consistent review
@@ -105,7 +105,7 @@ class BaseReview(me.EmbeddedDocument):
             date = kwargs.get('comment_date')
             if date is None:
                 logging.warn("Review.update() comment_date "
-                    "not set. Defaulting to current time")
+                        "not set. Defaulting to current time")
                 date = datetime.now()
             self.comment_date = date
 
@@ -119,14 +119,16 @@ class BaseReview(me.EmbeddedDocument):
             'comment_date': self.comment_date,
             'privacy': Privacy.to_str(self.privacy),
             'ratings': self.get_ratings_array(),
-            'num_rated_useful_total': self.num_rated_useful_total,
-            'num_found_useful': self.num_found_useful
+            'num_voted_not_helpful': self.num_voted_not_helpful,
+            'num_voted_helpful': self.num_voted_helpful,
+            'can_vote': False
         }
 
         if user_course_id:
+            dict_['user_course_id'] = str(user_course_id)
             if current_user and not current_user.rated_review(
-                    str(user_course_id) + review_type):
-                dict_['user_course_id'] = str(user_course_id)
+                    str(user_course_id), review_type):
+                dict_['can_vote'] = True
             if review_type:
                 dict_['review_type'] = review_type
 
@@ -177,9 +179,8 @@ class CourseReview(BaseReview):
                 self.old_usefulness, self.usefulness)
 
     def to_dict(self, current_user=None, author_id=None, user_course_id=None):
-        temp_dict = super(CourseReview, self).to_dict(current_user, author_id,
+        return super(CourseReview, self).to_dict(current_user, author_id,
                 user_course_id, 'course')
-        return temp_dict
 
 
 class ProfessorReview(BaseReview):
@@ -235,6 +236,5 @@ class ProfessorReview(BaseReview):
                 cur_course.id, redis_changes)
 
     def to_dict(self, current_user=None, author_id=None, user_course_id=None):
-        temp_dict = super(ProfessorReview, self).to_dict(current_user,
+        return super(ProfessorReview, self).to_dict(current_user,
                 author_id, user_course_id, 'prof')
-        return temp_dict

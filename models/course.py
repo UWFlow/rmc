@@ -165,7 +165,7 @@ class Course(me.Document):
                 continue
 
             reviews.append(uc.course_review.to_dict(current_user, uc.user_id,
-                uc.id))
+                  uc.id))
 
         # Filter out old reviews if we have enough results.
         date_getter = lambda review: review['comment_date']
