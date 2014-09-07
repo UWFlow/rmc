@@ -43,20 +43,25 @@
       <% var start_moment = moment(start_date); %>
       <% var end_moment = moment(end_date); %>
       <% if (end_moment.year() !== start_moment.year()) { %>
-      <%- moment(start_date).format('MMMM Do, YYYY') %>
-      -
-      <%- moment(end_date).format('MMMM Do, YYYY') %>
+        <%- moment(start_date).format('MMMM Do, YYYY') %>
+        -
+        <%- moment(end_date).format('MMMM Do, YYYY') %>
       <% } else if (end_moment.month() !== start_moment.month()) { %>
-      <%- moment(start_date).format('MMMM Do') %>
-      -
-      <%- moment(end_date).format('MMMM Do, YYYY') %>
+        <%- moment(start_date).format('MMMM Do') %>
+        -
+        <%- moment(end_date).format('MMMM Do, YYYY') %>
       <% } else if (end_moment.date() !== start_moment.date()) { %>
-      <%- moment(start_date).format('MMMM Do') %>
-      -
-      <%- moment(end_date).format('Do, YYYY') %>
+        <%- moment(start_date).format('MMMM Do') %>
+        -
+        <%- moment(end_date).format('Do, YYYY') %>
       <% } else { %>
-      <%- moment(start_date).format('MMMM Do, YYYY') %>
+        <%- moment(start_date).format('MMMM Do, YYYY') %>
       <% } %>
+      <span class="weekly-hours-label">
+        <% if (total_hours !== 0) { %>
+          (<%- total_hours %> hours this week)
+        <% } %>
+      </span>
     </div>
     <div class="buttons">
       <button class="btn curr-week-btn">Current Week</button>
