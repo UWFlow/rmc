@@ -836,8 +836,10 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
   };
 
   var getICalScheduleUrl = function() {
-    return _util.getSiteBaseUrl() +
-        '/schedule/ical/' + window.pageData.profileUserSecretId + ".ics";
+    var baseURL = _util.getSiteBaseUrl().replace('https', 'http');
+
+    return baseURL +
+        '/schedule/ical/' + window.pageData.profileUserSecretId + '.ics';
   };
 
   return {
