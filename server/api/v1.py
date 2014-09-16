@@ -511,8 +511,9 @@ def add_course_to_shortlist(course_id):
         'user_course': user_course.to_dict(),
     })
 
+# TODO(david): Add corresponding remove course endpoint
 
-@api.route('/user/rate_review_for_user/', methods=['PUT'])
+@api.route('/user/rate_review_for_user', methods=['PUT'])
 def rate_review_for_user():
     """Rates the review with the id in data as helpful or not
     for the given user
@@ -536,6 +537,24 @@ def rate_review_for_user():
             uc = filtered_courses[0]
             uc_review = uc.professor_review
 
+    vote_added_response = api_util.jsonify({
+        'success': True
+    })
+    voted_already_response = api_util.jsonify({
+        'already_voted': True
+    })
+
+    user = _get_user_require_auth()
+    if review_type == 'course':
+        if review_id in user.voted_course_review_ids:
+            return voted_already_response
+        user.voted_course_review_ids.append(review_id)
+    elif review_type == 'prof':
+        if review_id in user.voted_prof_review_ids:
+            return voted_already_response
+        user.voted_prof_review_ids.append(review_id)
+    user.save()
+
     if uc_review:
         if voted_helpful == 'true':
             uc_review.num_voted_helpful += 1
@@ -543,18 +562,7 @@ def rate_review_for_user():
             uc_review.num_voted_not_helpful += 1
         uc.save()
 
-    user = _get_user_require_auth()
-    if review_type == 'course':
-        user.voted_course_review_ids.append(review_id)
-    elif review_type == 'prof':
-        user.voted_prof_review_ids.append(review_id)
-    user.save()
-
-    return api_util.jsonify({
-        'success': True
-    })
-
-# TODO(david): Add corresponding remove course endpoint
+    return vote_added_response
 
 
 ###############################################################################

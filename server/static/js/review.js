@@ -20,21 +20,6 @@ function(RmcBackbone, $, _, ratings, util) {
         this.set('comment_date', util.toDate(attrs.comment_date));
       }
 
-      if (attrs) {
-        if (attrs.user_course_id) {
-          this.set('user_course_id', attrs.user_course_id);
-        }
-        if (attrs.num_found_helpful) {
-          this.set('num_voted_helpful', attrs.num_voted_helpful);
-        }
-        if (attrs.num_voted_not_helpful) {
-          this.set('num_voted_not_helpful', attrs.num_voted_not_helpful);
-        }
-        if (attrs.review_type) {
-          this.set('review_type', attrs.review_type);
-        }
-      }
-
       if (attrs && attrs.author && attrs.author.profile_pic_url) {
         this.set('author_pic_url', attrs.author.profile_pic_url);
       } else if (attrs && attrs.author && attrs.author.program_name) {
@@ -105,20 +90,22 @@ function(RmcBackbone, $, _, ratings, util) {
     },
 
     reviewButtonClicked: function(e) {
-      if (e.target.classList.contains('yes-btn')) {
+      var yesBtnClicked = $(e.currentTarget).hasClass('yes-btn');
+      var noBtnClicked = $(e.currentTarget).hasClass('no-btn');
+      if (yesBtnClicked) {
         this.model.set('num_voted_helpful',
             this.model.get('num_voted_helpful') + 1);
-      } else if (e.target.classList.contains('no-btn')) {
+      } else if (noBtnClicked) {
         this.model.set('num_voted_not_helpful',
             this.model.get('num_voted_not_helpful') + 1);
       }
 
-      $.ajax('/api/v1/user/rate_review_for_user/', {
+      $.ajax('/api/v1/user/rate_review_for_user', {
         type: 'PUT',
         data: {
           'review_id': this.model.get('user_course_id'),
           'review_type': this.model.get('review_type'),
-          'voted_helpful': e.target.classList.contains('yes-btn')
+          'voted_helpful': yesBtnClicked
         }
       });
 

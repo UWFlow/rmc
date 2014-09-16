@@ -210,7 +210,12 @@ class Professor(me.Document):
                 ucs)
 
         prof_review_dicts = [uc.professor_review.to_dict(current_user,
-            getattr(uc, 'user_id', None), uc.id) for uc in ucs]
+            getattr(uc, 'user_id', None)) for uc in ucs]
+
+        # Try to not show older reviews, if we have enough results
+        date_getter = lambda review: review['comment_date']
+        prof_review_dicts = util.publicly_visible_ratings_and_reviews_filter(
+                prof_review_dicts, date_getter, util.MIN_NUM_REVIEWS)
 
         return prof_review_dicts
 
