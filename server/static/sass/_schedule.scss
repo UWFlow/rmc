@@ -28,6 +28,14 @@ $toolbarBg: #FAFAFA;
       line-height: $height;
       // TODO(mack): remove hack to get things to align vertically
       margin-top: 3px;
+      
+      .weekly-hours-label {
+        display: inline-block;
+        margin-left: 5px;
+        font-size: 18px;
+        font-weight: 400;
+        color: #888;
+      }
     }
 
     .buttons {

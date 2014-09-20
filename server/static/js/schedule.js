@@ -443,6 +443,8 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       this.$el.html(this.template({
         start_date: this.schedule.get('start_date'),
         end_date: this.schedule.get('end_date'),
+        total_hours: this.calculateHoursPerWeek(this.schedule),
+        
         // TODO(david): Only show for appropriate term
         courses_not_shown: this.schedule.get('courses_not_shown')
       }));
@@ -511,6 +513,28 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
       }
 
       return this;
+    },
+
+    calculateHoursPerWeek: function(schedule) {
+      var curDay = moment(schedule.get('start_date'));
+      var endDay = moment(schedule.get('end_date'));
+      var hours = 0;
+
+      // Get all schedule items for the week
+      while (!curDay.isAfter(endDay)) {
+        var scheduleItems = schedule.get('schedule_items').forDay(curDay);
+        scheduleItems.each(function(curScheduleItem) {
+          var endMinute = curScheduleItem.endMinutes();
+          var startMinute = curScheduleItem.startMinutes();
+
+          var curHours = (endMinute - startMinute) / 60;
+          hours += curHours;
+        });
+        curDay = moment(curDay.clone().add('days', 1).toDate());
+      }
+
+      hours = Math.round(hours);
+      return hours;
     },
 
     resize: function(options) {
