@@ -1,0 +1,5 @@
+install:
+  - npm install mocha-phantomjs phantomjs
+
+script:
+  - ./js_test.sh
