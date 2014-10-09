@@ -173,11 +173,11 @@ define(function(require) {
       }
 
       var timeFormats = [dateFormat + (ampm ? ' h:mm A' : ' H:mm')];
-
+      var timeZone = "America/Toronto";
       var firstStartMoment = moment.tz(startDateStr + " " + startTimeStr,
-          timeFormats, "America/Toronto");
+          timeFormats, timeZone);
       var firstEndMoment = moment.tz(startDateStr + " " + endTimeStr,
-          timeFormats, "America/Toronto");
+          timeFormats, timeZone);
 
       // Time delta between start and end time, in milliseconds
       var timeDelta = firstEndMoment - firstStartMoment;
@@ -185,7 +185,8 @@ define(function(require) {
       var processedSlotItems = [];
       // Iterate through all days in the date range
       var currMoment = firstStartMoment;
-      var slotEndMoment = moment(endDateStr + " " + startTimeStr, timeFormats);
+      var slotEndMoment = moment.tz(endDateStr + " " + startTimeStr,
+          timeFormats, timeZone);
       while (currMoment <= slotEndMoment) {
         if (hasClassOnDay[currMoment.day()]) {
           processedSlotItems.push({
@@ -193,7 +194,7 @@ define(function(require) {
             section_num: sNum,
             section_type: sType,
             start_date: currMoment.unix(),
-            end_date: moment(currMoment.unix() * 1000 + timeDelta).unix(),
+            end_date: currMoment.unix() + (timeDelta / 1000.0),
             building: building,
             room: room,
             prof_name: profName
