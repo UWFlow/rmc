@@ -1,5 +1,17 @@
+services:
+  - mongodb
+
 install:
-  - npm install mocha-phantomjs phantomjs
+  - ./linux-setup.sh
+  - sudo ./setup.sh
+  - sudo npm install mocha-phantomjs phantomjs
+
+before_script:
+  - sudo rm /var/lib/mongodb/mongod.lock
+  - sudo service mongodb restart
+  - sleep 15
 
 script:
   - ./js_test.sh
+  - source ~/.virtualenv/rmc/bin/activate
+  - make test
