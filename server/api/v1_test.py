@@ -11,6 +11,7 @@ class V1Test(testlib.FlaskTestCase):
     def tearDown(self):
         # Clear DB for other tests
         m.GcmCourseAlert.objects.delete()
+        m.EmailCourseAlert.objects.delete()
         super(V1Test, self).tearDown()
 
     def get_csrf_token_header(self):
@@ -206,3 +207,123 @@ class V1Test(testlib.FlaskTestCase):
             }
         })
         self.assertEqual(m.GcmCourseAlert.objects.count(), 0)
+
+    def test_add_email_course_alert(self):
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 0)
+        headers = self.get_csrf_token_header()
+
+        # Require a user_id to facilitate email lookup.
+        data = {
+            'course_id': 'cs241',
+        }
+        resp = self.app.post(
+            '/api/v1/alerts/course/email', data=json.dumps(data), headers=headers,
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertJsonResponse(resp, {
+            'error': 'Missing required parameter: user_id'
+        })
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 0)
+
+        # Require a course_id as well
+        data = {
+            'user_id': { '$oid': '533e4f7d78d6fe562c16f17a' },
+        }
+        resp = self.app.post(
+            '/api/v1/alerts/course/email', data=json.dumps(data), headers=headers,
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertJsonResponse(resp, {
+            'error': 'Missing required parameter: course_id'
+        })
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 0)
+
+        # This should work
+        data = {
+            'course_id': 'cs241',
+            'user_id': { '$oid': '533e4f7d78d6fe562c16f17a' },
+        }
+        resp = self.app.post(
+            '/api/v1/alerts/course/email', data=json.dumps(data), headers=headers,
+            content_type='application/json')
+        self.assertResponseOk(resp)
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)
+
+        # Try adding the same thing. Should fail.
+        resp = self.app.post(
+            '/api/v1/alerts/course/email', data=json.dumps(data), headers=headers,
+            content_type='application/json')
+        self.assertEqual(resp.status_code, 400)
+        self.assertJsonResponse(resp, {
+            'error': 'Alert with the given parameters already exists.'
+        })
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)
+
+        # Test with all parameters set
+        data = {
+            'course_id': 'psych101',
+            'expiry_date': 1496592355,
+            'term_id': '2014_01',
+            'section_type': 'LEC',
+            'section_num': '001',
+            'user_id': { '$oid': '533e4f7d78d6fe562c16f17a' },
+        }
+        resp = self.app.post(
+            '/api/v1/alerts/course/email', data=json.dumps(data), headers=headers,
+            content_type='application/json')
+        self.assertResponseOk(resp)
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 2)
+
+    def test_delete_email_course_alert(self):
+        created_timestamp = 1396710772
+        expiry_timestamp = 1496710772
+
+        alert = m.EmailCourseAlert(
+            user_id='533e4f7d78d6fe562c16f17a',
+            course_id='sci238',
+            created_date=datetime.datetime.fromtimestamp(created_timestamp),
+            expiry_date=datetime.datetime.fromtimestamp(expiry_timestamp),
+        )
+        alert.save()
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)
+
+        headers = self.get_csrf_token_header()
+
+        resp = self.app.delete(
+                '/api/v1/alerts/course/email/%s' % alert.id, headers=headers)
+        self.assertResponseOk(resp)
+        self.assertJsonResponse(resp, {
+            'email_course_alert': {
+                'user_id': '533e4f7d78d6fe562c16f17a',
+                'term_id': '',
+                'section_type': '',
+                'expiry_date': 1496696372000,
+                'created_date': 1396696372000,
+                'course_id': 'sci238',
+                'section_num': '',
+                'id': str(alert.id),
+            }
+        })
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 0)
+
+    def test_delete_email_course_alert_not_found(self):
+        created_timestamp = 1396710772
+        expiry_timestamp = 1496710772
+
+        alert = m.EmailCourseAlert(
+            user_id='533e4f7d78d6fe562c16f17a',
+            course_id='sci238',
+            created_date=datetime.datetime.fromtimestamp(created_timestamp),
+            expiry_date=datetime.datetime.fromtimestamp(expiry_timestamp),
+        )
+        alert.save()
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)
+
+        headers = self.get_csrf_token_header()
+
+        wrong_id='d72462467a93ece2f40eb842'
+
+        resp = self.app.delete(
+                '/api/v1/alerts/course/gcm/%s' % wrong_id, headers=headers)
+        self.assertEqual(resp.status_code, 404)
+        self.assertEqual(m.EmailCourseAlert.objects.count(), 1)

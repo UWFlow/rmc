@@ -1,3 +1,5 @@
+import boto
+
 import datetime
 import json
 
@@ -7,8 +9,9 @@ import requests
 import course
 import rmc.shared.secrets as s
 import section
-from rmc.shared import util
+import user
 
+from rmc.shared import util
 
 class BaseCourseAlert(me.Document):
     """An abstract base class for notifying when a seat opens in a course.
@@ -108,7 +111,6 @@ class BaseCourseAlert(me.Document):
     def delete_expired(cls):
         cls.objects(expiry_date__lt=datetime.datetime.now()).delete()
 
-
 class GcmCourseAlert(BaseCourseAlert):
     """Course alert using Google Cloud Messaging (GCM) push notifications.
 
@@ -170,3 +172,50 @@ class GcmCourseAlert(BaseCourseAlert):
 
         # TODO(david): Implement exponential backoff for retries
         return res.ok
+
+class EmailCourseAlert(BaseCourseAlert):
+    """Course alert using email notifications."""
+
+    user_id = me.ObjectIdField(
+        unique_with=BaseCourseAlert.BASE_UNIQUE_FIELDS)
+
+    TO_DICT_FIELDS = BaseCourseAlert.TO_DICT_FIELDS + ['user_id']
+
+    def __repr__(self):
+        return "<EmailCourseAlert: %s, %s, %s %s>" % (
+            self.course_id,
+            self.term_id,
+            self.section_type,
+            self.section_num,
+        )
+
+    def send_alert(self, sections):
+
+        _conn = boto.connect_ses(
+            aws_access_key_id=s.AWS_KEY_ID,
+            aws_secret_access_key=s.AWS_SECRET_KEY)
+
+        current_user = user.User.objects.get(id=self.user_id)
+
+        email_body = \
+        """<p>Hey %(first_name)s!</p>
+
+        <p>It looks like you're waiting for %(course_name)s %(section_name)s to
+        open up. Good news, because a seat is available right now! Go check it
+        out on Quest!</p>
+        <br/>
+        <p>Have a Flow-tastic day,</p>
+        <p>The Flow team</p>"""
+
+        _conn.send_email(
+            'UW Flow <flow@uwflow.com>',
+            '%s open spot notification' % (self.course_id.upper()),
+            '',
+            current_user.email,
+            html_body = email_body % {
+                'first_name': current_user.first_name,
+                'course_name': self.course_id.upper(),
+                'section_name': self.section_type + ' ' + self.section_num
+            },
+        )
+        return True

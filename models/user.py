@@ -10,6 +10,7 @@ import mongoengine as me
 import flask.ext.bcrypt as bcrypt
 
 import course as _course
+import course_alert as _course_alert
 import exam as _exam
 import points as _points
 import term as _term
@@ -279,6 +280,11 @@ class User(me.Document):
         return self.schedules_imported > 0
 
     @property
+    def has_email_alerts(self):
+        alerts = _course_alert.EmailCourseAlert.objects(user_id=self.id)
+        return alerts.count() > 0
+
+    @property
     def should_renew_fb_token(self):
         # Should renew FB token if it expired or will expire "soon".
         future_date = datetime.datetime.now() + datetime.timedelta(
@@ -303,6 +309,9 @@ class User(me.Document):
 
     def get_user_courses(self):
         return _user_course.UserCourse.objects(id__in=self.course_history)
+
+    def get_email_alerts(self):
+        return _course_alert.EmailCourseAlert.objects(user_id=self.id)
 
     @classmethod
     def cls_mutual_courses_redis_key(cls, user_id_one, user_id_two):

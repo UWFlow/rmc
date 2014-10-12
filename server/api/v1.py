@@ -511,6 +511,19 @@ def add_course_to_shortlist(course_id):
         'user_course': user_course.to_dict(),
     })
 
+@api.route('/user/alerts', defaults={'user_id': None}, methods=['GET'])
+@api.route('/users/<string:user_id>/alerts', methods=['GET'])
+def get_user_email_alerts(user_id):
+    """Get a list of active email alerts for a given user."""
+    if user_id == None:
+        user_id = _get_user_require_auth().id
+
+    alerts = m.EmailCourseAlert.objects(user_id=user_id)
+
+    return api_util.jsonify({
+        'alerts': [alert.to_dict() for alert in alerts]
+    })
+
 
 # TODO(david): Add corresponding remove course endpoint
 
@@ -679,6 +692,53 @@ def delete_gcm_course_alert(alert_id):
         'gcm_course_alert': alert.to_dict(),
     })
 
+@api.route('/alerts/course/email', methods=['POST'])
+def add_email_course_alert():
+    params = flask.json.loads(flask.request.data)
+
+    created_date = datetime.datetime.now()
+
+    expiry_date_param = params.get('expiry_date')
+    if expiry_date_param:
+        expiry_date = datetime.datetime.fromtimestamp(int(expiry_date_param))
+    else:
+        expiry_date = created_date + datetime.timedelta(days=365)
+
+    try:
+        alert_dict = {
+            'course_id': params['course_id'],
+            'created_date': created_date,
+            'expiry_date': expiry_date,
+            'section_type': params.get('section_type'),
+            'section_num': params.get('section_num'),
+            'term_id': params.get('term_id'),
+            'user_id': params['user_id']['$oid']
+        }
+    except KeyError as e:
+        raise api_util.ApiBadRequestError(
+            'Missing required parameter: %s' % e.message)
+
+    alert = m.EmailCourseAlert(**alert_dict)
+
+    try:
+        alert.save()
+    except me.NotUniqueError as e:
+        raise api_util.ApiBadRequestError(
+                'Alert with the given parameters already exists.')
+    return api_util.jsonify(alert.to_dict())
+
+@api.route('/alerts/course/email/<string:alert_id>', methods=['DELETE'])
+def delete_email_course_alert(alert_id):
+    alert = m.EmailCourseAlert.objects.with_id(alert_id)
+
+    if not alert:
+        raise api_util.ApiNotFoundError(
+                'No email course alert with id %s found.' % alert_id)
+
+    alert.delete()
+    return api_util.jsonify({
+        'email_course_alert': alert.to_dict()
+    });
 
 ###############################################################################
 # Misc.
