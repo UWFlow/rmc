@@ -8,3 +8,26 @@
   }
 }
 
+.comment-vote {
+  font-size: 14px;
+  padding-left: 12px;
+  margin: 10px 0px 15px 0px;
+}
+
+.helpful-review {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.review-btn {
+  border: none;
+  color: $textColor;
+  font-size: 14px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-bottom: 5px;
+
+  &:focus {
+    outline: none;
+  }
+}

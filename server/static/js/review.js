@@ -10,7 +10,9 @@ function(RmcBackbone, $, _, ratings, util) {
       anonymous: false,  // TODO(david): Get rid of this, replace with privacy
       author: null,
       author_pic_url: '',
-      ratings: null
+      ratings: null,
+      num_voted_helpful: 0,
+      num_voted_not_helpful: 0
     },
 
     initialize: function(attrs) {
@@ -81,6 +83,34 @@ function(RmcBackbone, $, _, ratings, util) {
         readOnly: true
       });
       this.template = _.template($('#review-tpl').html());
+    },
+
+    events: {
+      'click .review-btn': 'reviewButtonClicked'
+    },
+
+    reviewButtonClicked: function(e) {
+      var yesBtnClicked = $(e.currentTarget).hasClass('yes-btn');
+      var noBtnClicked = $(e.currentTarget).hasClass('no-btn');
+      if (yesBtnClicked) {
+        this.model.set('num_voted_helpful',
+            this.model.get('num_voted_helpful') + 1);
+      } else if (noBtnClicked) {
+        this.model.set('num_voted_not_helpful',
+            this.model.get('num_voted_not_helpful') + 1);
+      }
+
+      $.ajax('/api/v1/user/rate_review_for_user', {
+        type: 'PUT',
+        data: {
+          'review_id': this.model.get('user_course_id'),
+          'review_type': this.model.get('review_type'),
+          'voted_helpful': yesBtnClicked
+        }
+      });
+
+      this.model.set('can_vote', false);
+      this.render();
     },
 
     render: function() {

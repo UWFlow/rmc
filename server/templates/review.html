@@ -37,8 +37,24 @@
       </small>
     </div>
   </div>
-  <div class="comment-text span9">
+  <div class="span9">
+  <div class="comment-text">
+    <% if (num_voted_helpful + num_voted_not_helpful > 0) { %>
+      <div class="muted helpful-review"><%- num_voted_helpful %> out of
+        <%- num_voted_helpful + num_voted_not_helpful %> people found this review helpful
+      </div>
+    <% } %>
     <%- comment %>
+  </div>
+      <div class="comment-vote">
+        <% if (can_vote) { %>
+          Did you find this review helpful?
+          <span style="margin-left: 10px;">
+            <button type="button" class="review-btn yes-btn">Yes</button>
+            <button type="button" class="review-btn no-btn">No</button>
+          </span>
+        <% } %>
+      </div>
   </div>
 </div>
 {% endcall %}

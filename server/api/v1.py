@@ -511,8 +511,58 @@ def add_course_to_shortlist(course_id):
         'user_course': user_course.to_dict(),
     })
 
-
 # TODO(david): Add corresponding remove course endpoint
+
+@api.route('/user/rate_review_for_user', methods=['PUT'])
+def rate_review_for_user():
+    """Rates the review with the id in data as helpful or not
+    for the given user
+    """
+    values = flask.request.values
+    review_id = values.get('review_id')
+    voted_helpful = values.get('voted_helpful')
+    review_type = values.get('review_type')
+
+    uc_review = None
+    filtered_courses = m.UserCourse.objects(id=review_id)
+    if len(filtered_courses) > 0:
+        uc = filtered_courses[0]
+        if review_type == 'course':
+            uc_review = uc.course_review
+        else:
+            uc_review = uc.professor_review
+    else:
+        filtered_courses = m.MenloCourse.objects(id=review_id)
+        if len(filtered_courses) > 0:
+            uc = filtered_courses[0]
+            uc_review = uc.professor_review
+
+    vote_added_response = api_util.jsonify({
+        'success': True
+    })
+    voted_already_response = api_util.jsonify({
+        'already_voted': True
+    })
+
+    user = _get_user_require_auth()
+    if review_type == 'course':
+        if review_id in user.voted_course_review_ids:
+            return voted_already_response
+        user.voted_course_review_ids.append(review_id)
+    elif review_type == 'prof':
+        if review_id in user.voted_prof_review_ids:
+            return voted_already_response
+        user.voted_prof_review_ids.append(review_id)
+    user.save()
+
+    if uc_review:
+        if voted_helpful == 'true':
+            uc_review.num_voted_helpful += 1
+        else:
+            uc_review.num_voted_not_helpful += 1
+        uc.save()
+
+    return vote_added_response
 
 
 ###############################################################################
