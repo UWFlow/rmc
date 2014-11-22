@@ -1,5 +1,6 @@
 source 'https://rubygems.org'
 gem 'rdoc'
 gem 'bundle'
-gem 'compass'
-gem 'compass_twitter_bootstrap'
+gem 'compass', '0.12.2'
+gem 'compass_twitter_bootstrap', '2.0.3'
+gem 'sass', '3.2.3'
