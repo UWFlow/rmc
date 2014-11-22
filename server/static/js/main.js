@@ -161,13 +161,15 @@ require(['config_settings'], function(config_settings) {
 
           // Load the search bar modal only if localstorage is supported.
           // TODO(david): Don't make the search bar depend on localStorage.
-          if (window.localStorage) {
-            var searchBarView = new _search_bar.SearchBarView({
-              el: $('.unified-search-bar')
-            });
-            searchBarView.render();
-            searchBarView.getData();
-          }
+          _work_queue.add(function() {
+            if (window.localStorage) {
+              var searchBarView = new _search_bar.SearchBarView({
+                el: $('.unified-search-bar')
+              });
+              searchBarView.render();
+              searchBarView.getData();
+            }
+          });
         });
 
         // Render the login modal
