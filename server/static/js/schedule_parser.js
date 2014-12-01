@@ -138,6 +138,7 @@ define(function(require) {
             (startYyyy === endYyyy && startMm > endMm)) {
           // Invalid month or backwards range; this must be DD/MM/YYYY.
           dateFormat = 'DD/MM/YYYY';
+        // We use % 4 to check if the month is one of January, May, September
         } else if (endMm - startMm === 3 && startMm % 4 === 1) {
           dateFormat = 'MM/DD/YYYY';
         } else if (endDd - startDd === 3 && startDd % 4 === 1) {

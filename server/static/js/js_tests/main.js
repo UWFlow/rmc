@@ -18,7 +18,7 @@ require(['../config_settings'], function(config_settings) {
     require([
       'transcript/basic_test.js',
       'schedule/basic_test.js',
-      'schedule/basic_test_different_date_format.js',
+      'schedule/different_date_format_test.js',
       'schedule/tba_date_test.js',
       'schedule/prof_name_test.js'
     ], function(require) {
