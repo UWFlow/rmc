@@ -99,7 +99,58 @@ define(function(require) {
       return timeStr.match(/(AM|PM|\d{1,2}:\d{2})/g).join(' ');
     };
 
-    var processSlotItem = function(cNum, sNum, sType, slotItem) {
+    // Try to find a date format where we're 100% sure of it
+    var getDateFormatUsed = function(cNum, sNum, sType, slotItem) {
+      var slotMatches = getSlotItemRe().exec(slotItem);
+
+      // The day can appear in the following formats:
+      // - '01/23/2013'
+      // - '23/01/2013'
+      // - '2013/01/23'
+      // - '2013-01-07'
+      var startDateStr = slotMatches[6];
+      var endDateStr = slotMatches[7];
+
+      var dateFormat;
+      if (startDateStr.indexOf('-') > -1) {
+        dateFormat = 'YYYY-MM-DD';
+      } else if ((/\d{4}\/\d{2}\/\d{2}/).exec(startDateStr)) {
+        dateFormat = 'YYYY/MM/DD';
+      } else {
+        // Could be either MM/DD/YYYY or DD/MM/YYYY. It's probably MM/DD/YYYY
+        // but if that gives impossible results, we'll assume DD/MM/YYYY
+        // instead. See #107.
+        var slashRe = /(\d{2})\/(\d{2})\/(\d{4})/;
+
+        var startSlashMatch = slashRe.exec(startDateStr);
+        var startMm = parseInt(startSlashMatch[1], 10);
+        var startDd = parseInt(startSlashMatch[2], 10);
+        var startYyyy = parseInt(startSlashMatch[3], 10);
+
+        var endSlashMatch = slashRe.exec(endDateStr);
+        var endMm = parseInt(endSlashMatch[1], 10);
+        var endDd = parseInt(endSlashMatch[2], 10);
+        var endYyyy = parseInt(endSlashMatch[3], 10);
+
+        // We have a few conditions that we consider 100% accurate
+        // We check them in the order of how strong they are
+        if (startMm > 12 || endMm > 12 ||
+            (startYyyy === endYyyy && startMm > endMm)) {
+          // Invalid month or backwards range; this must be DD/MM/YYYY.
+          dateFormat = 'DD/MM/YYYY';
+        // We use % 4 to check if the month is one of January, May, September
+        } else if (endMm - startMm === 3 && startMm % 4 === 1) {
+          dateFormat = 'MM/DD/YYYY';
+        } else if (endDd - startDd === 3 && startDd % 4 === 1) {
+          dateFormat = 'DD/MM/YYYY';
+        } else {
+          dateFormat = null;
+        }
+      }
+      return dateFormat;
+    }
+
+    var processSlotItem = function(cNum, sNum, sType, dateFormat, slotItem) {
       var slotMatches = getSlotItemRe().exec(slotItem);
 
       // If there's no day-time information, we can't generate schedule items
@@ -142,35 +193,6 @@ define(function(require) {
       _.each(days, function(day) {
         hasClassOnDay[weekdayMap[day]] = true;
       });
-
-      var dateFormat;
-      if (startDateStr.indexOf('-') > -1) {
-        dateFormat = 'YYYY-MM-DD';
-      } else if ((/\d{4}\/\d{2}\/\d{2}/).exec(startDateStr)) {
-        dateFormat = 'YYYY/MM/DD';
-      } else {
-        // Could be either MM/DD/YYYY or DD/MM/YYYY. It's probably MM/DD/YYYY
-        // but if that gives impossible results, we'll assume DD/MM/YYYY
-        // instead. See #107.
-        var slashRe = /(\d{2})\/(\d{2})\/(\d{4})/;
-
-        var startSlashMatch = slashRe.exec(startDateStr);
-        var startMm = parseInt(startSlashMatch[1], 10);
-        var startYyyy = parseInt(startSlashMatch[3], 10);
-
-        var endSlashMatch = slashRe.exec(endDateStr);
-        var endMm = parseInt(endSlashMatch[1], 10);
-        var endYyyy = parseInt(endSlashMatch[3], 10);
-
-        if (startMm > 12 || endMm > 12 ||
-            (startYyyy === endYyyy && startMm > endMm)) {
-          // Invalid month or backwards range; this must be DD/MM/YYYY.
-          dateFormat = 'DD/MM/YYYY';
-        } else {
-          // All looks good -- assume MM/DD/YYYY.
-          dateFormat = 'MM/DD/YYYY';
-        }
-      }
 
       var timeFormats = [dateFormat + (ampm ? ' h:mm A' : ' H:mm')];
       var timeZone = "America/Toronto";
@@ -216,6 +238,10 @@ define(function(require) {
 
     var courses = [];
     var failedCourses = [];
+    // Assume a date format, and look for an item where we're 100%
+    // certain of the format. Start with a default.
+    var dateFormat = 'MM/DD/YYYY';
+    var dateFormatSet = false;
 
     // Process each course item
     _.each(rawItems, function(rawItem) {
@@ -251,8 +277,24 @@ define(function(require) {
         // Process each schedule slot of that class item
         var slotItems = classItem.match(getSlotItemRe());
 
+        var getDateFormatUsedBound =
+          _.bind(getDateFormatUsed, this, classNum, sectionNum, sectionType)
+
+        if (!dateFormatSet) {
+          for (var i = 0; i < slotItems.length; i ++) {
+            var possibleDateFormat = getDateFormatUsedBound(slotItems[i]);
+            if (possibleDateFormat) {
+              // Take the first date format we're sure about, and use that
+              dateFormat = possibleDateFormat;
+              dateFormatSet = true;
+              break;
+            }
+          }
+        }
+
         var processSlotItemBound =
-          _.bind(processSlotItem, this, classNum, sectionNum, sectionType);
+          _.bind(processSlotItem, this, classNum, sectionNum, sectionType,
+              dateFormat);
 
         var processedSlotItems = _.map(slotItems, processSlotItemBound);
 
