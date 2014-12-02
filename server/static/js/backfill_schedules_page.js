@@ -1,8 +1,8 @@
 /* global mixpanel */
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
-'util', 'schedule'],
-function($, _, _s, __, _util, _schedule) {
+'util', 'schedule_parser'],
+function($, _, _s, __, _util, _schedule_parser) {
   var $logger = $('#logger');
 
   // Set up the logging box to be scrolled to bottom, unless the user
@@ -140,7 +140,7 @@ function($, _, _s, __, _util, _schedule) {
           var scheduleText = data.last_schedule_paste;
           var scheduleData;
           try {
-            scheduleData = new _schedule.parseSchedule(scheduleText);
+            scheduleData = new _schedule_parser.parseSchedule(scheduleText);
           } catch(ex) {
             $logger.append(
               '<div class="text-error indent">Error while parsing: ' +
