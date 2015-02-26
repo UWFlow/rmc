@@ -1,9 +1,11 @@
 require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
-'raffle_unlock', 'schedule', 'sign_in', 'work_queue', ],
+'raffle_unlock', 'schedule', 'sign_in', 'work_queue', 'scholarship',
+'ext/react'],
 function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
-  _prof, _exam, _raffle_unlock, _schedule, _sign_in, _work_queue) {
+  _prof, _exam, _raffle_unlock, _schedule, _sign_in, _work_queue,
+  _scholarship, React) {
 
   _course.CourseCollection.addToCache(pageData.courseObjs);
   _user_course.UserCourses.addToCache(pageData.userCourseObjs);
@@ -44,6 +46,11 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
         'done playing...')
     });
   }
+
+  // Add in Scholarship stuff (Jeff)
+  React.render(React.createElement(_scholarship.ScholarshipContainer,
+    {scholarshipData: pageData.scholarshipObjs}),
+    document.getElementById('scholarship-placeholder'));
 
   var scheduleInputModalView = new _schedule.ScheduleInputModalView();
   $('#schedule-input-modal-placeholder')

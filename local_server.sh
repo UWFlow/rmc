@@ -25,6 +25,9 @@ redis-server config/redis_local.conf &
 echo "Starting compass watch"
 compass watch server &
 
+echo "Starting jsx compiler"
+node_modules/react-tools/bin/jsx --watch -x jsx server/static/jsx/ server/static/js/ &
+
 # TODO(jlfwong): It seems to me like the --autoreload flag is being ignored
 echo "Starting celery worker"
 PARENT_DIR=$(dirname `pwd`) \

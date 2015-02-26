@@ -9,3 +9,6 @@ emails/active/email_signup_email.py
 emails/deprecated
 emails/sender.py
 server/build.js
+
+# Seems it can't recognize jsx syntax
+server/static/jsx/*

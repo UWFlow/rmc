@@ -1,0 +1,108 @@
+@import 'variables';
+
+$inner-padding: 10px;
+$grid-color: #DDD;
+
+.scholarships-header {
+  text-align: center;
+}
+
+.empty-footer {
+  min-height: 50px;
+}
+
+.expand-footer {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.06);
+  text-transform: uppercase;
+  color: lighten($textColor, 20%);
+  @include transition(all 0.2s ease-out);
+
+  &:hover {
+    @include transition(all 0.2s ease-out);
+    cursor: pointer;
+    text-decoration: none;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.6);
+  }
+}
+
+.scholarship-content {
+  border: 1px solid #DDD;
+  margin-top: -1px;
+  position: relative;
+  margin-left: 20px;
+  margin-right: 20px;
+  background-color: white;
+
+  &:hover {
+    @include background(linear-gradient(top, #FFFFFF, #F9F9F9));
+  }
+
+  &.expanded {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding-left: $inner-padding;
+    padding-right: $inner-padding;
+  }
+
+  .visible-section {
+    padding: $inner-padding;
+    cursor: pointer;
+  }
+
+  .scholarship-title {
+    font-size: 20px;
+    padding: 5px 0 5px 0;
+    color: #555;
+    text-overflow: ellipsis;
+  }
+}
+
+.scholarship-inner {
+  position: relative;
+  left: 1%;
+  width: 98%;
+  border-top: 1px solid #DDD;
+
+  .left-col {
+    border-right: 1px solid $grid-color;
+    padding: 12px $inner-padding 12px 0;
+  }
+
+  .right-col {
+    border-left: 1px solid $grid-color;
+    padding-top: $inner-padding;
+    margin-left: -1px;
+    padding-left: 15px;
+
+    li {
+      padding: 2px 0 2px 0;
+    }
+  }
+
+  .more-info {
+    margin-bottom: 10px;
+    padding-top: 13px;
+    padding-bottom: 3px;
+    border-top: 1px solid $grid-color;
+
+    a {
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-right: 20px;
+      &:hover {
+        color: $flowBlue;
+        text-decoration: none;
+        border-bottom: 1px solid $flowBlue;
+      }
+    }
+  }
+}

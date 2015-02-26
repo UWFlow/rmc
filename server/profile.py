@@ -442,6 +442,13 @@ def render_profile_page(profile_user_id, current_user=None):
 
     schedule_screenshot.update_screenshot_async(profile_user)
 
+    scholarships = m.Scholarship.objects()
+    # Filter scholarships based on program
+    closed_scholarship_ids_set = set(profile_user.closed_scholarship_ids)
+    scholarships = [s for s in scholarships if profile_user.short_program_name
+            in s.programs and s.id not in closed_scholarship_ids_set]
+    scholarships_dict = [s.to_dict() for s in scholarships]
+
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
         transcript_obj=ordered_transcript,
@@ -467,4 +474,5 @@ def render_profile_page(profile_user_id, current_user=None):
         show_import_schedule_button=own_profile and (not
                 profile_user.has_schedule),
         course_id_to_review=course_id_to_review,
+        scholarship_objs=scholarships_dict,
     )

@@ -373,6 +373,15 @@ def update_professors_departments():
         prof.save()
 
 
+def update_scholarships():
+    """Update the scholarships available in Mongo"""
+    print "Fetching scholarships"
+    rmc_crawler.get_scholarships()
+
+    print "Loading scholarships into Mongo"
+    rmc_processor.import_scholarships()
+
+
 if __name__ == '__main__':
     mongoengine.connect(c.MONGO_DB_RMC)
 
@@ -386,7 +395,8 @@ if __name__ == '__main__':
         'exam_schedule': update_exam_schedule,
         'sections': update_sections,
         'courses': update_courses,
-        'prof_departments': update_professors_departments
+        'prof_departments': update_professors_departments,
+        'scholarships': update_scholarships
     }
     parser.add_argument('mode',
             help='one of %s' % ','.join(mode_mapping.keys() + ['daily']))
