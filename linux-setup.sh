@@ -31,10 +31,12 @@ install_packages() {
     fi
 
     # To get the most recent redis-server
-    if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q chris-lea-redis-server; then
-        sudo add-apt-repository -y ppa:chris-lea/redis-server
-        updated_apt_repo=yes
-    fi
+    wget http://download.redis.io/redis-stable.tar.gz
+    tar xvzf redis-stable.tar.gz
+    cd redis-stable
+    sudo make install
+    cd ..
+    sudo rm -rf redis-stable
 
     # To get the most recent mongodb
     if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q 10gen; then
