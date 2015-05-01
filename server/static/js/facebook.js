@@ -140,7 +140,7 @@ function($, _, __, _util) {
           };
           login(authResponse, params, attributes.source, attributes.nextUrl);
         });
-      }, {scope: 'email'});
+      }, {scope: 'public_profile,email,user_friends'});
     });
   };
 
