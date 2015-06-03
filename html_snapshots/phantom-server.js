@@ -59,3 +59,10 @@ page.onLoadFinished = function() {
     10000
   );
 };
+
+// See: http://stackoverflow.com/questions/22274112
+page.onResourceRequested = function(requestData, request) {
+  if ((/google-analytics\.com/gi).test(requestData['url'])){
+    request.abort();
+  }
+};
