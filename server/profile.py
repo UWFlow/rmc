@@ -442,12 +442,16 @@ def render_profile_page(profile_user_id, current_user=None):
 
     schedule_screenshot.update_screenshot_async(profile_user)
 
-    scholarships = m.Scholarship.objects()
-    # Filter scholarships based on program
-    closed_scholarship_ids_set = set(profile_user.closed_scholarship_ids)
-    scholarships = [s for s in scholarships if profile_user.short_program_name
-            in s.programs and s.id not in closed_scholarship_ids_set]
-    scholarships_dict = [s.to_dict() for s in scholarships]
+    scholarships_dict = []
+
+    if profile_user.id == current_user.id:
+        scholarships = m.Scholarship.objects()
+        # Filter scholarships based on program
+        closed_scholarship_ids_set = set(profile_user.closed_scholarship_ids)
+        scholarships = [s for s in scholarships if
+                profile_user.short_program_name in s.programs and
+                s.id not in closed_scholarship_ids_set]
+        scholarships_dict = [s.to_dict() for s in scholarships]
 
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
