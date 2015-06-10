@@ -63,6 +63,8 @@
     </div>
   {% endif %}
 
+  <div id="scholarship-placeholder"></div>
+
   <div id="schedule-input-modal-placeholder"></div>
   <div id="class-schedule-placeholder"></div>
   <div id="exam-schedule-placeholder"></div>
@@ -99,5 +101,6 @@
       {{ show_import_schedule_button|tojson|safe }};
   window.pageData.courseIdToReview = {{ course_id_to_review|tojson|safe }};
   window.pageData.profileUserSecretId = {{ profile_user_secret_id|tojson|safe }};
+  window.pageData.scholarshipObjs = {{ scholarship_objs|tojson|safe }};
 </script>
 {% endblock %}

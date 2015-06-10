@@ -174,6 +174,9 @@ class User(me.Document):
     voted_course_review_ids = me.ListField(me.StringField())
     voted_prof_review_ids = me.ListField(me.StringField())
 
+    # Scholarships where a user has clicked: "Remove from profile"
+    closed_scholarship_ids = me.ListField(me.StringField())
+
     @property
     def name(self):
         return '%s %s' % (self.first_name, self.last_name)

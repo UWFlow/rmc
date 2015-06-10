@@ -1,3 +1,8 @@
-{ "name" : "UWFlow"
-, "version" : "1.0.0"
-, "dependencies" : { "mocha-phantomjs" : "3.3.2" } }
+{
+  "name": "UWFlow",
+  "version": "1.0.0",
+  "dependencies": {
+    "mocha-phantomjs": "3.3.2",
+    "react-tools": "^0.13.1"
+  }
+}

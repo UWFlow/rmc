@@ -564,6 +564,25 @@ def rate_review_for_user():
 
     return vote_added_response
 
+@api.route('/user/scholarships/<string:scholarship_id>', methods=['DELETE'])
+def remove_scholarship_from_profile(scholarship_id):
+    """Removes the scholarship from the users profile so it won't show
+    up on their profile page any more
+    """
+    successfully_removed_response = api_util.jsonify({
+        'success': True
+    })
+    already_removed_response = api_util.jsonify({
+        'already_removed': True
+    })
+
+    user = _get_user_require_auth()
+    if scholarship_id in user.closed_scholarship_ids:
+        return already_removed_response
+
+    user.closed_scholarship_ids.append(scholarship_id)
+    user.save()
+    return successfully_removed_response
 
 ###############################################################################
 # /search* endpoints: Search API

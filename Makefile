@@ -53,6 +53,8 @@ init_data:
 	PYTHONPATH=.. python data/processor.py reviews
 	@echo "Importing sections"
 	PYTHONPATH=.. python data/aggregator.py sections
+	@echo "Importing scholarships"
+	PYTHONPATH=.. python data/aggregator.py scholarships
 	@echo "Aggregating data"
 	PYTHONPATH=.. python data/aggregator.py daily
 

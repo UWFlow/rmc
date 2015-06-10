@@ -277,13 +277,26 @@ def get_opendata_sections():
         with open(filename, 'w') as f:
             json.dump(sections, f)
 
+def get_scholarships():
+    url = ('https://api.uwaterloo.ca/v2/awards/undergraduate.json?'
+          'key=%s' % s.OPEN_DATA_API_KEY)
+    response = requests.get(url).text
+
+    scholarship_data = json.loads(response)
+
+    filename = os.path.join(os.path.dirname(__file__),
+            '%s/scholarships.json' % c.SCHOLARSHIPS_DATA_DIR)
+
+    with open(filename, 'w') as f:
+        json.dump(scholarship_data, f)
+
 
 if __name__ == '__main__':
     me.connect(c.MONGO_DB_RMC)
 
     parser = argparse.ArgumentParser()
     supported_modes = ['departments', 'opendata2_courses', 'terms_offered',
-            'opendata_sections']
+            'opendata_sections', 'scholarships']
 
     parser.add_argument('mode', help='one of %s' % ','.join(supported_modes))
     args = parser.parse_args()
@@ -298,5 +311,7 @@ if __name__ == '__main__':
         get_opendata_exam_schedule()
     elif args.mode == 'opendata_sections':
         get_opendata_sections()
+    elif args.mode == 'scholarships':
+        get_scholarships()
     else:
         sys.exit('The mode %s is not supported' % args.mode)

@@ -30,6 +30,7 @@ REVIEWS_DATA_DIR = 'reviews'
 DEPARTMENTS_DATA_DIR = 'departments'
 EXAMS_DATA_DIR = 'exam_schedules'
 SECTIONS_DATA_DIR = 'opendata_sections'
+SCHOLARSHIPS_DATA_DIR = 'scholarships'
 
 RATINGS_CONFIDENCE = 0.95
 

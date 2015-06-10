@@ -544,6 +544,22 @@ def _clean_section(data):
         'last_updated': last_updated,
     }
 
+def _clean_scholarship(data):
+    """Converts OpenData scholarship data in to a dict that can be used by
+    Scholarship
+    """
+    return {
+        'id': str(data['id']),
+        'title': data['title'],
+        'description': data['description'],
+        'citizenship': data['citizenship'],
+        'programs': data['programs'],
+        'eligibility': data['application']['eligibility'],
+        'instructions': data['application']['instructions'],
+        'enrollment_year': data['application']['enrollment_year'],
+        'contact': data['contact'],
+        'link': data['link'],
+    }
 
 def import_opendata_sections():
     num_added = 0
@@ -580,6 +596,37 @@ def import_opendata_sections():
     print 'Added %s sections and updated %s sections' % (
             num_added, num_updated)
 
+def import_scholarships():
+    num_added = 0
+    num_updated = 0
+
+    filenames = glob.glob(os.path.join(os.path.dirname(__file__),
+            c.SCHOLARSHIPS_DATA_DIR, '*.json'))
+
+    for filename in filenames:
+        with open(filename, 'r') as f:
+            data = json.load(f).get('data')
+
+            for scholarship_data in data:
+                scholarship_dict = _clean_scholarship(scholarship_data)
+
+                existing_scholarship = m.Scholarship.objects(
+                        id=scholarship_dict['id']
+                ).first()
+
+                if existing_scholarship:
+                    for key, val in scholarship_dict.iteritems():
+                        if key != 'id':
+                            existing_scholarship[key] = val
+                    existing_scholarship.save()
+                    num_updated += 1
+                else:
+                    m.Scholarship(**scholarship_dict).save()
+                    num_added += 1
+
+    print 'Added %s scholarships and updated %s scholarships' % (
+          num_added, num_updated)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -601,5 +648,7 @@ if __name__ == '__main__':
         import_opendata_exam_schedules()
     elif args.mode == 'sections':
         import_opendata_sections()
+    elif args.mode == 'scholarships':
+        import_scholarships()
     else:
         sys.exit('The mode %s is not supported' % args.mode)

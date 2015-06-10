@@ -26,6 +26,8 @@ sudo pip install -r requirements.txt
 echo "Compiling compass"
 compass compile server --output-style compressed --force
 
+echo "Compiling jsx"
+node_modules/react-tools/bin/jsx -x jsx server/static/jsx/ server/static/js/ &
 # TODO(david): Uncomment the two lines below to re-enable compiling and
 #     minifying JS. This involves doing the following:
 #     1. Fix this compile step: running this will result in an error right now.
