@@ -5,7 +5,7 @@ import rmc.test.lib as testlib
 class CourseTest(testlib.FixturesTestCase):
 
     def assertResultsEquals(self, results, expected):
-        self.assertEquals([course['id'] for course in results], expected)
+        self.assertItemsEqual([course['id'] for course in results], expected)
 
     def test_search(self):
         # Test empty search
