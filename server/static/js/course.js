@@ -179,8 +179,16 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
         }
       };
 
-      $.ajax('/api/v1/user/shortlist/' + this.courseModel.id, { type: 'PUT' })
+      var _user = require('user');
+      if(_user.getCurrentUser() === null) {
+        // Render the login modal
+        $('.email-login-modal').modal('show');
+      }
+      else {
+        $.ajax('/api/v1/user/shortlist/' + this.courseModel.id, { type: 'PUT' })
         .done(onSuccess);
+      }
+
 
       return false;
     },
