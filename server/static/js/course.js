@@ -1,9 +1,9 @@
 define(
 ['rmc_backbone', 'ext/jquery', 'ext/underscore', 'ext/underscore.string',
 'ratings', 'ext/bootstrap', 'util', 'jquery.slide', 'prof', 'ext/toastr',
-'section', 'work_queue'],
+'section', 'work_queue', 'sign_in'],
 function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
-    _section, _work_queue) {
+    _section, _work_queue, sign_in) {
 
   var CourseModel = RmcBackbone.Model.extend({
     defaults: {
@@ -180,15 +180,12 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
       };
 
       var _user = require('user');
-      if(_user.getCurrentUser() === null) {
-        // Render the login modal
-        $('.email-login-modal').modal('show');
-      }
-      else {
+      if (!_user.getCurrentUser()) {
+        sign_in.renderLoginModal();
+      } else {
         $.ajax('/api/v1/user/shortlist/' + this.courseModel.id, { type: 'PUT' })
-        .done(onSuccess);
+          .done(onSuccess);
       }
-
 
       return false;
     },
