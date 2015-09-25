@@ -168,6 +168,8 @@ require(['config_settings'], function(config_settings) {
               });
               searchBarView.render();
               searchBarView.getData();
+              util.hideSearchIfWindowSmall();
+              $(window).resize(util.hideSearchIfWindowSmall);
             }
           });
         });

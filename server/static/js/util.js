@@ -323,6 +323,23 @@ function(_, _s, $) {
   };
 
   /**
+   * Check window size and remove search bar if too small
+   */
+  var hideSearchIfWindowSmall = function() {
+    var size = $(window).width();
+    // if size of window is less than 1140px, 
+    // the search bar gets push to next line
+    // instead, if size goes to less than 1140, search bar is hidden.
+    if (size < 1140) {
+      $('.unified-search-bar').hide();
+    }
+    // if search bar was hidden earlier, unhide on window being large enough
+    else if (!$('.unified-search-bar').is(":visible")) {
+      $('.unified-search-bar').show();
+    }
+  };
+
+  /**
    * Get term name based on current date.
    */
   var getCurrentTermName = function() {
@@ -359,6 +376,7 @@ function(_, _s, $) {
     splitCourseId: splitCourseId,
     humanizeCourseId: humanizeCourseId,
     termIdToQuestId: termIdToQuestId,
+    hideSearchIfWindowSmall: hideSearchIfWindowSmall,
     getCurrentTermName: getCurrentTermName
   };
 });
