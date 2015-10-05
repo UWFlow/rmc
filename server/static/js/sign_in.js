@@ -351,11 +351,16 @@ function($, _, _bootstrap, RmcBackbone, _facebook, _util, _validate,
     }
   };
 
+  var renderLoginModal = function() {
+    emailLoginModalView.$('.email-login-modal').modal('show');
+  };
+
   return {
     renderBanner: renderBanner,
     renderModal: renderModal,
     renderEmailLoginModal: renderEmailLoginModal,
-    renderEmailSignUpModal: renderEmailSignUpModal
+    renderEmailSignUpModal: renderEmailSignUpModal,
+    renderLoginModal: renderLoginModal
   };
 
 });
