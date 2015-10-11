@@ -106,7 +106,9 @@ function($, React, classnames, util) {
 
       return (
         <div>
-          <h1 ref="title">Scholarships you may qualify for</h1>
+          <h1 ref="title" className="scholarships-header">
+            Scholarships you may qualify for
+          </h1>
           <div className="scholarship-container">
             {visibleScholarships}
             <div className="expanded-scholarships hide-initial">
