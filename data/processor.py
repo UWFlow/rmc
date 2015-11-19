@@ -469,11 +469,17 @@ def _opendata_to_section_meeting(data, term_year):
                 date['weekdays'].replace('U', 'Su'))
 
     # TODO(david): Actually use the term begin/end dates when we get nulls
-    date_format = '%m/%d'
-    start_date = datetime.strptime(date['start_date'], date_format).replace(
-            year=term_year) if date['start_date'] else None
-    end_date = datetime.strptime(date['end_date'], date_format).replace(
-            year=term_year) if date['end_date'] else None
+    date_format = '%m/%d/%Y'
+    start_date = None
+    end_date = None
+
+    if date['start_date']:
+        start_date = date['start_date'] + '/' + str(term_year)
+        start_date = datetime.strptime(start_date, date_format)
+
+    if date['end_date']:
+        end_date = date['end_date'] + '/' + str(term_year)
+        end_date = datetime.strptime(end_date, date_format)
 
     time_format = '%H:%M'
 
@@ -544,6 +550,7 @@ def _clean_section(data):
         'last_updated': last_updated,
     }
 
+
 def _clean_scholarship(data):
     """Converts OpenData scholarship data in to a dict that can be used by
     Scholarship
@@ -560,6 +567,7 @@ def _clean_scholarship(data):
         'contact': data['contact'],
         'link': data['link'],
     }
+
 
 def import_opendata_sections():
     num_added = 0
@@ -595,6 +603,7 @@ def import_opendata_sections():
 
     print 'Added %s sections and updated %s sections' % (
             num_added, num_updated)
+
 
 def import_scholarships():
     num_added = 0
