@@ -15,8 +15,10 @@ r = redis.StrictRedis(host=c.REDIS_HOST, port=c.REDIS_PORT, db=c.REDIS_DB)
 
 _COURSE_NAME_REGEX = re.compile(r'([a-z]+)([0-9]+)')
 
+
 def safe_division(a, b):
     return (0.0 if b == 0.0 else float(a) / b)
+
 
 class Professor(me.Document):
 
@@ -265,6 +267,12 @@ class Professor(me.Document):
         departments_taught = set(_COURSE_NAME_REGEX.match(uc['course_id']).
                 group(1).upper() for uc in ucs)
         return sorted(departments_taught)
+
+    def transfer_reviews_from(self, prof):
+        mcs = user_course.MenloCourse.objects(professor_id=prof.id)
+        for mc in mcs:
+            mc.professor_id = self.id
+            mc.save()
 
     def to_dict(self, course_id=None, current_user=None):
         dict_ = {
