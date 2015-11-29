@@ -103,9 +103,19 @@ install_chromedriver() {
     fi
 }
 
+install_spark() {
+    rm -rf spark
+    wget "http://apache.mirror.vexxhost.com/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz" -O tempfile
+    mkdir spark
+    tar xzf tempfile -C spark --strip-components=1
+    rm tempfile
+    export SPARK_HOME=${PWD}"/spark"
+}
+
 # Get password up front
 sudo echo
 
 install_packages
 install_phantomjs
 install_chromedriver
+install_spark
