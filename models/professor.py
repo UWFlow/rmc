@@ -268,11 +268,18 @@ class Professor(me.Document):
                 group(1).upper() for uc in ucs)
         return sorted(departments_taught)
 
-    def transfer_reviews_from(self, prof):
+    def transfer_reviews_from_prof(self, prof, delete_dupe_prof=False):
         mcs = user_course.MenloCourse.objects(professor_id=prof.id)
+        ucs = user_course.UserCourse.objects(professor_id=prof.id)
         for mc in mcs:
             mc.professor_id = self.id
             mc.save()
+        for uc in ucs:
+            uc.professor_id = self.id
+            uc.save()
+
+        if delete_dupe_prof:
+            prof.delete()
 
     def to_dict(self, course_id=None, current_user=None):
         dict_ = {
