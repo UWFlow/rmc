@@ -576,6 +576,10 @@ def import_opendata_sections():
     filenames = glob.glob(os.path.join(os.path.dirname(__file__),
             c.SECTIONS_DATA_DIR, '*.json'))
 
+    # Delete all Sections to ensure we don't have stale sections
+    # See https://github.com/UWFlow/rmc/issues/255 for more details
+    m.Section.objects().delete()
+
     for filename in filenames:
         with open(filename, 'r') as f:
             data = json.load(f)

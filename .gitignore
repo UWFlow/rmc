@@ -22,3 +22,7 @@ data/exam_schedules/uw_exams_*
 data/departments/*.json
 data/opendata_sections/*.json
 data/opendata2_courses/*.json
+
+# Ignore generated js files
+server/static/js/scholarship.js
+server/static/js/.module-cache/
