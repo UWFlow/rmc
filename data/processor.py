@@ -12,6 +12,7 @@ import os
 import time
 import re
 import sys
+import uuid
 
 
 def import_departments():
@@ -572,6 +573,8 @@ def _clean_scholarship(data):
 def import_opendata_sections():
     num_added = 0
     num_updated = 0
+    num_deleted = 0
+    update_id = str(uuid.uuid4())
 
     filenames = glob.glob(os.path.join(os.path.dirname(__file__),
             c.SECTIONS_DATA_DIR, '*.json'))
@@ -595,14 +598,19 @@ def import_opendata_sections():
                 if existing_section:
                     for key, val in section_dict.iteritems():
                         existing_section[key] = val
+                    existing_section['update_id'] = update_id
                     existing_section.save()
                     num_updated += 1
                 else:
-                    m.Section(**section_dict).save()
+                    new_section = m.Section(**section_dict)
+                    new_section['update_id'] = update_id
+                    new_section.save()
                     num_added += 1
 
-    print 'Added %s sections and updated %s sections' % (
-            num_added, num_updated)
+    num_deleted = m.Section.objects(update_id__ne=update_id).delete()
+
+    print 'Added %s sections, updated %s sections, deleted %s sections' % (
+            num_added, num_updated, num_deleted)
 
 
 def import_scholarships():

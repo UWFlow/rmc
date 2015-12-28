@@ -108,6 +108,10 @@ class Section(me.Document):
 
     last_updated = me.DateTimeField()
 
+    # Uuid used to keep track of which sections were updated
+    # See https://github.com/UWFlow/rmc/issues/255 for more details
+    update_id = me.StringField()
+
     # TODO(david): Reserves info (we don't show this at the moment).
 
     # TODO(david): Do we want associated class crap
