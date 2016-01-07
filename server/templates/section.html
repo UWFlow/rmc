@@ -71,11 +71,11 @@
                 <% if (meeting.start_date) { %>
                   <span class="meeting-dates">
                     <% if (meeting.start_date.$date === meeting.end_date.$date) { %>
-                      (<%- moment(meeting.start_date.$date).format('MMM D') %>)
+                      (<%- moment.utc(meeting.start_date.$date).format('MMM D') %>)
                     <% } else { %>
-                      (<%- moment(meeting.start_date.$date).format('MMM D') %>
+                      (<%- moment.utc(meeting.start_date.$date).format('MMM D') %>
                       &ndash;
-                      <%- moment(meeting.end_date.$date).format('MMM D') %>)
+                      <%- moment.utc(meeting.end_date.$date).format('MMM D') %>)
                     <% } %>
                   </span>
                 <% } %>
