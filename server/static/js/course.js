@@ -397,6 +397,7 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
     courseAdded: function() {
       this.updateRemoveCourseTooltip();
       this.render();
+      this.trigger('addedToShortlist', this.courseModel.id);
     },
 
     toggleCourse: function(evt) {
@@ -687,12 +688,18 @@ function(RmcBackbone, $, _, _s, ratings, __, util, jqSlide, _prof, toastr,
         'canShowAddReview' in attributes ? attributes.canShowAddReview : true;
     },
 
+    addToShortlist: function(course_id) {
+      this.trigger('addedToShortlist', course_id);
+    },
+
     addCourse: function(course) {
       var courseView = new CourseView({
         canShowAddReview: this.canShowAddReview,
         courseModel: course,
         tagName: 'li'
       });
+
+      courseView.bind('addedToShortlist', _.bind(this.addToShortlist, this));
       this.$el.append(courseView.render().el);
       this.courseViews.push(courseView);
     },

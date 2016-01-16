@@ -507,8 +507,13 @@ def add_course_to_shortlist(course_id):
         raise api_util.ApiBadRequestError(
                 'Could not add course %s to shortlist. :(' % course_id)
 
+    # remove from recommendations if added to shortlist
+    if course_id in user.recommended_courses:
+        user.recommended_courses.remove(course_id)
+        user.save()
+
     return api_util.jsonify({
-        'user_course': user_course.to_dict(),
+        'user_course': user_course.to_dict()
     })
 
 # TODO(david): Add corresponding remove course endpoint

@@ -453,6 +453,13 @@ def render_profile_page(profile_user_id, current_user=None):
                 s.id not in closed_scholarship_ids_set]
         scholarships_dict = [s.to_dict() for s in scholarships]
 
+    recommendation_dict = []
+    recommended_course_ids = []
+    if profile_user.id == current_user.id:
+        recommended_course_ids = current_user.recommended_courses
+        recommendation_dict = [m.Course.objects(id=course_id).first().to_dict()
+                               for course_id in recommended_course_ids]
+
     return flask.render_template('profile_page.html',
         page_script='profile_page.js',
         transcript_obj=ordered_transcript,
@@ -479,4 +486,6 @@ def render_profile_page(profile_user_id, current_user=None):
                 profile_user.has_schedule),
         course_id_to_review=course_id_to_review,
         scholarship_objs=scholarships_dict,
+        recommended_objs=recommendation_dict,
+        recommended_course_ids=recommended_course_ids,
     )

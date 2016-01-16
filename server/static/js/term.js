@@ -54,6 +54,10 @@ function(RmcBackbone, _, $, _course, jqSlide, _user_course, _util) {
       return this;
     },
 
+    addCourse: function(course) {
+      this.courseCollectionView.addCourse(course);
+    },
+
     getTermExpandedKey: function() {
       return 'termExpanded:' + this.termModel.get('id');
     },
@@ -128,6 +132,22 @@ function(RmcBackbone, _, $, _course, jqSlide, _user_course, _util) {
       }, this);
 
       return this;
+    },
+
+    addTerm: function(term) {
+      var termView = new TermView({
+        termModel: term,
+        tagName: 'li',
+        expand: true
+      });
+      this.$el.prepend(termView.render().el);
+      this.termViews.push(termView);
+    },
+
+    get: function(term_id) {
+      return this.termViews.find(function(term) {
+        return term.termModel.id === term_id;
+      });
     }
   });
 
@@ -164,6 +184,22 @@ function(RmcBackbone, _, $, _course, jqSlide, _user_course, _util) {
       }
 
       this.template = _.template($('#profile-terms-tpl').html());
+    },
+
+    addToShortlist: function(course) {
+      var term = this.termCollectionView.get('9999_99');
+      if (!term) {
+        // make shortlist if it does not exist
+        var shortlistModel = new TermModel({
+          'course_ids': [],
+          'program_year_id': 'None',
+          'id': '9999_99',
+          'name': 'Shortlist'
+        });
+        this.termCollectionView.addTerm(shortlistModel);
+        term = this.termCollectionView.get('9999_99');
+      }
+      term.addCourse(course, '9999_99');
     },
 
     events: {

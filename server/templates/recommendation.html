@@ -1,0 +1,8 @@
+{% import 'macros.html' as macros %}
+
+{% call macros.us_template('recommendation-tpl') %}
+<% if (num_courses) { %>
+<h1>Courses you may be interested in</h1>
+<div class="course-collection-placeholder"></div>
+<% } %>
+{% endcall %}

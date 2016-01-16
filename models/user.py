@@ -120,6 +120,7 @@ class User(me.Document):
 
     # List of UserCourse.id's
     course_history = me.ListField(me.ObjectIdField())
+    recommended_courses = me.ListField(me.StringField())
 
     # TODO(mack): figure out why last_term_id was commented out in
     # a prior diff: #260f174
