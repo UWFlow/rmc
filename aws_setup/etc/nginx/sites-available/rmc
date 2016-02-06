@@ -13,8 +13,8 @@ server {
   listen 443 ssl;
   server_name uwflow.com;
 
-  ssl_certificate /home/rmc/data/ssl/unified.crt;
-  ssl_certificate_key /home/rmc/data/ssl/uwflow.com-decrypted.key;
+  ssl_certificate /etc/sslmate/www.uwflow.com.chained.crt;
+  ssl_certificate_key /etc/sslmate/www.uwflow.com.key;
 
   # Tell browsers to require SSL (max age in seconds).
   add_header Strict-Transport-Security max-age=31536000;
