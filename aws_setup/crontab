@@ -18,6 +18,9 @@ MAILTO=devs@uwflow.com
 # Daily: Aggregate ratings, mutual courses, etc...
 42 7 * * * PYTHONPATH=/home/rmc python /home/rmc/rmc/data/aggregator.py daily
 
+# Daily: Download new SSL certificates, and restart nginx if new ones downloaded
+28 7 * * * sudo /home/rmc/rmc/aws_setup/sslmate_download.sh
+
 # Weekly: Update local time (amazon ses complains if time is too far off when sending emails)
 13 0 * * 0 sudo /usr/sbin/ntpdate pool.ntp.org > /dev/null
 
