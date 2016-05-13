@@ -1,17 +1,10 @@
+sudo: required
+
 services:
-  - mongodb
+  - docker
 
-install:
-  - ./linux-setup.sh
-  - sudo ./setup.sh
-  - sudo npm install mocha-phantomjs phantomjs
-
-before_script:
-  - sudo rm /var/lib/mongodb/mongod.lock
-  - sudo service mongodb restart
-  - sleep 15
+before_install:
+  - docker pull jgulbronson/uwflow
 
 script:
-  - ./js_test.sh
-  - source ~/.virtualenv/rmc/bin/activate
-  - make test
+  - docker run -v $TRAVIS_BUILD_DIR:/rmc -v mongodata:/data/db -p 0.0.0.0:5000:5000 -i -t jgulbronson/uwflow /bin/bash -c "cd /rmc; cp shared/secrets.py.example shared/secrets.py; ./docker_tests.sh"
