@@ -11,7 +11,7 @@ install_gems() {
     fi
 
     echo "Installing gems"
-    ( cd server && sudo bundle install )
+    ( cd server && sudo bundle update )
 }
 
 install_pip() {
