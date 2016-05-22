@@ -487,5 +487,4 @@ def render_profile_page(profile_user_id, current_user=None):
         course_id_to_review=course_id_to_review,
         scholarship_objs=scholarships_dict,
         recommended_objs=recommendation_dict,
-        recommended_course_ids=recommended_course_ids,
     )

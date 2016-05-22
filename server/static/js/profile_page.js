@@ -110,8 +110,7 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     var recommendationView = new recommendation.RecommendationView({
       recommendationModel: recommendationModel
     });
-    recommendationView.bind('addedToShortlist',
-                            addToShortlist, this);
+    recommendationView.bind('addedToShortlist', addToShortlist, this);
     $('#recommendation-placeholder').replaceWith(
       recommendationView.render().el);
   };
@@ -142,10 +141,13 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
   }
 
   // Render the recommendations, if available
-  var recommendedCourseIds = window.pageData.recommendedCourseIds;
   var recommendedObjs= window.pageData.recommendedObjs;
+  var recommendedCourseIds = _.map(recommendedObjs, function(course) {
+    return course.id;
+  });
+
   if (window.pageData.ownProfile &&
-      recommendedObjs && recommendedObjs.length !==0 &&
+      recommendedObjs && recommendedObjs.length !== 0 &&
       recommendedCourseIds && recommendedCourseIds.length !== 0) {
     _work_queue.add(function() {
       renderRecommendations(recommendedCourseIds);
