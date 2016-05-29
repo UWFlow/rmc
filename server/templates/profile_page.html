@@ -66,6 +66,7 @@
   <div id="schedule-input-modal-placeholder"></div>
   <div id="class-schedule-placeholder"></div>
   <div id="exam-schedule-placeholder"></div>
+  <div id="recommendation-placeholder"></div>
   <div id="profile-terms-placeholder"></div>
   <div id="scholarship-placeholder"></div>
 
@@ -81,6 +82,7 @@
   {% include 'exam.html' %}
   {% include 'schedule.html' %}
   {% include 'sign_in.html' %}
+  {% include 'recommendation.html' %}
 {% endblock %}
 
 {% block scripts %}
@@ -102,5 +104,6 @@
   window.pageData.courseIdToReview = {{ course_id_to_review|tojson|safe }};
   window.pageData.profileUserSecretId = {{ profile_user_secret_id|tojson|safe }};
   window.pageData.scholarshipObjs = {{ scholarship_objs|tojson|safe }};
+  window.pageData.recommendedObjs= {{ recommended_objs|tojson|safe }};
 </script>
 {% endblock %}

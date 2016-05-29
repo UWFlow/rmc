@@ -2,11 +2,12 @@ require(
 ['ext/jquery', 'ext/underscore', 'ext/underscore.string', 'ext/bootstrap',
 'term', 'course', 'friend', 'util', 'user', 'user_course', 'prof', 'exam',
 'raffle_unlock', 'schedule', 'sign_in', 'work_queue', 'scholarship',
-'ext/react'],
+'ext/react', 'recommendation'],
 function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
   _prof, _exam, _raffle_unlock, _schedule, _sign_in, _work_queue,
-  _scholarship, React) {
+  _scholarship, React, recommendation) {
 
+  _course.CourseCollection.addToCache(pageData.recommendedObjs);
   _course.CourseCollection.addToCache(pageData.courseObjs);
   _user_course.UserCourses.addToCache(pageData.userCourseObjs);
   _prof.ProfCollection.addToCache(pageData.professorObjs);
@@ -90,6 +91,30 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     });
   }
 
+  var addToShortlist = function(course_id) {
+    if (this.profileTermsView) {
+      var course = _course.CourseCollection.getFromCache(course_id);
+      this.profileTermsView.addToShortlist(course);
+    }
+    else {
+      console.warn('Failed to render shortlist' +
+          'because the page did not load correctly');
+    }
+  };
+
+  var renderRecommendations = function(courseIds) {
+    var recommendationModel = new recommendation.RecommendationModel({
+      'course_ids': courseIds
+    });
+
+    var recommendationView = new recommendation.RecommendationView({
+      recommendationModel: recommendationModel
+    });
+    recommendationView.bind('addedToShortlist', addToShortlist, this);
+    $('#recommendation-placeholder').replaceWith(
+      recommendationView.render().el);
+  };
+
   var renderTranscript = function(transcriptObj) {
     var termCollection = new term.TermCollection();
 
@@ -99,11 +124,12 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
     });
 
     // Add the parsed term and course info to the page for live preview
-    var profileTermsView = new term.ProfileTermsView({
+    this.profileTermsView = new term.ProfileTermsView({
       termCollection: termCollection,
       showAddTerm: window.pageData.ownProfile
     });
-    $('#profile-terms-placeholder').replaceWith(profileTermsView.render().el);
+    $('#profile-terms-placeholder').replaceWith(
+      this.profileTermsView.render().el);
   };
 
   // Render the transcript, if available
@@ -111,6 +137,20 @@ function($, _, _s, _bootstrap, term, _course, friend, _util, user, _user_course,
   if (transcriptObj && transcriptObj.length !== 0) {
     _work_queue.add(function() {
       renderTranscript(transcriptObj);
+    });
+  }
+
+  // Render the recommendations, if available
+  var recommendedObjs= window.pageData.recommendedObjs;
+  var recommendedCourseIds = _.map(recommendedObjs, function(course) {
+    return course.id;
+  });
+
+  if (window.pageData.ownProfile &&
+      recommendedObjs && recommendedObjs.length !== 0 &&
+      recommendedCourseIds && recommendedCourseIds.length !== 0) {
+    _work_queue.add(function() {
+      renderRecommendations(recommendedCourseIds);
     });
   }
 
