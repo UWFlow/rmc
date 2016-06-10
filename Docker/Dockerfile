@@ -7,7 +7,7 @@ RUN apt-get -y install git
 RUN apt-get -y install sudo
 RUN apt-get -y install wget
 
-RUN git clone -b docker https://github.com/JGulbronson/rmc.git ~/rmc
+RUN git clone -b docker https://github.com/UWFlow/rmc.git ~/rmc
 
 RUN apt-get install make
 RUN apt-get -y install gcc
