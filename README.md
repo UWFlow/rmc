@@ -129,5 +129,3 @@ PYTHONPATH=.. nosetests server/api/v1_test.py
 When you're ready to contribute, take a look at [the contributing
 guidelines](https://github.com/UWFlow/rmc/blob/master/CONTRIBUTING.md) and our
 [style guide](https://github.com/UWFlow/rmc/wiki/Flow-Style-Guide).
-
-If you have questions or would like to discuss how to contribute, come chat with us in our [public chat room](http://www.hipchat.com/gAUVWHvA3).
