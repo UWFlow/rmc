@@ -15,7 +15,7 @@ To get started, [install Docker][].
 
 Once you have docker installed, run:
 
-    $ make start_in_docker
+    $ make shell_in_docker
 
 This will download and run a Docker image with all of Flow's dependencies 
 already installed. Don't worry if you don't know what a Docker image is.
@@ -26,12 +26,10 @@ be much faster.
 Once the image is downloaded and running, you should find yourself in a
 `/bin/bash` shell. This is running inside a Docker container (effectively a 
 virtual machine). Inside this container, the `rmc` repository can be found in 
-`/rmc`.
+`/rmc`, which is where you should be right after running `make shell_in_docker`.
 
 To start running Flow locally, run the following inside this new shell.
 
-    $ cd /rmc
-    $ source ~/.virtualenv/rmc/bin/activate
     $ make local
 
 If you point your browser at http://localhost:5000/, you should now see the Flow 
@@ -47,11 +45,15 @@ To do anything interesting in Flow, you need data in your database. This is
 where information about courses, professors, and scheduling information is 
 stored.
 
-Run the following to get some basic course data into the DB.
+To get started, open a new terminal (different from the one running `make 
+local`), and start a new shell inside Docker by running
 
-```sh
-make init_data
-```
+    $ make shell_in_docker
+
+Inside the Docker container, run the following to get some basic course data 
+into the DB.
+
+    $ make init_data
 
 ## Directory structure
 

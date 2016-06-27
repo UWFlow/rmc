@@ -7,8 +7,8 @@ SHELL=/bin/bash
 local: require_virtualenv_in_dev
 	./local_server.sh
 
-start_in_docker:
-	docker run -v `pwd`:/rmc -p 0.0.0.0:5000:5000 -it jgulbronson/uwflow /bin/bash
+shell_in_docker:
+	./docker_shell.sh
 
 install: os-install common-install ;
 
