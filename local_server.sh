@@ -9,6 +9,11 @@ function clean_up() {
   exit
 }
 
+if [ ! -f shared/secrets.py ]; then
+    echo "Copying example secrets file"
+    cp shared/secrets.py.example shared/secrets.py
+fi
+
 # Kill all child processes on script abort
 trap clean_up SIGTERM SIGINT ERR
 

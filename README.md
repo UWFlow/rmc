@@ -6,39 +6,52 @@ Plan your courses
 
 ## Getting up and running
 
-To set up your dev environment, run `make install`.
+The fastest way to get running is to use Docker. This will let you run Flow 
+inside of a virtual machine to avoid dealing with package installation problems 
+and to avoid polluting your development environment. It should also take less 
+time.
 
-We work inside a [virtualenv][], so remember to `source
-~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
+To get started, [install Docker][].
 
-You should now be ready to boot the local server, with `make local`.
+Once you have docker installed, run:
 
-Once it starts running, point your browser to http://localhost:5000/
+    $ make start_in_docker
 
-### MongoDB error on Linux
+This will download and run a Docker image with all of Flow's dependencies 
+already installed. Don't worry if you don't know what a Docker image is.
 
-If you are getting a connection refused error when trying to run `make local` and are on Linux, this is
-most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
-and let it warm up for about 30 seconds to 1 minute. Then kill the process, and run `make local` again. It should work now.
+It will only need to download the image once, so booting up in the future should 
+be much faster.
 
-### Getting seed data
+Once the image is downloaded and running, you should find yourself in a
+`/bin/bash` shell. This is running inside a Docker container (effectively a 
+virtual machine). Inside this container, the `rmc` repository can be found in 
+`/rmc`.
+
+To start running Flow locally, run the following inside this new shell.
+
+    $ cd /rmc
+    $ source ~/.virtualenv/rmc/bin/activate
+    $ make local
+
+If you point your browser at http://localhost:5000/, you should now see the Flow 
+homepage running on your computer!
+
+Congratulations! You now have Flow running locally.
+
+[install Docker]: https://docs.docker.com/engine/installation/
+
+## Getting seed data
+
+To do anything interesting in Flow, you need data in your database. This is 
+where information about courses, professors, and scheduling information is 
+stored.
 
 Run the following to get some basic course data into the DB.
 
 ```sh
 make init_data
 ```
-
-## Why RMC?
-
-It might seem funny that this repository and a bunch of the code references `rmc`.
-
-RMC stands for "Rate My Courses", which was the prototype name for this project
-before it was given the (slightly) better name of Flow.
-
-Because of the profileration of this 3 letter prefix throughout the code, and the
-unfortunate coupling of the repository name and our python namespace, we decided
-to leave it be.
 
 ## Directory structure
 
@@ -101,6 +114,16 @@ Here's what an example session might look like:
 
 [virtualenv]: http://www.virtualenv.org/en/latest/
 
+## Why RMC?
+
+It might seem funny that this repository and a bunch of the code references `rmc`.
+
+RMC stands for "Rate My Courses", which was the prototype name for this project
+before it was given the (slightly) better name of Flow.
+
+Because of the profileration of this 3 letter prefix throughout the code, and the
+unfortunate coupling of the repository name and our python namespace, we decided
+to leave it be.
 
 ## Running tests
 
@@ -131,3 +154,24 @@ guidelines](https://github.com/UWFlow/rmc/blob/master/CONTRIBUTING.md) and our
 [style guide](https://github.com/UWFlow/rmc/wiki/Flow-Style-Guide).
 
 If you have questions or would like to discuss how to contribute, come chat with us in our [public chat room](http://www.hipchat.com/gAUVWHvA3).
+
+## Setting up without Docker
+
+If you'd prefer to avoid the docker route, you can install the dependencies 
+directly on your own machine.
+
+To set up your dev environment, run `make install`.
+
+We work inside a [virtualenv][], so remember to `source
+~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
+
+You should now be ready to boot the local server, with `make local`.
+
+Once it starts running, point your browser to http://localhost:5000/
+
+### MongoDB error on Linux
+
+If you are getting a connection refused error when trying to run `make local` and are on Linux, this is
+most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
+and let it warm up for about 30 seconds to 1 minute. Then kill the process, and run `make local` again. It should work now.
+
