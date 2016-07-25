@@ -18,7 +18,7 @@ install_packages() {
 
     updated_apt_repo=""
 
-    # To get the most recent nodejs, later.
+    # To get the most recent nodejs and npm, later.
     if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q chris-lea-node_js; then
         sudo add-apt-repository -y ppa:chris-lea/node.js
         updated_apt_repo=yes
@@ -58,6 +58,7 @@ install_packages() {
         libxml2-dev libxslt-dev \
         ruby rubygems-integration ruby-dev \
         nodejs \
+        npm \
         redis-server \
         mongodb-10gen \
         unzip
@@ -105,7 +106,7 @@ install_chromedriver() {
 
 install_spark() {
     rm -rf spark
-    wget "http://apache.mirror.vexxhost.com/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz" -O tempfile
+    wget "http://apache.mirror.vexxhost.com/spark/spark-1.6.2/spark-1.6.2-bin-hadoop2.6.tgz" -O tempfile
     mkdir spark
     tar xzf tempfile -C spark --strip-components=1
     rm tempfile
