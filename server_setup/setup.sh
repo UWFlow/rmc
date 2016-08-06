@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This sets up RMC web app on EC2 Ubuntu11 AMI.
 #
@@ -19,7 +19,7 @@
 # Bail on any errors
 set -e
 
-CONFIG_DIR=$HOME/rmc/aws_setup
+CONFIG_DIR=$HOME/rmc/server_setup
 
 cd $HOME
 
@@ -34,6 +34,14 @@ sudo apt-get install -y unzip
 sudo apt-get install -y ruby rubygems
 sudo REALLY_GEM_UPDATE_SYSTEM=1 gem update --system
 
+echo "Installing rvm"
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+curl -sSL https://get.rvm.io | bash -s stable
+source /home/rmc/.rvm/scripts/rvm
+rvm install 2.3.1
+rvm use 2.3.1
+
+echo "Installing virtualenv"
 sudo pip install virtualenv
 mkdir -p /home/rmc/.virtualenvs
 RMC_VIRTUALENV_DIR=/home/rmc/.virtualenvs/rmc
