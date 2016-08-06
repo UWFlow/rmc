@@ -1,6 +1,6 @@
 server {
   listen       80;
-  server_name  uwflow.com;
+  server_name  SITE_URL;
 
   # Redirect all HTTP traffic to HTTPS. See
   # https://konklone.com/post/switch-to-https-now-for-free
@@ -11,10 +11,10 @@ server {
   # TODO(david): Enable SPDY. Requires building nginx from source with the
   #     ngx_http_spdy_module.
   listen 443 ssl;
-  server_name uwflow.com;
+  server_name SITE_URL;
 
-  ssl_certificate /etc/sslmate/www.uwflow.com.chained.crt;
-  ssl_certificate_key /etc/sslmate/www.uwflow.com.key;
+  ssl_certificate /etc/letsencrypt/live/SITE_URL/fullchain.pem;
+  ssl_certificate_key /etc/letsencrypt/live/SITE_URL/privkey.pem;
 
   # Tell browsers to require SSL (max age in seconds).
   add_header Strict-Transport-Security max-age=31536000;
@@ -38,6 +38,10 @@ server {
 
   location / {
     try_files $uri @rmc_app;
+  }
+
+  location ~ /.well-known {
+    allow all;
   }
 
   location /static {
