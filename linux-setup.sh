@@ -58,7 +58,6 @@ install_packages() {
         libxml2-dev libxslt-dev \
         ruby rubygems-integration ruby-dev \
         nodejs \
-        npm \
         redis-server \
         mongodb-10gen \
         unzip
@@ -110,7 +109,6 @@ install_spark() {
     mkdir spark
     tar xzf tempfile -C spark --strip-components=1
     rm tempfile
-    export SPARK_HOME=${PWD}"/spark"
 }
 
 # Get password up front
