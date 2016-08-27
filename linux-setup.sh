@@ -109,7 +109,7 @@ install_spark() {
     mkdir spark
     tar xzf tempfile -C spark --strip-components=1
     rm tempfile
-    echo "export SPARK_HOME=${PWD}/spark" >> /etc/profile.d/rmc.sh
+    echo "export SPARK_HOME=${PWD}/spark" > /etc/profile.d/rmc.sh
 }
 
 # Get password up front
