@@ -76,7 +76,7 @@ install_phantomjs() {
                 *) mach=x86_64;;
             esac
             sudo rm -rf phantomjs
-            wget "https://phantomjs.googlecode.com/files/phantomjs-1.9.2-linux-${mach}.tar.bz2" -O- | sudo tar xfj -
+            wget "https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-1.9.8-linux-${mach}.tar.bz2" -O- | sudo tar xfj -
 
             sudo ln -snf /usr/local/share/phantomjs-1.9.2-linux-${mach}/bin/phantomjs /usr/local/bin/phantomjs
         )
@@ -109,6 +109,7 @@ install_spark() {
     mkdir spark
     tar xzf tempfile -C spark --strip-components=1
     rm tempfile
+    echo "export SPARK_HOME=${PWD}/spark" >> /etc/profile.d/rmc.sh
 }
 
 # Get password up front
