@@ -62,7 +62,7 @@
 
         <li class="excluding-taken-courses-dropdown dropdown">
           <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-            <span class="selected-exclude-option">
+            <span class="taken-courses-exclude-option">
               <% if (excludeTakenCourses === 'yes') { %>
                 excluding
               <% } else { %>
@@ -81,6 +81,48 @@
           </ul>
         </li>
         courses I've taken
+
+        <li class="excluding-full-courses-dropdown dropdown">
+          <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
+            <span class="full-courses-exclude-option">
+              <% if (excludeFullCourses === 'yes') { %>
+                excluding
+              <% } else { %>
+                including
+              <% } %>
+            </span>
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li data-value="yes">
+              <a href="#">excluding</a>
+            </li>
+            <li data-value="no">
+              <a href="#">including</a>
+            </li>
+          </ul>
+        </li>
+        full courses
+        <li class="excluding-full-courses-term-dropdown dropdown">
+          <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
+            <span class="full-next-term-option">
+              <% if (fullNextTerm === 'yes') { %>
+                next term
+              <% } else { %>
+                this term
+              <% } %>
+            </span>
+            <b class="caret"></b>
+          </a>
+          <ul class="dropdown-menu" role="menu">
+            <li data-value="yes">
+              <a href="#">next term</a>
+            </li>
+            <li data-value="no">
+              <a href="#">this term</a>
+            </li>
+          </ul>
+        </li>
       </form>
     </div>
 

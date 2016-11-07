@@ -609,6 +609,10 @@ def search_courses():
         count: Max items to return (aka. limit)
         offset: Index of first search result to return (aka. skip)
         exclude_taken_courses: "yes" to exclude courses current user has taken.
+        exclude_full_courses: "yes" to to exclude courses which do not currently
+            have open spaces.
+        full_next_term: if "yes", filtering full courses queries current term,
+            otherwise queries next term.
 
     If a user is authenticated, additional user-specific info will be returned,
     such as terms user took each course and ratings and reviews (if any).
