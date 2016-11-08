@@ -238,22 +238,27 @@ def get_friend_list(token):
     '''
     Return a list of fbids for the Facebook user associated with token
     '''
+    fbid_list = []
     params = {
         'access_token': token,
     }
-    resp = requests.get('https://graph.facebook.com/me/friends', params=params)
-    resp_dict = util.json_loads(resp.text)
+    url = 'https://graph.facebook.com/me/friends'
 
-    if 'error' in resp_dict:
-        if resp_dict.get('error').get('type') == 'OAuthException':
-            raise FacebookOAuthException()
-        raise Exception(resp.text)
+    while url is not None:
+        resp = requests.get(url, params=params)
+        resp_dict = util.json_loads(resp.text)
 
-    fbid_list = []
-    if 'data' in resp_dict:
-        for entry in resp_dict['data']:
-            fbid_list.append(entry['id'])
-    else:
-        raise Exception('"data" not in dict (%s)' % resp_dict)
+        if 'error' in resp_dict:
+            if resp_dict.get('error').get('type') == 'OAuthException':
+                raise FacebookOAuthException()
+            raise Exception(resp.text)
+
+        if 'data' in resp_dict:
+            for entry in resp_dict['data']:
+                fbid_list.append(entry['id'])
+        else:
+            raise Exception('"data" not in dict (%s)' % resp_dict)
+
+        url = resp_dict.get('paging', {}).get('next')
 
     return fbid_list
