@@ -79,6 +79,7 @@ function(RmcBackbone, $, _, _s, util, _bootstrap) {
       this.$('.shown-rating .rating-progress').each(function(i, elem) {
         var percent = ratings.at(i).getPercent();
         $(elem).find('.positive').css('width', percent + '%');
+        $(elem).find('.negative').css('width', (100 - percent) + '%');
         if (ratings.at(i).get('count') === 0) {
           $(elem).hide();
         }
