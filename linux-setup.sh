@@ -76,7 +76,7 @@ install_phantomjs() {
                 *) mach=x86_64;;
             esac
             sudo rm -rf phantomjs
-            wget "https://phantomjs.googlecode.com/files/phantomjs-1.9.2-linux-${mach}.tar.bz2" -O- | sudo tar xfj -
+            wget "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/phantomjs/phantomjs-1.9.2-linux-${mach}.tar.bz2" -O- | sudo tar xfj -
 
             sudo ln -snf /usr/local/share/phantomjs-1.9.2-linux-${mach}/bin/phantomjs /usr/local/bin/phantomjs
         )
@@ -105,7 +105,7 @@ install_chromedriver() {
 
 install_spark() {
     rm -rf spark
-    wget "http://apache.mirror.vexxhost.com/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz" -O tempfile
+    wget "https://archive.apache.org/dist/spark/spark-1.6.0/spark-1.6.0-bin-hadoop2.6.tgz" -O tempfile
     mkdir spark
     tar xzf tempfile -C spark --strip-components=1
     rm tempfile
