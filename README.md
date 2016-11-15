@@ -21,6 +21,7 @@ If you are getting a connection refused error when trying to run `make local` an
 most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
 and let it warm up for about 30 seconds to 1 minute. Then kill the process, and run `make local` again. It should work now.
 
+
 ### Getting seed data
 
 Run the following to get some basic course data into the DB.
@@ -29,6 +30,15 @@ Run the following to get some basic course data into the DB.
 make init_data
 ```
 
+### Dependency issues on Linux
+
+You may encounter errors regarding inheritance issues, invalid json conversions, or missing mock data while/after running `make install`, `make init_data`, or `make local`. If this is the case, you might have the wrong dependency versions installed or the installation didn't include certain dependencies in the first place. You can check by comparing `requirements.txt` with `pip freeze`. 
+
+If they are different, replace the dependencies you currently have using:
+```sh
+pip freeze | xargs pip uninstall -y
+pip install -r requirements.txt
+```
 ## Why RMC?
 
 It might seem funny that this repository and a bunch of the code references `rmc`.
