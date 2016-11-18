@@ -12,7 +12,6 @@ from term import Term  # @UnusedImport
 from user import User  # @UnusedImport
 from user_course import MenloCourse  # @UnusedImport
 from user_course import UserCourse  # @UnusedImport
-from user_course import CritiqueCourse  # @UnusedImport
 from section import SectionMeeting  # @UnusedImport
 from section import Section  # @UnusedImport
 from course_alert import BaseCourseAlert  # @UnusedImport
