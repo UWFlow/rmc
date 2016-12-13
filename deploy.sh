@@ -46,5 +46,3 @@ node_modules/react-tools/bin/jsx -x jsx server/static/jsx/ server/static/js/ &
 
 sudo service rmc_daemon restart
 sudo service celeryd restart
-
-PYTHONPATH=$HOME python notify_deploy.py $DEPLOYER
