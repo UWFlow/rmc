@@ -56,6 +56,10 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
         queryParams.exclude_taken_courses = view.excludeTakenCourses;
       }
 
+      if (view.selectedTerm !== 'this') {
+        queryParams.selected_term = view.selectedTerm;
+      }
+
       if (view.keywords) {
         queryParams.keywords = view.keywords;
       }
@@ -81,6 +85,7 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
     courses: undefined,
     hasMore: true,
     excludeTakenCourses: undefined,
+    selectedTerm: 'this',
 
     initialize: function(options) {
       this.sortMode = options.sortMode;
@@ -161,9 +166,21 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
     events: {
       'click .excluding-taken-courses-dropdown .dropdown-menu li':
           'changeExcludeTakenCourses',
+      'click .courses-by-term-dropdown .dropdown-menu li':
+          'changeTermSelection',
       'click .sort-options .option': 'changeSortMode',
       'input .keywords': 'changeKeywords',
       'paste .keywords': 'changeKeywords'
+    },
+
+    changeTermSelection: function(evt) {
+      evt.preventDefault();
+
+      var $target = $(evt.currentTarget);
+      this.$('.selected-term-option').text($target.text());
+      this.setSelectedTerm($target.attr('data-value'));
+
+      this.resetAndUpdate();
     },
 
     changeExcludeTakenCourses: function(evt) {
@@ -218,6 +235,10 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
       }, this), FETCH_DELAY_MS);
     },
 
+    setSelectedTerm: function(term) {
+      this.selectedTerm = term;
+    },
+
     setExcludeTakenCourses: function(excludeTakenCourses) {
       this.excludeTakenCourses = excludeTakenCourses;
     },
@@ -266,7 +287,8 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
         count: this.count,
         sort_mode: this.sortMode.name,
         keywords: this.keywords,
-        exclude_taken_courses: this.excludeTakenCourses
+        exclude_taken_courses: this.excludeTakenCourses,
+        selected_term: this.selectedTerm
       };
       this.trigger('update');
 

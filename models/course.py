@@ -301,6 +301,13 @@ class Course(me.Document):
         count = int(params.get('count', 10))
         offset = int(params.get('offset', 0))
         exclude_taken_courses = (params.get('exclude_taken_courses') == "yes")
+        current_term_num = int(util.get_current_term_id().split('_')[1])
+        next_term_num = (current_term_num + 4) % 12
+        term_offered = params.get('selected_term')
+        if term_offered == 'this':
+            selected_term = '0' + str(current_term_num)
+        elif term_offered == 'next':
+            selected_term = '0' + str(next_term_num)
 
         # TODO(david): These logging things should be done asynchronously
         rmclogger.log_event(
@@ -376,6 +383,8 @@ class Course(me.Document):
             sorted_courses = unsorted_courses.order_by(order_by)
             courses = sorted_courses.skip(offset).limit(count)
 
+        courses = [course for course in courses if (
+                selected_term in course.terms_offered)]
         has_more = len(courses) == count
 
         return courses, has_more
