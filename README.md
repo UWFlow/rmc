@@ -6,49 +6,54 @@ Plan your courses
 
 ## Getting up and running
 
-To set up your dev environment, run `make install`.
+The fastest way to get running is to use Docker. This will let you run Flow 
+inside of a virtual machine to avoid dealing with package installation problems 
+and to avoid polluting your development environment. It should also take less 
+time.
 
-We work inside a [virtualenv][], so remember to `source
-~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
+To get started, [install Docker][].
 
-You should now be ready to boot the local server, with `make local`.
+Once you have docker installed, run:
 
-Once it starts running, point your browser to http://localhost:5000/
+    $ make shell_in_docker
 
-### MongoDB error on Linux
+This will download and run a Docker image with all of Flow's dependencies 
+already installed. Don't worry if you don't know what a Docker image is.
 
-If you are getting a connection refused error when trying to run `make local` and are on Linux, this is
-most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
-and let it warm up for about 30 seconds to 1 minute. Then kill the process, and run `make local` again. It should work now.
+It will only need to download the image once, so booting up in the future should 
+be much faster.
 
+Once the image is downloaded and running, you should find yourself in a
+`/bin/bash` shell. This is running inside a Docker container (effectively a 
+virtual machine). Inside this container, the `rmc` repository can be found in 
+`/rmc`, which is where you should be right after running `make shell_in_docker`.
 
-### Getting seed data
+To start running Flow locally, run the following inside this new shell.
 
-Run the following to get some basic course data into the DB.
+    $ make local
 
-```sh
-make init_data
-```
+If you point your browser at http://localhost:5000/, you should now see the Flow 
+homepage running on your computer!
 
-### Dependency issues on Linux
+Congratulations! You now have Flow running locally.
 
-You may encounter errors regarding inheritance issues, invalid json conversions, or missing mock data while/after running `make install`, `make init_data`, or `make local`. If this is the case, you might have the wrong dependency versions installed or the installation didn't include certain dependencies in the first place. You can check by comparing `requirements.txt` with `pip freeze`. 
+[install Docker]: https://docs.docker.com/engine/installation/
 
-If they are different, replace the dependencies you currently have using:
-```sh
-pip freeze | xargs pip uninstall -y
-pip install -r requirements.txt
-```
-## Why RMC?
+## Getting seed data
 
-It might seem funny that this repository and a bunch of the code references `rmc`.
+To do anything interesting in Flow, you need data in your database. This is 
+where information about courses, professors, and scheduling information is 
+stored.
 
-RMC stands for "Rate My Courses", which was the prototype name for this project
-before it was given the (slightly) better name of Flow.
+To get started, open a new terminal (different from the one running `make 
+local`), and start a new shell inside Docker by running
 
-Because of the profileration of this 3 letter prefix throughout the code, and the
-unfortunate coupling of the repository name and our python namespace, we decided
-to leave it be.
+    $ make shell_in_docker
+
+Inside the Docker container, run the following to get some basic course data 
+into the DB.
+
+    $ make init_data
 
 ## Directory structure
 
@@ -111,6 +116,16 @@ Here's what an example session might look like:
 
 [virtualenv]: http://www.virtualenv.org/en/latest/
 
+## Why RMC?
+
+It might seem funny that this repository and a bunch of the code references `rmc`.
+
+RMC stands for "Rate My Courses", which was the prototype name for this project
+before it was given the (slightly) better name of Flow.
+
+Because of the profileration of this 3 letter prefix throughout the code, and the
+unfortunate coupling of the repository name and our python namespace, we decided
+to leave it be.
 
 ## Running tests
 
@@ -139,3 +154,23 @@ PYTHONPATH=.. nosetests server/api/v1_test.py
 When you're ready to contribute, take a look at [the contributing
 guidelines](https://github.com/UWFlow/rmc/blob/master/CONTRIBUTING.md) and our
 [style guide](https://github.com/UWFlow/rmc/wiki/Flow-Style-Guide).
+
+## Setting up without Docker
+
+If you'd prefer to avoid the docker route, you can install the dependencies 
+directly on your own machine.
+
+To set up your dev environment, run `make install`.
+
+We work inside a [virtualenv][], so remember to `source
+~/.virtualenv/rmc/bin/activate` whenever you're working within the repo.
+
+You should now be ready to boot the local server, with `make local`.
+
+Once it starts running, point your browser to http://localhost:5000/
+
+### MongoDB error on Linux
+
+If you are getting a connection refused error when trying to run `make local` and are on Linux, this is
+most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
+and let it warm up for about 30 seconds to 1 minute. Then kill the process, and run `make local` again. It should work now.

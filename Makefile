@@ -7,6 +7,9 @@ SHELL=/bin/bash
 local: require_virtualenv_in_dev
 	./local_server.sh
 
+shell_in_docker:
+	./docker_shell.sh
+
 install: os-install common-install ;
 
 os-install:
