@@ -30,6 +30,12 @@ def get_user_course_modified_date(uc):
 
 
 class MenloCourse(me.Document):
+    '''MenloCourse objects are sourced from another website
+
+    As such, they only have professor reviews. The course review
+    EmbeddedDocument will always be the default CourseReview
+    '''
+
     meta = {
         'indexes': [
             'course_id',
