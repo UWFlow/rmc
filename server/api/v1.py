@@ -131,7 +131,7 @@ def get_course_users(course_id):
     user_ids = set(ucd['user_id'] for ucd in user_course_dict_list)
     users = m.User.objects(id__in=list(user_ids)).only(
             *(m.User.CORE_FIELDS + ['num_points', 'num_invites',
-            'program_name']))
+              'program_name']))
 
     term_users_map = collections.defaultdict(list)
     for ucd in user_course_dict_list:
@@ -249,7 +249,8 @@ def login_facebook():
 
     if not user:
         raise api_util.ApiForbiddenError('No user with fbid %s exists. '
-                'Create an account at uwflow.com.' % fbid)
+                                         'Create an account at uwflow.com.'
+                                         % fbid)
 
     view_helpers.login_as_user(user)
     # TODO(sandy): We don't need to do this anymore, just use the endpoint
@@ -636,7 +637,8 @@ def search_unified():
     course_dicts = []
     if 'courses' in result_types:
         courses = sorted(list(m.Course.objects().only('id', 'name',
-                '_keywords', 'department_id', 'number')), key=lambda c: c.id)
+                         '_keywords', 'department_id', 'number')),
+                         key=lambda c: c.id)
         course_dicts = [{
             'label': c.id,
             'name': c.name,
@@ -662,8 +664,10 @@ def search_unified():
 
     prof_dicts = []
     if 'professors' in result_types:
-        professors = m.Professor.objects().only('id', 'first_name',
-                'last_name', 'departments_taught')
+        professors = m.Professor.objects().only('id',
+                                                'first_name',
+                                                'last_name',
+                                                'departments_taught')
         prof_dicts = [{
             'label': p.name,
             'departments_taught': p.departments_taught,

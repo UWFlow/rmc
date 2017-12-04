@@ -61,6 +61,10 @@ init_data:
 	@echo "Aggregating data"
 	PYTHONPATH=.. python data/aggregator.py daily
 
+train_engine: require_virtualenv_in_dev
+	@echo "Training the recommendation engine"
+	PYTHONPATH=..:${SPARK_HOME}/python python data/engine.py
+
 export_data:
 	mongodump --db rmc
 
@@ -107,10 +111,10 @@ stats: require_virtualenv_in_dev
 	PYTHONPATH=.. python analytics/stats.py
 
 alltest: require_virtualenv_in_dev
-	PYTHONPATH=.. nosetests
+	PYTHONPATH=..:${SPARK_HOME}/python nosetests -v
 
 test: require_virtualenv_in_dev
-	PYTHONPATH=.. nosetests -a '!slow'
+	PYTHONPATH=..:${SPARK_HOME}/python nosetests -a '!slow' -v
 
 js-test-debug:
 	cd server/; \

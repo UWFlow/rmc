@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # This sets up RMC web app on EC2 Ubuntu11 AMI.
 #
@@ -19,7 +19,7 @@
 # Bail on any errors
 set -e
 
-CONFIG_DIR=$HOME/rmc/aws_setup
+CONFIG_DIR=$HOME/rmc/server_setup
 
 cd $HOME
 
@@ -34,34 +34,19 @@ sudo apt-get install -y unzip
 sudo apt-get install -y ruby rubygems
 sudo REALLY_GEM_UPDATE_SYSTEM=1 gem update --system
 
+echo "Installing rvm"
+gpg --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
+curl -sSL https://get.rvm.io | bash -s stable
+source /home/rmc/.rvm/scripts/rvm
+rvm install 2.3.1
+rvm use 2.3.1
+
+echo "Installing virtualenv"
 sudo pip install virtualenv
 mkdir -p /home/rmc/.virtualenvs
 RMC_VIRTUALENV_DIR=/home/rmc/.virtualenvs/rmc
 virtualenv --no-site-packages "$RMC_VIRTUALENV_DIR"
 . "$RMC_VIRTUALENV_DIR"/bin/activate
-
-echo "Prepping EBS mount points"
-sudo mkdir -p /ebs/data
-sudo chown $USER /ebs/data
-ln -sf /ebs/data
-
-cat <<EOF
-
-# Format the EBS volume if attaching a new disk with nothing in it. You'll
-# have to look up the device file (eg. /dev/xvdf) in EC2 console and ls /dev
-sudo mkfs.ext3 /dev/xvdf
-
-# If this is your first time setting up the machine, you'll need to add
-# something like the following to /etc/fstab, then reboot from AWS console:
-/dev/xvdf    /ebs/data         auto	defaults,comment=cloudconfig	0	2
-
-# See for more info:
-# http://yoodey.com/how-attach-and-mount-ebs-volume-ec2-instance-ubuntu-1010
-
-# Also if this is the first time setting up the machine, run something like:
-scp ~/.ssh/id_dsa* rmc:~/.ssh/
-
-EOF
 
 echo "Syncing rmc code base"
 git clone git@github.com:UWFlow/rmc.git || ( cd rmc && git pull )
@@ -92,15 +77,17 @@ sudo service mongo_daemon restart
 
 echo "Setting up redis and installing as a daemon"
 # TODO(david): Should actually make and build a specific version
-sudo add-apt-repository -y ppa:rwky/redis
-sudo apt-get update
-sudo apt-get install -y redis-server
+cd /tmp
+curl -O http://download.redis.io/releases/redis-2.6.17.tar.gz
+tar xzvf redis-2.6.17.tar.gz
+cd redis-2.6.17
+make
+sudo make install
 mkdir -p /home/rmc/data/redis/
 # TODO(david): Do this better (redis daemon changes user to redis)
 chmod a+w /home/rmc/data/redis/
 chmod a+w /home/rmc/data/logs/
 sudo rm -f /etc/init/redis-server.conf  # Remove annoying upstart daemon
-sudo service redis-server stop  # Stop so we can start redis using our config
 sudo update-rc.d -f redis-server remove
 sudo ln -sfnv $CONFIG_DIR/etc/init.d/redis-server /etc/init.d
 sudo update-rc.d redis-server defaults
@@ -114,12 +101,9 @@ sudo rm -f /etc/nginx/sites-enabled/default
 sudo ln -sfnv $CONFIG_DIR/etc/nginx/sites-available/rmc \
   /etc/nginx/sites-available/rmc
 sudo ln -sfnv /etc/nginx/sites-available/rmc /etc/nginx/sites-enabled/rmc
-sudo service nginx restart
+# sudo service nginx restart
 
 echo "Installing node and npm"
-sudo apt-get install -y python-software-properties
-sudo add-apt-repository -y ppa:chris-lea/node.js
-sudo apt-get update -y
 sudo apt-get install -y nodejs npm
 
 echo "Setting up rmc and dependencies"
@@ -127,17 +111,15 @@ echo "Setting up rmc and dependencies"
 # Install libraries needed for lxml
 sudo apt-get install -y libxml2-dev libxslt-dev
 # Setup compass
-sudo gem install compass
-( cd rmc/server && compass init --config config.rb )
+gem install compass
+( cd $HOME/rmc/server && compass init --config config.rb )
 # Setup bundle
-sudo gem install rdoc
-sudo gem install bundle
-sudo gem install rdoc-data; sudo rdoc-data --install
-( cd rmc/server && bundle install )
-# Install pip requirements: sudo because we don't set up virtualenv
-( cd rmc && pip install -r requirements.txt )
-# Import data from various text files
-( cd rmc && make init_data )
+gem install rdoc
+gem install bundle
+gem install rdoc-data; rdoc-data --install
+( cd $HOME/rmc/server && bundle install )
+# Install pip requirements
+( cd $HOME/rmc && pip install -r requirements.txt )
 mkdir -p /home/rmc/logs/server
 
 echo "Setting up rmc web server as a daemon"

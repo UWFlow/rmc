@@ -155,8 +155,6 @@ When you're ready to contribute, take a look at [the contributing
 guidelines](https://github.com/UWFlow/rmc/blob/master/CONTRIBUTING.md) and our
 [style guide](https://github.com/UWFlow/rmc/wiki/Flow-Style-Guide).
 
-If you have questions or would like to discuss how to contribute, come chat with us in our [public chat room](http://www.hipchat.com/gAUVWHvA3).
-
 ## Setting up without Docker
 
 If you'd prefer to avoid the docker route, you can install the dependencies 
@@ -176,4 +174,3 @@ Once it starts running, point your browser to http://localhost:5000/
 If you are getting a connection refused error when trying to run `make local` and are on Linux, this is
 most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
 and let it warm up for about 30 seconds to 1 minute. Then kill the process, and run `make local` again. It should work now.
-

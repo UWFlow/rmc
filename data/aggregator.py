@@ -107,9 +107,6 @@ def update_mongo_course_rating():
 
     increment_ratings(*(args + [get_fields_fn, menlo_ucs]))
     increment_ratings(*(args + [get_fields_fn, flow_ucs]))
-    # TODO(mack): add back course critiques
-    # increment_aggregate_ratings(*(args + [get_aggregate_fields_fn,
-    #                                       m.CritiqueCourse.objects]))
 
     count = [0]
 
@@ -193,8 +190,6 @@ def update_redis_course_professor_rating():
 
     increment_ratings(*(args + [get_fields_fn, menlo_ucs]))
     increment_ratings(*(args + [get_fields_fn, flow_ucs]))
-    increment_aggregate_ratings(*(args + [get_aggregate_fields_fn,
-                                          m.CritiqueCourse.objects]))
 
     count = [0]
 

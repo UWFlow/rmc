@@ -26,3 +26,10 @@ data/opendata2_courses/*.json
 # Ignore generated js files
 server/static/js/scholarship.js
 server/static/js/.module-cache/
+
+# Ignore generated files for recommendation
+data/recommendation/trained_model
+data/recommendation/checkpoint
+data/recommendation/metrics
+data/recommendation/*.json
+spark
