@@ -130,11 +130,28 @@ function($, _, __, _util) {
         });
 
         $.when(deferredMe, deferredFriends).done(function(me, friendFbids) {
+          // Facebook no longer returns first_name, middle_name, and last_name.
+          // They now just return `name`. But our models still require
+          // first_name and last_name. Do this hack for now to not fail
+          // validation when we save the User.
+          var names = me.name.split(' ');
+
+          var first_name, last_name, middle_name;
+          if (names.length === 1) {
+            first_name = names[0];
+            middle_name = '';
+            last_name = '';
+          } else {
+            first_name = names[0];
+            last_name = names[names.length - 1];
+            middle_name = names.slice(1, names.length - 1).join(' ');
+          }
+
           var params = {
             'friend_fbids': JSON.stringify(friendFbids),
-            'first_name': me.first_name,
-            'middle_name': me.middle_name,
-            'last_name': me.last_name,
+            'first_name': first_name,
+            'middle_name': middle_name,
+            'last_name': last_name,
             'email': me.email,
             'gender': me.gender
           };
