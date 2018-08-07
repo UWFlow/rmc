@@ -120,8 +120,9 @@
 
     <% var courseParts = splitCourseId(term[0].get('course_id')); %>
     <% var questId = termIdToQuestId(termId); %>
+    <% var courseLevel = (courseParts[1] <= 499) ? 'under' : 'grad'; %>
 
-    <a href="http://www.adm.uwaterloo.ca/cgi-bin/cgiwrap/infocour/salook.pl?level=under&sess=<%- questId %>&subject=<%- courseParts[0] %>&cournum=<%- courseParts[1] %>"
+    <a href="http://www.adm.uwaterloo.ca/cgi-bin/cgiwrap/infocour/salook.pl?level=<%- courseLevel %>&sess=<%- questId %>&subject=<%- courseParts[0] %>&cournum=<%- courseParts[1] %>"
         target="_blank">
       www.adm.uwaterloo.ca</a>.
    </small>
