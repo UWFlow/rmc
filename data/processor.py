@@ -511,7 +511,12 @@ def _opendata_to_section_meeting(data, term_year):
     )
 
     if data['instructors']:
-        last_name, first_name = data['instructors'][0].split(',')
+        names = data['instructors'][0].split(',')
+        if len(names) == 2:
+            last_name, first_name = names
+        else:
+            last_name = names[0]
+            first_name = ''
         prof_id = m.Professor.get_id_from_name(first_name, last_name)
         if not m.Professor.objects.with_id(prof_id):
             m.Professor(id=prof_id, first_name=first_name,
