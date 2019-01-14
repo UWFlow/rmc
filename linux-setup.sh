@@ -18,12 +18,6 @@ install_packages() {
 
     updated_apt_repo=""
 
-    # To get the most recent nodejs, later.
-    if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q chris-lea-node_js; then
-        sudo add-apt-repository -y ppa:chris-lea/node.js
-        updated_apt_repo=yes
-    fi
-
     # To get the most recent git.
     if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q git-core-ppa; then
         sudo add-apt-repository -y ppa:git-core/ppa
