@@ -114,8 +114,8 @@ sudo apt-get install -y libxml2-dev libxslt-dev
 gem install compass
 ( cd $HOME/rmc/server && compass init --config config.rb )
 # Setup bundle
-gem install rdoc
-gem install bundle
+gem install rdoc -v 4.2.0
+gem install bundler -v 1.11.2
 gem install rdoc-data; rdoc-data --install
 ( cd $HOME/rmc/server && bundle install )
 # Install pip requirements
