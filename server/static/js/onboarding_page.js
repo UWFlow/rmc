@@ -101,6 +101,7 @@ function($, _, _s, transcript, _util, RmcBackbone, _user, __) {
       // at all (due to the redirect). We could setTimeout the redirect, but
       // that would cause delay and also since /transcript should just be
       // succesful, we'll do this for now. Maybe move to server side.
+      this.$('.transcript-text').addClass('transcript-loader');
       _gaq.push([
         '_trackEvent',
         'USER_GENERIC',
