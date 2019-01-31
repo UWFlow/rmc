@@ -301,6 +301,8 @@ class Course(me.Document):
         count = int(params.get('count', 10))
         offset = int(params.get('offset', 0))
         exclude_taken_courses = (params.get('exclude_taken_courses') == "yes")
+        exclude_full_courses = (params.get('exclude_full_courses') == "yes")
+        full_next_term = (params.get('full_next_term') == "yes")
 
         # TODO(david): These logging things should be done asynchronously
         rmclogger.log_event(
@@ -331,6 +333,15 @@ class Course(me.Document):
                 ]
             else:
                 logging.error('Anonymous user tried excluding taken courses')
+
+        if exclude_full_courses:
+            existing_courses = Course.objects(**filters).only('id')
+            with_space = section.Section.objects(course_id__in=existing_courses,
+                term_id=term.Term.get_next_term_id() if full_next_term\
+                    else term.Term.get_current_term_id()).\
+                where("this.enrollment_total <= this.enrollment_capacity").\
+                only('course_id').distinct('course_id')
+            filters['id__in'] = with_space
 
         if sort_mode == 'friends_taken' and current_user:
             import user
