@@ -238,6 +238,10 @@ $toolbarBg: #FAFAFA;
     margin-top: 10px;
   }
 
+  .schedule-input-loader {
+    background: #eee url('/static/img/bar-loader.gif') center center no-repeat;
+  }
+
   .schedule-input-error {
     color: #ff0000;
   }

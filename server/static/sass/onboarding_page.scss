@@ -82,6 +82,10 @@ header {
       resize: none;
     }
 
+    .transcript-loader {
+      background: #eee url('/static/img/bar-loader.gif') center center no-repeat;
+    }
+
     .transcript-disclaimer {
       text-align: left;
       font-size: 18px;
