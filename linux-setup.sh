@@ -30,14 +30,6 @@ install_packages() {
         updated_apt_repo=yes
     fi
 
-    # To get the most recent redis-server
-    wget http://download.redis.io/redis-stable.tar.gz
-    tar xvzf redis-stable.tar.gz
-    cd redis-stable
-    sudo make install
-    cd ..
-    sudo rm -rf redis-stable
-
     # To get the most recent mongodb
     if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q 10gen; then
         sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
