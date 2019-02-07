@@ -7,7 +7,7 @@ install_gems() {
     if ! which bundle >/dev/null 2>&1; then
         # Ruby stuffs: Install bundler so we can grab other gems
         echo "Installing bundler"
-        sudo gem install bundler
+        sudo gem install bundler -v 1.11.2
     fi
 
     echo "Installing gems"
