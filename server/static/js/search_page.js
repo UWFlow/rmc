@@ -23,6 +23,8 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
           return (sortMode.name.replace(' ', '+') === queryParams.sort_mode);
         }) || window.pageData.sortModes[0],
         excludeTakenCourses: queryParams.exclude_taken_courses || "no",
+        excludeFullCourses: queryParams.exclude_full_courses || "no",
+        fullNextTerm: queryParams.full_next_term || "no",
         keywords: (queryParams.keywords || '').replace('+',' ')
       });
 
@@ -56,6 +58,14 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
         queryParams.exclude_taken_courses = view.excludeTakenCourses;
       }
 
+      if (view.excludeFullCourses === 'yes') {
+        queryParams.exclude_full_courses = view.excludeFullCourses;
+      }
+
+      if (view.fullNextTerm === 'yes') {
+        queryParams.full_next_term = view.fullNextTerm;
+      }
+
       if (view.keywords) {
         queryParams.keywords = view.keywords;
       }
@@ -81,10 +91,14 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
     courses: undefined,
     hasMore: true,
     excludeTakenCourses: undefined,
+    excludeFullCourses: undefined,
+    fullNextTerm: undefined,
 
     initialize: function(options) {
       this.sortMode = options.sortMode;
       this.excludeTakenCourses = options.excludeTakenCourses;
+      this.excludeFullCourses = options.excludeFullCourses;
+      this.fullNextTerm = options.fullNextTerm;
 
       if (!pageData.currentUserId) {
         this.excludeTakenCourses = "no";
@@ -125,6 +139,8 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
         selectedSortMode: this.sortMode,
         getIconForMode: this.getIconForMode,
         excludeTakenCourses: this.excludeTakenCourses,
+        excludeFullCourses: this.excludeFullCourses,
+        fullNextTerm: this.fullNextTerm,
         keywords: this.keywords
       }));
 
@@ -161,6 +177,10 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
     events: {
       'click .excluding-taken-courses-dropdown .dropdown-menu li':
           'changeExcludeTakenCourses',
+      'click .excluding-full-courses-dropdown .dropdown-menu li':
+          'changeExcludeFullCourses',
+      'click .excluding-full-courses-term-dropdown .dropdown-menu li':
+          'changeFullNextTerm',
       'click .sort-options .option': 'changeSortMode',
       'input .keywords': 'changeKeywords',
       'paste .keywords': 'changeKeywords'
@@ -181,8 +201,28 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
       }
 
       var $target = $(evt.currentTarget);
-      this.$('.selected-exclude-option').text($target.text());
+      this.$('.taken-courses-exclude-option').text($target.text());
       this.setExcludeTakenCourses($target.attr('data-value'));
+
+      this.resetAndUpdate();
+    },
+
+    changeExcludeFullCourses: function(evt) {
+      evt.preventDefault();
+
+      var $target = $(evt.currentTarget);
+      this.$('.full-courses-exclude-option').text($target.text());
+      this.setExcludeFullCourses($target.attr('data-value'));
+
+      this.resetAndUpdate();
+    },
+
+    changeFullNextTerm: function(evt) {
+      evt.preventDefault();
+
+      var $target = $(evt.currentTarget);
+      this.$('.full-next-term-option').text($target.text());
+      this.setFullNextTerm($target.attr('data-value'));
 
       this.resetAndUpdate();
     },
@@ -220,6 +260,14 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
 
     setExcludeTakenCourses: function(excludeTakenCourses) {
       this.excludeTakenCourses = excludeTakenCourses;
+    },
+
+    setExcludeFullCourses: function(excludeFullCourses) {
+      this.excludeFullCourses = excludeFullCourses;
+    },
+
+    setFullNextTerm: function(fullNextTerm) {
+      this.fullNextTerm = fullNextTerm;
     },
 
     setSortMode: function(sortName) {
@@ -266,7 +314,9 @@ function($, _, _s, course, __, Backbone, RmcBackbone,
         count: this.count,
         sort_mode: this.sortMode.name,
         keywords: this.keywords,
-        exclude_taken_courses: this.excludeTakenCourses
+        exclude_taken_courses: this.excludeTakenCourses,
+        exclude_full_courses: this.excludeFullCourses,
+        full_next_term: this.fullNextTerm
       };
       this.trigger('update');
 
