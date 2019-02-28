@@ -1,111 +1,57 @@
-define(
-['ext/jquery', 'ext/underscore', 'ext/underscore.string'],
-function($, _, _s) {
+define(function(require) {
+  // Invoke func repeatedly until it runs out of things to return.
+  // This is handy for wrapping lambdas for the lack of a () =>* ... shorthand.
+  function* asGenerator(func) {
+    var res;
+    while ((res = func())) yield res;
+  }
 
-  /**
-   * Parses transcript text. Will throw exception on failure to parse.
-   * @param {string} data Transcript text
-   * @return {array} list of { termName: <X>, courseIds: [<A>, <B>, ...] }
-   *                 objects
-   */
-  function parseTranscript(data) {
-    var beginMarker =
-        'UNIVERSITY  OF  WATERLOO  UNDERGRADUATE  UNOFFICIAL  TRANSCRIPT';
-    var endMarker = 'End of Transcript';
+  // Given `arr`, `other` monotonic and a strict order `lt` denoted <,
+  // partition `arr` so that for `x` in `n`th bin `other[n] < x < other[n+1]`.
+  function leftMonotonicPartitionBy(arr, other, lt) {
+    const partitions = [];
+    for (var j = 0, i = 0; j + 1 < other.length; ++j)
+      for (partitions[j] = []; i < arr.length && lt(other[j], arr[i]) && lt(arr[i], other[j + 1]); ++i)
+        partitions[j].push(arr[i]);
+    partitions[j] = arr.slice(i); // rest
+    return partitions;
+  }
 
-    var beginIndex = data.indexOf(beginMarker);
-    if (beginIndex !== -1) {
-      beginIndex += beginMarker.length;
-    }
-    var endIndex = data.indexOf(endMarker);
-    if (endIndex === -1) {
-      endIndex = data.length;
-    }
-    // Set portion of transcript that we care about to be between
-    // begin and end markers
-    data = data.substring(beginIndex, endIndex);
+  // Produce {term, level, courses} objects from flat lists of regex matches.
+  function assembleSchedule(terms, levels, courses) {
+    const coursePartition = leftMonotonicPartitionBy(courses, levels, (a, b) => a.index < b.index);
+    // Exclude empty terms: can exist in exchange schenarios.
+    levels = levels.filter((_, i) => coursePartition[i].length > 0);
+    const coursesByTerm = levels.map((level, i) => ({
+      name: terms[i][0], // extract full match
+      programYearId: level[1], // extract 1B, 5C, etc
+      courseIds: coursePartition[i].map(c => (c[1] + c[2]).toLowerCase()) // MATH 135 => math135
+    }));
+    return coursesByTerm;
+  }
 
-    // TODO(mack): utilize studentId and program information
-    var matches = data.match(/Student ID: (\d+)/);
-    var studentId;
-    if (matches) {
-      studentId = parseInt(matches[1], 10);
-    }
+  function parseTranscript(txt) {
+    const termRegex = /(Fall|Winter|Spring)\s+(\d{4})/g;
+    // Levels are similar to 1A, 5C (delayed graduation).
+    const levelRegex = /Level:\s+(\d\w)/g;
+    // Course codes are similar to CS 145, STAT 920, PD 1, CHINA 120R.
+    const courseRegex = /([A-Z]{2,})\s+(\d{1,3}\w?)\s/g;
 
-    matches = data.match(/Program: (.*?)[\n]/);
-    var programName = _s.trim(matches[1]);
-
-    var termsRaw = [];
-
-    var termRe = /Spring|Fall|Winter/g;
-    var match = termRe.exec(data);
-    var lastIndex = -1;
-    // Split the transcript by terms
-    while (match) {
-      if (lastIndex !== -1) {
-        var termRaw = data.substring(lastIndex, match.index);
-        termsRaw.push(termRaw);
-      }
-      lastIndex = match.index;
-      match = termRe.exec(data);
-    }
-    if (lastIndex > -1) {
-      termsRaw.push(data.substring(lastIndex));
-    }
-
-    var coursesByTerm = [];
-    // Parse out the term and courses taken in that term
-    _.each(termsRaw, function(termRaw, i) {
-      var matches = termRaw.match(
-          /^((?:Spring|Fall|Winter) \d{4})\s+(\d[A-B])/);
-      if (!matches) {
-        // This could happen for a term that is a transfer from another school
-        return;
-      }
-
-      var termName = matches[1];
-      var programYearId = matches[2];
-      termRaw = termRaw.substring(termName.length);
-
-      var termLines = termRaw.split(/\r\n|\r|\n/g);
-      var courseIds = [];
-      _.each(termLines, function(termLine) {
-        // Assumption is that course codes that identify courses you've taken
-        // should only appear at the beginning of a line
-        matches = termLine.match(/^\s*[A-Z]+ \d{3}[A-Z]?/);
-        // TODO(mack): filter non-courses from matches
-        if (!matches || !matches.length) {
-          return;
-        }
-        var courseId = matches[0].replace(/\s+/g, '').toLowerCase();
-        courseIds.push(courseId);
-      });
-
-      coursesByTerm.push({
-        name: termName,
-        programYearId: programYearId,
-        courseIds: courseIds
-      });
-    });
-
+    const terms = Array.from(asGenerator(() => termRegex.exec(txt)));
+    const levels = Array.from(asGenerator(() => levelRegex.exec(txt)));
+    const courses = Array.from(asGenerator(() => courseRegex.exec(txt)));
     return {
-      coursesByTerm: coursesByTerm,
-      studentId: studentId,
-      programName: programName
+      coursesByTerm: assembleSchedule(terms, levels, courses),
+      studentId: txt.match(/Student ID:\s+(\d+)/)[1],
+      // Program name is up to *first* comma, hence *?. Spaces can be missing, so split on UpperCamelCase.
+      programName: txt.match(/Program:\s+(.*?),/)[1].split(/(?<=[a-z])(?=[A-Z])/).join(" ")
     };
   }
 
-  /**
-   * Removes grades from transcript
-   */
-  function removeGrades(data) {
-    data = data || '';
-    // '(?!^\s*![A-Z]+\s)' ensures we are not matching the number portion
-    // of the code code
-    // '\d{1,2}|100' matches the actual grade
-    return data.replace(/(?!^\s*![A-Z]+\s)\s+(\d{1,2}|100)\s/g, '');
+  function removeGrades(txt) {
+    // Lines start with course subject (like MATH) and end with grade like 94 or NCR.
+    return txt.replace(/(?<=^[A-Z]{2,}.*)\s+(\w{2,3}|\d{1,3})$/gm, "");
   }
-
 
   return {
     parseTranscript: parseTranscript,
