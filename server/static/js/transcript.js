@@ -37,14 +37,19 @@ define(function(require) {
     // Course codes are similar to CS 145, STAT 920, PD 1, CHINA 120R.
     const courseRegex = /([A-Z]{2,})\s+(\d{1,3}\w?)\s/g;
 
+    const studentId = txt.match(/Student ID:\s+(\d+)/);
+    const programName = txt.match(/Program:\s+(.*?)$/m);
+
     const terms = Array.from(asGenerator(() => termRegex.exec(txt)));
     const levels = Array.from(asGenerator(() => levelRegex.exec(txt)));
     const courses = Array.from(asGenerator(() => courseRegex.exec(txt)));
+
     return {
-      coursesByTerm: assembleSchedule(terms, levels, courses),
-      studentId: txt.match(/Student ID:\s+(\d+)/)[1],
-      // Program name is up to *first* comma, hence *?. Spaces can be missing, so split on UpperCamelCase.
-      programName: txt.match(/Program:\s+(.*?),/)[1].split(/(?<=[a-z])(?=[A-Z])/).join(" ")
+      // Flow wants schedule in reverse order
+      coursesByTerm: assembleSchedule(terms, levels, courses).reverse(),
+      studentId: Number.parseInt(studentId[1]),
+      // Spaces can be missing, so split on UpperCamelCase.
+      programName: programName[1].split(/(?<=[a-z,])(?=[A-Z])/).join(" ")
     };
   }
 
