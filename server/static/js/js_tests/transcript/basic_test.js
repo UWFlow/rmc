@@ -24,52 +24,52 @@ define(function(require) {
 
     testParsedTranscriptAsync('extracts the student number',
         function(transcriptData) {
-      expect(transcriptData.studentId).to.equal(20331374);
+      expect(transcriptData.studentId).to.equal(20705374);
     });
 
     testParsedTranscriptAsync('extracts the program name',
         function(transcriptData) {
       expect(transcriptData.programName).to.equal(
-          'Software Engineering, Honours, Co-operative Program');
+          'Computer Science, Honours, Co-operative Program');
     });
 
     testParsedTranscriptAsync('extracts the number of terms',
         function(transcriptData) {
-      expect(transcriptData.coursesByTerm.length).to.equal(10);
+      expect(transcriptData.coursesByTerm.length).to.equal(5);
     });
 
     testParsedTranscriptAsync('extracts the oldest term\'s courses',
         function(transcriptData) {
-      expect(transcriptData.coursesByTerm[9].courseIds).to.have.members([
-        'che102', 'cs137', 'math115', 'math117', 'phys115', 'se101'
+      expect(transcriptData.coursesByTerm[4].courseIds).to.have.members([
+        'cs145', 'math145', 'math147', 'psych101', 'spcom223'
       ]);
     });
 
     testParsedTranscriptAsync('extracts the oldest term\'s name',
         function(transcriptData) {
-      expect(transcriptData.coursesByTerm[9].name).to.equal('Fall 2009');
+      expect(transcriptData.coursesByTerm[4].name).to.equal('Fall 2017');
     });
 
     testParsedTranscriptAsync('extracts the oldest term\'s programYearId',
         function(transcriptData) {
-      expect(transcriptData.coursesByTerm[9].programYearId).to.equal('1A');
+      expect(transcriptData.coursesByTerm[4].programYearId).to.equal('1A');
     });
 
     testParsedTranscriptAsync('extracts the most recent term\'s courses',
         function(transcriptData) {
       expect(transcriptData.coursesByTerm[0].courseIds).to.have.members([
-        'cs343', 'cs348', 'earth121', 'earth121l', 'se390', 'se463', 'wkrpt300'
+        'coop2', 'pd10', 'wkrpt200m'
       ]);
     });
 
     testParsedTranscriptAsync('extracts the most recent term\'s name',
         function(transcriptData) {
-      expect(transcriptData.coursesByTerm[0].name).to.equal('Fall 2012');
+      expect(transcriptData.coursesByTerm[0].name).to.equal('Winter 2019');
     });
 
     testParsedTranscriptAsync('extracts the most recent term\'s programYearId',
         function(transcriptData) {
-      expect(transcriptData.coursesByTerm[0].programYearId).to.equal('3B');
+      expect(transcriptData.coursesByTerm[0].programYearId).to.equal('2B');
     });
   });
 });
