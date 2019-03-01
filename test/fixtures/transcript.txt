@@ -1,706 +1,107 @@
-									
-	
-				
-	
-						
-	
-		
-	
+University of Waterloo
+200 University Ave. West
+Waterloo Ontario Canada N2L3G1
+Page 1 of 2
+01/10/2019
+Undergraduate Unofficial Transcript
+Name: Shynkevych, Dmytro
+Student ID: 20705374
+Ontario Education Nbr: 657358545
 
-	
+Beginning of Undergraduate Record
 
+Fall 2017
+Program: ComputerScience,Honours,Co-operativeProgram
+ Level: 1A Load: Full-Time Form Of Study: Enrolment
+Course Description Attempted Earned Grade
+CS 145 Designing Functional Programs (Advanced Level) 0.50 0.50
+MATH 145 Algebra (Advanced Level) 0.50 0.50
+MATH 147 Calculus 1 (Advanced Level) 0.50 0.50
+PSYCH 101 Introductory Psychology 0.50 0.50
+SPCOM 223 Public Speaking 0.50 0.50
+In GPA Earned
+Term GPA 91.60 Term Totals 2.50 2.50
+Cumulative GPA 91.60 Cumulative Totals 2.50 2.50
+Faculty Average: 96.33 Computer Science, Honours, Co-operative Program
+Academic Standing: Excellent standing Effective 12/31/2017
+Term Honours: Term Dean's Honours List
 
-	
-James Wong
-	
-	
- 								
-	
-My Academics
-		
-Course Selection (Undergrad only)
-		
-Enroll
+Winter 2018
+Program: ComputerScience/DigitalHardwareOption,Honours,Co-operativeProgram
 
-								
+ Level: 1B Load: Full-Time Form Of Study: Enrolment
+Course Description Attempted Earned Grade
+CS 146 Elementary Algorithm Design and Data Abstraction
+(Advanced Level)
+0.50 0.50 100
+ECE 124 Digital Circuits and Systems 0.50 0.50
+ENGL 306A Introduction to Linguistics 0.50 0.50
+MATH 146 Linear Algebra 1 (Advanced level) 0.50 0.50
+MATH 148 Calculus 2 (Advanced Level) 0.50 0.50
+PD 1 Career Fundamentals 0.50 0.00
+STAT 230 Probability 0.50 0.50
+In GPA Earned
+Term GPA 95.00 Term Totals 3.50 3.00
+Cumulative GPA 93.46 Cumulative Totals 5.50 5.50
+Faculty Average: 95.86 Computer Science/Digital Hardware Option, Honours, Co-operative Program
+Academic Standing: Excellent standing Effective 05/18/2018
+Term Honours: Term Dean's Honours List
+
+Spring 2018
+Program: ComputerScience/DigitalHardwareOption,Honours,Co-operativeProgram
+ Level: 2A Load: Part-Time Form Of Study: Co-op WorkTerm
+Course Description Attempted Earned Grade
+COOP 1 Co-operative Work Term 0.50 0.00
+PD 11 Processes for Technical Report Writing 0.50 0.00
+In GPA Earned
+Term GPA 0.00 Term Totals 1.00 0.00
+Cumulative GPA 93.46 Cumulative Totals 5.50 5.50
  
-	
- 								
-	
-my undergrad program
-		
-grades
-		
-unofficial transcript
-
-								
- 
-
-	
-View Unofficial Transcript
-	
- 
-
-
-	
- 
-	
-Report Results
-	
-Return
-	
-
-
-
-
-
-              UNIVERSITY  OF  WATERLOO  UNDERGRADUATE  UNOFFICIAL  TRANSCRIPT             
-
-                                                                                          
-
-Name: Wong,James Ling Fung                                                                
-
-Student ID: 20342440                         Date Produced: Jul 09, 2013                  
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Winter 2014    4B   Full-Time                                                             
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-  Pre-enrolment classes are recorded. Final enrolment in these classes is not guaranteed. 
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-CS 444      Compiler Construction        0.50/0.00   Pre-enrolled only                    
-
-ECE 457B    Fundamentals of              0.50/0.00   Pre-enrolled only                    
-
-            Computational                                                                 
-
-            Intelligence                                                                  
-
-MUSIC 246   Soundtracks: Music in        0.50/0.00   Pre-enrolled only                    
-
-            Film                                                                          
-
-SE 465      Software Testing and         0.50/0.00   Pre-enrolled only                    
-
-            Quality Assurance                                                             
-
-SE 491      Design Project 2             0.25/0.00   Pre-enrolled only                    
-
-SPCOM 223   Public Speaking              0.50/0.00   Pre-enrolled only                    
-
-                                                                                          
-
-                     Term summary statistics available on May 21, 2014                    
-
-                                                                                          
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Spring 2013    4A   Full-Time                                                             
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-CS 488      Introduction to Computer     0.50/0.00                                        
-
-            Graphics                                                                      
-
-ECE 358     Computer Networks            0.50/0.00                                        
-
-MUSIC 140   Popular Music and Culture    0.50/0.00                                        
-
-SE 464      Software Design and          0.50/0.00                                        
-
-            Architectures                                                                 
-
-SE 490      Design Project 1             0.50/0.00                                        
-
-WKRPT 400   Work-term Report             0.13/0.00                        DRNA            
-
-                                                                                          
-
-                     Term summary statistics available on Sep 16, 2013                    
-
-                                                                                          
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Winter 2013    3B   Part-Time                     Co-op Work                              
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-COOP 5      Co-operative Work Term                   CR        N      N                   
-
-PD 5        Project Management           0.50/0.00   CR        N      N                   
-
-                                                                                          
-
-Term Avg                0.00   Term Units In Avg      0.00   Term Units Earned      0.00  
-
-Cumulative Avg          94.80  Total Units In Avg     16.25  Total Units Earned     18.14 
-
-Total Units Taken       16.25  Total Units Passed     16.25                               
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Fall 2012      3B   Full-Time                                                             
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-CS 343      Concurrent and Parallel      0.50/0.50   95        Y      Y                   
-
-            Programming                                                                   
-
-CS 348      Introduction to Database     0.50/0.50   93        Y      Y                   
-
-            Management                                                                    
-
-CS 370      Numerical Computation        0.50/0.50   91        Y      Y                   
-
-SCI 238     Introductory Astronomy       0.50/0.50   93        Y      Y                   
-
-SE 390      Design Project Planning      0.25/0.25   92        Y      Y                   
-
-SE 463      Software Requirements        0.50/0.50   96        Y      Y                   
-
-            Specification and                                                             
-
-            Analysis                                                                      
-
-WKRPT 300   Work-term Report             0.13/0.13   65        Y      N   DRNA            
-
-                                                                                          
-
-Term Avg                93.46  Term Units In Avg      2.75   Term Units Earned      2.88  
-
-Cumulative Avg          94.80  Total Units In Avg     16.25  Total Units Earned     18.14 
-
-Total Units Taken       16.25  Total Units Passed     16.25                               
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-Academic Standing:       Excellent standing                                               
-
-Honours:                 Term Dean's Honours List                                         
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Spring 2012    3A   Part-Time                     Co-op Work                              
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-COOP 4      Co-operative Work Term                   CR        N      N                   
-
-PD 6        Problem Solving              0.50/0.00   CR        N      N                   
-
-                                                                                          
-
-Term Avg                0.00   Term Units In Avg      0.00   Term Units Earned      0.00  
-
-Cumulative Avg          95.07  Total Units In Avg     13.50  Total Units Earned     15.26 
-
-Total Units Taken       13.50  Total Units Passed     13.50                               
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Winter 2012    3A   Full-Time                                                             
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-ANTH 102    Introduction to Social       0.50/0.50   84        Y      Y                   
-
-            and Cultural Anthropology                                                     
-
-CS 341      Algorithms                   0.50/0.50   96        Y      Y                   
-
-CS 349      User Interfaces              0.50/0.50   94        Y      Y                   
-
-SE 350      Operating Systems            0.50/0.50   93        Y      Y                   
-
-SE 380      Introduction to Feedback     0.50/0.50   95        Y      Y                   
-
-            Control                                                                       
-
-                                                                                          
-
-Term Avg                92.40  Term Units In Avg      2.50   Term Units Earned      2.50  
-
-Cumulative Avg          95.07  Total Units In Avg     13.50  Total Units Earned     15.26 
-
-Total Units Taken       13.50  Total Units Passed     13.50                               
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-Academic Standing:       Excellent standing                                               
-
-Honours:                 Term Dean's Honours List                                         
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Fall 2011      2B   Part-Time                     Co-op Work                              
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-COOP 3      Co-operative Work Term                   CR        N      N                   
-
-PD 21       Engineering Workplace        0.50/0.50   CR        Y      N                   
-
-            Skills II: Developing                                                         
-
-            Effective Plans                                                               
-
-                                                                                          
-
-Term Avg                0.00   Term Units In Avg      0.00   Term Units Earned      0.50  
-
-Cumulative Avg          95.68  Total Units In Avg     11.00  Total Units Earned     12.76 
-
-Total Units Taken       11.00  Total Units Passed     11.00                               
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Spring 2011    2B   Full-Time                                                             
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-CS 240      Data Structures and Data     0.50/0.50   96        Y      Y                   
-
-            Management                                                                    
-
-CS 246      Object-Oriented Software     0.50/0.50   94        Y      Y                   
-
-            Development                                                                   
-
-MATH 213    Advanced Mathematics         0.50/0.50   99        Y      Y                   
-
-            for Software Engineers                                                        
-
-MATH 239    Introduction to              0.50/0.50   100       Y      Y                   
-
-            Combinatorics                                                                 
-
-PHYS 275    Astrophysics 1 - Planets     0.50/0.50   100       Y      Y                   
-
-            and Stars                                                                     
-
-WKRPT 200   Work-term Report             0.13/0.13   65        Y      N   DRNA            
-
-                                                                                          
-
-Term Avg                97.80  Term Units In Avg      2.50   Term Units Earned      2.63  
-
-Cumulative Avg          95.68  Total Units In Avg     11.00  Total Units Earned     12.26 
-
-Total Units Taken       11.00  Total Units Passed     11.00                               
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-Academic Standing:       Excellent standing                                               
-
-Honours:                 Term Dean's Honours List                                         
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Winter 2011    2A   Part-Time                     Co-op Work                              
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-COOP 2      Co-operative Work Term                   CR        N      N                   
-
-PD 20       Engineering Workplace        0.50/0.50   CR        Y      N                   
-
-            Skills I: Developing                                                          
-
-            Reasoned Conclusions                                                          
-
-                                                                                          
-
-Term Avg                0.00   Term Units In Avg      0.00   Term Units Earned      0.50  
-
-Cumulative Avg          95.06  Total Units In Avg     8.50   Total Units Earned     9.63  
-
-Total Units Taken       8.50   Total Units Passed     8.50                                
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Fall 2010      2A   Full-Time                                                             
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-CS 241      Foundations of               0.50/0.50   95        Y      Y                   
-
-            Sequential Programs                                                           
-
-ECE 126     Introduction to              0.75/0.75   96        Y      Y                   
-
-            Electrostatics,                                                               
-
-            Magnetism and Electronics                                                     
-
-ECE 222     Digital Computers            0.50/0.50   90        Y      Y                   
-
-SE 212      Logic and Computation        0.50/0.50   100       Y      Y                   
-
-STAT 206    Statistics for Software      0.50/0.50   99        Y      Y                   
-
-            Engineering                                                                   
-
-WKRPT 100   Work-term Report             0.13/0.13   75        Y      N   DRNA            
-
-                                                                                          
-
-Term Avg                96.00  Term Units In Avg      2.75   Term Units Earned      2.88  
-
-Cumulative Avg          95.06  Total Units In Avg     8.50   Total Units Earned     9.13  
-
-Total Units Taken       8.50   Total Units Passed     8.50                                
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-Academic Standing:       Excellent standing                                               
-
-Honours:                 Term Dean's Honours List                                         
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Spring 2010    1B   Part-Time                     Co-op Work                              
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-COOP 1      Co-operative Work Term                   CR        N      N                   
-
-PDENG 15    Professional Development     0.50/0.50   CR        Y      N                   
-
-            - Overview                                                                    
-
-                                                                                          
-
-Term Avg                0.00   Term Units In Avg      0.00   Term Units Earned      0.50  
-
-Cumulative Avg          94.61  Total Units In Avg     5.75   Total Units Earned     6.25  
-
-Total Units Taken       5.75   Total Units Passed     5.75                                
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Winter 2010    1B   Full-Time                                                             
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-CS 138      Functional Programming       0.50/0.50   97        Y      Y                   
-
-            and Data Abstraction                                                          
-
-ECON 102    Introduction to              0.50/0.50   85        Y      Y                   
-
-            Macroeconomics                                                                
-
-MATH 119    Calculus 2 for               0.50/0.50   90        Y      Y                   
-
-            Engineering                                                                   
-
-MATH 135    Algebra for Honours          0.50/0.50   99        Y      Y                   
-
-            Mathematics                                                                   
-
-MSCI 261    Engineering Economics:       0.50/0.50   94        Y      Y                   
-
-            Financial Management for                                                      
-
-            Engineers                                                                     
-
-SE 141      Digital Circuits and         0.50/0.50   99        Y      Y                   
-
-            Systems                                                                       
-
-                                                                                          
-
-Term Avg                94.00  Term Units In Avg      3.00   Term Units Earned      3.00  
-
-Cumulative Avg          94.61  Total Units In Avg     5.75   Total Units Earned     5.75  
-
-Total Units Taken       5.75   Total Units Passed     5.75                                
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-Academic Standing:       Excellent standing                                               
-
-Honours:                 Term Dean's Honours List                                         
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Fall 2009      1A   Full-Time                                                             
-
-Program:  Software Engineering, Honours, Co-operative Program                             
-
-                                                                                          
-
-                                          Units                                           
-
-Course      Description                Attempt/Earn  Grade  Credit InGPA  Desig   DesGrd  
-
-CHE 102     Chemistry for Engineers      0.50/0.50   96        Y      Y                   
-
-CS 137      Programming Principles       0.50/0.50   100       Y      Y                   
-
-MATH 115    Linear Algebra for           0.50/0.50   97        Y      Y                   
-
-            Engineering                                                                   
-
-MATH 117    Calculus 1 for               0.50/0.50   92        Y      Y                   
-
-            Engineering                                                                   
-
-PHYS 115    Mechanics                    0.50/0.50   93        Y      Y                   
-
-SE 101      Introduction to Methods      0.25/0.25   92        Y      Y                   
-
-            of Software Engineering                                                       
-
-                                                                                          
-
-Term Avg                95.27  Term Units In Avg      2.75   Term Units Earned      2.75  
-
-Cumulative Avg          95.27  Total Units In Avg     2.75   Total Units Earned     2.75  
-
-Total Units Taken       2.75   Total Units Passed     2.75                                
-
-                               Total Transfer Units   0.00                                
-
-                                                                                          
-
-Academic Standing:       Excellent standing                                               
-
-Honours:                 Term Dean's Honours List                                         
-
-                                                                                          
-
-__________________________________________________________________________________________
-
-                                                                                          
-
-Non-Course Milestones                                                                     
-
-English Proficiency            Completed                     September 28, 2009           
-
-Technical Presentation         Completed                     August 25, 2011              
-
-Work Report 1                  Completed                     December 30, 2010            
-
-Work Report 2                  Completed                     August 30, 2011              
-
-Work Report 3                  Completed                     December 30, 2012            
-
-Work Term 1                    Completed                     August 30, 2010              
-
-Work Term 2                    Completed                     April 30, 2011               
-
-Work Term 3                    Completed                     December 30, 2011            
-
-Work Term 4                    Completed                     August 30, 2012              
-
-Work Term 5                    Completed                     April 30, 2013               
-
-Workplace Hazardous Materials  Completed                     September 28, 2009           
-
-                                                                                          
-
-Scholarships & Awards                                                                     
-
-2009-2010      Software Engineering Entrance Scholarship                                  
-
-2009-2010      University of Waterloo President's Scholarship of Distinction              
-
-2011-2012      Faculty of Engineering Upper-Year Scholarship                              
-
-2012-2013      President's International Experience Award                                 
-
-                                                                                          
-
-                         - - - - -   End of Transcript   - - - - -                        
-
-
-
-
- 
-	
-Return
-	
-								
-	
-
-	
- 	My Academics	 	 	 	Course Selection (undergrad Only)	 	 	 	Enroll	 	 
- 
-	
- 	My Undergrad Program	 	 	 	Grades	 	 	 	Unofficial Transcript	 	 
- 		
-
-
-	
-		
-	
-
-	
-
-
-
-
-
+University of Waterloo
+200 University Ave. West
+Waterloo Ontario Canada N2L3G1
+Page 2 of 2
+01/10/2019
+Undergraduate Unofficial Transcript
+Name: Shynkevych, Dmytro
+Student ID: 20705374
+Ontario Education Nbr: 657358545
+
+Fall 2018
+Program: ComputerScience/DigitalHardwareOption,Honours,Co-operativeProgram
+ Level: 2A Load: Full-Time Form Of Study: Enrolment
+Course Description Attempted Earned Grade
+CS 241E Foundations of Sequential Programs (Enriched) 0.50 0.50
+CS 245 Logic and Computation 0.50 0.50
+CS 246E Object-Oriented Software Development (Enriched) 0.50 0.50
+ECE 222 Digital Computers 0.50 0.50
+MATH 249 Introduction to Combinatorics (Advanced Level) 0.50 0.50
+In GPA Earned
+Term GPA 94.40 Term Totals 2.50 2.50
+Cumulative GPA 93.75 Cumulative Totals 8.00 8.00
+Major Average: 98.20 Computer Science/Digital Hardware Option, Honours, Co-operative Program
+Faculty Average: 96.20 Computer Science/Digital Hardware Option, Honours, Co-operative Program
+
+Winter 2019
+Program: ComputerScience/DigitalHardwareOption,Honours,Co-operativeProgram
+ Level: 2B Load: Part-Time Form Of Study: Co-op WorkTerm
+Course Description Attempted Earned Grade
+COOP 2 Co-operative Work Term
+PD 10 Professional Responsibility in Computing
+WKRPT 200M Work-term Report
+Milestones
+Date Completed
+10/03/2017
+Description
+Workplace Hazardous Materials
+Status
+Completed
+12/30/2017 English Proficiency Completed
+08/30/2018 Work Report 1 Completed
+08/30/2018 Work Term 1 Completed
+Scholarships and Awards
+2018 University of Waterloo President's Scholarship of Distinction
+2018 Braemar College Sheila McDonald Award for Excellence
+2018 Faculty of Mathematics Scholarship
+2019 Faculty of Mathematics Scholarship
+End of Undergraduate Unofficial Transcript
