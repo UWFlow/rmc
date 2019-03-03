@@ -18,17 +18,24 @@ install_packages() {
 
     updated_apt_repo=""
 
-    # To get the most recent nodejs, later.
-    if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q chris-lea-node_js; then
-        sudo add-apt-repository -y ppa:chris-lea/node.js
+    # To get the latest LTS NodeJS
+    if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q nodesource*; then
+        curl -sSL https://deb.nodesource.com/gpgkey/nodesource.gpg.key | sudo apt-key add -
+        VERSION=node_10.x
+        DISTRO="$(lsb_release -s -c)"
+        echo "deb https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee /etc/apt/sources.list.d/nodesource.list
+        echo "deb-src https://deb.nodesource.com/$VERSION $DISTRO main" | sudo tee -a /etc/apt/sources.list.d/nodesource.list
+        sudo apt-get update
         updated_apt_repo=yes
     fi
 
-    # To get the most recent git.
-    if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q git-core-ppa; then
-        sudo add-apt-repository -y ppa:git-core/ppa
-        updated_apt_repo=yes
-    fi
+    # To get the most recent redis-server
+    wget http://download.redis.io/redis-stable.tar.gz
+    tar xvzf redis-stable.tar.gz
+    cd redis-stable
+    sudo make install
+    cd ..
+    sudo rm -rf redis-stable
 
     # To get the most recent mongodb
     if ! ls /etc/apt/sources.list.d/ 2>&1 | grep -q 10gen; then
