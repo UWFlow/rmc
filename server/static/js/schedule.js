@@ -444,7 +444,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
         start_date: this.schedule.get('start_date'),
         end_date: this.schedule.get('end_date'),
         total_hours: this.calculateHoursPerWeek(this.schedule),
-        
+
         // TODO(david): Only show for appropriate term
         courses_not_shown: this.schedule.get('courses_not_shown')
       }));
@@ -861,7 +861,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
   };
 
   var getICalScheduleUrl = function() {
-    var baseURL = _util.getSiteBaseUrl().replace('https', 'http');
+    var baseURL = _util.getSiteBaseUrl().replace('webcal', 'http');
 
     return baseURL +
         '/schedule/ical/' + window.pageData.profileUserSecretId + '.ics';
