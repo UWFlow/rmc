@@ -190,6 +190,7 @@ $toolbarBg: #FAFAFA;
       // The margin-left of span3... yeah, I know, shouldn't be hardcoded
       padding-right: 2.12766%;
       padding-top: 20px;
+      padding-bottom: 25px;
 
       &:last-child {
         border-right: none;
@@ -225,7 +226,8 @@ $toolbarBg: #FAFAFA;
       }
 
       .step-img {
-        padding-bottom: 7px;
+        border-radius: 3px;
+        @include box-shadow(0 0 20px rgba(0,0,0,.3));
       }
     }
   }
