@@ -35,27 +35,12 @@ header {
   }
 
   #transcript-instructions {
-    text-align: left;
+    padding-right: 50px;
   }
 
-  #laptop-container {
-    position: relative;
-    background: url(/static/img/mbp-880x559.png);
-    width: 880px;
-    height: 559px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: -10px;
-
-    #transcript-video {
-      width: 640px;
-      height: 400px;
-      z-index: 10;
-      position: absolute;
-      left: 122px;
-      top: 66px;
-    }
-
+  #transcript-video {
+	  border-radius: 3px;
+	  @include box-shadow(0 0 20px rgba(0,0,0,.3));
   }
 
   #manual-course-import-container {
@@ -118,7 +103,6 @@ header {
   }
 
   #onboarding-skip-container {
-    margin-top: 50px;
     text-align: right;
     color: #999;
   }

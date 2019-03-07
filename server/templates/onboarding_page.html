@@ -11,44 +11,43 @@
 {% block body %}
   <div class="row-fluid">
     <div class="span12" id="onboarding-container">
-
+      <h2>Thanks for signing up!</h2>
+        <p class="lead">
+        If you could just take a moment to <b>import your course history</b> from
+        your Quest transcript, you'll be able to see, rate, and share your
+        course history with friends.
+      </p>
+      <br/>
       <div class="row-fluid">
-        <div class="span3">
-        <h2>Thanks for signing up!</h2>
-          <p class="lead">
-            If you could just take a moment to import your course history from
-            your Quest transcript, you'll be able to see, rate, and share your
-            course history with friends!
-          </p>
-          <h3>Step 1</h3>
+        <div class="span7" id="transcript-instructions">
+          <h3>Step 1 — Download your transcript</h3>
           <p class="step">
-            Log in to <a target="_blank"
+              Log in to <a target="_blank"
               href="https://quest.pecs.uwaterloo.ca/psp/SS/?cmd=login">
-              Quest</a> &rarr; My Academics &rarr; Unofficial Transcript &rarr;
-              (Dropdown) Report Type &rarr; Undergrad Unofficial
+              Quest</a> and follow the instructions <a target="_blank" href="https://uwaterloo.ca/quest/help/students/how-do-i/unofficial-transcript">here</a> to download your transcript as a PDF.
           </p>
-          <h3>Step 2</h3>
-          <p class="step"> After your transcript loads, open the print dialog (Ctrl+P),
-            select the entire page (Ctrl+A) and copy it (Ctrl+C)
-          </p>
-          <h3>Step 3</h3>
+          <br/>
+          <h3>Step 2 — Open and copy your transcript</h3>
           <p class="step">
-            Paste (Ctrl+V) your transcript into the textbox below
+            After you have downloaded your transcript as a PDF, open the file and
+            select the entire page (Ctrl+A), then copy it (Ctrl+C).
+          </p>
+          <br/>
+          <h3>Step 3 — Paste!</h3>
+          <p class="step">
+            Paste (Ctrl+V) your transcript into the text box below
             and let the magic happen!
           </p>
+          <div id="add-transcript-container" class="row-fluid"></div>
         </div>
-        <div class="span9" id="laptop-container">
-          {# TODO(david): Host video on YouTube #}
-          <video id="transcript-video" loop muted controls preload="meta">
-            <source src="/static/video/david-transcript-import-640x400.mp4"
-              type="video/mp4" />
-            <source src="/static/video/david-transcript-import-640x400.webm"
-              type="video/webm" />
-          </video>
-        </div>
-      </div>
 
-      <div id="add-transcript-container" class="row-fluid">
+        {# TODO(david): Host video on YouTube #}
+        <video class="span5" id="transcript-video" loop muted controls preload="meta">
+          <source src="/static/video/derrek-transcript-import.mp4"
+            type="video/mp4" />
+          <source src="/static/video/derrek-transcript-import.webm"
+            type="video/webm" />
+        </video>
       </div>
 
       <div id="onboarding-skip-container">
@@ -73,9 +72,10 @@
     <div class="transcript-error"></div>
 
     <p class="transcript-disclaimer">
-      <strong style="font-size: 22px">We do not store your grades</strong>.
-      Flow only uses your transcript so you can easily <strong>import your
-      course history</strong> and share it with friends.
+      <strong style="font-size: 23px">We do not store your grades.</strong>
+      <br/>
+      Flow only uses your transcript so you can easily import your
+      course history and share it with friends.
       See our <a href="/privacy">privacy policy</a> for more information.
     </p>
   </div>
