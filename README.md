@@ -4,11 +4,22 @@
 
 Plan your courses
 
+## Why RMC?
+
+It might seem funny that this repository and much of the code references `rmc`.
+
+RMC stands for "Rate My Courses", which was the prototype name for this project
+before it was given the (slightly) better name of Flow.
+
+Because of the profileration of this 3 letter prefix throughout the code, and the
+unfortunate coupling of the repository name and our python namespace, we decided
+to leave it be.
+
 ## Getting up and running
 
-The fastest way to get running is to use Docker. This will let you run Flow 
-inside of a virtual machine to avoid dealing with package installation problems 
-and to avoid polluting your development environment. It should also take less 
+The fastest way to get started is to use Docker. This will let you run Flow 
+inside of a virtual machine to avoid dealing with package installation problems, 
+avoid polluting your development environment, and should take less 
 time.
 
 To get started, [install Docker][].
@@ -20,13 +31,13 @@ Once you have docker installed, run:
 This will download and run a Docker image with all of Flow's dependencies 
 already installed. Don't worry if you don't know what a Docker image is.
 
-It will only need to download the image once, so booting up in the future should 
+Flow will only need to download the image once, so booting up in the future should 
 be much faster.
 
-Once the image is downloaded and running, you should find yourself in a
+Once the Docker image is downloaded and running, you should find yourself in a
 `/bin/bash` shell. This is running inside a Docker container (effectively a 
 virtual machine). Inside this container, the `rmc` repository can be found in 
-`/rmc`, which is where you should be right after running `make shell_in_docker`.
+`/rmc`, which you should be in right after running `make shell_in_docker`.
 
 To start running Flow locally, run the following inside this new shell.
 
@@ -51,13 +62,14 @@ local`), and start a new shell inside Docker by running
     $ make shell_in_docker
 
 Inside the Docker container, run the following to get some basic course data 
-into the DB.
+into the DB
 
     $ make init_data
 
 ## Directory structure
 
-If you're eager to dive into the code, you might want to read this first. This
+
+It may be helpful to read this document before diving into the code. This
 isn't exhaustive, but it should be enough to get you started if you want to contribute.
 
 - `config/`: Configuration for frameworks, databases, or anything that might vary between
@@ -95,8 +107,8 @@ isn't exhaustive, but it should be enough to get you started if you want to cont
 If you need a REPL to fool around with the database or test out some code, check
 out `tools/devshell.py`.
 
-It automatically loads some imports and connects to the database for you. This
-setup code can be found in `tools/devshell_eval.py`.
+To automatically load some imports and connect to a database, setup code can be
+found in `tools/devshell_eval.py`
 
 Here's what an example session might look like:
 
@@ -116,16 +128,7 @@ Here's what an example session might look like:
 
 [virtualenv]: http://www.virtualenv.org/en/latest/
 
-## Why RMC?
 
-It might seem funny that this repository and a bunch of the code references `rmc`.
-
-RMC stands for "Rate My Courses", which was the prototype name for this project
-before it was given the (slightly) better name of Flow.
-
-Because of the profileration of this 3 letter prefix throughout the code, and the
-unfortunate coupling of the repository name and our python namespace, we decided
-to leave it be.
 
 ## Running tests
 
@@ -171,6 +174,6 @@ Once it starts running, point your browser to http://localhost:5000/
 
 ### MongoDB error on Linux
 
-If you are getting a connection refused error when trying to run `make local` and are on Linux, this is
+If you are getting a connection refused error when trying to run `make local` and are on Linux, it is
 most likely due to MongoDB taking too long to start the first time it's run. To fix this, run `mongod --config config/mongodb_local.conf`
-and let it warm up for about 30 seconds to 1 minute. Then kill the process, and run `make local` again. It should work now.
+and let it warm up for about 30 seconds to 1 minute. Then end the process, and run `make local` again. It should work now.
