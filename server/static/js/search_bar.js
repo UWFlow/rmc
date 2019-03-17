@@ -50,8 +50,8 @@ function(RmcBackbone, $, _, _util, _typeahead) {
     var engine = new Bloodhound({
       name: 'friendsAndCourses',
       local: [].concat(_util.getLocalData('friends'),
-          _util.getLocalData('courses'),
-          _util.getLocalData('professors')),
+          _util.getLocalData('courses', false),
+          _util.getLocalData('professors', false)),
       datumTokenizer: function(d) {
         return Bloodhound.tokenizers.whitespace(d.tokens.join(' '));
       },
@@ -125,13 +125,13 @@ function(RmcBackbone, $, _, _util, _typeahead) {
     getData: function() {
       var self = this;
       var resultTypes = [];
-      if (!_util.getLocalData('courses')) {
+      if (!_util.getLocalData('courses', false)) {
         resultTypes.push('courses');
       }
       if (!_util.getLocalData('friends')) {
         resultTypes.push('friends');
       }
-      if (!_util.getLocalData('professors')) {
+      if (!_util.getLocalData('professors', false)) {
         resultTypes.push('professors');
       }
       resultTypes.join(',');
@@ -141,16 +141,18 @@ function(RmcBackbone, $, _, _util, _typeahead) {
           url: '/api/v1/search/unified?result_types=' + resultTypes,
           success: function(data) {
             if (resultTypes.indexOf('courses') >= 0) {
+              _util.clearLocalData('|courses');  // Delete old user-bound data
               _util.storeLocalData('courses', data.courses,
-                  +(new Date()) + 1000 * 60 * 60 * 24 * 14);
+                  +(new Date()) + 1000 * 60 * 60 * 24 * 14, false);
             }
             if (resultTypes.indexOf('friends') >= 0) {
               _util.storeLocalData('friends', data.friends,
                   +(new Date()) + 1000 * 60 * 60 * 24);
             }
             if (resultTypes.indexOf('professors') >= 0) {
+              _util.clearLocalData('|professors');  // Delete old user-bound data
               _util.storeLocalData('professors', data.professors,
-                  +(new Date()) + 1000 * 60 * 60 * 24 * 28);
+                  +(new Date()) + 1000 * 60 * 60 * 24 * 28, false);
             }
             initBloodhoundWithAutocomplete(self);
           }
