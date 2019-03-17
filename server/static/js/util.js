@@ -172,7 +172,7 @@ function(_, _s, $) {
    * @param {Date|number} expiration Optional: Date which this key-value should
    *     expire (a call to get will return null/undefined).
    */
-  var storeLocalData = function(key, value, expiration) {
+  var storeLocalData = function(key, value, expiration, userBound = true) {
     if (!window.localStorage) {
       return;
     }
@@ -182,18 +182,18 @@ function(_, _s, $) {
       data.exp = +expiration;  // Store timestamp as number
     }
     var userId = getCurrentUserId() || '';
-    window.localStorage[userId + '|' + key] = JSON.stringify(data);
+    window.localStorage[userBound ? (userId + '|' + key) : key] = JSON.stringify(data);
   };
 
   /**
    * Retrieve data from localStorage associated with the current user.
    */
-  var getLocalData = function(key) {
+  var getLocalData = function(key, userBound = true) {
     if (!window.localStorage) {
       return;
     }
     var userId = getCurrentUserId() || '';
-    var userKey = userId + '|' + key;
+    var userKey = userBound ? (userId + '|' + key) : key;
     var data = window.localStorage[userKey];
 
     if (data != null) {
@@ -211,6 +211,20 @@ function(_, _s, $) {
     // Handle older formats that were just the unwrapped JSON-encoded value.
     return (_.isObject(data) && 'val' in data) ? data.val : data;
   };
+
+  /*
+  ** Delete keys _containing_ a given substring from localStorage.
+  */
+  var clearLocalData = function(search) {
+    if (!window.localStorage) {
+      return;
+    }
+    for (var key in window.localStorage) {
+      if (key.indexOf(search) >= 0) {
+        delete window.localStorage[key];
+      }
+    }
+  }
 
   var scrollToElementId = function(id) {
     // Compensate for nav bar height
@@ -368,6 +382,7 @@ function(_, _s, $) {
     getReferrerId: getReferrerId,
     storeLocalData: storeLocalData,
     getLocalData: getLocalData,
+    clearLocalData: clearLocalData,
     scrollToElementId: scrollToElementId,
     humanizeTermId: humanizeTermId,
     humanizeProfId: humanizeProfId,
