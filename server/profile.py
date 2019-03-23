@@ -89,6 +89,9 @@ def render_schedule_ical_feed(profile_user_secret_id):
     course_name_map = {c['id']: c['name'] for c in limited_course_list}
 
     cal = icalendar.Calendar()
+    # The following two properties are *required* to be conformant
+    cal.add('version', '2.0')
+    cal.add('prodid', '-//UW FLOW//%s//EN' % profile_user_secret_id)
     cal.add('x-wr-calname', 'uwflow.com schedule')
     cal.add('x-wr-caldesc', 'Schedule exported from https://uwflow.com')
 
