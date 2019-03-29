@@ -861,7 +861,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
   };
 
   var getICalScheduleUrl = function() {
-    var baseURL = _util.getSiteBaseUrl().replace('https', 'webcal').replace('uwflow', 'www.uwflow');
+    var baseURL = _util.getSiteBaseUrl().replace('https', 'webcal');
 
     return baseURL +
         '/schedule/ical/' + window.pageData.profileUserSecretId + '.ics';
