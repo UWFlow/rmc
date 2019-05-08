@@ -20,6 +20,7 @@ import rmc.shared.rmclogger as rmclogger
 from rmc.server.app import app
 import rmc.server.api.v1 as api_v1
 import rmc.server.profile as profile
+import rmc.server.transcript as transcript
 import rmc.server.view_helpers as view_helpers
 import rmc.analytics.stats as rmc_stats
 import rmc.shared.schedule_screenshot as schedule_screenshot
@@ -114,7 +115,7 @@ def csrf_protect():
         # enable multiple AJAX requests originating from the page load to all
         # work off the same CSRF token.
         token = flask.session.get(view_helpers.SESSION_COOKIE_KEY_CSRF, None)
-        if not token or token != req.headers.get('X-CSRF-Token'):
+        if token is None or (token != req.headers.get('X-CSRF-Token') and token != req.form.get('token')):
             flask.abort(403)
 
 
@@ -885,6 +886,7 @@ def schedule_log():
 def upload_transcript():
     req = flask.request
 
+    transcript_data = transcript.parse_file(req.files['transcript'])
     user = view_helpers.get_current_user()
     user_id = user.id
 
@@ -892,7 +894,7 @@ def upload_transcript():
         rmclogger.LOG_CATEGORY_API,
         rmclogger.LOG_EVENT_TRANSCRIPT, {
             'user_id': user_id,
-            'requset_form': req.form,
+            'transcript_data': transcript_data,
         },
     )
 
@@ -900,7 +902,6 @@ def upload_transcript():
         season, year = term_name.split()
         return m.Term.get_id_from_year_season(year, season)
 
-    transcript_data = util.json_loads(req.form['transcriptData'])
     courses_by_term = transcript_data['coursesByTerm']
 
     # TODO(Sandy): Batch request fetch to mongo instead of fetch while looping
@@ -932,7 +933,7 @@ def upload_transcript():
         rmclogger.LOG_EVENT_UPLOAD,
         user_id
     )
-    return ''
+    return flask.redirect('/profile')
 
 
 @app.route('/api/remove_transcript', methods=['POST'])
