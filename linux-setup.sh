@@ -51,10 +51,10 @@ install_packages() {
     fi
 
     sudo apt-get install -y \
-        build-essential \
+        build-essential pkg-config \
         git \
         python-setuptools python-pip python-dev \
-        libxml2-dev libxslt-dev \
+        libxml2-dev libxslt-dev libpoppler-cpp-dev \
         ruby rubygems-integration ruby-dev \
         nodejs \
         redis-server \
