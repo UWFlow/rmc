@@ -866,7 +866,7 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
 
     return baseURL +
         '/schedule/ical/' + window.pageData.profileUserSecretId +
-        '.ics?noCache-' + d.getTime();
+        '.ics?noCache=' + d.getTime();
   };
 
   return {
