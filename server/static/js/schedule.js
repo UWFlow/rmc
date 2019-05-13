@@ -862,9 +862,11 @@ function(RmcBackbone, $, _, _s, _bootstrap, _user, _course, _util, _facebook,
 
   var getICalScheduleUrl = function() {
     var baseURL = _util.getSiteBaseUrl().replace('https', 'webcal');
+    var d = new Date();
 
     return baseURL +
-        '/schedule/ical/' + window.pageData.profileUserSecretId + '.ics';
+        '/schedule/ical/' + window.pageData.profileUserSecretId +
+        '.ics?noCache=' + d.getTime();
   };
 
   return {
