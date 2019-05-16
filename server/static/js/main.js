@@ -16,7 +16,7 @@ window.countMe = (function() {
   var count = {};
   var logger = {};
   return function(msg) {
-    require(['ext/underscore'], function(_) {
+    require(["ext/underscore"], function(_) {
       if (!logger[msg]) {
         logger[msg] = _.debounce(function() {
           console.log(msg, count[msg]);
@@ -27,20 +27,21 @@ window.countMe = (function() {
     });
   };
 })();
-require(['config_settings'], function(config_settings) {
+require(["config_settings"], function(config_settings) {
   require.config({
     shim: config_settings.shim,
 
-    baseUrl: '/static/js/',
+    baseUrl: "/static/js/",
 
     paths: config_settings.paths
   });
 
   // Underscore and jQuery need to be loaded first, otherwise RequireJS might
   // try to execute things that depend on them first since loading is async
-  require(['ext/underscore', 'ext/jquery', 'ext/jqueryMigrate'],
-      function(_, $) {
-
+  require(["ext/underscore", "ext/jquery", "ext/jqueryMigrate"], function(
+    _,
+    $
+  ) {
     window._ = _;
     window.$ = $;
     window.jQuery = $;
@@ -49,26 +50,51 @@ require(['config_settings'], function(config_settings) {
     // jQuery.
     $.ajaxSetup({
       headers: {
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        "X-CSRF-Token": $('meta[name="csrf-token"]').attr("content")
       }
     });
 
-    require(['ext/underscore.string', 'util', 'rmc_moment',
-        'ext/backbone', 'ext/bootstrap', 'ext/cookie', 'ext/toastr',
-        'points', 'user', 'facebook', 'ext/smartbanner', 'work_queue',
-        'search_bar', 'sign_in'],
-    function(_s, util, moment, Backbone, _bootstrap, _cookie, toastr, _points,
-      _user, _facebook, smartbanner, _work_queue, _search_bar, _sign_in) {
-     // Show a banner to visitors from Android browsers linking
-     // to our Android app on the Google Play Store.
+    require([
+      "ext/underscore.string",
+      "util",
+      "rmc_moment",
+      "ext/backbone",
+      "ext/bootstrap",
+      "ext/cookie",
+      "ext/toastr",
+      "points",
+      "user",
+      "facebook",
+      "ext/smartbanner",
+      "work_queue",
+      "search_bar",
+      "sign_in"
+    ], function(
+      _s,
+      util,
+      moment,
+      Backbone,
+      _bootstrap,
+      _cookie,
+      toastr,
+      _points,
+      _user,
+      _facebook,
+      smartbanner,
+      _work_queue,
+      _search_bar,
+      _sign_in
+    ) {
+      // Show a banner to visitors from Android browsers linking
+      // to our Android app on the Google Play Store.
       $(function() {
         $.smartbanner({
           // Options for the smart banner
           // https://github.com/jasny/jquery.smartbanner
-          title: 'UWFlow',
-          author: 'UW Flow',
+          title: "UWFlow",
+          author: "UW Flow",
           // The URL of the icon)
-          icon: '../static/img/logo/flow_128x128.png',
+          icon: "../static/img/logo/flow_128x128.png",
           // Set this to 'android' for easy testing on desktop browser
           force: null
         });
@@ -91,11 +117,11 @@ require(['config_settings'], function(config_settings) {
           normalizeProfName: util.normalizeProfName,
           sectionTypeToCssClass: util.sectionTypeToCssClass,
           splitCourseId: util.splitCourseId,
-          termIdToQuestId: util.termIdToQuestId
+          termIdToQuestId: util.termIdToQuestId,
         };
 
         _.template = function(templateString, data, settings) {
-          templateString = templateString || '';
+          templateString = templateString || "";
           if (data) {
             data = _.extend({}, templateHelpers, data);
             return template(templateString, data, settings);
@@ -127,9 +153,9 @@ require(['config_settings'], function(config_settings) {
 
       // TODO(mack): separate code inside into functions
       var onDomReady = function() {
-        $('.navbar [title]').tooltip({ placement: 'bottom' });
-        $('.navbar .signout-btn').click(function() {
-          window.location.href = '/?logout=1';
+        $(".navbar [title]").tooltip({ placement: "bottom" });
+        $(".navbar .signout-btn").click(function() {
+          window.location.href = "/?logout=1";
         });
 
         if (window.pageData.userObjs) {
@@ -139,32 +165,37 @@ require(['config_settings'], function(config_settings) {
         var currentUser = _user.getCurrentUser();
         if (currentUser) {
           var userPointsView = new _points.PointsView({ model: currentUser });
-          $('#user-points-placeholder').replaceWith(
-              userPointsView.render().$el);
+          $("#user-points-placeholder").replaceWith(
+            userPointsView.render().$el
+          );
         }
 
         if (window.pageData.pageScript) {
           require([window.pageData.pageScript]);
         }
 
-        var $footer = $('footer');
-        if ($footer.length &&
-              !_.contains(['/', '/courses'], window.location.pathname)) {
+        var $footer = $("footer");
+        if (
+          $footer.length &&
+          !_.contains(["/", "/courses"], window.location.pathname)
+        ) {
           // TODO(david): Use jpg and have it fade out into bg color
-          $footer.css('background',
-            'url(/static/img/footer_uw_sphere_short.png) right top no-repeat');
+          $footer.css(
+            "background",
+            "url(/static/img/footer_uw_sphere_short.png) right top no-repeat"
+          );
         }
 
-        $(document.body).on('pageScriptComplete', function(evt) {
+        $(document.body).on("pageScriptComplete", function(evt) {
           $('[rel="tooltip"]').tooltip();
-          $(document.body).data('rendered', true);
+          $(document.body).data("rendered", true);
 
           // Load the search bar modal only if localstorage is supported.
           // TODO(david): Don't make the search bar depend on localStorage.
           _work_queue.add(function() {
             if (window.localStorage) {
               var searchBarView = new _search_bar.SearchBarView({
-                el: $('.unified-search-bar')
+                el: $(".unified-search-bar")
               });
               searchBarView.render();
               searchBarView.getData();
@@ -182,11 +213,10 @@ require(['config_settings'], function(config_settings) {
         // the client. Though this doesn't matter as much anymore, now that
         // we're on HTTPS. This code block can be removed in a few months
         // (Feb. 19, 2014)
-        $.removeCookie('fbid', { path: '/' });
-        $.removeCookie('fb_access_token', { path: '/' });
-        $.removeCookie('fb_access_token_expires_on', { path: '/' });
+        $.removeCookie("fbid", { path: "/" });
+        $.removeCookie("fb_access_token", { path: "/" });
+        $.removeCookie("fb_access_token_expires_on", { path: "/" });
       };
-
 
       /* jshint -W101 */
       // IF the dom ready event has already occurred, binding to jQuery's dom
@@ -198,12 +228,11 @@ require(['config_settings'], function(config_settings) {
       // for more info.
       /* jshint +W101 */
       var state = document.readyState;
-      if (document.attachEvent ? state === 'complete' : state !== 'loading' ) {
+      if (document.attachEvent ? state === "complete" : state !== "loading") {
         onDomReady();
       } else {
         $(onDomReady);
       }
     });
-
   });
 });

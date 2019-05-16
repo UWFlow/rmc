@@ -58,6 +58,7 @@ def render_template(*args, **kwargs):
         'current_user': current_user,
         'should_renew_fb_token': should_renew_fb_token,
         'current_term_id': util.get_current_term_id(),
+        'user_agent': flask.request.headers['User-Agent'],
     })
     return flask_render_template(*args, **kwargs)
 flask.render_template = render_template
