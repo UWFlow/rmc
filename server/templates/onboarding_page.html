@@ -28,10 +28,19 @@
           </p>
           <br/>
           <h3>Step 2 — Open and copy your transcript</h3>
+          {% if not ("Chrome" in user_agent or "chrome" in
+          user_agent) %}
           <p class="step">
             After you have downloaded your transcript as a PDF, open the file and
             select the entire page (Ctrl+A), then copy it (Ctrl+C).
           </p>
+          {% else %}
+          <p class="step">
+            After you have downloaded your transcript as a PDF, open the file,
+            press Ctrl+P to open the print preview and select the entire preview
+            (Ctrl+A), then copy it (Ctrl+C).
+          </p>
+       	  {% endif %}
           <br/>
           <h3>Step 3 — Paste!</h3>
           <p class="step">
