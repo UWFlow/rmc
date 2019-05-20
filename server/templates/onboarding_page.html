@@ -27,17 +27,16 @@
               Quest</a> and follow the instructions <a target="_blank" href="https://uwaterloo.ca/quest/help/students/how-do-i/unofficial-transcript">here</a> to download your transcript as a PDF.
           </p>
           <br/>
-          <h3>Step 2 — Open and copy your transcript</h3>
+          <h3>Step 2 — Open and copy your transcript in Google Chrome</h3>
           {% if not ("Chrome" in user_agent or "chrome" in
           user_agent) %}
           <p class="step">
-            After you have downloaded your transcript as a PDF, open the file and
-            select the entire page (Ctrl+A), then copy it (Ctrl+C).
+            After you have downloaded your transcript as a PDF, open the file in the Preview app and select the entire page (Ctrl+A), then copy it (Ctrl+C).
           </p>
           {% else %}
           <p class="step">
-            After you have downloaded your transcript as a PDF, open the file,
-            press Ctrl+P to open the print preview and select the entire preview
+            After you have downloaded your transcript as a PDF, open the file in Google Chrome.
+            Press Ctrl+P to open the print preview window and select the entire preview
             (Ctrl+A), then copy it (Ctrl+C).
           </p>
        	  {% endif %}
@@ -51,12 +50,22 @@
         </div>
 
         {# TODO(david): Host video on YouTube #}
+		{% if not ("Chrome" in user_agent or "chrome" in
+          user_agent) %}
         <video class="span5" id="transcript-video" loop muted controls preload="meta">
           <source src="/static/video/derrek-transcript-import.mp4"
             type="video/mp4" />
           <source src="/static/video/derrek-transcript-import.webm"
             type="video/webm" />
         </video>
+		{% else %}
+		<video class="span5" id="transcript-video" loop muted controls preload="meta">
+          <source src="/static/video/derrek-transcript-import-chrome.mp4"
+            type="video/mp4" />
+          <source src="/static/video/derrek-transcript-import-chrome.webm"
+            type="video/webm" />
+        </video>
+		{% endif %}
       </div>
 
       <div id="onboarding-skip-container">
