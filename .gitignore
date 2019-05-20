@@ -14,6 +14,7 @@ secrets.py
 dump/*
 node_modules/
 .vagrant/
+*.DS_Store
 
 # Ignore daily generated exam files
 data/exam_schedules/uw_exams_*
