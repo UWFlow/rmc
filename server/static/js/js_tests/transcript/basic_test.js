@@ -30,7 +30,9 @@ define(function(require) {
     testParsedTranscriptAsync('extracts the program name',
         function(transcriptData) {
       expect(transcriptData.programName).to.equal(
-          'Computer Science, Honours, Co-operative Program');
+          'Computer Science/Digital Hardware Option, ' +
+          'Honours, Co-operative Program'
+      );
     });
 
     testParsedTranscriptAsync('extracts the number of terms',

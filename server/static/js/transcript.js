@@ -30,6 +30,14 @@ define(function(require) {
     return coursesByTerm;
   }
 
+  function extractProgramName(txt) {
+    // Find and return the last occurence of Program:(.*)\n
+    // This can be done with regexp as well, but the expression is arcane.
+    const start = txt.lastIndexOf('Program:') + 'Program:'.length;
+    const end = txt.indexOf('\n', start);
+    return txt.substr(start, end - start).trimStart();
+  }
+
   function parseTranscript(txt) {
     const termRegex = /(Fall|Winter|Spring)\s+(\d{4})/g;
     // Levels are similar to 1A, 5C (delayed graduation).
@@ -38,7 +46,7 @@ define(function(require) {
     const courseRegex = /([A-Z]{2,})\s+(\d{1,3}\w?)\s/g;
 
     const studentId = txt.match(/Student ID:\s+(\d+)/);
-    const programName = txt.match(/Program:\s+(.*?)$/m);
+    const programName = extractProgramName(txt);
 
     const terms = Array.from(asGenerator(() => termRegex.exec(txt)));
     const levels = Array.from(asGenerator(() => levelRegex.exec(txt)));
@@ -49,7 +57,7 @@ define(function(require) {
       coursesByTerm: assembleSchedule(terms, levels, courses).reverse(),
       studentId: Number.parseInt(studentId[1]),
       // Spaces can be missing, so split on UpperCamelCase.
-      programName: programName[1].split(/(?<=[a-z,])(?=[A-Z])/).join(" ")
+      programName: programName.split(/(?<=[a-z,])(?=[A-Z])/).join(" ")
     };
   }
 
