@@ -1316,13 +1316,6 @@ def before_app_run():
         app.logger.addHandler(file_handler)
         logging.getLogger('').addHandler(file_handler)  # Root handler
 
-        from log_handler import HipChatHandler
-        hipchat_handler = HipChatHandler(s.HIPCHAT_TOKEN,
-                s.HIPCHAT_HACK_ROOM_ID, notify=True, color='red',
-                sender='Flask')
-        hipchat_handler.setLevel(logging.ERROR)
-        hipchat_handler.setFormatter(formatter)
-        logging.getLogger('').addHandler(hipchat_handler)
     else:
         logging.basicConfig(level=logging.DEBUG)
 
