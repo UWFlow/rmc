@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/">
+	<ShortName>UW Flow</ShortName>
+	<Description>Search UW's course catalog</Description>
+	<Url type="application/rss+xml" template="https://uwflow.com/explore?q={searchTerms}"/>
+</OpenSearchDescription>
