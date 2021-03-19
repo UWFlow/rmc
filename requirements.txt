@@ -11,7 +11,7 @@ hiredis==0.1.1
 requests==0.14.1
 BeautifulSoup==3.2.1
 boto==2.6.0
-Jinja2==2.6
+Jinja2==2.11.3
 pytz==2012j
 icalendar==3.4
 python-dateutil==2.1
