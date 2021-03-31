@@ -1,6 +1,6 @@
 fabric==1.4.2
 Flask==0.9
-lxml==2.3.5
+lxml==4.6.3
 pep8==1.0.1
 pyflakes==0.7.3
 pymongo==2.3
