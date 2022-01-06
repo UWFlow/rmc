@@ -33,7 +33,7 @@ Flask-DebugToolbar==0.7.1
 Flask-DebugToolbar-LineProfilerPanel==1.0.2
 
 # For async processing
-celery==3.1.6
+celery==5.2.2
 
 # New Relic provides web app monitoring as a service: newrelic.com
 newrelic==2.6.0.5
