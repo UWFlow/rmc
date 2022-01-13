@@ -39,4 +39,4 @@ celery==3.1.6
 newrelic==2.6.0.5
 
 # Used for resizing kitten pictures
-Pillow==2.3.0
+Pillow==9.0.0
