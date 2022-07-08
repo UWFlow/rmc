@@ -3,7 +3,7 @@ Flask==0.9
 lxml==2.3.5
 pep8==1.0.1
 pyflakes==0.7.3
-pymongo==2.3
+pymongo==2.5.2
 uWSGI==2.0.14
 mongoengine==0.7.5
 redis==2.6.2
